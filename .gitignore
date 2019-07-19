@@ -1,11 +1,15 @@
-<<<<<<< eb0e589be8a454ef2280f981002f4c3ff7211e4c
+
 .DS_Store
 node_modules
 .jest-cache
 env
-=======
 node_modules
 .jest-cache
 env
 yarn-error.log
->>>>>>> feat: have an array of check
+node_modules
+.jest-cache
+env
+yarn-error.log
+build
+.serverless
