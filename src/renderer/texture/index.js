@@ -1,0 +1,11 @@
+import './tex'
+import './svg/rice-grain'
+import './svg/rice-ball'
+import './svg/sushi'
+import './svg/fish'
+import './svg/chef'
+import './svg/arrow'
+import './machine'
+import './floor'
+
+export { texture, boxes, l } from './tex'
