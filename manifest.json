@@ -1,0 +1,8 @@
+{
+  "name": "Sushi Kitchen",
+  "description": "Command a fleet of cook to craft sushi!\n\nBuy new machines, hired more crew, expand your kitchen.\n\nThis is a management game.\n\nManual:\nEach machine have a recipe to transform inputs into something else.\n\nWorker can do two activities:\n- activate a machine ( click on the worker, then click on the machine )\n- carry something from a point A to point B ( click on the worker, then drag from A to B )",
+  "images": {
+    "image_large": "doc/screenshot/medium2.png",
+    "image_thumbnail": "doc/screenshot/small.png"
+  }
+}
