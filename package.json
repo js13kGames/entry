@@ -1,0 +1,31 @@
+{
+  "name": "13k-2016",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "expect": "^1.8.0",
+    "mocha": "^3.0.0",
+    "jszip": "^3.1.1",
+    "webpack": "1.x",
+    "webpack-dev-server": "1.x",
+    "html-minify-loader": "^1.1.0",
+    "file-loader": "^0.9.0",
+    "style-loader": "0.13.x",
+    "css-loader": "0.23.x",
+    "postcss-loader": "^0.9.0",
+    "postcss-cssnext": "^2.7.0",
+    "autoprefixer": "^6.3.6",
+    "raw-loader": "^0.5.1",
+    "html-loader": "0.4.x",
+    "babel-loader": "6.x",
+    "babel-core": "6.x",
+    "babel-cli": "6.x",
+    "babel-preset-es2015": "6.x",
+    "babel-preset-stage-1": "6.x"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --port 9002 --content-base ./ -d",
+    "build": "rm -r -f -d dist/ && env NODE_ENV=production webpack && node ./script/inlineJs && rm ./dist/index.js && sleep 1 && node ./script/zip",
+    "test": "mocha --compilers js:babel-register  --timeout 200 ./src/test/spec/index.js"
+  }
+}
