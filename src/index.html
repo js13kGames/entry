@@ -1,0 +1,36 @@
+<html>
+<title>Midnight Pizza Temptation</title>
+<meta property="og:type"            content="game" />
+<meta property="og:title"           content="Midnight Pizza Temptation" />
+<meta property="og:description"     content="a delicious js13k-games submission 🍕" />
+<meta property="og:image"           content="https://raw.githubusercontent.com/Platane/midnight-pizza-temptation/master/screenshot/pink.jpg" />
+<meta property="og:image:width"     content="1131" />
+<meta property="og:image:height"    content="764" />
+<meta property="og:image"           content="https://raw.githubusercontent.com/Platane/midnight-pizza-temptation/master/screenshot/small.png" />
+<meta property="og:image:width"     content="180" />
+<meta property="og:image:height"    content="180" />
+<style>
+body{margin:0;font-family: consolas;}
+#app{display:flex;flex-direction:row;align-items:stretch;height:100%}
+#map{}
+#map_{flex-grow:1;display:flex;align-items: center;justify-content: center;height: 100%;}
+#playerDeck{width:200px;padding:10px;position:absolute;z-index:2;background-color: rgba(0,0,0,0.1);border-radius: 4px;left: 10px;top: 10px;}
+#camlist{position:absolute;top:0;right:0}
+#instruction{margin: 10px;color:#fff}
+#camPlaceholder{width:200px;height:1px;}
+#exchange{position:fixed;left:0;bottom:0;background: #fff;z-index: 3;}
+</style>
+
+<div id="app">
+    <div id="playerDeck">
+        <div id="instruction"><p>Press any letter key to chose your carrier...</p><p>Deliver pizza while avoiding to collide with other carrier.</p><p><a href="https://github.com/Platane/midnight-pizza-temptation">github</a></p></div>
+    </div>
+    <div id="map_">
+        <div id="map"><h1>Please wait while generating map ...</h1></div>
+    </div>
+    <div id="camPlaceholder"></div>
+</div>
+<div id="camlist"></div>
+<div id="exchange"></div>
+<script src="./index.js"></script>
+</html>
