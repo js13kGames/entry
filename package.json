@@ -1,0 +1,31 @@
+{
+  "name": "20461-dioretsa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node build.js --watch",
+    "debug": "node build.js --watch --debug --visual-debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burntcustard/20461-dioretsa.git"
+  },
+  "author": "burntcustard <burntcustard@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/burntcustard/20461-dioretsa/issues"
+  },
+  "homepage": "https://github.com/burntcustard/20461-dioretsa#readme",
+  "dependencies": {
+    "ansi-colors": "^4.1.1",
+    "browser-sync": "^2.26.7",
+    "jszip": "^3.2.2",
+    "kontra": "^6.2.3",
+    "preprocess": "^3.1.0",
+    "rollup": "^1.19.4",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "terser": "^4.1.3"
+  }
+}
