@@ -2,6 +2,12 @@ import { Sprite } from 'kontra';
 import * as util from './utility';
 
 export class Ship extends Sprite.class {
+
+    constructor(props) {
+        super(props);
+        this.locationHistory = [];
+    }
+
     render() {
         this.context.save();
 
@@ -22,7 +28,16 @@ export class Ship extends Sprite.class {
     }
 
     shipUpdate() {
+
+        // Record current location into locations history
+        this.locationHistory.push({ x: this.x, y: this.y});
+        // Remove last update location from location history
+        if (this.locationHistory.length > 90) {
+            this.locationHistory.shift();
+        }
+
         this.advance();
+
         // Max speed
         const magnitude = Math.sqrt(this.dx * this.dy + this.dy * this.dy);
         if (magnitude > 3) {
