@@ -1,4 +1,6 @@
 import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
+import { Ship } from './ship.js';
+import { createAsteroid } from './asteroid';
 
 let { canvas } = init();
 
@@ -12,27 +14,8 @@ const PI2 = Math.PI * 2;
 
 let sprites = [];
 
-function createAsteroid() {
-    let asteroid = Sprite({
-        x: 100,
-        y: 100,
-        dx: Math.random() * 4 - 2,
-        dy: Math.random() * 4 - 2,
-        radius: 30,
-
-        render() {
-            this.context.strokeStyle = 'white';
-            this.context.beginPath();  // start drawing a shape
-            this.context.arc(this.x, this.y, this.radius, 0, PI2);
-            this.context.stroke();     // outline the circle
-        }
-    });
-
-    sprites.push(asteroid);
-}
-
 for (var i = 0; i < 3; i++) {
-    createAsteroid();
+    createAsteroid(sprites);
 }
 
 // helper function to convert degrees to radians
@@ -40,32 +23,13 @@ function degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-let ship = Sprite({
+let ship = new Ship({
     x: 30,
     y: 30,
     width: 6,
     rotation: 0,
     dt: 0, // For time tracking
     color: 'yellow',
-
-    render() {
-        this.context.save();
-
-        // Rotate
-        this.context.translate(this.x, this.y);
-        this.context.rotate(degreesToRadians(this.rotation));
-
-        // Draw
-        this.context.strokeStyle = this.color;
-        this.context.beginPath();
-        this.context.moveTo(-3, -5);
-        this.context.lineTo(12, 0);
-        this.context.lineTo(-3, 5);
-        this.context.closePath();
-        this.context.stroke();
-
-        this.context.restore();
-    },
 
     update() {
 
@@ -85,21 +49,8 @@ let ship = Sprite({
         } else {
             this.ddx = this.ddy = 0;
         }
-        this.advance();
 
-        // Max speed
-        const magnitude = Math.sqrt(this.dx * this.dy + this.dy * this.dy);
-        if (magnitude > 3) {
-            this.dx *= .95;
-            this.dy *= .95;
-        } else {
-            if (Math.abs(this.dx) > .01) {
-                this.dx *= .99;
-            }
-            if (Math.abs(this.dy) > .01) {
-                this.dy *= .99;
-            }
-        }
+        this.shipUpdate(); // Calls this.advance itself
 
         // Fire Bullets
         this.dt += 1/60;
