@@ -50,7 +50,7 @@ let ship = new Ship({
             this.ddx = this.ddy = 0;
         }
 
-        this.shipUpdate(); // Calls this.advance itself
+        this.shipUpdate(); // Calls this.advance() itself
 
         // Fire Bullets
         this.dt += 1/60;
@@ -77,6 +77,12 @@ let ship = new Ship({
             });
 
             sprites.push(bullet);
+        }
+
+        // Go back in time
+        if (keyPressed('down')) {
+            this.x = this.locationHistory[0].x;
+            this.y = this.locationHistory[0].y;
         }
     }
 })
