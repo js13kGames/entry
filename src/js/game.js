@@ -35,6 +35,7 @@ let ship = new Ship({
     rotation: 0,
     dt: 0, // For time tracking
     color: 'yellow',
+    shipType: 'tri',
 
     update() {
         this.shipUpdate(sprites); // Calls this.advance() itself

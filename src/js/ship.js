@@ -1,40 +1,53 @@
 import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
-import * as shipStandard from './ships/standard.js'
+import ships from './ships/import.js';
 
 var tack = {};
 
-console.log(shipStandard);
+//console.log(ships);
 
 export class Ship extends Sprite.class {
 
     constructor(props) {
         super(props);
 
-        switch (props.shipType) {
-            case 'tack'    :
-                Object.assign(this, tack);
-                break;
-            case 'standard':
-            default:
-                Object.assign(this, shipStandard);
-        }
-
-        console.log(this.turnRate);
-
+        // Default properties for all ships
+        this.turnRate = 4;
+        this.locationHistory = [];
+        this.maxSpeed = 3;
         this.locationHistory = [];
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.rewinding = 0;
         this.fireDt = 0;
-        this.maxSpeed = props.maxSpeed || 3,
-        this.rof = props.rof || .25, // 4x a second
-        this.controls = props.controls || {
+        this.rof = .25, // 4x a second
+        this.controls = {
             'thrust': 'up',
             'fire': 'space',
             'left': 'left',
             'right': 'right',
             'rewind': 'down'
         }
+
+        // Assign props from the ship type file e.g. 'diamondback', AND
+        // overwrite with any weird props that were passed into new Ship(...)
+        Object.assign(this, ships[props.shipType || 'tri'], props);
+
+        this.drawShape = ships[props.shipType].drawShape;
+
+        //console.log(this.model);
+
+        // Make BACKups or 'defaults' of anything we might change in-game
+        this.defaults = {};
+        let changeables = [
+            'turnRate',
+            'rof',
+            'maxSpeed'
+        ];
+        changeables.forEach(prop => {
+            this.defaults[prop] = this[prop];
+        });
+
+        console.log(this.drawShape);
     }
 
     fire(sprites) {
@@ -83,12 +96,8 @@ export class Ship extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
         this.context.lineWidth = this.rewinding ? 1 : 2;
-        this.context.beginPath();
-        this.context.moveTo(-3, -5);
-        this.context.lineTo(12, 0);
-        this.context.lineTo(-3, 5);
-        this.context.closePath();
-        this.context.stroke();
+
+        this.context.stroke(this.shipShape);
 
         this.context.restore();
     }
