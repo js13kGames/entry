@@ -62,17 +62,20 @@ export class Ship extends Sprite.class {
 
     shipUpdate() {
 
-        if (this.rewinding) {
+        if (this.rewinding > 0) {
             this.rewinding = this.rewinding - this.rewindSpeed;
             if (this.rewinding < this.locationHistory.length) {
                 this.x = this.locationHistory[this.rewinding].x;
                 this.y = this.locationHistory[this.rewinding].y;
             }
-            return; // Don't do any other updating
-        }
 
-        if (this.rewinding) {
-            console.log("return didn't work");
+            // Last rewind update, lose 20% velocity
+            if (this.rewinding === 0) {
+                this.dx *= .8;
+                this.dy *= .8;
+            }
+
+            return; // Don't do any other updating
         }
 
         // Record current location into locations history
@@ -85,7 +88,7 @@ export class Ship extends Sprite.class {
         this.advance();
 
         // Max speed
-        const magnitude = Math.sqrt(this.dx * this.dy + this.dy * this.dy);
+        const magnitude = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
         if (magnitude > 3) {
             this.dx *= .95;
             this.dy *= .95;

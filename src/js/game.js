@@ -10,6 +10,13 @@ canvas.style = 'width:100%;background:#000';
 canvas.height = 450;
 canvas.width = 800;
 
+var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
+console.log(width);
+var height = width / 16 * 9;
+
+canvas.height = height;
+canvas.width = width;
+
 const PI2 = Math.PI * 2;
 
 let sprites = [];

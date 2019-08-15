@@ -12,6 +12,7 @@ export function createAsteroid(sprites) {
 
         render() {
             this.context.strokeStyle = 'white';
+            this.context.lineWidth = 2;
             this.context.beginPath();  // start drawing a shape
             this.context.arc(this.x, this.y, this.radius, 0, PI2);
             this.context.stroke();     // outline the circle
