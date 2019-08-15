@@ -1,7 +1,5 @@
 import { Sprite } from 'kontra';
 
-const PI2 = Math.PI * 2;
-
 export function createAsteroid(sprites) {
     let asteroid = Sprite({
         x: 100,
@@ -14,7 +12,7 @@ export function createAsteroid(sprites) {
             this.context.strokeStyle = 'white';
             this.context.lineWidth = 2;
             this.context.beginPath();  // start drawing a shape
-            this.context.arc(this.x, this.y, this.radius, 0, PI2);
+            this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             this.context.stroke();     // outline the circle
         }
     });
