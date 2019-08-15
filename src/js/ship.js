@@ -6,6 +6,38 @@ export class Ship extends Sprite.class {
     constructor(props) {
         super(props);
         this.locationHistory = [];
+        this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
+        this.rewinding = 0;
+    }
+
+    fire(sprites) {
+        const cos = Math.cos(util.degToRad(this.rotation));
+        const sin = Math.sin(util.degToRad(this.rotation));
+
+        this.dt = 0;
+        this.dx -= cos * .7;
+        this.dy -= sin * .7;
+
+        let bullet = Sprite({
+            type: 'bullet',
+
+            // Start at tip of the triangle (To understand: magic no.)
+            x: this.x + cos * 12,
+            y: this.y + sin * 12,
+
+            // Move bullet #x faster than the ship
+            dx: this.dx + cos * 12,
+            dy: this.dy + sin * 12,
+
+            // live 60 frames
+            ttl: 60,
+
+            width: 3,
+            height: 3,
+            color: this.color
+        });
+
+        sprites.push(bullet);
     }
 
     render() {
@@ -17,6 +49,7 @@ export class Ship extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
+        this.context.lineWidth = this.rewinding ? 1 : 2;
         this.context.beginPath();
         this.context.moveTo(-3, -5);
         this.context.lineTo(12, 0);
@@ -28,6 +61,19 @@ export class Ship extends Sprite.class {
     }
 
     shipUpdate() {
+
+        if (this.rewinding) {
+            this.rewinding = this.rewinding - this.rewindSpeed;
+            if (this.rewinding < this.locationHistory.length) {
+                this.x = this.locationHistory[this.rewinding].x;
+                this.y = this.locationHistory[this.rewinding].y;
+            }
+            return; // Don't do any other updating
+        }
+
+        if (this.rewinding) {
+            console.log("return didn't work");
+        }
 
         // Record current location into locations history
         this.locationHistory.push({ x: this.x, y: this.y});

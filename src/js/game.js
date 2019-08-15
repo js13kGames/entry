@@ -35,9 +35,9 @@ let ship = new Ship({
 
         // Rotation
         if (keyPressed('left')) {
-            this.rotation += -4;
+            this.rotation += -5;
         } else if (keyPressed('right')) {
-            this.rotation += 4;
+            this.rotation += 5;
         }
         const cos = Math.cos(degreesToRadians(this.rotation));
         const sin = Math.sin(degreesToRadians(this.rotation));
@@ -55,34 +55,12 @@ let ship = new Ship({
         // Fire Bullets
         this.dt += 1/60;
         if (keyPressed('space') && this.dt > .25) {
-            this.dt = 0;
-
-            let bullet = Sprite({
-                type: 'bullet',
-
-                // Start at tip of the triangle (To understand: magic no.)
-                x: this.x + cos * 12,
-                y: this.y + sin * 12,
-
-                // Move bullet slightly faster than the ship
-                dx: this.dx + cos * 2,
-                dy: this.dy + sin * 2,
-
-                // live 60 frames
-                ttl: 60,
-
-                width: 2,
-                height: 2,
-                color: this.color
-            });
-
-            sprites.push(bullet);
+            this.fire(sprites);
         }
 
         // Go back in time
-        if (keyPressed('down')) {
-            this.x = this.locationHistory[0].x;
-            this.y = this.locationHistory[0].y;
+        if (this.rewinding === 0 && keyPressed('down')) {
+            this.rewinding = this.locationHistory.length;
         }
     }
 })
