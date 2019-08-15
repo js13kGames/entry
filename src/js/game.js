@@ -10,14 +10,12 @@ canvas.style = 'width:100%;background:#000';
 canvas.height = 450;
 canvas.width = 800;
 
-var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
-console.log(width);
-var height = width / 16 * 9;
-
-canvas.height = height;
-canvas.width = width;
-
-const PI2 = Math.PI * 2;
+// Testing making canvas px match display px rather than scaling
+// var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
+// console.log(width);
+// var height = width / 16 * 9;
+// canvas.height = height;
+// canvas.width = width;
 
 let sprites = [];
 
@@ -39,36 +37,7 @@ let ship = new Ship({
     color: 'yellow',
 
     update() {
-
-        // Rotation
-        if (keyPressed('left')) {
-            this.rotation += -5;
-        } else if (keyPressed('right')) {
-            this.rotation += 5;
-        }
-        const cos = Math.cos(degreesToRadians(this.rotation));
-        const sin = Math.sin(degreesToRadians(this.rotation));
-
-        // Moving forward
-        if (keyPressed('up')) {
-            this.ddx = cos * .1;
-            this.ddy = sin * .1;
-        } else {
-            this.ddx = this.ddy = 0;
-        }
-
-        this.shipUpdate(); // Calls this.advance() itself
-
-        // Fire Bullets
-        this.dt += 1/60;
-        if (keyPressed('space') && this.dt > .25) {
-            this.fire(sprites);
-        }
-
-        // Go back in time
-        if (this.rewinding === 0 && keyPressed('down')) {
-            this.rewinding = this.locationHistory.length;
-        }
+        this.shipUpdate(sprites); // Calls this.advance() itself
     }
 })
 

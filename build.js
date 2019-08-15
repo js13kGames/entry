@@ -73,7 +73,7 @@ const compile = async () => {
             input: config.input,
             output: [ config.output ],
             watch: {
-              include: 'src/**'
+              include: 'src/**/*'
             },
             plugins: [ resolve() ]
         });
