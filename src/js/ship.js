@@ -2,10 +2,6 @@ import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
 import ships from './ships/import.js';
 
-var tack = {};
-
-//console.log(ships);
-
 export class Ship extends Sprite.class {
 
     constructor(props) {
@@ -15,7 +11,6 @@ export class Ship extends Sprite.class {
         this.turnRate = 4;
         this.locationHistory = [];
         this.maxSpeed = 3;
-        this.locationHistory = [];
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.rewinding = 0;
         this.fireDt = 0;
@@ -32,10 +27,6 @@ export class Ship extends Sprite.class {
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
 
-        this.drawShape = ships[props.shipType].drawShape;
-
-        //console.log(this.model);
-
         // Make BACKups or 'defaults' of anything we might change in-game
         this.defaults = {};
         let changeables = [
@@ -47,7 +38,8 @@ export class Ship extends Sprite.class {
             this.defaults[prop] = this[prop];
         });
 
-        console.log(this.drawShape);
+        // Create a drawable Path2D object from the ship model data
+        this.path2D = new Path2D(this.model);
     }
 
     fire(sprites) {
@@ -97,7 +89,7 @@ export class Ship extends Sprite.class {
         this.context.strokeStyle = this.color;
         this.context.lineWidth = this.rewinding ? 1 : 2;
 
-        this.context.stroke(this.shipShape);
+        this.context.stroke(this.path2D);
 
         this.context.restore();
     }
@@ -112,10 +104,10 @@ export class Ship extends Sprite.class {
         this.fireDt += 1 / 60;
 
         if (keyPressed(this.controls.left)) {
-            this.rotation -= 5;
+            this.rotation -= this.turnRate;
         }
         if (keyPressed(this.controls.right)) {
-            this.rotation += 5;
+            this.rotation += this.turnRate;
         }
 
         this.advance(); // Call the original update func
