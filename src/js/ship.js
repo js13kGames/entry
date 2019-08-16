@@ -27,17 +27,6 @@ export class Ship extends Sprite.class {
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
 
-        // Make BACKups or 'defaults' of anything we might change in-game
-        this.defaults = {};
-        let changeables = [
-            'turnRate',
-            'rof',
-            'maxSpeed'
-        ];
-        changeables.forEach(prop => {
-            this.defaults[prop] = this[prop];
-        });
-
         // Create a drawable Path2D object from the ship model data
         this.path2D = new Path2D(this.model);
     }
