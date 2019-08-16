@@ -1,5 +1,6 @@
 import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
+import getKeys from './controls';
 import ships from './ships/import.js';
 
 export class Ship extends Sprite.class {
@@ -14,18 +15,16 @@ export class Ship extends Sprite.class {
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.rewinding = 0;
         this.fireDt = 0;
-        this.rof = .25, // 4x a second
-        this.controls = {
-            'thrust': 'up',
-            'fire': 'space',
-            'left': 'left',
-            'right': 'right',
-            'rewind': 'down'
-        }
+        this.rof = .25; // 4x a second
 
         // Assign props from the ship type file e.g. 'diamondback', AND
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
+
+        // Set control scheme
+        if (this.controls) {
+            this.keys = getKeys(this.controls);
+        }
 
         // Create a drawable Path2D object from the ship model data
         this.path2D = new Path2D(this.model);
@@ -42,6 +41,8 @@ export class Ship extends Sprite.class {
         const sin = Math.sin(util.degToRad(this.rotation));
 
         this.fireDt = 0;
+
+        // Knockback
         this.dx -= cos * .7;
         this.dy -= sin * .7;
 
@@ -77,7 +78,6 @@ export class Ship extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
         this.context.lineWidth = this.rewinding ? 1 : 2;
-
         this.context.stroke(this.path2D);
 
         this.context.restore();
@@ -86,20 +86,18 @@ export class Ship extends Sprite.class {
     shipUpdate(sprites) {
 
         // Go back in time
-        if (!this.rewinding && keyPressed(this.controls.rewind)) {
+        if (!this.rewinding && keyPressed(this.keys.rewind)) {
             this.rewinding = this.locationHistory.length;
         }
 
         this.fireDt += 1 / 60;
 
-        if (keyPressed(this.controls.left)) {
+        if (keyPressed(this.keys.left)) {
             this.rotation -= this.turnRate;
         }
-        if (keyPressed(this.controls.right)) {
+        if (keyPressed(this.keys.right)) {
             this.rotation += this.turnRate;
         }
-
-        this.advance(); // Call the original update func
 
         if (this.rewinding > 0) {
             this.rewinding = this.rewinding - this.rewindSpeed;
@@ -117,16 +115,21 @@ export class Ship extends Sprite.class {
             return; // Don't do any other updating
         }
 
+
         const cos = Math.cos(util.degToRad(this.rotation));
         const sin = Math.sin(util.degToRad(this.rotation));
 
         // Moving forward
-        if (keyPressed(this.controls.thrust)) {
+        if (keyPressed(this.keys.thrust)) {
             this.ddx = cos * .1;
             this.ddy = sin * .1;
         } else {
             this.ddx = this.ddy = 0;
         }
+
+        // Call the original update func
+        // This does (non-rewindy) position, velocity, & TTL
+        this.advance();
 
         // Record current location into locations history
         this.locationHistory.push({ x: this.x, y: this.y});
@@ -149,7 +152,7 @@ export class Ship extends Sprite.class {
             }
         }
 
-        if (keyPressed(this.controls.fire) && this.fireDt > this.rof) {
+        if (keyPressed(this.keys.fire) && this.fireDt > this.rof) {
             this.fire(sprites);
         }
     }
