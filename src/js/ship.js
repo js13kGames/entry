@@ -102,7 +102,7 @@ export class Ship extends Sprite.class {
             this.rewindingFrame = this.rewindingFrame || 1;
             if (this.rewindingFrame === 1) {
                 this.lines.random = [];
-                this.lines.all.forEach(line => {
+                this.lines.ship.forEach(line => {
                     this.lines.random.push([
                         line[0] * Math.random() * 2,
                         line[1] * Math.random() * 2,
@@ -110,8 +110,6 @@ export class Ship extends Sprite.class {
                         line[3] * Math.random() * 2
                     ]);
                 });
-            } else {
-                //console.log("Using random lines from last frame");
             }
             if (this.rewindingFrame < 4) {
                 this.rewindingFrame++;

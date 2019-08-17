@@ -41,7 +41,7 @@ let ship = new Ship({
     update() {
         this.shipUpdate(sprites); // Calls this.advance() itself
     }
-})
+});
 
 sprites.push(ship);
 
