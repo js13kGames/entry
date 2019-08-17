@@ -35,7 +35,7 @@ let ship = new Ship({
     rotation: 0,
     dt: 0, // For time tracking
     color: 'yellow',
-    shipType: 'coback',
+    shipType: 'tri',
     controls: 'arrows',
 
     update() {
