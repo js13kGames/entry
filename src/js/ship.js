@@ -16,6 +16,7 @@ export class Ship extends Sprite.class {
         this.rewinding = 0;
         this.fireDt = 0;
         this.rof = .25; // 4x a second
+        this.scale = 2;
 
         // Assign props from the ship type file e.g. 'diamondback', AND
         // overwrite with any weird props that were passed into new Ship(...)
@@ -27,7 +28,51 @@ export class Ship extends Sprite.class {
         }
 
         // Create a drawable Path2D object from the ship model data
-        this.path2D = new Path2D(this.model);
+        // this.path2D = new Path2D(
+        //     this.body.replace(/-?\d+/g, match => match * 2)
+        // );
+
+        this.lines.all = [];
+
+        Object.keys(this.lines).forEach(lineType => {
+            if (lineType === 'all') {
+                return; // Don't scale lines help in 'all'
+            }
+            this.lines[lineType].forEach(line => {
+                line.forEach((point, i) => {
+                    line[i] *= 2;
+                });
+                this.lines.all.push(line);
+            });
+        });
+
+        // Create line data representing all the lines in the model individually
+        // Regex for getting array of lines (WIP)
+        // (?!L|M)\ *-?\d+ +-?\d+\n* *(?=L|Z)
+        // this.lines = [];
+        // var lines = this.model.match(
+        //     /(?!L|M\ *)-?\d+ *-?\d+\n* *(L|Z)/g
+        // );
+        // //console.log(lines);
+        // function matchD(str) {
+        //     return str.match(/-?\d+/g);
+        // }
+        // lines.forEach((line, i) => {
+        //     if (line[line.length - 1] === 'L') {
+        //         this.lines.push([
+        //             matchD(lines[i]),
+        //             matchD(lines[i + 1])
+        //         ]);
+        //     } else if (line[line.length - 1] === 'Z') {
+        //         this.lines.push([
+        //             matchD(lines[i]),
+        //             matchD(lines[0])
+        //         ]);
+        //     }
+        // });
+        this.randomLines = [];
+        //console.log("Lines");
+        //console.log(JSON.stringify(this.lines));
     }
 
     fire(sprites) {
@@ -77,8 +122,59 @@ export class Ship extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
-        this.context.lineWidth = this.rewinding ? 1 : 2;
-        this.context.stroke(this.path2D);
+        this.context.lineWidth = 2;
+
+        // Draw circle around ship for debugging
+        // this.context.beginPath();  // start drawing a shape
+        // this.context.arc(0, 0, this.radius * this.scale + 3, 0, Math.PI * 2);
+        // this.context.stroke();
+
+        if (this.rewinding) {
+            this.rewindingFrame = this.rewindingFrame || 1;
+            if (this.rewindingFrame === 1) {
+                this.randomLines = [];
+                this.lines.all.forEach(line => {
+                    this.randomLines.push([
+                        line[0] * Math.random() * 2,
+                        line[1] * Math.random() * 2,
+                        line[2] * Math.random() * 2,
+                        line[3] * Math.random() * 2
+                    ]);
+                });
+            } else {
+                //console.log("Using random lines from last frame");
+            }
+            if (this.rewindingFrame < 4) {
+                this.rewindingFrame++;
+            } else {
+                this.rewindingFrame = 1;
+            }
+
+            this.randomLines.forEach(line => {
+                this.context.moveTo(line[0], line[1]);
+                this.context.lineTo(line[2], line[3]);
+                this.context.stroke();
+            });
+
+        } else {
+            this.context.moveTo(
+                this.lines.body[0][0],
+                this.lines.body[0][1]
+            );
+            for (var i = 0; i < this.lines.body.length - 1; i++) {
+                this.context.lineTo(
+                    this.lines.body[i][2],
+                    this.lines.body[i][3]
+                );
+            }
+            this.context.closePath();
+
+            this.lines.detail.forEach(line => {
+                this.context.moveTo(line[0], line[1]);
+                this.context.lineTo(line[2], line[3]);
+            });
+            this.context.stroke();
+        }
 
         this.context.restore();
     }
@@ -101,6 +197,14 @@ export class Ship extends Sprite.class {
 
         if (this.rewinding > 0) {
             this.rewinding = this.rewinding - this.rewindSpeed;
+
+            // If something borked (can't go back that far?) cancel rewind
+            if (!this.locationHistory[this.rewinding]) {
+                this.rewinding = 0;
+                return;
+            }
+
+            // More x and y coordinates "back in time"
             if (this.rewinding < this.locationHistory.length) {
                 this.x = this.locationHistory[this.rewinding].x;
                 this.y = this.locationHistory[this.rewinding].y;
@@ -112,7 +216,7 @@ export class Ship extends Sprite.class {
                 this.dy *= .8;
             }
 
-            return; // Don't do any other updating
+            return; // Don't do any other ship updating this game update
         }
 
 

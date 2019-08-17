@@ -3,11 +3,12 @@ export default () => {
     return {
         rof: .25,
         turnRate: 5,
+        radius: 9,
         model: `
-            M  -3  -5
-            L  12   0
-            L  -3   5
-            L  -1   0
+            M  -6  -5
+            L   9   0
+            L  -6   5
+            L  -4   0
             Z`
     }
 }
