@@ -7,7 +7,7 @@ let { canvas } = init();
 initKeys();
 
 canvas.style = 'width:100%;background:#000';
-canvas.height = 450;
+canvas.height = 350;
 canvas.width = 800;
 
 // Testing making canvas px match display px rather than scaling
@@ -35,7 +35,7 @@ let ship = new Ship({
     rotation: 0,
     dt: 0, // For time tracking
     color: 'yellow',
-    shipType: 'tri',
+    shipType: 'coback',
     controls: 'arrows',
 
     update() {

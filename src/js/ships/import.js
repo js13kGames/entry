@@ -1,7 +1,7 @@
-import tri from './tri.js'
+import tri from './tri.js';
+import coback from './coback.js';
 
-ships = {};
-
-ships.tri = tri();
-
-export default ships;
+export default {
+    tri: tri(),
+    coback: coback()
+};
