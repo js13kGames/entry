@@ -32,8 +32,6 @@ let ship = new Ship({
     x: 30,
     y: 30,
     width: 6,
-    rotation: 0,
-    dt: 0, // For time tracking
     color: 'yellow',
     shipType: 'tri',
     controls: 'arrows',
@@ -44,6 +42,21 @@ let ship = new Ship({
 });
 
 sprites.push(ship);
+
+let ship2 = new Ship({
+    x: 30,
+    y: 30,
+    width: 6,
+    color: 'red',
+    shipType: 'coback',
+    controls: 'wasd',
+
+    update() {
+        this.shipUpdate(sprites); // Calls this.advance() itself
+    }
+});
+
+sprites.push(ship2);
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state

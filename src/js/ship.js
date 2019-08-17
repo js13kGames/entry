@@ -17,6 +17,8 @@ export class Ship extends Sprite.class {
         this.fireDt = 0;
         this.rof = .25; // 4x a second
         this.scale = 2;
+        this.mass = 4;
+        this.thrust = 4;
 
         // Assign props from the ship type file e.g. 'diamondback', AND
         // overwrite with any weird props that were passed into new Ship(...)
@@ -56,9 +58,9 @@ export class Ship extends Sprite.class {
 
         this.fireDt = 0;
 
-        // Knockback
-        this.dx -= cos * .7;
-        this.dy -= sin * .7;
+        // Knockback (hass less effect for ships with greater mass)
+        this.dx -= cos / this.mass;
+        this.dy -= sin / this.mass;
 
         let bullet = Sprite({
             type: 'bullet',
@@ -74,8 +76,8 @@ export class Ship extends Sprite.class {
             // live 60 frames (1s)
             ttl: 60,
 
-            width: 3,
-            height: 3,
+            width: 4,
+            height: 4,
             color: this.color
         });
 
@@ -92,6 +94,7 @@ export class Ship extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
         this.context.lineWidth = 2;
+        this.context.beginPath();
 
         // Draw circle around ship for debugging
         // this.context.beginPath();  // start drawing a shape
@@ -120,10 +123,10 @@ export class Ship extends Sprite.class {
             this.lines.random.forEach(line => {
                 this.context.moveTo(line[0], line[1]);
                 this.context.lineTo(line[2], line[3]);
-                this.context.stroke();
             });
 
         } else {
+            this.context.beginPath();
             this.context.moveTo(
                 this.lines.body[0][0],
                 this.lines.body[0][1]
@@ -140,9 +143,9 @@ export class Ship extends Sprite.class {
                 this.context.moveTo(line[0], line[1]);
                 this.context.lineTo(line[2], line[3]);
             });
-            this.context.stroke();
         }
 
+        this.context.stroke();
         this.context.restore();
     }
 
@@ -192,8 +195,9 @@ export class Ship extends Sprite.class {
 
         // Moving forward
         if (keyPressed(this.keys.thrust)) {
-            this.ddx = cos * .1;
-            this.ddy = sin * .1;
+            // a = F / m (Newton's 2nd law of motion)
+            this.ddx = cos * .1 * this.thrust / this.mass;
+            this.ddy = sin * .1 * this.thrust / this.mass;
         } else {
             this.ddx = this.ddy = 0;
         }
