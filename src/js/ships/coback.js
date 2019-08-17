@@ -4,14 +4,6 @@ export default () => {
         rof: .25,
         turnRate: 5,
         radius: 9,
-        body: `
-            M -4 -9
-            L -1 -9
-            L  5 -3
-            L  5  3
-            L -1  9
-            L -4  9
-            Z`,
         lines: {
             body: [
                 [ -4, -9, -1, -9 ],

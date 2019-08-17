@@ -22,57 +22,26 @@ export class Ship extends Sprite.class {
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
 
+        this.lines.ship = [];
+        this.lines.random = [];
+        this.lines.detail = this.lines.detail || [];
+        this.lines.all = [];
+
         // Set control scheme
         if (this.controls) {
             this.keys = getKeys(this.controls);
         }
 
-        // Create a drawable Path2D object from the ship model data
-        // this.path2D = new Path2D(
-        //     this.body.replace(/-?\d+/g, match => match * 2)
-        // );
-
-        this.lines.all = [];
-
         Object.keys(this.lines).forEach(lineType => {
-            if (lineType === 'all') {
-                return; // Don't scale lines help in 'all'
-            }
-            this.lines[lineType].forEach(line => {
-                line.forEach((point, i) => {
-                    line[i] *= 2;
+            if (lineType === 'body' || lineType === 'detail') {
+                this.lines[lineType].forEach(line => {
+                    line.forEach((point, i) => {
+                        line[i] *= 2;
+                    });
+                    this.lines.ship.push(line);
                 });
-                this.lines.all.push(line);
-            });
+            }
         });
-
-        // Create line data representing all the lines in the model individually
-        // Regex for getting array of lines (WIP)
-        // (?!L|M)\ *-?\d+ +-?\d+\n* *(?=L|Z)
-        // this.lines = [];
-        // var lines = this.model.match(
-        //     /(?!L|M\ *)-?\d+ *-?\d+\n* *(L|Z)/g
-        // );
-        // //console.log(lines);
-        // function matchD(str) {
-        //     return str.match(/-?\d+/g);
-        // }
-        // lines.forEach((line, i) => {
-        //     if (line[line.length - 1] === 'L') {
-        //         this.lines.push([
-        //             matchD(lines[i]),
-        //             matchD(lines[i + 1])
-        //         ]);
-        //     } else if (line[line.length - 1] === 'Z') {
-        //         this.lines.push([
-        //             matchD(lines[i]),
-        //             matchD(lines[0])
-        //         ]);
-        //     }
-        // });
-        this.randomLines = [];
-        //console.log("Lines");
-        //console.log(JSON.stringify(this.lines));
     }
 
     fire(sprites) {
@@ -132,9 +101,9 @@ export class Ship extends Sprite.class {
         if (this.rewinding) {
             this.rewindingFrame = this.rewindingFrame || 1;
             if (this.rewindingFrame === 1) {
-                this.randomLines = [];
+                this.lines.random = [];
                 this.lines.all.forEach(line => {
-                    this.randomLines.push([
+                    this.lines.random.push([
                         line[0] * Math.random() * 2,
                         line[1] * Math.random() * 2,
                         line[2] * Math.random() * 2,
@@ -150,7 +119,7 @@ export class Ship extends Sprite.class {
                 this.rewindingFrame = 1;
             }
 
-            this.randomLines.forEach(line => {
+            this.lines.random.forEach(line => {
                 this.context.moveTo(line[0], line[1]);
                 this.context.lineTo(line[2], line[3]);
                 this.context.stroke();
