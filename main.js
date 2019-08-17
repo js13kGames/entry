@@ -4,16 +4,17 @@
 const canvas = document.getElementById("screen");
 const ctx = canvas.getContext('2d');
 
-ctx.height = 720;
-ctx.width = 1280;
+//ctx.height = 720;
+//ctx.width = 1280;
 
 //test example
 
 
 
 
-/*
-Example level template literal
+
+
+var temp_level = `
 ##############################
 #............................#
 #............................#
@@ -22,13 +23,22 @@ Example level template literal
 #.....#.....i................#
 #............................#
 ##############################
+`;
+// 30 * 32 = 960 for widdth
+//height = 8 * 32 = 256
 
-*/
 
 /* Program-wide Variables & Constants */
-const gridSize = 32;
-var t_level = [" p e # i #", "### # #"]; //test level string array
+const gridSize = 32; /* size of each 'block' of the game screen. */
+var takeInput = true;/* Variable determines if we read the keyboard or not */
 
+
+/* player controls */
+
+const moveUp = 119;
+const moveDown = 115;
+const moveRight = 100;
+const moveLeft = 97;
 
 // use string array for drawing levels?
 
@@ -38,14 +48,14 @@ var t_level = [" p e # i #", "### # #"]; //test level string array
 let enemy = {
     width: gridSize,
     height: gridSize,
-    color:"red"
+    color: "red"
 };
 
 /* innocent object */
 let innocent = {
     width: gridSize,
     height: gridSize,
-    color:"blue"
+    color: "blue"
 };
 
 
@@ -63,19 +73,20 @@ let player = {
     color: "green"
 };
 
-/* level parsing */
-let testString = ["abc", "def"];
+/* LEVEL PARSING FUNCTIONS */
 
-/* TODO: function to convert template literal to array of strings for drawLevel */
-function levelTemplateToArray(){};
+/* converts template literal to array of strings for drawLevel */
+function levelTemplateToArray(template) {
+    let levelArray = template.split("\n");
+    return levelArray;
+};
 
-
-function drawLevel(level_array){
+function drawLevel(level_array) {
     ctx.lineWidth = 1;
     let y, x;
-    for(y=0; y < level_array.length; y++){
-        for(x=0; x < level_array[y].length; x++){
-            switch(level_array[y][x]){
+    for (y = 0; y < level_array.length; y++) {
+        for (x = 0; x < level_array[y].length; x++) {
+            switch (level_array[y][x]) {
                 case '#':
                     //draw wall
                     ctx.fillStyle = wall.color;
@@ -99,20 +110,49 @@ function drawLevel(level_array){
                     //draw innocent object
                     break;
                 default:
-                    //debug log
-                    //console.log(`empty space at y: ${y} x: ${x}`);
+                //debug log
+                //console.log(`empty space at y: ${y} x: ${x}`);
             }
         }
     }
 }
 
+/* GAME INPUT FUNCTIONS */
+
+/* TODO: write collision checking function for a particular spot */
+function checkCollision(){};
+/* TODO: write function that moves player in a direction */
+function movePlayer(direction){};
+
+/* GETTING GAME INPUT */
+document.addEventListener("keypress", function(event){
+    if (takeInput){
+        switch(event.keyCode){
+            case keyUp:
+                //call move function
+                break;
+            case keyDown:
+                break;
+            case keyLeft:
+                break;
+            case keyRight:
+                break;
+        }
+    }
+});
+
+
+/* Game Init Loop */
 
 
 /* main game event loop */
 var gameRun = true;
-while(gameRun){
+while (gameRun) {
     //draw the game
-    drawLevel(t_level);
+
+    let this_level = levelTemplateToArray(temp_level);
+    console.log(this_level);
+    drawLevel(this_level);
     //player input but with timeout to update things
     gameRun = false;
 }
