@@ -1,7 +1,4 @@
 body {
-  background-color: lightblue;
-}
-
-.text {
-  font-size: 2em;
-}
+  margin: 0;
+  height: 100vh;
+ }

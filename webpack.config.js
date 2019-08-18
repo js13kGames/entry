@@ -1,4 +1,6 @@
 const path = require('path');
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 
 module.exports = {
@@ -24,7 +26,11 @@ module.exports = {
       }
     ]
   },
+  devtool: 'inline-source-map',
   plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Back to Skull Island'
+    }),
     new ZipPlugin()
   ]
 };
