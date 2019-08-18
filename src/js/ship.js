@@ -9,6 +9,7 @@ export class Ship extends Sprite.class {
         super(props);
 
         // Default properties for all ships
+        this.type = 'ship';
         this.turnRate = 4;
         this.locationHistory = [];
         this.maxSpeed = 3;
@@ -19,12 +20,12 @@ export class Ship extends Sprite.class {
         this.scale = 2;
         this.mass = 4;
         this.thrust = 4;
+        this.cs = props.collisionSystem;
 
         // Assign props from the ship type file e.g. 'diamondback', AND
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
 
-        this.lines.ship = [];
         this.lines.random = [];
         this.lines.body = this.lines.body || [];
         this.lines.detail = this.lines.detail || [];
@@ -36,21 +37,32 @@ export class Ship extends Sprite.class {
         }
 
         Object.keys(this.lines).forEach(lineType => {
-            if (lineType === 'body' || lineType === 'detail') {
-                this.lines[lineType].forEach(line => {
-                    this.lines.ship.push(line);
-                });
-            }
-            if (lineType === 'body' ||
-                lineType === 'detail' ||
-                lineType === 'thrust') {
-                this.lines[lineType].forEach(line => {
-                    line.forEach((point, i) => {
-                        line[i] *= 2;
-                    });
-                });
-            }
+            // Scale all the lines (except ship as that would * scale * scale)
+            this.lines[lineType].forEach((line, i) => {
+                line.forEach((v, i) => { line[i] *= this.scale });
+            });
         });
+
+        // Merge body & detail into 'ship' line array for doing fun effects etc
+        this.lines.ship = this.lines.body.concat(this.lines.detail);
+
+        // If the ship doesn't have a collision box defined, use it's body
+        // Assumes that the body is a consecutive set of lines
+        // (e.g. line end coords match the following lines start coords)
+        if (!this.lines.hitbox) {
+            this.lines.hitbox = [];
+            this.lines.body.forEach(line => {
+                this.lines.hitbox.push([line[0], line[1]]);
+            });
+        }
+
+        this.hitbox = props.collisionSystem.createPolygon(
+            this.x,
+            this.y,
+            this.lines.hitbox
+        );
+        this.hitbox.scale = this.scale;
+        this.hitbox.owner = this;
     }
 
     fire(sprites) {
@@ -70,7 +82,9 @@ export class Ship extends Sprite.class {
         this.dy -= sin / this.mass;
 
         let bullet = Sprite({
+            name: 'bullet',
             type: 'bullet',
+            parent: this,
 
             // Start at tip of the triangle (To understand: magic no.)
             x: this.x + cos * 12,
@@ -85,8 +99,18 @@ export class Ship extends Sprite.class {
 
             width: 4,
             height: 4,
-            color: this.color
+            color: this.color,
+            hitbox: this.cs.createPoint(this.x, this.y),
+
+            update() {
+                this.advance();
+                this.hitbox.x = this.x;
+                this.hitbox.y = this.y;
+            }
         });
+
+        bullet.hitbox.owner = bullet;
+        bullet.owner = this;
 
         sprites.push(bullet);
     }
@@ -133,7 +157,6 @@ export class Ship extends Sprite.class {
             });
 
         } else {
-            this.context.beginPath();
             this.context.moveTo(
                 this.lines.body[0][0],
                 this.lines.body[0][1]
@@ -225,7 +248,7 @@ export class Ship extends Sprite.class {
             this.ddx = this.ddy = 0;
         }
 
-        // Call the original update func
+        // Call the original Kontra update function
         // This does (non-rewindy) position, velocity, & TTL
         this.advance();
 
@@ -244,11 +267,19 @@ export class Ship extends Sprite.class {
         } else {
             if (Math.abs(this.dx) > .01) {
                 this.dx *= .99;
+            } else {
+                this.dx = 0;
             }
             if (Math.abs(this.dy) > .01) {
                 this.dy *= .99;
+            } else {
+                this.dy = 0;
             }
         }
+
+        this.hitbox.x = this.x;
+        this.hitbox.y = this.y;
+        this.hitbox.angle = util.degToRad(this.rotation);
 
         if (keyPressed(this.keys.fire) && this.fireDt > this.rof) {
             this.fire(sprites);
