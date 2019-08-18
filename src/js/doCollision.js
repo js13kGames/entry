@@ -6,7 +6,7 @@
  * @param  {[type]} ships           [description]
  * @return {[type]}                 [description]
  */
-export function doCollision(collisionSystem, collisionResult, ships) {
+export function doCollision(collisionSystem, collisionResult, ships, sprites) {
 
     // Update the collision system
     collisionSystem.update();
@@ -27,7 +27,12 @@ export function doCollision(collisionSystem, collisionResult, ships) {
                     if (collisionResult.b.owner.owner === ship) {
                         return;
                     }
+                    // The ship might have already exploded due to a collision
+                    if (ship.exploded) {
+                        return;
+                    }
                     console.log(ship.name + " got shot by " +collisionResult.b.owner.name + " that belonged to " + collisionResult.b.owner.owner.name);
+                    ship.explode(sprites);
                 }
 
                 if (collisionResult.b.owner.type === 'ship') {
