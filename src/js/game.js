@@ -91,24 +91,30 @@ let loop = GameLoop({  // create the main game loop
             }
         });
 
-        doCollision(collisionSystem, collisionResult, ships);
+        doCollision(collisionSystem, collisionResult, ships, sprites);
 
-        // Remove dead sprite's hitboxes from the collision system
+        // Remove dead & exploded sprite's hitboxes from the collision system
         sprites.forEach(sprite => {
-            !sprite.isAlive() && sprite.hitbox && sprite.hitbox.remove();
+            if (!sprite.isAlive() || sprite.exploded) {
+                sprite.hitbox && sprite.hitbox.remove();
+            }
         });
 
         // Remove dead sprites from the sprites list
         sprites = sprites.filter(sprite => sprite.isAlive());
+
+        // Remove exploded ships from the both lists
+        sprites = sprites.filter(sprite => !sprite.exploded);
+        ships = ships.filter(ship => !ship.exploded);
     },
     render() {
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        context.strokeStyle = '#0F0';
-        context.beginPath();
-        collisionSystem.draw(context);
-        context.stroke();
+        // context.strokeStyle = '#0F0';
+        // context.beginPath();
+        // collisionSystem.draw(context);
+        // context.stroke();
     }
 });
 
