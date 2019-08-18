@@ -152,9 +152,18 @@ export class Ship extends Sprite.class {
             });
 
             if (this.ddx || this.ddy) {
-                this.lines.thrust.forEach(line => {
-                    this.context.moveTo(line[0], line[1]);
-                    this.context.lineTo(line[2], line[3]);
+                this.lines.thrust.forEach((line, i) => {
+                    // If x,y of 1st point of new line match 2nd point of prev
+                    if (i > 0 &&
+                        this.lines.thrust[i - 1][2] === line[0] &&
+                        this.lines.thrust[i - 1][3] === line[1]) {
+                        // Draw line connected to previous
+                        this.context.lineTo(line[2], line[3]);
+                    } else {
+                        // Draw line NOT connect to previous
+                        this.context.moveTo(line[0], line[1]);
+                        this.context.lineTo(line[2], line[3]);
+                    }
                 });
             }
         }
