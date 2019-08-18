@@ -26,8 +26,9 @@ export class Ship extends Sprite.class {
 
         this.lines.ship = [];
         this.lines.random = [];
+        this.lines.body = this.lines.body || [];
         this.lines.detail = this.lines.detail || [];
-        this.lines.all = [];
+        this.lines.thrust = this.lines.thrust || [];
 
         // Set control scheme
         if (this.controls) {
@@ -37,10 +38,16 @@ export class Ship extends Sprite.class {
         Object.keys(this.lines).forEach(lineType => {
             if (lineType === 'body' || lineType === 'detail') {
                 this.lines[lineType].forEach(line => {
+                    this.lines.ship.push(line);
+                });
+            }
+            if (lineType === 'body' ||
+                lineType === 'detail' ||
+                lineType === 'thrust') {
+                this.lines[lineType].forEach(line => {
                     line.forEach((point, i) => {
                         line[i] *= 2;
                     });
-                    this.lines.ship.push(line);
                 });
             }
         });
@@ -143,6 +150,13 @@ export class Ship extends Sprite.class {
                 this.context.moveTo(line[0], line[1]);
                 this.context.lineTo(line[2], line[3]);
             });
+
+            if (this.ddx || this.ddy) {
+                this.lines.thrust.forEach(line => {
+                    this.context.moveTo(line[0], line[1]);
+                    this.context.lineTo(line[2], line[3]);
+                });
+            }
         }
 
         this.context.stroke();
