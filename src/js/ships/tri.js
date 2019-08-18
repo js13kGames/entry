@@ -1,6 +1,7 @@
 
 export default () => {
     return {
+        name: 'tri',
         rof: .25,
         turnRate: 6,
         radius: 7,
@@ -16,6 +17,11 @@ export default () => {
             thrust: [
                 [ -5, -2, -8,  0 ],
                 [ -8,  0, -5,  2 ]
+            ],
+            hitbox: [
+                [ -6, -5 ],
+                [  7,  0 ],
+                [ -6,  5 ]
             ]
         }
     }

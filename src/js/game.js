@@ -1,9 +1,19 @@
 import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
+import { Collisions } from 'collisions';
+import { doCollision } from './doCollision';
 import { Ship } from './ship.js';
 import { createAsteroid } from './asteroid';
 
-let { canvas } = init();
+// Kontra init canvas
+let { canvas, context } = init();
 
+// Create the collision system
+const collisionSystem = new Collisions();
+
+// Create a Result object for collecting information about the collisions
+const collisionResult = collisionSystem.createResult();
+
+// Kontra init keyboard stuff
 initKeys();
 
 canvas.style = 'width:100%;background:#000';
@@ -18,6 +28,7 @@ canvas.width = 800;
 // canvas.width = width;
 
 let sprites = [];
+let ships = [];
 
 for (var i = 0; i < 3; i++) {
     createAsteroid(sprites);
@@ -28,35 +39,40 @@ function degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-let ship = new Ship({
+// new Ships automatically get added to game.sprites & game.ships (?)
+let shipA = new Ship({
     x: 30,
     y: 30,
     width: 6,
     color: 'yellow',
     shipType: 'tri',
     controls: 'arrows',
+    collisionSystem: collisionSystem,
 
     update() {
         this.shipUpdate(sprites); // Calls this.advance() itself
     }
 });
 
-sprites.push(ship);
+sprites.push(shipA);
+ships.push(shipA);
 
-let ship2 = new Ship({
-    x: 30,
-    y: 30,
+let shipB = new Ship({
+    x: 60,
+    y: 60,
     width: 6,
     color: 'red',
     shipType: 'coback',
     controls: 'wasd',
+    collisionSystem: collisionSystem,
 
     update() {
         this.shipUpdate(sprites); // Calls this.advance() itself
     }
 });
 
-sprites.push(ship2);
+sprites.push(shipB);
+ships.push(shipB);
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
@@ -75,10 +91,24 @@ let loop = GameLoop({  // create the main game loop
             }
         });
 
+        doCollision(collisionSystem, collisionResult, ships);
+
+        // Remove dead sprite's hitboxes from the collision system
+        sprites.forEach(sprite => {
+            !sprite.isAlive() && sprite.hitbox && sprite.hitbox.remove();
+        });
+
+        // Remove dead sprites from the sprites list
         sprites = sprites.filter(sprite => sprite.isAlive());
     },
-    render() { // render the game state
+    render() {
         sprites.map(sprite => sprite.render());
+
+        // Render debug collision stuff
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 

@@ -1,6 +1,7 @@
 
 export default () => {
     return {
+        name: 'coback',
         rof: .25,
         turnRate: 5,
         radius: 9,
