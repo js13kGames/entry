@@ -9,7 +9,10 @@ const ctx = canvas.getContext('2d');
 
 //test example
 
-
+/** Web monitization idea: different robot skins.
+ * 
+ * That would be really easy to implement
+ */
 
 
 
@@ -24,13 +27,67 @@ var temp_level = `
 #............................#
 ##############################
 `;
+
+
+
+
+var level_1 = `
+#############
+#.......i...#
+#.p.........#
+#.......e...#
+#############
+`
+var level_2 = `
+##############
+#.......#....#
+#.####..#.e..#
+#....#..#....#
+####.#..#.i..#
+#p...#.......#
+##############
+`
+
+var level_3 = `
+###################
+#.................#
+#....#......#.....#
+#....#..##..#.....#
+#..#..........#...#
+#...##########....#
+#................p#
+###################
+`
+
+var levels = [level_1, level_2, level_3];
+var currentLevelIndex = 0;
+
 // 30 * 32 = 960 for widdth
 //height = 8 * 32 = 256
 
 
 /* Program-wide Variables & Constants */
 const gridSize = 32; /* size of each 'block' of the game screen. */
-var takeInput = true;/* Variable determines if we read the keyboard or not */
+var takeInput = false;/* Variable determines if we read the keyboard or not */
+
+
+/* Game Init Code */
+var hasRun = 0;
+
+//var this_level = temp_level.split("\n");
+var this_level = levels[currentLevelIndex].split("\n");
+takeInput = true;
+hasRun++;
+
+/* Player Sprite Loading */
+var playerSprite = new Image();
+playerSprite.src = "sprite_0.png";
+
+
+
+//console.log("Run " + hasRun + " times");
+
+
 
 
 /* player controls */
@@ -70,18 +127,27 @@ let wall = {
 let player = {
     width: gridSize,
     height: gridSize,
+    x:0,
+    y:0,
     color: "green"
 };
 
 /* LEVEL PARSING FUNCTIONS */
 
-/* converts template literal to array of strings for drawLevel */
-function levelTemplateToArray(template) {
-    let levelArray = template.split("\n");
-    return levelArray;
-};
+// this changes which level we are current on.
+function gotoNextLevel(){
+    if (currentLevelIndex < levels.length){
+        currentLevelIndex++;
+        this_level = levels[currentLevelIndex].split("\n");
+    }
+}
+
 
 function drawLevel(level_array) {
+
+    //first clear canvas screen
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.lineWidth = 1;
     let y, x;
     for (y = 0; y < level_array.length; y++) {
@@ -94,9 +160,12 @@ function drawLevel(level_array) {
                     break;
                 case 'p':
                     /* placeholder graphics */
-                    console.log("drawing player");
-                    ctx.fillStyle = player.color;
-                    ctx.fillRect(gridSize * x, gridSize * y, player.width, player.height);
+                    //console.log("drawing player");
+                    //ctx.fillStyle = player.color;
+                    player.x = x;
+                    player.y = y;
+                    ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
+                    //ctx.fillRect(gridSize * x, gridSize * y, player.width, player.height);
                     //draw player
                     break;
                 case 'e':
@@ -120,42 +189,79 @@ function drawLevel(level_array) {
 /* GAME INPUT FUNCTIONS */
 
 /* TODO: write collision checking function for a particular spot */
-function checkCollision(){};
-/* TODO: write function that moves player in a direction */
-function movePlayer(direction){};
+function checkCollision(x, y){
+    if ( this_level[y][x] == '#' ){ 
+        //console.log(`wall at y:${y} and x: ${x}`);
+        return false;
+    }
+    else {
+        //console.log(`no wall at y:${y} and x:${x}`);
+        return true;
+    } 
+};
+
+
+// since strings are immutable I gotta completely change the array
+function updatePlayerArray(dx, dy){
+    let replace = this_level[player.y + dy][player.x + dx];
+
+    // using voca.js for splice function as to limit my frustration with manipulating immutable strings
+    this_level[player.y+dy] = splice(this_level[player.y+dy], player.x+dx, 1, 'p');
+    this_level[player.y] = splice(this_level[player.y], player.x, 1, replace);
+
+    player.y += dy;
+    player.x += dx;
+}
+
+
+
+
 
 /* GETTING GAME INPUT */
 document.addEventListener("keypress", function(event){
     if (takeInput){
         switch(event.keyCode){
-            case keyUp:
+            case moveUp:
                 //call move function
+                if (checkCollision(player.x, player.y-1)){
+                    //alter the level array
+                    updatePlayerArray(0, -1);
+                }
                 break;
-            case keyDown:
+            case moveDown:
+                if (checkCollision(player.x, player.y+1)){
+                    updatePlayerArray(0, 1);
+                }
                 break;
-            case keyLeft:
+            case moveLeft:
+                if(checkCollision(player.x-1, player.y)){
+                    updatePlayerArray(-1, 0);
+                }
                 break;
-            case keyRight:
+            case moveRight:
+                if(checkCollision(player.x+1, player.y)){
+                    updatePlayerArray(1, 0);
+                }
+                break;
+            //NEXT LEVEL
+            case 110://n
+                gotoNextLevel();
                 break;
         }
     }
 });
 
 
-/* Game Init Loop */
 
 
 /* main game event loop */
-var gameRun = true;
-while (gameRun) {
+//var gameRun = true;
+function mainLoop() {
     //draw the game
-
-    let this_level = levelTemplateToArray(temp_level);
-    console.log(this_level);
+    //console.log(this_level);
     drawLevel(this_level);
     //player input but with timeout to update things
-    gameRun = false;
 }
 
 
-
+setInterval(mainLoop, 100);
