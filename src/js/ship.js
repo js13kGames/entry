@@ -2,6 +2,7 @@ import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
 import getKeys from './controls';
 import ships from './ships/import';
+import { createBullet } from './bullet';
 import { createShrapnel } from './shrapnel';
 
 export class Ship extends Sprite.class {
@@ -76,46 +77,7 @@ export class Ship extends Sprite.class {
         this.dx -= cos / this.mass;
         this.dy -= sin / this.mass;
 
-        let bullet = Sprite({
-            name: 'bullet',
-            type: 'bullet',
-            parent: this,
-
-            // Start at tip of the triangle
-            // Todo understand: magic no. Fix to "weapon mount" of some sort
-            x: this.x + cos * 16,
-            y: this.y + sin * 16,
-
-            // Move bullet #x faster than the ship
-            dx: this.dx + cos * 12,
-            dy: this.dy + sin * 12,
-
-            // live 60 frames (1s)
-            ttl: 60,
-
-            width: 24,
-            height: 24,
-            color: this.color,
-            hitbox: this.cs.createPoint(this.x, this.y),
-
-            update() {
-                this.advance();
-                this.hitbox.x = this.x;
-                this.hitbox.y = this.y;
-            },
-
-            render() {
-                this.context.fillStyle = this.color;
-                this.context.beginPath();
-                this.context.arc(this.x, this.y, 2, 0, 2 * Math.PI);
-                this.context.fill();
-            }
-        });
-
-        bullet.hitbox.owner = bullet;
-        bullet.owner = this;
-
-        sprites.push(bullet);
+        createBullet(this, sprites);
     }
 
     render() {
