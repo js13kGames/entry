@@ -1,7 +1,8 @@
 import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
 import getKeys from './controls';
-import ships from './ships/import.js';
+import ships from './ships/import';
+import { createShrapnel } from './shrapnel';
 
 export class Ship extends Sprite.class {
 
@@ -294,79 +295,9 @@ export class Ship extends Sprite.class {
     explode(sprites) {
         this.exploded = true;
 
-        const cos = Math.cos(util.degToRad(this.rotation));
-        const sin = Math.sin(util.degToRad(this.rotation));
-
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
-
-            let center = {
-                x: (line[0] + line[2]) / 2,
-                y: (line[1] + line[3]) / 2
-            };
-
-            let lineSprite = Sprite({
-                type: 'shrapnel',
-                x: this.x + (center.x * cos - center.y * sin),
-                y: this.y + (center.y * cos + center.x * sin),
-                rotation: this.rotation,
-                color: this.color,
-                p1: {
-                    x: line[0] - center.x,
-                    y: line[1] - center.y
-                },
-                p2: {
-                    x: line[2] - center.x,
-                    y: line[3] - center.y
-                },
-
-                hitbox: this.cs.createPolygon(
-                    this.x + (center.x * cos - center.y * sin),
-                    this.y + (center.y * cos + center.x * sin),
-                    [
-                        [line[0] - center.x, line[1] - center.y],
-                        [line[2] - center.x, line[3] - center.y],
-                    ]
-                ),
-
-                // Modify these for more crazy "explosions"
-                dx: this.dx + Math.random() * 2 - 1,
-                dy: this.dy + Math.random() * 2 - 1,
-                ttl: 120 + Math.random() * 60, // 2-3s
-                dr: Math.random() * 20 - 10,
-
-                update() {
-                    this.dx *= .999;
-                    this.dy *= .999;
-                    this.rotation += this.dr;
-                    this.hitbox.x = this.x;
-                    this.hitbox.y = this.y;
-                    this.hitbox.angle = util.degToRad(this.rotation);
-                    this.advance();
-                },
-
-                render() {
-                    this.context.save();
-                    this.context.beginPath();
-
-                    // Rotate
-                    this.context.translate(this.x, this.y);
-                    this.context.rotate(util.degToRad(this.rotation));
-
-                    // Draw
-                    this.context.strokeStyle = this.color;
-                    this.context.lineWidth = 2;
-                    this.context.moveTo(this.p1.x, this.p1.y);
-                    this.context.lineTo(this.p2.x, this.p2.y);
-
-                    this.context.stroke();
-                    this.context.restore();
-                }
-            });
-
-            lineSprite.hitbox.owner = lineSprite;
-
-            sprites.push(lineSprite);
+            createShrapnel(line, this, sprites);
         });
     }
 }
