@@ -129,7 +129,7 @@ function minify() {
             unsafe_comps: true,
             unsafe_math: true,
         },
-        mangle: true,
+        toplevel: true,
         module: true,
         sourceMap: DEVMODE ? {
             content: fs.readFileSync('dist/game.js.map', 'utf8'),
@@ -181,13 +181,13 @@ function inline(minifiedJS) {
  * @param  {number} used Size of zip file in bytes
  */
 function drawSize(used) {
-    const limit = 1024 * 13; // 13KB (not kB!)
+    const limit = 13312; // 13KB (not kB!)
     const remaining = limit - used;
     const usedPercent = Math.round((100 / limit) * used);
     const barWidth = process.stdout.columns - 26;
     const usedBarWidth = Math.round((barWidth / 100) * usedPercent);
-    const usedStr = ((used / 1000).toFixed(1) + ' KB').padStart(7, ' ');
-    const limitStr = ((limit / 1000).toFixed(1) + ' KB').padEnd(7, ' ');
+    const usedStr = ((used / 1024).toFixed(1) + ' KB').padStart(7, ' ');
+    const limitStr = ((limit / 1024).toFixed(1) + ' KB').padEnd(7, ' ');
 
     var output = usedStr + ' / ' + limitStr +  ' [';
     for (let i = 0; i < barWidth; i++) {
