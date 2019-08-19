@@ -22,6 +22,11 @@ export function doCollision(collisionSystem, collisionResult, ships, sprites) {
         for (const otherSprites of potentials) {
             if (ship.hitbox.collides(otherSprites, collisionResult)) {
 
+                if (collisionResult.b.owner.type === 'shrapnel') {
+                    collisionResult.b.owner.x += collisionResult.overlap * collisionResult.overlap_x;
+                    collisionResult.b.owner.y += collisionResult.overlap * collisionResult.overlap_y;
+                }
+
                 if (collisionResult.b.owner.type === 'bullet') {
                     // If you're (or ya bullets) not colliding with yourself
                     if (collisionResult.b.owner.owner === ship) {
