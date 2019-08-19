@@ -22,7 +22,7 @@ const VISUAL_DEBUG = process.argv.slice(2).includes('--visual-debug');
  * @return {string}          Nicely formatted color string
  */
 function formatMs(duration) {
-    return c.magentaBright(duration.toString().padStart(3, ' ') + ' ms');
+    return c.magentaBright(duration.toString().padStart(4, ' ') + ' ms');
 }
 
 /**
