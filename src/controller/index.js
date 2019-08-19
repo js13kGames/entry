@@ -15,7 +15,7 @@ const loop = () => {
 }
 
 export const init = () => {
-  modelSetState({ position: {row: 50, col: 50 }});
+  modelSetState({ position: {row: 10, col: 10 }});
   modelInit();
   viewInit(
     setState,
