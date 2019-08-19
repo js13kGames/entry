@@ -36,8 +36,8 @@ export class Ship extends Sprite.class {
             this.keys = getKeys(this.controls);
         }
 
+        // Scale all the lines (except ship as that would * scale * scale)
         Object.keys(this.lines).forEach(lineType => {
-            // Scale all the lines (except ship as that would * scale * scale)
             this.lines[lineType].forEach((line, i) => {
                 line.forEach((v, i) => { line[i] *= this.scale });
             });
@@ -48,7 +48,7 @@ export class Ship extends Sprite.class {
 
         // If the ship doesn't have a collision box defined, use it's body
         // Assumes that the body is a consecutive set of lines
-        // (e.g. line end coords match the following lines start coords)
+        // (e.g. line end coords match the following line start coords)
         if (!this.lines.hitbox) {
             this.lines.hitbox = [];
             this.lines.body.forEach(line => {
@@ -66,12 +66,6 @@ export class Ship extends Sprite.class {
     }
 
     fire(sprites) {
-
-        // Can't shoot if rewinding
-        if (this.rewinding) {
-            return false;
-        }
-
         const cos = Math.cos(util.degToRad(this.rotation));
         const sin = Math.sin(util.degToRad(this.rotation));
 
@@ -86,9 +80,10 @@ export class Ship extends Sprite.class {
             type: 'bullet',
             parent: this,
 
-            // Start at tip of the triangle (To understand: magic no.)
-            x: this.x + cos * 12,
-            y: this.y + sin * 12,
+            // Start at tip of the triangle
+            // Todo understand: magic no. Fix to "weapon mount" of some sort
+            x: this.x + cos * 16,
+            y: this.y + sin * 16,
 
             // Move bullet #x faster than the ship
             dx: this.dx + cos * 12,
@@ -97,8 +92,8 @@ export class Ship extends Sprite.class {
             // live 60 frames (1s)
             ttl: 60,
 
-            width: 4,
-            height: 4,
+            width: 24,
+            height: 24,
             color: this.color,
             hitbox: this.cs.createPoint(this.x, this.y),
 
@@ -106,6 +101,13 @@ export class Ship extends Sprite.class {
                 this.advance();
                 this.hitbox.x = this.x;
                 this.hitbox.y = this.y;
+            },
+
+            render() {
+                this.context.fillStyle = this.color;
+                this.context.beginPath();
+                this.context.arc(this.x, this.y, 2, 0, 2 * Math.PI);
+                this.context.fill();
             }
         });
 
@@ -282,7 +284,9 @@ export class Ship extends Sprite.class {
         this.hitbox.y = this.y;
         this.hitbox.angle = util.degToRad(this.rotation);
 
-        if (keyPressed(this.keys.fire) && this.fireDt > this.rof) {
+        if (keyPressed(this.keys.fire) &&
+            this.fireDt > this.rof &&
+            !this.rewinding) {
             this.fire(sprites);
         }
     }
@@ -316,6 +320,15 @@ export class Ship extends Sprite.class {
                     y: line[3] - center.y
                 },
 
+                hitbox: this.cs.createPolygon(
+                    this.x + (center.x * cos - center.y * sin),
+                    this.y + (center.y * cos + center.x * sin),
+                    [
+                        [line[0] - center.x, line[1] - center.y],
+                        [line[2] - center.x, line[3] - center.y],
+                    ]
+                ),
+
                 // Modify these for more crazy "explosions"
                 dx: this.dx + Math.random() * 2 - 1,
                 dy: this.dy + Math.random() * 2 - 1,
@@ -323,7 +336,12 @@ export class Ship extends Sprite.class {
                 dr: Math.random() * 20 - 10,
 
                 update() {
+                    this.dx *= .999;
+                    this.dy *= .999;
                     this.rotation += this.dr;
+                    this.hitbox.x = this.x;
+                    this.hitbox.y = this.y;
+                    this.hitbox.angle = util.degToRad(this.rotation);
                     this.advance();
                 },
 
@@ -345,6 +363,8 @@ export class Ship extends Sprite.class {
                     this.context.restore();
                 }
             });
+
+            lineSprite.hitbox.owner = lineSprite;
 
             sprites.push(lineSprite);
         });
