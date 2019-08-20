@@ -8,6 +8,7 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
         dx: Math.random() * 4 - 2,
         dy: Math.random() * 4 - 2,
         radius: radius || 25,
+        mass: Math.PI * (radius || 25) * (radius || 25),
         hitbox: cs.createCircle(x, y, radius),
 
         render() {
