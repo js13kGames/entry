@@ -87,6 +87,7 @@ var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
 var hasRun = 0;
 var animationCounter = 0; //counter used for the level transition animation.
+var transition = false;
 var this_level = levels[currentLevelIndex].split("\n");
 setupGoal(target);
 takeInput = true;
@@ -164,6 +165,7 @@ function gotoNextLevel(){
     if (currentLevelIndex < levels.length){
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
+        setupGoal(target);
     }
 }
 
@@ -180,22 +182,28 @@ function setupGoal(target){
     }
 }
 
-/**
-function levelTranisition(timeout){
+
+function levelTransition(timeout){
     ctx.fillStyle = "black";
-    let levelWidth = this_level[1].length * gridSize;
-    let levelHeight = (this_level.length-1) * gridSize;
+    let levelHeight = (this_level.length-2) * gridSize;
     if (animationCounter < levelHeight){
-        ctx.fillRect(0, 0, levelWidth, animationCounter);
         animationCounter++;
-        setTimeout(levelTranisition, timeout/2);
+        setTimeout(levelTransition, timeout/2);
     } else {
-        takeInput = true;
-        animationCounter = 0;
         gotoNextLevel();
+        levelTransitionEnd(100)
     }
 }
- */
+
+function levelTransitionEnd(timeout){
+    if(animationCounter > 0){
+        animationCounter--;
+        setTimeout(levelTransitionEnd, timeout/2);
+    } else {
+        takeInput = true;
+        transition = false;
+    }
+}
 
 function drawLevel(level_array) {
 
@@ -229,7 +237,7 @@ function drawLevel(level_array) {
                     break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
-                    ctx.fillRect(gridSize * x, gridSize * y, innocent.width, innocent.height);
+                    ctx.drawImage(innocentSprite, x * gridSize, y * gridSize, innocent.width, innocent.height);
                     //draw innocent object
                     break;
                 default:
@@ -238,6 +246,13 @@ function drawLevel(level_array) {
             }
         }
     }
+
+    if (transition == true){
+        ctx.fillStyle = "black";
+        let levelWidth = this_level[1].length * gridSize;
+        ctx.fillRect(0, 32, levelWidth, animationCounter);
+    }
+
 }
 
 /* GAME INPUT FUNCTIONS */
@@ -252,7 +267,10 @@ function checkCollision(x, y){
             this_level[y] = splice(this_level[y], x, 1, '.');
             goal--;
             if (goal <= 0){
-                gotoNextLevel();
+                transition = true;
+                takeInput = false;
+                animationCounter = 0;
+                levelTransition(100);
             }
             return false;
 
@@ -333,11 +351,10 @@ document.addEventListener("keypress", function(event){
 function mainLoop() {
     //draw the game
     //console.log(this_level);
-    if (animationCounter == 0){
-        drawLevel(this_level);
-    }
+    
+    drawLevel(this_level);
     //player input but with timeout to update things
 }
 
 
-setInterval(mainLoop, 100);
+setInterval(mainLoop, 50);
