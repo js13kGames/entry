@@ -168,7 +168,7 @@ function inline(minifiedJS) {
     fs.writeFileSync(
         'dist/index.html',
         // Prepend <body> so browsersync can insert its script in dev mode
-        `${DEVMODE ? '<body>' : ''}${html}<script>${minifiedJS}</script>`
+        `${html}<script>${minifiedJS}</script>`
     );
 
     logOutput(Date.now() - startTime, 'dist/index.html');

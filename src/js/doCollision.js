@@ -40,7 +40,6 @@ export function doCollision(collisionSystem, collisionResult, ships, asteroids, 
                     if (ship.exploded) {
                         return;
                     }
-                    console.log(ship.name + " got shot by " +collisionResult.b.owner.name + " that belonged to " + collisionResult.b.owner.owner.name);
                     ship.explode(sprites);
                 }
 
@@ -58,6 +57,10 @@ export function doCollision(collisionSystem, collisionResult, ships, asteroids, 
 
     // Every asteroid
     asteroids.forEach(asteroid => {
+        // If asteroid has already been killed this cs update, do nothing
+        if (!asteroid.ttl) {
+            return;
+        }
         potentials = asteroid.hitbox.potentials();
         for (const others of potentials) {
             if (asteroid.hitbox.collides(others, collisionResult)) {
@@ -68,7 +71,6 @@ export function doCollision(collisionSystem, collisionResult, ships, asteroids, 
                     // Split the asteroid if it's large enough
                     if (asteroid.radius > 10) {
                         for (var i = 0; i < 3; i++) {
-                            console.log("Making new asteroid");
                             createAsteroid(
                                 asteroid.x,
                                 asteroid.y,
