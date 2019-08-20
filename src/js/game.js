@@ -29,9 +29,17 @@ canvas.width = 800;
 
 let sprites = [];
 let ships = [];
+let asteroids = [];
 
 for (var i = 0; i < 3; i++) {
-    createAsteroid(sprites);
+    createAsteroid(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height,
+        25,
+        asteroids,
+        sprites,
+        collisionSystem
+    );
 }
 
 // helper function to convert degrees to radians
@@ -91,7 +99,7 @@ let loop = GameLoop({  // create the main game loop
             }
         });
 
-        doCollision(collisionSystem, collisionResult, ships, sprites);
+        doCollision(collisionSystem, collisionResult, ships, asteroids, sprites);
 
         // Remove dead & exploded sprite's hitboxes from the collision system
         sprites.forEach(sprite => {
@@ -111,10 +119,10 @@ let loop = GameLoop({  // create the main game loop
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // collisionSystem.draw(context);
-        // context.stroke();
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 
