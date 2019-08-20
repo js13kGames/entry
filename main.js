@@ -30,33 +30,40 @@ var temp_level = `
 
 
 
-
+//twenty second timelimit per level
 var level_1 = `
 #############
+#...........#
+#...........#
 #.......i...#
 #.p.........#
 #.......e...#
+#...........#
+#...........#
 #############
 `
 var level_2 = `
-##############
-#.......#....#
-#.####..#.e..#
-#....#..#....#
-####.#..#.i..#
-#p...#.......#
-##############
+#############
+#...####....#
+#.#.####e.i.#
+#.#....#....#
+#.####.#.####
+#....#.#....#
+####.#.####.#
+#p...#......#
+#############
 `
 
 var level_3 = `
-###################
-#.................#
-#....#......#.....#
-#....#..##..#.....#
-#..#..........#...#
-#...##########....#
-#................p#
-###################
+#############
+#e..........#
+#..........i#
+######..##.##
+#e......#...#
+#ie..#..#i.e#
+######..#####
+#p..........#
+#############
 `
 
 var levels = [level_1, level_2, level_3];
@@ -72,10 +79,16 @@ var takeInput = false;/* Variable determines if we read the keyboard or not */
 
 
 /* Game Init Code */
-var hasRun = 0;
 
-//var this_level = temp_level.split("\n");
+
+
+var target = "e"; //which object to decrement the goal
+var goal = 0; //this keeps track of how many more objects needs to be destroyed
+
+var hasRun = 0;
+var animationCounter = 0; //counter used for the level transition animation.
 var this_level = levels[currentLevelIndex].split("\n");
+setupGoal(target);
 takeInput = true;
 hasRun++;
 
@@ -83,7 +96,11 @@ hasRun++;
 var playerSprite = new Image();
 playerSprite.src = "sprite_0.png";
 
+var enemySprite = new Image();
+enemySprite.src = "sprites/target0.png";
 
+var innocentSprite = new Image();
+innocentSprite.src = "sprites/target2.png";
 
 //console.log("Run " + hasRun + " times");
 
@@ -107,6 +124,14 @@ let enemy = {
     height: gridSize,
     color: "red"
 };
+
+/* hazard object */
+let hazard = {
+    width:gridSize,
+    height: gridSize,
+    color:"orange"
+};
+
 
 /* innocent object */
 let innocent = {
@@ -142,6 +167,35 @@ function gotoNextLevel(){
     }
 }
 
+/* calculates how many objects need to be destroyed before the player progresses */
+function setupGoal(target){
+    let y;
+    let x;
+    for(y=0; y < this_level.length; y++){
+        for (x=0; x < this_level[1].length; x++){
+            if (this_level[y][x] == target) {
+                goal++;
+            }
+        }
+    }
+}
+
+/**
+function levelTranisition(timeout){
+    ctx.fillStyle = "black";
+    let levelWidth = this_level[1].length * gridSize;
+    let levelHeight = (this_level.length-1) * gridSize;
+    if (animationCounter < levelHeight){
+        ctx.fillRect(0, 0, levelWidth, animationCounter);
+        animationCounter++;
+        setTimeout(levelTranisition, timeout/2);
+    } else {
+        takeInput = true;
+        animationCounter = 0;
+        gotoNextLevel();
+    }
+}
+ */
 
 function drawLevel(level_array) {
 
@@ -170,7 +224,7 @@ function drawLevel(level_array) {
                     break;
                 case 'e':
                     ctx.fillStyle = enemy.color;
-                    ctx.fillRect(gridSize * x, gridSize * y, enemy.width, enemy.height);
+                    ctx.drawImage(enemySprite, x * gridSize, y * gridSize, enemy.width, enemy.height);
                     //draw enemy object
                     break;
                 case 'i':
@@ -190,14 +244,21 @@ function drawLevel(level_array) {
 
 /* TODO: write collision checking function for a particular spot */
 function checkCollision(x, y){
-    if ( this_level[y][x] == '#' ){ 
-        //console.log(`wall at y:${y} and x: ${x}`);
-        return false;
+    switch(this_level[y][x]){
+        case '#':
+            return false;
+        case target:
+            // remove the target
+            this_level[y] = splice(this_level[y], x, 1, '.');
+            goal--;
+            if (goal <= 0){
+                gotoNextLevel();
+            }
+            return false;
+
+        default:
+            return true;
     }
-    else {
-        //console.log(`no wall at y:${y} and x:${x}`);
-        return true;
-    } 
 };
 
 
@@ -215,11 +276,16 @@ function updatePlayerArray(dx, dy){
 
 
 
+var inputDelay = 50;
+var stopInput = false;
 
+function resumeInput(){
+    stopInput = false;
+}
 
 /* GETTING GAME INPUT */
 document.addEventListener("keypress", function(event){
-    if (takeInput){
+    if ((takeInput) && (!stopInput)){
         switch(event.keyCode){
             case moveUp:
                 //call move function
@@ -227,21 +293,29 @@ document.addEventListener("keypress", function(event){
                     //alter the level array
                     updatePlayerArray(0, -1);
                 }
+                stopInput = true;
+                setTimeout(resumeInput, inputDelay);
                 break;
             case moveDown:
                 if (checkCollision(player.x, player.y+1)){
                     updatePlayerArray(0, 1);
                 }
+                stopInput = true;
+                setTimeout(resumeInput, inputDelay);
                 break;
             case moveLeft:
                 if(checkCollision(player.x-1, player.y)){
                     updatePlayerArray(-1, 0);
                 }
+                stopInput = true;
+                setTimeout(resumeInput, inputDelay);
                 break;
             case moveRight:
                 if(checkCollision(player.x+1, player.y)){
                     updatePlayerArray(1, 0);
                 }
+                stopInput = true;
+                setTimeout(resumeInput, inputDelay);
                 break;
             //NEXT LEVEL
             case 110://n
@@ -259,7 +333,9 @@ document.addEventListener("keypress", function(event){
 function mainLoop() {
     //draw the game
     //console.log(this_level);
-    drawLevel(this_level);
+    if (animationCounter == 0){
+        drawLevel(this_level);
+    }
     //player input but with timeout to update things
 }
 
