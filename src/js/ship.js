@@ -18,7 +18,9 @@ export class Ship extends Sprite.class {
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.rewinding = 0;
         this.fireDt = 0;
-        this.rof = .25; // 4x a second
+        this.rewindDt = 0;
+        this.rof = .25; // Fire 4x a second
+        this.ror = 5 // Rewind once every 5 seconds
         this.scale = 2;
         this.mass = 4;
         this.thrust = 4;
@@ -85,6 +87,25 @@ export class Ship extends Sprite.class {
 
         // Rotate
         this.context.translate(this.x, this.y);
+
+        // Draw rewinding cooldown bar
+        if (!this.rewinding && this.rewindDt < this.ror) {
+            this.context.beginPath();
+            this.context.strokeStyle = '#0ef';
+            this.context.lineWidth = 2;
+            this.context.moveTo(
+                - this.rewindDt * 3,
+                this.radius * this.scale + 4
+            );
+            this.context.lineTo(
+                //this.ror * 3,
+                this.rewindDt * 3,
+                this.radius * this.scale + 4
+            )
+            this.context.stroke();
+            this.context.closePath();
+        }
+
         this.context.rotate(util.degToRad(this.rotation));
 
         // Draw
@@ -98,23 +119,19 @@ export class Ship extends Sprite.class {
         // this.context.stroke();
 
         if (this.rewinding) {
-            this.rewindingFrame = this.rewindingFrame || 1;
-            if (this.rewindingFrame === 1) {
+            this.rewindFrame = this.rewindFrame || 1;
+            if (this.rewindFrame === 1) {
                 this.lines.random = [];
                 this.lines.ship.forEach(line => {
                     this.lines.random.push([
-                        line[0] * Math.random() * 2,
-                        line[1] * Math.random() * 2,
-                        line[2] * Math.random() * 2,
-                        line[3] * Math.random() * 2
+                        line[0] * Math.random(),
+                        line[1] * Math.random(),
+                        line[2] * Math.random(),
+                        line[3] * Math.random()
                     ]);
                 });
             }
-            if (this.rewindingFrame < 4) {
-                this.rewindingFrame++;
-            } else {
-                this.rewindingFrame = 1;
-            }
+            this.rewindFrame = this.rewindFrame < 4 ? this.rewindFrame + 1 : 1;
 
             this.lines.random.forEach(line => {
                 this.context.moveTo(line[0], line[1]);
@@ -164,10 +181,14 @@ export class Ship extends Sprite.class {
 
     shipUpdate(sprites) {
         // Go back in time
-        if (!this.rewinding && keyPressed(this.keys.rewind)) {
+        if (this.rewindDt > this.ror && keyPressed(this.keys.rewind)) {
+            this.rewindDt = 0;
             this.rewinding = this.locationHistory.length;
         }
 
+        if (this.rewindDt < this.ror) {
+            this.rewindDt += 1 / 60;
+        }
         this.fireDt += 1 / 60;
 
         if (keyPressed(this.keys.left)) {
