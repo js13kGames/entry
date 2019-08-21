@@ -1,4 +1,10 @@
 body {
   margin: 0;
   height: 100vh;
- }
+}
+
+canvas {
+  left: 0;
+  position: absolute;
+  top: 0;
+}
