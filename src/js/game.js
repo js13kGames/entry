@@ -33,11 +33,11 @@ let ships = [];
 let asteroids = [];
 let players = [];
 
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < 4; i++) {
     createAsteroid(
         Math.random() * canvas.width,
         Math.random() * canvas.height,
-        35,
+        36,
         asteroids,
         sprites,
         collisionSystem
