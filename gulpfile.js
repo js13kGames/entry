@@ -6,7 +6,6 @@ const env = process.env.NODE_ENV;
 const isProd = env === 'production';
 const isDev = env === 'development';
 
-console.log({ isProd });
 function html () {
   return src('src/index.html')
     .pipe(dest('dist'));

@@ -1,6 +1,3 @@
-// import { init as modelInit, getMapView } from '../model';
-// import { setState as modelSetState, getState, isUpdated } from '../model/state';
-
 const initController = () => {
   const loop = () => {
     const state = getState();
@@ -66,6 +63,6 @@ const initController = () => {
 
 
   // init
-  modelSetState({ position: {row: 50, col: 50 }});
+  modelSetState({ position: {row: 10, col: 10 }});
   loop();
 };
