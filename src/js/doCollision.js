@@ -107,14 +107,14 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         asteroid.ttl = 0;
 
                         // Medium asteroids split into smaller ones
-                        if (asteroid.radius > 20) {
+                        if (asteroid.radius > 10) {
 
                             // Split the asteroid
                             for (var i = 0; i < 3; i++) {
                                 createAsteroid(
                                     asteroid.x,
                                     asteroid.y,
-                                    asteroid.radius / 2.5,
+                                    asteroid.radius / 2,
                                     asteroids,
                                     sprites,
                                     collisionSystem
