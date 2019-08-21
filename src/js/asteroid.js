@@ -1,15 +1,16 @@
 import { Sprite } from 'kontra';
 
 function createLines(radius) {
-    // circumference would be 2 * Math.PI * radius, but... we want
-    // 2x circumference asteroids to have lines that are 2x the size ???
-    var lineLenth = 2 * Math.PI * radius;
-    var pointNum = Math.round(lineLenth / 10);
+
+    var pointNum =  Math.round(3 + Math.random() * 3 + Math.sqrt(radius));
     var lines = [];
 
     for (var i = 0; i <= pointNum; i++) {
-        var x = Math.cos((2 * Math.PI * i) / pointNum) * radius;
-        var y = Math.sin((2 * Math.PI * i) / pointNum) * radius;
+        // Increase the (end) multiplier here for more wonky asteroids (inwards)
+        // Decrease the (start) integer here for more-outside-ey hitboxes
+        var rand = .99 + Math.random() * .1;
+        var x = Math.cos((2 * Math.PI * i) / pointNum) * radius * rand;
+        var y = Math.sin((2 * Math.PI * i) / pointNum) * radius * rand;
 
         // If not the first point
         if (i) {
@@ -21,8 +22,12 @@ function createLines(radius) {
 
         // Last point
         if (i === pointNum) {
+            console.log("first points are");
+            console.log(lines[0]);
             // Put the 1st x, y coords in the 3rd and 4th items of current line
-            lines[lines.length - 1].push([lines[0][0], lines[0][1]]);
+            lines[lines.length - 1].push(lines[0][0], lines[0][1]);
+            console.log("last points are");
+            console.log(lines[lines.length - 1]);
         }
     }
     return lines;
@@ -45,13 +50,16 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
             this.context.translate(this.x, this.y);
             this.context.strokeStyle = 'white';
             this.context.lineWidth = 2;
-            this.context.beginPath();  // start drawing a shape
-            //this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            this.lines.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+            this.context.beginPath();
+            this.lines.forEach((line, i) => {
+                if (!i) {
+                    this.context.moveTo(line[2], line[3]);
+                } else {
+                    this.context.lineTo(line[0], line[1]);
+                }
             });
-            this.context.stroke();     // outline the circle
+            this.context.closePath();
+            this.context.stroke();
             this.context.restore();
         },
 

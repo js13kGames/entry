@@ -35,7 +35,7 @@ for (var i = 0; i < 4; i++) {
     createAsteroid(
         Math.random() * canvas.width,
         Math.random() * canvas.height,
-        25,
+        35,
         asteroids,
         sprites,
         collisionSystem
