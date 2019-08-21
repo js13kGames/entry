@@ -86,40 +86,20 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 }
 
                 if (otherSprite.type === 'bullet') {
-                    otherSprite.ttl = 0;
+                    otherSprite.ttl = asteroid.ttl = 0;
+                    // Medium asteroids split into smaller ones
+                    if (asteroid.radius > 15) {
 
-                    // Huge asteroids have chunks taken out
-                    if (asteroid.radius > 100) {
-                        // Create new little one
-                        createAsteroid(
-                            otherSprite.x,
-                            otherSprite.y,
-                            5 + Math.random() * 5,
-                            asteroids,
-                            sprites,
-                            collisionSystem
-                        );
-                        // Make the huge one a bit smaller
-                        asteroid.radius -= 10;
-
-                    } else {
-                        // Smaller than huge asteroids get destroyed
-                        asteroid.ttl = 0;
-
-                        // Medium asteroids split into smaller ones
-                        if (asteroid.radius > 10) {
-
-                            // Split the asteroid
-                            for (var i = 0; i < 3; i++) {
-                                createAsteroid(
-                                    asteroid.x,
-                                    asteroid.y,
-                                    asteroid.radius / 2,
-                                    asteroids,
-                                    sprites,
-                                    collisionSystem
-                                );
-                            }
+                        // Split the asteroid
+                        for (var i = 0; i < 3; i++) {
+                            createAsteroid(
+                                asteroid.x,
+                                asteroid.y,
+                                asteroid.radius / 1.8,
+                                asteroids,
+                                sprites,
+                                collisionSystem
+                            );
                         }
                     }
 
