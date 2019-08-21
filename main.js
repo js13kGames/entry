@@ -36,13 +36,13 @@ i = innocent
 E = dead enemy
 I = dead innocent
 # = wall
-
+s = player second location
 */
 
 //twenty second timelimit per level
 var level_1 = `
 #############
-#...........#
+#..s........#
 #...........#
 #.......i...#
 #.p.........#
@@ -59,7 +59,7 @@ var level_2 = `
 #.####.#.####
 #....#.#....#
 ####.#.####.#
-#p...#......#
+#p..s#......#
 #############
 `
 
@@ -71,11 +71,13 @@ var level_3 = `
 #e......#...#
 #ie..#..#i.e#
 ######..#####
-#p..........#
+#p.........s#
 #############
 `
 
 var levels = [level_1, level_2, level_3];
+var paths = ["","",""];
+var secondTry = false;
 var currentLevelIndex = 0;
 
 // 30 * 32 = 960 for widdth
@@ -120,6 +122,11 @@ deadEnemySprite.src = "sprites/target1.png";
 
 var deadInnocentSprite = new Image();
 deadInnocentSprite.src = "sprites/target3.png";
+
+/* Shadow Player sprite */
+var shadowPlayerSprite = new Image();
+shadowPlayerSprite.src = "sprite_3.png";
+
 
 //console.log("Run " + hasRun + " times");
 
@@ -173,15 +180,36 @@ let player = {
     height: gridSize,
     x:0,
     y:0,
+    key:'p',
     color: "green"
+};
+
+
+/* shadowplayer */
+
+let shadowPlayer = {
+    width: gridSize,
+    height: gridSize,
+    x:0,
+    y:0,
+    key:'p',
+    color: "yellow"
 };
 
 /* LEVEL PARSING FUNCTIONS */
 
 // this changes which level we are current on.
 function gotoNextLevel(){
-    if (currentLevelIndex < levels.length){
+    if (currentLevelIndex < levels.length-1){
         currentLevelIndex++;
+        this_level = levels[currentLevelIndex].split("\n");
+        setupGoal(target);
+    } else if (secondTry == false){
+        /* SETUP GAME FOR SECOND GOTHRU */
+        secondTry = true;
+        //target = "i";
+        player.key = 's'
+        currentLevelIndex = 0;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
     }
@@ -242,12 +270,25 @@ function drawLevel(level_array) {
                     /* placeholder graphics */
                     //console.log("drawing player");
                     //ctx.fillStyle = player.color;
-                    player.x = x;
-                    player.y = y;
-                    ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
-                    //ctx.fillRect(gridSize * x, gridSize * y, player.width, player.height);
-                    //draw player
+                    if (secondTry == false){
+                        player.x = x;
+                        player.y = y;
+                        ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
+                    } else {
+                        shadowPlayer.x = x;
+                        shadowPlayer.y = y;
+                        ctx.drawImage(shadowPlayerSprite, shadowPlayer.x * gridSize, shadowPlayer.y * gridSize, shadowPlayer.width, shadowPlayer.height);
+                    }
                     break;
+
+                case 's':
+                    if (secondTry == true){
+                        player.x = x;
+                        player.y = y;
+                        ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
+                    }
+                    break;
+
                 case 'e':
                     ctx.fillStyle = enemy.color;
                     ctx.drawImage(enemySprite, x * gridSize, y * gridSize, enemy.width, enemy.height);
@@ -314,15 +355,15 @@ function checkCollision(x, y){
 
 
 // since strings are immutable I gotta completely change the array
-function updatePlayerArray(dx, dy){
-    let replace = this_level[player.y + dy][player.x + dx];
+function updatePlayerArray(dx, dy, object){
+    let replace = this_level[object.y + dy][object.x + dx];
 
     // using voca.js for splice function as to limit my frustration with manipulating immutable strings
-    this_level[player.y+dy] = splice(this_level[player.y+dy], player.x+dx, 1, 'p');
-    this_level[player.y] = splice(this_level[player.y], player.x, 1, replace);
+    this_level[object.y+dy] = splice(this_level[object.y+dy], object.x+dx, 1, object.key);
+    this_level[object.y] = splice(this_level[object.y], object.x, 1, replace);
 
-    player.y += dy;
-    player.x += dx;
+    object.y += dy;
+    object.x += dx;
 }
 
 
@@ -342,28 +383,33 @@ document.addEventListener("keypress", function(event){
                 //call move function
                 if (checkCollision(player.x, player.y-1)){
                     //alter the level array
-                    updatePlayerArray(0, -1);
+                    updatePlayerArray(0, -1, player);
+                    //update array
+                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "n";
                 }
                 stopInput = true;
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveDown:
                 if (checkCollision(player.x, player.y+1)){
-                    updatePlayerArray(0, 1);
+                    updatePlayerArray(0, 1, player);
+                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "s";
                 }
                 stopInput = true;
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveLeft:
                 if(checkCollision(player.x-1, player.y)){
-                    updatePlayerArray(-1, 0);
+                    updatePlayerArray(-1, 0, player);
+                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "w";
                 }
                 stopInput = true;
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveRight:
                 if(checkCollision(player.x+1, player.y)){
-                    updatePlayerArray(1, 0);
+                    updatePlayerArray(1, 0, player);
+                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "e";
                 }
                 stopInput = true;
                 setTimeout(resumeInput, inputDelay);
@@ -377,13 +423,35 @@ document.addEventListener("keypress", function(event){
 });
 
 
-
+function* moveShadowPlayer(){
+    let i = 0;
+    for(i; i < paths[currentLevelIndex].length; i++){
+        switch(paths[currentLevelIndex][i]){
+            case 'n':
+                if(checkCollision(shadowPlayer.x, shadowPlayer.y-1)) updatePlayerArray(0, -1, shadowPlayer);
+                break;
+            case 's':
+                if (checkCollision(shadowPlayer.x, shadowPlayer.y+1)) updatePlayerArray(0, 1, shadowPlayer);
+                break;
+            case 'e':
+                if (checkCollision(shadowPlayer.x+1, shadowPlayer.y)) updatePlayerArray(1, 0, shadowPlayer);
+                break;
+            case 'w':
+                if (checkCollision(shadowPlayer.x-1, shadowPlayer.y)) updatePlayerArray(-1, 0, shadowPlayer);
+                break;
+        }
+        yield i;//exit function as generator so state is saved
+    }
+}
 
 /* main game event loop */
 //var gameRun = true;
 function mainLoop() {
     //draw the game
     //console.log(this_level);
+    if (secondTry == true){
+        moveShadowPlayer();
+    }
     
     drawLevel(this_level);
     //player input but with timeout to update things
