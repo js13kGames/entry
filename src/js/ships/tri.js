@@ -5,8 +5,8 @@ export default () => {
         rof: .25,
         turnRate: 6,
         radius: 7,
-        mass: 4,
-        thrust: 5,
+        mass: 0,
+        thrust: 9,
         lines: {
             body: [
                 [ -6, -5,  7,  0 ],
