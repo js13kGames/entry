@@ -31,7 +31,7 @@ let sprites = [];
 let ships = [];
 let asteroids = [];
 
-for (var i = 0; i < 5; i++) {
+for (var i = 0; i < 4; i++) {
     createAsteroid(
         Math.random() * canvas.width,
         Math.random() * canvas.height,
@@ -119,10 +119,10 @@ let loop = GameLoop({  // create the main game loop
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        context.strokeStyle = '#0F0';
-        context.beginPath();
-        collisionSystem.draw(context);
-        context.stroke();
+        // context.strokeStyle = '#0F0';
+        // context.beginPath();
+        // collisionSystem.draw(context);
+        // context.stroke();
     }
 });
 
