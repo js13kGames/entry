@@ -22,12 +22,8 @@ function createLines(radius) {
 
         // Last point
         if (i === pointNum) {
-            console.log("first points are");
-            console.log(lines[0]);
             // Put the 1st x, y coords in the 3rd and 4th items of current line
             lines[lines.length - 1].push(lines[0][0], lines[0][1]);
-            console.log("last points are");
-            console.log(lines[lines.length - 1]);
         }
     }
     return lines;

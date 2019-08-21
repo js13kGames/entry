@@ -186,8 +186,8 @@ function drawSize(used) {
     const usedPercent = Math.round((100 / limit) * used);
     const barWidth = process.stdout.columns - 26;
     const usedBarWidth = Math.round((barWidth / 100) * usedPercent);
-    const usedStr = ((used / 1024).toFixed(1) + ' KB').padStart(7, ' ');
-    const limitStr = ((limit / 1024).toFixed(1) + ' KB').padEnd(7, ' ');
+    const usedStr = (used + ' B').padStart(7, ' ');
+    const limitStr = ((limit / 1024).toFixed(0) + ' KB').padEnd(5, ' ');
 
     var output = usedStr + ' / ' + limitStr +  ' [';
     for (let i = 0; i < barWidth; i++) {

@@ -2,6 +2,7 @@ import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
 import { Collisions } from 'collisions';
 import { doCollision } from './doCollision';
 import { Ship } from './ship.js';
+import { Player } from './player.js';
 import { createAsteroid } from './asteroid';
 
 // Kontra init canvas
@@ -30,8 +31,9 @@ canvas.width = 800;
 let sprites = [];
 let ships = [];
 let asteroids = [];
+let players = [];
 
-for (var i = 0; i < 4; i++) {
+for (var i = 0; i < 1; i++) {
     createAsteroid(
         Math.random() * canvas.width,
         Math.random() * canvas.height,
@@ -57,7 +59,7 @@ let shipA = new Ship({
     controls: 'arrows',
     collisionSystem: collisionSystem,
 
-    update() {
+    update(dt) {
         this.shipUpdate(sprites); // Calls this.advance() itself
     }
 });
@@ -74,7 +76,7 @@ let shipB = new Ship({
     controls: 'wasd',
     collisionSystem: collisionSystem,
 
-    update() {
+    update(dt) {
         this.shipUpdate(sprites); // Calls this.advance() itself
     }
 });

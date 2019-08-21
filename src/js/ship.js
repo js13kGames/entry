@@ -67,6 +67,10 @@ export class Ship extends Sprite.class {
         );
         this.hitbox.scale = this.scale;
         this.hitbox.owner = this;
+
+        // Modify mass & thrust values defined in ship specs to make less crazy
+        this.mass += 11;
+        this.thrust += 11;
     }
 
     fire(sprites) {
@@ -235,33 +239,18 @@ export class Ship extends Sprite.class {
             this.ddx = this.ddy = 0;
         }
 
-        // Call the original Kontra update function
-        // This does (non-rewindy) position, velocity, & TTL
-        this.advance();
+        this.velocity = this.velocity.add(this.acceleration);
+
+        // Apply max speed cap & "drag" (pretend the ship is thrusting back)
+        util.slow(this.velocity, this.mass, this.maxSpeed);
+
+        this.position = this.position.add(this.velocity);
 
         // Record current location into locations history
         this.locationHistory.push({ x: this.x, y: this.y});
         // Remove last update location from location history
         if (this.locationHistory.length > 90) {
             this.locationHistory.shift();
-        }
-
-        // Cap speed
-        const magnitude = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-        if (magnitude > this.maxSpeed) {
-            this.dx *= .95;
-            this.dy *= .95;
-        } else {
-            if (Math.abs(this.dx) > .01) {
-                this.dx *= .99;
-            } else {
-                this.dx = 0;
-            }
-            if (Math.abs(this.dy) > .01) {
-                this.dy *= .99;
-            } else {
-                this.dy = 0;
-            }
         }
 
         this.hitbox.x = this.x;
