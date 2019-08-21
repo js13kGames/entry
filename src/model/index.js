@@ -57,9 +57,7 @@ const buildings = {
 
 // Set map height and width
 // 1 = player can access, 0 = can't
-function initMap() {
-  const height = 20;
-  const width = 24;
+function initMap(height, width) {
   for (let x = 0; x < height; x++) {
     map[x] = [];
     for (let y = 0; y < width; y++) {
@@ -70,7 +68,6 @@ function initMap() {
 
 // Make sure there is space on the map to add one building
 function addBuilding(map, row, column, building) {
-  console.log('adding one');
   try {
     const start = map[row][column];
     const end = map[row + building.length - 1][column + building[0].length - 1];
@@ -89,7 +86,6 @@ function addBuilding(map, row, column, building) {
 // Loop through map rows to add buildings
 // TODO add a variety of buildings
 function addBuildings(map, buildings) {
-  console.log('adding');
   const b = buildings['2x4'];
   for (let row = 0; row < map.length; row += (b.length + 1)) {
     for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
@@ -100,7 +96,45 @@ function addBuildings(map, buildings) {
   }
 }
 
+function addFoods(percent, openSquares) {
+  let numFoods = Math.floor(openSquares * percent * 10);
+  // this does mean that the first open space will always have a pizza
+  let counter = 1;
+  map.forEach((row, rI) => {
+    row.forEach((column, cI) => {
+      if (column === 'white') {
+        counter--;
+        if (numFoods > 0 && counter === 0) {
+          map[rI][cI] = getColor(2);
+          numFoods--;
+          // randomize counter reset
+          counter = Math.ceil(Math.random() * 8);
+        }
+      }
+    })
+  })
+}
+
+function calculateOpenSquares(mapSize) {
+  let numOpenSquares = 0;
+  map.forEach(row => {
+    row.forEach(column => {
+      if (column === 'white') {
+        numOpenSquares++;
+      }
+    })
+  });
+  return numOpenSquares / mapSize;
+}
+
+
 export function init() {
-  initMap();
+  const height = 20;
+  const width = 24;
+  const mapSize = height * width;
+  const foodCoveragePercent = 10;
+  initMap(height, width);
   addBuildings(map, buildings);
+  const openSquares = calculateOpenSquares(mapSize);
+  addFoods(foodCoveragePercent, openSquares);
 }
