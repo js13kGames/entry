@@ -28,7 +28,16 @@ var temp_level = `
 ##############################
 `;
 
+/*
+LEGEND for char object symbols
+p = player
+e = enemy
+i = innocent
+E = dead enemy
+I = dead innocent
+# = wall
 
+*/
 
 //twenty second timelimit per level
 var level_1 = `
@@ -97,11 +106,20 @@ hasRun++;
 var playerSprite = new Image();
 playerSprite.src = "sprite_0.png";
 
+/* Target Sprites Alive */
 var enemySprite = new Image();
 enemySprite.src = "sprites/target0.png";
 
 var innocentSprite = new Image();
 innocentSprite.src = "sprites/target2.png";
+
+/* Target Sprites Dead */
+
+var deadEnemySprite = new Image();
+deadEnemySprite.src = "sprites/target1.png";
+
+var deadInnocentSprite = new Image();
+deadInnocentSprite.src = "sprites/target3.png";
 
 //console.log("Run " + hasRun + " times");
 
@@ -235,12 +253,19 @@ function drawLevel(level_array) {
                     ctx.drawImage(enemySprite, x * gridSize, y * gridSize, enemy.width, enemy.height);
                     //draw enemy object
                     break;
+                case "E":
+                    ctx.drawImage(deadEnemySprite, x * gridSize, y * gridSize, gridSize, gridSize);
+                    break;
+                case "I":
+                        ctx.drawImage(deadInnocentSprite, x * gridSize, y * gridSize, gridSize, gridSize);
+                    break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
                     ctx.drawImage(innocentSprite, x * gridSize, y * gridSize, innocent.width, innocent.height);
                     //draw innocent object
                     break;
                 default:
+                    break;
                 //debug log
                 //console.log(`empty space at y: ${y} x: ${x}`);
             }
@@ -262,9 +287,17 @@ function checkCollision(x, y){
     switch(this_level[y][x]){
         case '#':
             return false;
+        
+        /*
+        case "E":
+            return true;
+
+        case "I":
+            return true;
+        */
         case target:
-            // remove the target
-            this_level[y] = splice(this_level[y], x, 1, '.');
+            // change out the target
+            this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
             goal--;
             if (goal <= 0){
                 transition = true;
@@ -357,4 +390,4 @@ function mainLoop() {
 }
 
 
-setInterval(mainLoop, 50);
+setInterval(mainLoop, 25);
