@@ -12,6 +12,16 @@ const initView = (setState, { onWindowResize, onKeyDown }) => {
   const tileHeight = 100;
   const tileWidth = 100;
 
+  const ape = ctx.createImageData(100, 100);
+  // Iterate through every pixel
+  for (let i = 0; i < ape.data.length; i += 4) {
+    // Modify pixel data
+    ape.data[i + 0] = 190;  // R value
+    ape.data[i + 1] = 0;    // G value
+    ape.data[i + 2] = 210;  // B value
+    ape.data[i + 3] = 255;  // A value
+  }
+
   function draw (view, state) {
     return new Promise((resolve, reject) => {
       try {
@@ -28,6 +38,7 @@ const initView = (setState, { onWindowResize, onKeyDown }) => {
             ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
           }
         }
+        ctx.putImageData(ape, canvas.width / 2 - ape.width / 2, canvas.height / 2 - ape.height / 2);
         resolve();
       } catch (e) {
         reject(e);
