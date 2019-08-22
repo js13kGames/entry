@@ -19,7 +19,7 @@ export class Player {
     }
 
     handleKeyPresses() {
-        if (this.ship) {
+        if (this.ship && this.ship.isAlive) {
             // Rewind is first here so it has priority over everything
             if (keyPressed(this.keys.rewind)) {
                 this.ship.rewind();
@@ -64,7 +64,7 @@ export class Player {
             collisionSystem: this.cs,
 
             update() {
-                this.shipUpdate(this.sprites); // Calls this.advance() itself
+                this.shipUpdate(); // Calls this.advance() itself
             }
         });
 

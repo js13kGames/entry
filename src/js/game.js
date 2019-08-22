@@ -53,17 +53,15 @@ let player1 = new Player({
 });
 
 players.push(player1);
-
 player1.spawn(ships, sprites);
-
-console.log("Player ship:");
-console.log(player1.ship);
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
         players.forEach(player => {
             player.update();
         });
+
+        console.log(sprites[sprites.length - 1].name);
 
         sprites.map(sprite => {
             sprite.update();
@@ -84,6 +82,9 @@ let loop = GameLoop({  // create the main game loop
 
         // Remove dead & exploded sprite's hitboxes from the collision system
         sprites.forEach(sprite => {
+            if (sprite.type === 'bullet') {
+                console.log("there's a bullet");
+            }
             if (!sprite.isAlive() || sprite.exploded) {
                 sprite.hitbox && sprite.hitbox.remove();
             }
@@ -105,10 +106,10 @@ let loop = GameLoop({  // create the main game loop
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        context.strokeStyle = '#0F0';
-        context.beginPath();
-        collisionSystem.draw(context);
-        context.stroke();
+        // context.strokeStyle = '#0F0';
+        // context.beginPath();
+        // collisionSystem.draw(context);
+        // context.stroke();
     }
 });
 
