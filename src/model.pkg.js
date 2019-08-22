@@ -7,7 +7,7 @@ const initModel = () => {
       for (var col = startCol; col <= endCol; col++) {
         let value = 'black';
         try {
-          value = map[row][col]
+          if (map[row][col]) value = map[row][col];
         } catch (_) {}
         slice[row - startRow].push(value);
       }
