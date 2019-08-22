@@ -29,6 +29,7 @@ export function createBullet(parent, sprites) {
         hitbox: parent.cs.createPoint(parent.x, parent.y),
 
         update() {
+            console.log("sprite getting updated");
             this.advance();
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;

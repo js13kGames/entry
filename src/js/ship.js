@@ -65,6 +65,7 @@ export class Ship extends Sprite.class {
         // Modify mass & thrust values defined in ship specs to make less crazy
         this.mass += 11;
         this.thrust += 11;
+        this.rof = 1 / this.rof;
     }
 
     /**
@@ -149,7 +150,7 @@ export class Ship extends Sprite.class {
         this.rewinding = this.locationHistory.length;
     }
 
-    shipUpdate(sprites) {
+    shipUpdate() {
 
         if (this.rewindDt < this.ror) {
             this.rewindDt += 1 / 60;
