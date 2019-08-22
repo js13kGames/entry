@@ -247,7 +247,7 @@ function levelTransition(timeout) {
     let levelHeight = (this_level.length - 2) * gridSize;
     if (animationCounter < levelHeight) {
         animationCounter++;
-        setTimeout(levelTransition, timeout / 2);
+        setTimeout(levelTransition, timeout/2);
     } else {
         gotoNextLevel();
         levelTransitionEnd(100)
@@ -390,13 +390,13 @@ function checkCollision(x, y) {
         case '#':
             return false;
 
-        /*
+        
         case "E":
-            return true;
+            return false;
 
         case "I":
-            return true;
-        */
+            return false;
+        
         case target:
             // change out the target
             this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
@@ -410,6 +410,14 @@ function checkCollision(x, y) {
             }
             return false;
 
+        case 'i':
+            if ('i' != target){
+                this_level[y] = splice(this_level[y], x, 1, 'I');
+                gameOver();
+            }
+            return false;
+
+        
         default:
             return true;
     }
@@ -484,6 +492,7 @@ document.addEventListener("keypress", function (event) {
     }
 });
 
+var shadowPlayerMoving;
 
 function moveShadowPlayer() {
 
@@ -504,18 +513,66 @@ function moveShadowPlayer() {
         }
         moveShadowCounter++;
     }
-    setTimeout(moveShadowPlayer, 500);
+    shadowPlayerMoving = setTimeout(moveShadowPlayer, 500);
 }
+
+/* GAME OVER CODE */
+
+var gameOverCounter = 0;
+function gameOver(){
+    //reset variables then do animation
+    paths = ["", "", ""];
+    score = 0;
+    currentLevelIndex = 0;
+    this_level = levels[currentLevelIndex].split("\n");
+    secondTry = false;
+    target = 'e';
+    setupGoal(target);
+    takeInput = false; //IMPORTANT SET TO TRUE AFTER ANIMATION
+
+
+    /* Clear any loops */
+    clearTimeout(shadowPlayerMoving);
+    clearInterval(main);
+
+    //ANIMATION
+    gameOverCounter = 0;
+    drawGameOver(0.025);
+
+
+}
+
+
+function drawGameOver(timeout){
+    ctx.fillStyle = "red";
+    let levelWidth = (this_level[1].length + 5) * gridSize;
+    ctx.fillRect(0, 32, levelWidth, gameOverCounter);
+    let levelHeight = (this_level.length - 2) * gridSize;
+    if (gameOverCounter < levelHeight){
+        gameOverCounter++;
+        setTimeout(drawGameOver, timeout);
+    } else {
+        drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
+    }
+}
+
+
+
+
+
+
+
+
 
 /*Main game event loop */
 
 function mainLoop() {
     //draw the game
-    //console.log(this_level);
+    //console.log('running....');
 
     drawLevel(this_level);
     //player input but with timeout to update things
 }
 
 
-setInterval(mainLoop, 25);
+var main = setInterval(mainLoop, 25);
