@@ -18,7 +18,7 @@ export class Player {
         }
     }
 
-    handleKeyPresses() {
+    handleKeyPresses(sprites) {
         if (this.ship && this.ship.isAlive) {
             // Rewind is first here so it has priority over everything
             if (keyPressed(this.keys.rewind)) {
@@ -40,15 +40,15 @@ export class Player {
             }
 
             if (keyPressed(this.keys.fire)) {
-                this.ship.fire(this.sprites);
+                this.ship.fire(sprites);
             }
         }
     }
 
-    update() {
+    update(sprites) {
         //console.log("updating player");
         if (this.keys && this.keys !== 'AI') {
-            this.handleKeyPresses();
+            this.handleKeyPresses(sprites);
         }
     }
 

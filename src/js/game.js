@@ -58,7 +58,7 @@ player1.spawn(ships, sprites);
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
         players.forEach(player => {
-            player.update();
+            player.update(sprites);
         });
 
         console.log(sprites[sprites.length - 1].name);
