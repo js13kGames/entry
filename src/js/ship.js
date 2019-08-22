@@ -113,7 +113,7 @@ export class Ship extends Sprite.class {
      * TODO: Rocket engine noises
      * @return {[type]} [description]
      */
-    static thrust() {
+    engineOn() {
         if (this.rewinding) {
             return false;
         }
@@ -130,7 +130,7 @@ export class Ship extends Sprite.class {
      * Remove acceleration if the ship isn't thrusting this update
      * @return {[type]} [description]
      */
-    noThrust() {
+    engineOff() {
         this.ddx = this.ddy = 0;
     }
 
