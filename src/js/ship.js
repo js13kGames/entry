@@ -1,6 +1,5 @@
 import { Sprite, keyPressed } from 'kontra';
 import * as util from './utility';
-import getKeys from './controls';
 import ships from './ships/import';
 import { createBullet } from './bullet';
 import { createShrapnel } from './shrapnel';
@@ -35,11 +34,6 @@ export class Ship extends Sprite.class {
         this.lines.detail = this.lines.detail || [];
         this.lines.thrust = this.lines.thrust || [];
 
-        // Set control scheme
-        if (this.controls) {
-            this.keys = getKeys(this.controls);
-        }
-
         // Scale all the lines (except ship as that would * scale * scale)
         Object.keys(this.lines).forEach(lineType => {
             this.lines[lineType].forEach((line, i) => {
@@ -73,7 +67,24 @@ export class Ship extends Sprite.class {
         this.thrust += 11;
     }
 
+    /**
+     * Pew pew a bullet out.
+     *
+     * Can't do it if:
+     *  - Fired recently
+     *  - Rewinding
+     * @param  {[type]} sprites [description]
+     * @return {[type]}         [description]
+     */
     fire(sprites) {
+        if (this.fireDt < this.rof) {
+            return false;
+        }
+
+        if (this.rewinding) {
+            return false;
+        }
+
         const cos = Math.cos(util.degToRad(this.rotation));
         const sin = Math.sin(util.degToRad(this.rotation));
 
@@ -84,6 +95,118 @@ export class Ship extends Sprite.class {
         this.dy -= sin / this.mass;
 
         createBullet(this, sprites);
+    }
+
+    turnLeft() {
+        this.rotation -= this.turnRate;
+    }
+
+    turnRight() {
+        this.rotation += this.turnRate;
+    }
+
+    /**
+     * Push the ship forward. Takes into account the ships thrust & mass.
+     *
+     * Can't do it if:
+     *  - Rewinding
+     * TODO: Rocket engine noises
+     * @return {[type]} [description]
+     */
+    static thrust() {
+        if (this.rewinding) {
+            return false;
+        }
+
+        const cos = Math.cos(util.degToRad(this.rotation));
+        const sin = Math.sin(util.degToRad(this.rotation));
+
+        // a = F / m (Newton's 2nd law of motion)
+        this.ddx = cos * .1 * this.thrust / this.mass;
+        this.ddy = sin * .1 * this.thrust / this.mass;
+    }
+
+    /**
+     * Remove acceleration if the ship isn't thrusting this update
+     * @return {[type]} [description]
+     */
+    noThrust() {
+        this.ddx = this.ddy = 0;
+    }
+
+    /**
+     * (Start going) back in time
+     *
+     * Can't be done if the ship already did it recently.
+     * @return {[type]} [description]
+     */
+    rewind() {
+        if (this.rewindDt <= this.ror) {
+            return false;
+        }
+
+        this.rewindDt = 0;
+        this.rewinding = this.locationHistory.length;
+    }
+
+    shipUpdate(sprites) {
+
+        if (this.rewindDt < this.ror) {
+            this.rewindDt += 1 / 60;
+        }
+
+        this.fireDt += 1 / 60;
+
+        if (this.rewinding > 0) {
+            this.rewinding = this.rewinding - this.rewindSpeed;
+
+            // If something borked (can't go back that far?) cancel rewind
+            if (!this.locationHistory[this.rewinding]) {
+                this.rewinding = 0;
+                return;
+            }
+
+            // More x and y coordinates "back in time"
+            if (this.rewinding < this.locationHistory.length) {
+                this.x = this.locationHistory[this.rewinding].x;
+                this.y = this.locationHistory[this.rewinding].y;
+            }
+
+            // Last rewind update, lose 20% velocity
+            if (this.rewinding === 0) {
+                this.dx *= .8;
+                this.dy *= .8;
+            }
+
+            return; // Don't do any other ship updating this game update
+        }
+
+        this.velocity = this.velocity.add(this.acceleration);
+
+        // Apply max speed cap & "drag" (pretend the ship is thrusting back)
+        util.slow(this.velocity, this.mass, this.maxSpeed);
+
+        this.position = this.position.add(this.velocity);
+
+        // Record current location into locations history
+        this.locationHistory.push({ x: this.x, y: this.y});
+        // Remove last update location from location history
+        if (this.locationHistory.length > 90) {
+            this.locationHistory.shift();
+        }
+
+        this.hitbox.x = this.x;
+        this.hitbox.y = this.y;
+        this.hitbox.angle = util.degToRad(this.rotation);
+    }
+
+    explode(sprites) {
+        this.exploded = true;
+
+        // Create new line sprites where the ship lines were
+        this.lines.ship.forEach(line => {
+            createShrapnel(line, this, sprites);
+        });
     }
 
     render() {
@@ -181,95 +304,5 @@ export class Ship extends Sprite.class {
         this.context.strokeStyle = this.color;
         this.context.stroke();
         this.context.restore();
-    }
-
-    shipUpdate(sprites) {
-        // Go back in time
-        if (this.rewindDt > this.ror && keyPressed(this.keys.rewind)) {
-            this.rewindDt = 0;
-            this.rewinding = this.locationHistory.length;
-        }
-
-        if (this.rewindDt < this.ror) {
-            this.rewindDt += 1 / 60;
-        }
-        this.fireDt += 1 / 60;
-
-        if (keyPressed(this.keys.left)) {
-            this.rotation -= this.turnRate;
-        }
-        if (keyPressed(this.keys.right)) {
-            this.rotation += this.turnRate;
-        }
-
-        if (this.rewinding > 0) {
-            this.rewinding = this.rewinding - this.rewindSpeed;
-
-            // If something borked (can't go back that far?) cancel rewind
-            if (!this.locationHistory[this.rewinding]) {
-                this.rewinding = 0;
-                return;
-            }
-
-            // More x and y coordinates "back in time"
-            if (this.rewinding < this.locationHistory.length) {
-                this.x = this.locationHistory[this.rewinding].x;
-                this.y = this.locationHistory[this.rewinding].y;
-            }
-
-            // Last rewind update, lose 20% velocity
-            if (this.rewinding === 0) {
-                this.dx *= .8;
-                this.dy *= .8;
-            }
-
-            return; // Don't do any other ship updating this game update
-        }
-
-
-        const cos = Math.cos(util.degToRad(this.rotation));
-        const sin = Math.sin(util.degToRad(this.rotation));
-
-        // Moving forward
-        if (keyPressed(this.keys.thrust)) {
-            // a = F / m (Newton's 2nd law of motion)
-            this.ddx = cos * .1 * this.thrust / this.mass;
-            this.ddy = sin * .1 * this.thrust / this.mass;
-        } else {
-            this.ddx = this.ddy = 0;
-        }
-
-        this.velocity = this.velocity.add(this.acceleration);
-
-        // Apply max speed cap & "drag" (pretend the ship is thrusting back)
-        util.slow(this.velocity, this.mass, this.maxSpeed);
-
-        this.position = this.position.add(this.velocity);
-
-        // Record current location into locations history
-        this.locationHistory.push({ x: this.x, y: this.y});
-        // Remove last update location from location history
-        if (this.locationHistory.length > 90) {
-            this.locationHistory.shift();
-        }
-
-        this.hitbox.x = this.x;
-        this.hitbox.y = this.y;
-        this.hitbox.angle = util.degToRad(this.rotation);
-
-        if (keyPressed(this.keys.fire) &&
-            this.fireDt > this.rof &&
-            !this.rewinding) {
-            this.fire(sprites);
-        }
-    }
-
-    explode(sprites) {
-        this.exploded = true;
-
-        // Create new line sprites where the ship lines were
-        this.lines.ship.forEach(line => {
-            createShrapnel(line, this, sprites);
-        });
     }
 }
