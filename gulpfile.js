@@ -23,6 +23,11 @@ function js () {
     .pipe(dest('dist', { sourcemaps: isDev }));
 }
 
+// TODO:
+// - minify (ensure dead code elimination)
+// - uglify
+// - zip
+
 module.exports = {
   js,
   css,
