@@ -104,6 +104,13 @@ setupGoal(target);
 takeInput = true;
 hasRun++;
 
+
+// init generator function for the shadow player movement
+var moveShadow = moveShadowPlayer();
+
+
+
+
 /* Player Sprite Loading */
 var playerSprite = new Image();
 playerSprite.src = "sprite_0.png";
@@ -204,6 +211,10 @@ function gotoNextLevel(){
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
+        //re init the shadow player movement
+        if (secondTry == true){
+            moveShadow = moveShadowPlayer();
+        }
     } else if (secondTry == false){
         /* SETUP GAME FOR SECOND GOTHRU */
         secondTry = true;
@@ -248,10 +259,14 @@ function levelTransitionEnd(timeout){
     } else {
         takeInput = true;
         transition = false;
+        //start moving the shadowPlayer
+        moveShadowPlayerBegin();
     }
 }
 
 function drawLevel(level_array) {
+
+
 
     //first clear canvas screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -446,12 +461,17 @@ function* moveShadowPlayer(){
 
 /* main game event loop */
 //var gameRun = true;
+function moveShadowPlayerBegin(){
+    if (secondTry == true){
+        //console.log("shadow player should be moving");
+        moveShadow.next();
+        setTimeout(moveShadowPlayerBegin, 500);
+    }
+}
+
 function mainLoop() {
     //draw the game
     //console.log(this_level);
-    if (secondTry == true){
-        moveShadowPlayer();
-    }
     
     drawLevel(this_level);
     //player input but with timeout to update things
