@@ -328,6 +328,11 @@ function drawLevel(level_array) {
         }
     }
 
+    // DRAW SIDE BAR
+    ctx.fillStyle = "black";
+    ctx.fillRect(gridSize * (this_level.length+1), 32, gridSize*6, gridSize*(y-2));
+
+
     if (transition == true){
         ctx.fillStyle = "black";
         let levelWidth = this_level[1].length * gridSize;
