@@ -44,48 +44,27 @@ for (var i = 0; i < 4; i++) {
     );
 }
 
-// helper function to convert degrees to radians
-function degreesToRadians(degrees) {
-    return degrees * Math.PI / 180;
-}
-
-// new Ships automatically get added to game.sprites & game.ships (?)
-let shipA = new Ship({
-    x: 30,
-    y: 30,
-    width: 6,
-    color: 'yellow',
-    shipType: 'tri',
-    controls: 'arrows',
-    collisionSystem: collisionSystem,
-
-    update(dt) {
-        this.shipUpdate(sprites); // Calls this.advance() itself
-    }
-});
-
-sprites.push(shipA);
-ships.push(shipA);
-
-let shipB = new Ship({
-    x: 60,
-    y: 60,
-    width: 6,
+let player1 = new Player({
     color: 'red',
     shipType: 'coback',
-    controls: 'wasd',
-    collisionSystem: collisionSystem,
-
-    update(dt) {
-        this.shipUpdate(sprites); // Calls this.advance() itself
-    }
+    controls: 'arrows',
+    sprites: sprites,
+    cs: collisionSystem
 });
 
-sprites.push(shipB);
-ships.push(shipB);
+players.push(player1);
+
+player1.spawn(ships, sprites);
+
+console.log("Player ship:");
+console.log(player1.ship);
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
+        players.forEach(player => {
+            player.update();
+        });
+
         sprites.map(sprite => {
             sprite.update();
 
@@ -113,18 +92,23 @@ let loop = GameLoop({  // create the main game loop
         // Remove dead sprites from the sprites list
         sprites = sprites.filter(sprite => sprite.isAlive());
 
-        // Remove exploded ships from the both lists
+        // Remove exploded ships from the both lists & the player
         sprites = sprites.filter(sprite => !sprite.exploded);
         ships = ships.filter(ship => !ship.exploded);
+        players.forEach(player => {
+            if (player.ship.exploded) {
+                player.ship = {};
+            }
+        });
     },
     render() {
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // collisionSystem.draw(context);
-        // context.stroke();
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 
