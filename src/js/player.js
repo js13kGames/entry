@@ -26,11 +26,9 @@ export class Player {
             }
 
             if (keyPressed(this.keys.thrust)) {
-                //console.log("thrusting");
-                console.log(this.ship)
-                this.ship.thrust();
+                this.ship.engineOn();
             } else {
-                this.ship.noThrust();
+                this.ship.engineOff();
             }
 
             if (keyPressed(this.keys.left)) {
