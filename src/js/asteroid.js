@@ -1,4 +1,5 @@
 import { Sprite } from 'kontra';
+import { createShrapnel } from './shrapnel';
 
 function createLines(radius) {
 
@@ -40,11 +41,13 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
         mass: Math.PI * (radius || 25) * (radius || 25),
         hitbox: cs.createCircle(x, y, radius),
         lines: createLines(radius),
+        cs: cs,
+        color: '#fff',
 
         render() {
             this.context.save();
             this.context.translate(this.x, this.y);
-            this.context.strokeStyle = 'white';
+            this.context.strokeStyle = '#fff';
             this.context.lineWidth = 2;
             this.context.beginPath();
             this.lines.forEach((line, i) => {
@@ -63,6 +66,15 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
             this.advance();
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
+        },
+
+        explode(sprites) {
+            this.exploded = true;
+
+            // Create new line sprites where the ship lines were
+            this.lines.forEach(line => {
+                createShrapnel(line, this, sprites);
+            });
         }
     });
 
