@@ -106,7 +106,7 @@ hasRun++;
 
 
 // init generator function for the shadow player movement
-var moveShadow = moveShadowPlayer();
+var moveShadowCounter = 0;
 
 
 
@@ -211,18 +211,20 @@ function gotoNextLevel(){
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
-        //re init the shadow player movement
-        if (secondTry == true){
-            moveShadow = moveShadowPlayer();
-        }
+        moveShadowCounter = 0;
+        
     } else if (secondTry == false){
         /* SETUP GAME FOR SECOND GOTHRU */
         secondTry = true;
         //target = "i";
         player.key = 's'
         currentLevelIndex = 0;
+        moveShadowCounter = 0;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
+        //start moving the shadowPlayer
+        setTimeout(moveShadowPlayer, 500);
+        
     }
 }
 
@@ -259,8 +261,6 @@ function levelTransitionEnd(timeout){
     } else {
         takeInput = true;
         transition = false;
-        //start moving the shadowPlayer
-        moveShadowPlayerBegin();
     }
 }
 
@@ -438,10 +438,10 @@ document.addEventListener("keypress", function(event){
 });
 
 
-function* moveShadowPlayer(){
-    let i = 0;
-    for(i; i < paths[currentLevelIndex].length; i++){
-        switch(paths[currentLevelIndex][i]){
+function moveShadowPlayer(){
+    
+    if (moveShadowCounter < paths[currentLevelIndex].length){
+        switch(paths[currentLevelIndex][moveShadowCounter]){
             case 'n':
                 if(checkCollision(shadowPlayer.x, shadowPlayer.y-1)) updatePlayerArray(0, -1, shadowPlayer);
                 break;
@@ -455,19 +455,12 @@ function* moveShadowPlayer(){
                 if (checkCollision(shadowPlayer.x-1, shadowPlayer.y)) updatePlayerArray(-1, 0, shadowPlayer);
                 break;
         }
-        yield i;//exit function as generator so state is saved
+        moveShadowCounter++;
     }
+    setTimeout(moveShadowPlayer, 500);
 }
 
-/* main game event loop */
-//var gameRun = true;
-function moveShadowPlayerBegin(){
-    if (secondTry == true){
-        //console.log("shadow player should be moving");
-        moveShadow.next();
-        setTimeout(moveShadowPlayerBegin, 500);
-    }
-}
+/*Main game event loop */
 
 function mainLoop() {
     //draw the game
