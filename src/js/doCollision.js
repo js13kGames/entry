@@ -101,6 +101,8 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                                 collisionSystem
                             );
                         }
+                    } else {
+                        asteroid.explode(sprites);
                     }
 
                 }
