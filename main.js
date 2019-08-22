@@ -76,7 +76,7 @@ var level_3 = `
 `
 
 var levels = [level_1, level_2, level_3];
-var paths = ["","",""];
+var paths = ["", "", ""];
 var secondTry = false;
 var currentLevelIndex = 0;
 
@@ -96,13 +96,13 @@ var takeInput = false;/* Variable determines if we read the keyboard or not */
 var target = "e"; //which object to decrement the goal
 var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
-var hasRun = 0;
+var score = 0; //The Player's score!
 var animationCounter = 0; //counter used for the level transition animation.
-var transition = false;
-var this_level = levels[currentLevelIndex].split("\n");
-setupGoal(target);
+var transition = false; //tells the game if a level transition is happening
+var this_level = levels[currentLevelIndex].split("\n");//turns the level template literal into a array
+setupGoal(target);//counts number of targets in the level
 takeInput = true;
-hasRun++;
+
 
 
 // init generator function for the shadow player movement
@@ -160,9 +160,9 @@ let enemy = {
 
 /* hazard object */
 let hazard = {
-    width:gridSize,
+    width: gridSize,
     height: gridSize,
-    color:"orange"
+    color: "orange"
 };
 
 
@@ -185,9 +185,9 @@ let wall = {
 let player = {
     width: gridSize,
     height: gridSize,
-    x:0,
-    y:0,
-    key:'p',
+    x: 0,
+    y: 0,
+    key: 'p',
     color: "green"
 };
 
@@ -197,23 +197,23 @@ let player = {
 let shadowPlayer = {
     width: gridSize,
     height: gridSize,
-    x:0,
-    y:0,
-    key:'p',
+    x: 0,
+    y: 0,
+    key: 'p',
     color: "yellow"
 };
 
 /* LEVEL PARSING FUNCTIONS */
 
 // this changes which level we are current on.
-function gotoNextLevel(){
-    if (currentLevelIndex < levels.length-1){
+function gotoNextLevel() {
+    if (currentLevelIndex < levels.length - 1) {
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
         moveShadowCounter = 0;
-        
-    } else if (secondTry == false){
+
+    } else if (secondTry == false) {
         /* SETUP GAME FOR SECOND GOTHRU */
         secondTry = true;
         //target = "i";
@@ -224,16 +224,16 @@ function gotoNextLevel(){
         setupGoal(target);
         //start moving the shadowPlayer
         setTimeout(moveShadowPlayer, 500);
-        
+
     }
 }
 
 /* calculates how many objects need to be destroyed before the player progresses */
-function setupGoal(target){
+function setupGoal(target) {
     let y;
     let x;
-    for(y=0; y < this_level.length; y++){
-        for (x=0; x < this_level[1].length; x++){
+    for (y = 0; y < this_level.length; y++) {
+        for (x = 0; x < this_level[1].length; x++) {
             if (this_level[y][x] == target) {
                 goal++;
             }
@@ -242,27 +242,64 @@ function setupGoal(target){
 }
 
 
-function levelTransition(timeout){
+function levelTransition(timeout) {
     ctx.fillStyle = "black";
-    let levelHeight = (this_level.length-2) * gridSize;
-    if (animationCounter < levelHeight){
+    let levelHeight = (this_level.length - 2) * gridSize;
+    if (animationCounter < levelHeight) {
         animationCounter++;
-        setTimeout(levelTransition, timeout/2);
+        setTimeout(levelTransition, timeout / 2);
     } else {
         gotoNextLevel();
         levelTransitionEnd(100)
     }
 }
 
-function levelTransitionEnd(timeout){
-    if(animationCounter > 0){
+function levelTransitionEnd(timeout) {
+    if (animationCounter > 0) {
         animationCounter--;
-        setTimeout(levelTransitionEnd, timeout/2);
+        setTimeout(levelTransitionEnd, timeout / 2);
     } else {
         takeInput = true;
         transition = false;
     }
 }
+
+
+
+
+/* CANVAS DRAWING FUNCTIONS */
+
+/* A function for drawing pixel font */
+function drawPixelText(message, x, y, size) {
+    let i;
+    let pixelX = x;
+    let pixelY = y;
+
+    ctx.fillStyle = "white";
+    message = message.toUpperCase();
+    for (i = 0; i < message.length; i++) {
+        let j;
+        let drawY = pixelY;
+        let drawX = pixelX;
+        if (letters[message[i]] != undefined) {
+            for (j = 0; j < letters[message[i]].length; j++) {
+                let k;
+                for (k = 0; k < letters[message[i]][j].length; k++) {
+                    if (letters[message[i]][j][k] == 1) {
+                        ctx.fillRect(drawX, drawY, size, size);
+                    }
+                    drawX += size;
+                }
+                drawY += size;
+                drawX = pixelX;
+            }
+            pixelX += (letters[message[i]].length) * size;
+        }
+    }
+}
+
+
+
 
 function drawLevel(level_array) {
 
@@ -285,7 +322,7 @@ function drawLevel(level_array) {
                     /* placeholder graphics */
                     //console.log("drawing player");
                     //ctx.fillStyle = player.color;
-                    if (secondTry == false){
+                    if (secondTry == false) {
                         player.x = x;
                         player.y = y;
                         ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
@@ -297,7 +334,7 @@ function drawLevel(level_array) {
                     break;
 
                 case 's':
-                    if (secondTry == true){
+                    if (secondTry == true) {
                         player.x = x;
                         player.y = y;
                         ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
@@ -313,7 +350,7 @@ function drawLevel(level_array) {
                     ctx.drawImage(deadEnemySprite, x * gridSize, y * gridSize, gridSize, gridSize);
                     break;
                 case "I":
-                        ctx.drawImage(deadInnocentSprite, x * gridSize, y * gridSize, gridSize, gridSize);
+                    ctx.drawImage(deadInnocentSprite, x * gridSize, y * gridSize, gridSize, gridSize);
                     break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
@@ -330,12 +367,16 @@ function drawLevel(level_array) {
 
     // DRAW SIDE BAR
     ctx.fillStyle = "black";
-    ctx.fillRect(gridSize * (this_level.length+1), 32, gridSize*6, gridSize*(y-2));
+    let sidebarX = (this_level.length + 1)
+    ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
+    /* draw score */
+    drawPixelText("score: " + score.toString(), (sidebarX + 1) * gridSize, 160, 3);
 
 
-    if (transition == true){
+
+    if (transition == true) {
         ctx.fillStyle = "black";
-        let levelWidth = this_level[1].length * gridSize;
+        let levelWidth = (this_level[1].length - 1) * gridSize;
         ctx.fillRect(0, 32, levelWidth, animationCounter);
     }
 
@@ -344,11 +385,11 @@ function drawLevel(level_array) {
 /* GAME INPUT FUNCTIONS */
 
 /* TODO: write collision checking function for a particular spot */
-function checkCollision(x, y){
-    switch(this_level[y][x]){
+function checkCollision(x, y) {
+    switch (this_level[y][x]) {
         case '#':
             return false;
-        
+
         /*
         case "E":
             return true;
@@ -360,7 +401,8 @@ function checkCollision(x, y){
             // change out the target
             this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
             goal--;
-            if (goal <= 0){
+            score += 100;
+            if (goal <= 0) {
                 transition = true;
                 takeInput = false;
                 animationCounter = 0;
@@ -375,11 +417,11 @@ function checkCollision(x, y){
 
 
 // since strings are immutable I gotta completely change the array
-function updatePlayerArray(dx, dy, object){
+function updatePlayerArray(dx, dy, object) {
     let replace = this_level[object.y + dy][object.x + dx];
 
     // using voca.js for splice function as to limit my frustration with manipulating immutable strings
-    this_level[object.y+dy] = splice(this_level[object.y+dy], object.x+dx, 1, object.key);
+    this_level[object.y + dy] = splice(this_level[object.y + dy], object.x + dx, 1, object.key);
     this_level[object.y] = splice(this_level[object.y], object.x, 1, replace);
 
     object.y += dy;
@@ -391,17 +433,17 @@ function updatePlayerArray(dx, dy, object){
 var inputDelay = 50;
 var stopInput = false;
 
-function resumeInput(){
+function resumeInput() {
     stopInput = false;
 }
 
 /* GETTING GAME INPUT */
-document.addEventListener("keypress", function(event){
-    if ((takeInput) && (!stopInput)){
-        switch(event.keyCode){
+document.addEventListener("keypress", function (event) {
+    if ((takeInput) && (!stopInput)) {
+        switch (event.keyCode) {
             case moveUp:
                 //call move function
-                if (checkCollision(player.x, player.y-1)){
+                if (checkCollision(player.x, player.y - 1)) {
                     //alter the level array
                     updatePlayerArray(0, -1, player);
                     //update array
@@ -411,7 +453,7 @@ document.addEventListener("keypress", function(event){
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveDown:
-                if (checkCollision(player.x, player.y+1)){
+                if (checkCollision(player.x, player.y + 1)) {
                     updatePlayerArray(0, 1, player);
                     if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "s";
                 }
@@ -419,7 +461,7 @@ document.addEventListener("keypress", function(event){
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveLeft:
-                if(checkCollision(player.x-1, player.y)){
+                if (checkCollision(player.x - 1, player.y)) {
                     updatePlayerArray(-1, 0, player);
                     if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "w";
                 }
@@ -427,7 +469,7 @@ document.addEventListener("keypress", function(event){
                 setTimeout(resumeInput, inputDelay);
                 break;
             case moveRight:
-                if(checkCollision(player.x+1, player.y)){
+                if (checkCollision(player.x + 1, player.y)) {
                     updatePlayerArray(1, 0, player);
                     if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "e";
                 }
@@ -443,21 +485,21 @@ document.addEventListener("keypress", function(event){
 });
 
 
-function moveShadowPlayer(){
-    
-    if (moveShadowCounter < paths[currentLevelIndex].length){
-        switch(paths[currentLevelIndex][moveShadowCounter]){
+function moveShadowPlayer() {
+
+    if (moveShadowCounter < paths[currentLevelIndex].length) {
+        switch (paths[currentLevelIndex][moveShadowCounter]) {
             case 'n':
-                if(checkCollision(shadowPlayer.x, shadowPlayer.y-1)) updatePlayerArray(0, -1, shadowPlayer);
+                if (checkCollision(shadowPlayer.x, shadowPlayer.y - 1)) updatePlayerArray(0, -1, shadowPlayer);
                 break;
             case 's':
-                if (checkCollision(shadowPlayer.x, shadowPlayer.y+1)) updatePlayerArray(0, 1, shadowPlayer);
+                if (checkCollision(shadowPlayer.x, shadowPlayer.y + 1)) updatePlayerArray(0, 1, shadowPlayer);
                 break;
             case 'e':
-                if (checkCollision(shadowPlayer.x+1, shadowPlayer.y)) updatePlayerArray(1, 0, shadowPlayer);
+                if (checkCollision(shadowPlayer.x + 1, shadowPlayer.y)) updatePlayerArray(1, 0, shadowPlayer);
                 break;
             case 'w':
-                if (checkCollision(shadowPlayer.x-1, shadowPlayer.y)) updatePlayerArray(-1, 0, shadowPlayer);
+                if (checkCollision(shadowPlayer.x - 1, shadowPlayer.y)) updatePlayerArray(-1, 0, shadowPlayer);
                 break;
         }
         moveShadowCounter++;
@@ -470,7 +512,7 @@ function moveShadowPlayer(){
 function mainLoop() {
     //draw the game
     //console.log(this_level);
-    
+
     drawLevel(this_level);
     //player input but with timeout to update things
 }
