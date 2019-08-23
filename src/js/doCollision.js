@@ -43,6 +43,14 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         return;
                     }
                     ship.explode(sprites);
+
+                    if (cResult.b.owner.owner.player) {
+                        cResult.b.owner.owner.player.scoreInc();
+                    }
+
+                    if (ship.player) {
+                        ship.player.scoreDec();
+                    }
                 }
 
                 if (cResult.b.owner.type === 'ship') {
@@ -103,6 +111,10 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         }
                     } else {
                         asteroid.explode(sprites);
+
+                        if (otherSprite.owner.player) {
+                            otherSprite.owner.player.scoreInc();
+                        }
                     }
 
                 }
@@ -111,6 +123,10 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                     // Can't collide into ships that are rewinding
                     if (!otherSprite.rewinding) {
                         otherSprite.explode(sprites);
+
+                        if (otherSprite.player) {
+                            otherSprite.player.scoreDec();
+                        }
                     }
                 }
 

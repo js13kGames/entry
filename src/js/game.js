@@ -45,23 +45,32 @@ for (var i = 0; i < 4; i++) {
 }
 
 let player1 = new Player({
-    color: 'red',
-    shipType: 'coback',
+    color: 'yellow',
+    shipType: 'tri',
     controls: 'arrows',
     sprites: sprites,
     cs: collisionSystem
 });
-
 players.push(player1);
-player1.spawn(ships, sprites);
+
+let player2 = new Player({
+    color: 'red',
+    shipType: 'coback',
+    controls: 'wasd',
+    sprites: sprites,
+    cs: collisionSystem
+});
+players.push(player2);
+
+players.forEach(player => {
+    player.spawn(ships, sprites);
+});
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
         players.forEach(player => {
             player.update(sprites);
         });
-
-        console.log(sprites[sprites.length - 1].name);
 
         sprites.map(sprite => {
             sprite.update();
@@ -83,7 +92,6 @@ let loop = GameLoop({  // create the main game loop
         // Remove dead & exploded sprite's hitboxes from the collision system
         sprites.forEach(sprite => {
             if (sprite.type === 'bullet') {
-                console.log("there's a bullet");
             }
             if (!sprite.isAlive() || sprite.exploded) {
                 sprite.hitbox && sprite.hitbox.remove();
@@ -97,8 +105,11 @@ let loop = GameLoop({  // create the main game loop
         sprites = sprites.filter(sprite => !sprite.exploded);
         ships = ships.filter(ship => !ship.exploded);
         players.forEach(player => {
-            if (player.ship.exploded) {
+            if (player.ship.exploded && player.ship.ttl) {
                 player.ship = {};
+                setTimeout(() => {
+                    player.respawn(ships, sprites);
+                }, 3000);
             }
         });
     },
@@ -106,10 +117,10 @@ let loop = GameLoop({  // create the main game loop
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // collisionSystem.draw(context);
-        // context.stroke();
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 
