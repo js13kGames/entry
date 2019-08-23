@@ -27,8 +27,7 @@
                 return x - Math.floor(x);
             }
             
-            var obstacle = []; obstacle[0] = 0; 
-            var obstacley = []; obstacley[0] = 0;
+            obstacle = []; obstacle[0] = 0; 
 
             var direction = 1; var cameray = 0;
 
@@ -40,7 +39,7 @@
                 seed = 1000*lvlnumber
                 if (obstacle.length > 1)
                 {
-                    for (i = 0; i = obstacle.length; i++)
+                    for (var i = 0; i == obstacle.length; i++)
                     {
                         obstacle[i].remove();
                     }
@@ -50,10 +49,10 @@
                 direction = 1;
                 var amount = (lvlnumber*2) + 1
 
-                for (i = 0; i != amount; i++)
+                for (var i = 0; i != amount; i++)
                 {
                     var obstaclex = random() * (horborder - -horborder) + -horborder;
-                    var obstacley = i*30-direction;
+                    var obstacley = i*50-direction;
                     var front = (random() >= 0.5);
                     var clr = '#015d00';
                     if (front == true) {clr = "#b3dd52"}
@@ -68,6 +67,7 @@
                         color: clr,
                         translate: {x: obstaclex, y: obstacley, z: (front * 50) -25}
                     });
+                    obstacle[i].colliding = false;
                 }
                 console.log("Loaded level "+lvlnumber.toString())
             }
@@ -80,7 +80,33 @@
                 if (playerx > horborder) {playerx = horborder; playermovex = 0;}
                 if (playerx < -horborder) {playerx = -horborder; playermovex = 0}
                 playery += playermovey;
-                /* QQQ Add collision checks here */
+                
+                for (var i = 0; i != obstacle.length; i++)
+                {
+                    xx = obstacle[i].translate.x; 
+                    yy = obstacle[i].translate.y;
+                    zz = obstacle[i].translate.z;
+                    w = obstacle[i].width-5; h = obstacle[i].height-20;
+                    //console.log(i.toString() + "i " + xx.toString() + "x "+ yy.toString() + "y "+ w.toString() + "w " + h.toString() + "h ");
+
+                    if (playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h && zz == 25)
+                    {
+                        if (obstacle[i].colliding == false)
+                        {
+                            console.log("Collision detected with "+i.toString());
+                            obstacle[i].colliding = true;
+
+                            //QQQ If above, push to the closest side, if nothing's in the way.
+                        }
+                    }
+                    else if (obstacle[i].colliding == true)
+                    {
+                        console.log("Collision ended with "+i.toString());
+                        obstacle[i].colliding = false;
+
+                        //QQQ Push tile to background.
+                    }
+                }
             }
 
             function keypress(key) {
