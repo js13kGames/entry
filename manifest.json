@@ -9,5 +9,6 @@
     "name": "platane",
     "website": "https://platane.github.io/",
     "twitter": "platane_"
-  }
+  },
+  "categories": ["desktop", "mobile"]
 }
