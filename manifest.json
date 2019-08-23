@@ -1,4 +1,5 @@
 {
   "name": "missing image",
-  "description": "This entry should yield an error because one image is missing"
+  "description": "This entry should yield an error because one image is missing",
+  "categories": ["desktop"]
 }
