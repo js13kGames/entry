@@ -4,5 +4,10 @@
   "images": {
     "image_large": "doc/screenshot/medium2.png",
     "image_thumbnail": "doc/screenshot/small.png"
+  },
+  "user": {
+    "name": "platane",
+    "website": "https://platane.github.io/",
+    "twitter": "platane_"
   }
 }
