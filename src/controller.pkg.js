@@ -11,8 +11,9 @@ const initController = () => {
 
   const {
     getMapView,
-    cellIds
-  } = initModel();
+    cellIds,
+    numFoods
+  } = initModel(100, 100, .1);
 
   const {
     getState,
@@ -46,13 +47,18 @@ const initController = () => {
         default:
           return;
       }
-      const proposedNewState = {
+      const proposedNewPosition = {
         row: state.position.row + row,
         col: state.position.col + col
       };
-      const cell = getMapView(proposedNewState, 0, 0);
-      if (cell[0][0].canEnter) {
-        return { position: proposedNewState};
+      let pizzaCount = state.numFoods;
+      const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
+      if (cell.canEnter) {
+        if (cell.displayId === cellIds.PIZZA) {
+          cell.displayId = cellIds.STREET;
+          pizzaCount = pizzaCount - 1;
+        }
+        return { position: proposedNewPosition, numFoods: pizzaCount };
       }
     });
   }
@@ -64,6 +70,9 @@ const initController = () => {
 
 
   // init
-  modelSetState({ position: {row: 10, col: 10 }});
+  modelSetState({
+    position: {row: 10, col: 10 },
+    numFoods
+  });
   loop();
 };

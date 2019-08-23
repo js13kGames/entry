@@ -17,6 +17,8 @@ const initState = () => {
   }
   const isUpdated = () => updated;
 
+  window.getState = getState;
+  
   return {
     getState,
     isUpdated,

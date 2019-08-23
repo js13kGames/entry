@@ -1,4 +1,4 @@
-const initModel = () => {
+const initModel = (height, width, foodCoveragePercent) => {
   // display constants
   const OUT_OF_BOUNDS = uid();
   const BLOCKED = uid();
@@ -86,7 +86,7 @@ const initModel = () => {
       const end = map[row + building.length - 1][column + building[0].length - 1];
       if (!start || !end) return;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return;
     }
     building.forEach((buildingRow, rowIndex) => {
@@ -109,49 +109,35 @@ const initModel = () => {
     }
   }
 
-  function addFoods(percent, openSquares) {
-    let numFoods = floor(openSquares * percent * 10);
-    // this does mean that the first open space will always have a pizza
-    let counter = 1;
-    map.forEach((row, rI) => {
-      row.forEach((cell, cI) => {
-        if (cell.canEnter) {
-          console.log('canEnter!')
-          counter--;
-          if (numFoods > 0 && counter === 0) {
-            console.log('adding za')
-            map[rI][cI] = makeMapCell(PIZZA);
-            numFoods--;
-            // randomize counter reset
-            counter = ceil(random() * 8);
-          }
-        }
-      })
-    })
+  function addFoods(numFoods, openSquares) {
+    let foodsRemaining = numFoods;
+    while (foodsRemaining) {
+      const index = floor(random() * openSquares.length);
+      const square = openSquares[index];
+      square.displayId = PIZZA;
+      openSquares = openSquares.slice(0, index).concat(openSquares.slice(index + 1));
+      foodsRemaining--;
+    }
   }
 
-  function calculateOpenSquares(mapSize) {
-    let numOpenSquares = 0;
+  function getOpenSquares() {
+    let openSquares = [];
     map.forEach(row => {
       row.forEach(cell => {
         if (cell.canEnter) {
-          numOpenSquares++;
+          openSquares.push(cell);
         }
       })
     });
-    return numOpenSquares / mapSize;
+    return openSquares;
   }
 
   // init
-  const height = 20;
-  const width = 24;
-  const mapSize = height * width;
-  const foodCoveragePercent = 10;
   initMap(height, width);
   addBuildings();
-  const openSquares = calculateOpenSquares(mapSize);
-  addFoods(foodCoveragePercent, openSquares);
-  console.log(map)
+  const openSquares = getOpenSquares();
+  const numFoods = floor(openSquares.length * foodCoveragePercent);
+  addFoods(numFoods, openSquares);
 
   return {
     getMapView,
@@ -162,6 +148,7 @@ const initModel = () => {
       OUT_OF_BOUNDS_CUTOFF,
       STREET,
       PIZZA
-    }
+    },
+    numFoods
   };
 };
