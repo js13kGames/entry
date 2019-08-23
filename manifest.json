@@ -1,11 +1,9 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Backout",
+  "description": "Control the paddles with array keys, avoid ball to hit the paddles, press space for ball to move faster and earn move points.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "__big.jpg",
+    "image_thumbnail": "__small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "website_url": "",
-  "twitter_handle": ""
+  "categories": ["Desktop", "Web Monetization"]
 }
