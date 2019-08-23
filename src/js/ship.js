@@ -24,20 +24,22 @@ export class Ship extends Sprite.class {
         this.mass = 4;
         this.thrust = 4;
         this.cs = props.collisionSystem;
+        this.player = props.player;
+        this.lines = {};
 
         // Assign props from the ship type file e.g. 'diamondback', AND
         // overwrite with any weird props that were passed into new Ship(...)
         Object.assign(this, ships[props.shipType || 'tri'], props);
 
         this.lines.random = [];
-        this.lines.body = this.lines.body || [];
-        this.lines.detail = this.lines.detail || [];
-        this.lines.thrust = this.lines.thrust || [];
+        this.lines.body = this.lines.body ? this.lines.body.slice() : [];
+        this.lines.detail = this.lines.detail ? this.lines.detail.slice() : [];
+        this.lines.thrust = this.lines.thrust ? this.lines.thrust.slice() : [];
 
         // Scale all the lines (except ship as that would * scale * scale)
         Object.keys(this.lines).forEach(lineType => {
             this.lines[lineType].forEach((line, i) => {
-                line.forEach((v, i) => { line[i] *= this.scale });
+                //line.forEach((v, i) => { line[i] *= this.scale });
             });
         });
 

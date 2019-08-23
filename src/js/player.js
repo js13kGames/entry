@@ -3,14 +3,14 @@ import { Ship } from './ship.js';
 import getKeys from './controls';
 
 export class Player {
-
     constructor(props) {
         this.color = props.color || '#fff';
         this.shipType = props.shipType || 'tri';
         this.controls = props.controls;
-        this.ready = false;
         this.sprites = props.sprites; // Ref to all the sprites in the game
         this.cs = props.cs; // Ref to the game's collision system
+        this.ready = false;
+        this.score = 0;
 
         // Set control scheme
         if (this.controls) {
@@ -46,10 +46,22 @@ export class Player {
     }
 
     update(sprites) {
-        //console.log("updating player");
         if (this.keys && this.keys !== 'AI') {
             this.handleKeyPresses(sprites);
         }
+    }
+
+    scoreInc() {
+        this.score++;
+        console.log((this.shipType + ':').padEnd(9) + this.score);
+    }
+
+    scoreDec() {
+        // Can't go lower than 0
+        if (this.score > 0) {
+            this.score--;
+        }
+        console.log((this.shipType + ':').padEnd(9) + this.score);
     }
 
     spawn(ships, sprites) {
@@ -62,6 +74,7 @@ export class Player {
             color: this.color,
             shipType: this.shipType,
             collisionSystem: this.cs,
+            player: this,
 
             update() {
                 this.shipUpdate(); // Calls this.advance() itself
@@ -72,10 +85,11 @@ export class Player {
         sprites.push(this.ship);
     }
 
-    respawn() {
+    respawn(ships, sprites) {
         // Reset anything ???
 
+
         // Spawn an entirely new ship for the player ???
-        this.spawn();
+        this.spawn(ships, sprites);
     }
 }
