@@ -12,8 +12,9 @@ const initController = () => {
   const {
     getMapView,
     cellIds,
-    numFoods
-  } = initModel(100, 100, .1);
+    numFoods,
+    enableExit
+  } = initModel(20, 20, .01);
 
   const {
     getState,
@@ -25,6 +26,7 @@ const initController = () => {
   const onWindowResize = (bodyDimensions) => setState(bodyDimensions);
   const onKeyDown = (which) => {
     setState((state) => {
+      if (state.gameOver) return;
       let row = 0;
       let col = 0;
       switch (which) {
@@ -52,13 +54,22 @@ const initController = () => {
         col: state.position.col + col
       };
       let pizzaCount = state.numFoods;
+      let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
         if (cell.displayId === cellIds.PIZZA) {
           cell.displayId = cellIds.STREET;
           pizzaCount = pizzaCount - 1;
         }
-        return { position: proposedNewPosition, numFoods: pizzaCount };
+        if (pizzaCount === 0 && !canExit) {
+          enableExit();
+          canExit = true;
+        }
+        let gameOver = state.gameOver;
+        if (cell.displayId === cellIds.EXIT) {
+          gameOver = true;
+        }
+        return { position: proposedNewPosition, numFoods: pizzaCount, canExit, gameOver };
       }
     });
   }
@@ -72,7 +83,9 @@ const initController = () => {
   // init
   modelSetState({
     position: {row: 10, col: 10 },
-    numFoods
+    numFoods,
+    canExit: false,
+    gameOver: false
   });
   loop();
 };

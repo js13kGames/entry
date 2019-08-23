@@ -8,6 +8,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const STREET = uid();
   const S = STREET;
   const PIZZA = uid();
+  const EXIT = uid();
 
   const map = [];
   function makeMapCell (cellId) {
@@ -32,13 +33,18 @@ const initModel = (height, width, foodCoveragePercent) => {
     return slice;
   }
 
-  function getMapView(position, bufferRow, bufferCol) {
+  function getMapView (position, bufferRow, bufferCol) {
     return sliceMap(
       position.row - bufferRow,
       position.row + bufferRow,
       position.col - bufferCol,
       position.col + bufferCol
     );
+  }
+
+  function enableExit () {
+    const newCell = makeMapCell(EXIT);
+    map.push([newCell]);
   }
 
   // Building size options
@@ -147,8 +153,10 @@ const initModel = (height, width, foodCoveragePercent) => {
       BUILDING_2X4,
       OUT_OF_BOUNDS_CUTOFF,
       STREET,
-      PIZZA
+      PIZZA,
+      EXIT
     },
-    numFoods
+    numFoods,
+    enableExit
   };
 };

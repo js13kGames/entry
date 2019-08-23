@@ -18,7 +18,8 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
     BUILDING_2X4,
     OUT_OF_BOUNDS_CUTOFF,
     STREET,
-    PIZZA
+    PIZZA,
+    EXIT
   } = cellIds;
   const cellStyles = {
     [OUT_OF_BOUNDS]: 'pink',
@@ -26,7 +27,8 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
     [BUILDING_2X4]: 'gray',
     // [OUT_OF_BOUNDS_CUTOFF]:
     [STREET]: 'white',
-    [PIZZA]: 'yellow'
+    [PIZZA]: 'yellow',
+    [EXIT]: 'green'
   };
 
   // Iterate through every pixel
