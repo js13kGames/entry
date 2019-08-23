@@ -46,10 +46,10 @@ class TetrominoSource {
 export class Level {
   constructor () {
     this.tileCountX = 10
-    this.tileCountY = 20
+    this.tileCountY = 21
 
     this.grid = []
-    for (let i = 0; i < this.tileCountY; i++) {
+    for (let i = 0; i < this.tileCountY + 5; i++) {
       this.grid.push(Array(this.tileCountX).fill(0))
     }
 
@@ -66,7 +66,15 @@ export class Level {
     return TILE_SIZE * this.tileCountX
   }
 
+  get height () {
+    return TILE_SIZE * this.tileCountY
+  }
+
   step () {
+    if (this.gameOver) {
+      return
+    }
+
     if (this.clearAnimation) {
       this.clearAnimation.step()
 
@@ -94,6 +102,7 @@ export class Level {
 
       this.checkState(rows)
     }
+    this.updateGhostPosition()
   }
 
   checkState (rows) {
@@ -104,31 +113,62 @@ export class Level {
       }
     }
 
-    rowsToClear.sort((a, b) => b - a)
+    rowsToClear.sort((a, b) => a - b)
 
     if (rowsToClear.length === 0) {
+      if (this.overflows()) {
+        this.gameOver = true
+        return
+      }
       this.nextTetromino()
     } else {
       this.clearAnimation = new ClearAnimation(this, rowsToClear)
     }
   }
 
+  updateGhostPosition () {
+    const positions = this.currentTetromino.getBlockPositions()
+    let maxDeltas = [0, 0, 0, 0]
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = positions[i]
+      for (let delta = 0; delta <= y; delta++) {
+        let ghostY = y - delta
+        if (!this.grid[ghostY][x]) {
+          maxDeltas[i] = delta
+        } else {
+          break
+        }
+      }
+    }
+
+    this.ghostOffset = -Math.min(...maxDeltas)
+  }
+
   isFullRow (y) {
     return this.grid[y].every(val => val)
+  }
+
+  overflows () {
+    for (let i = this.tileCountY; i < this.tileCountY + 3; i++) {
+      if (this.grid[i].some(val => val)) {
+        return true
+      }
+    }
+    return false
   }
 
   removeRows (rows) {
     // Rows are sorted from bottom to top
     let index = 0
-    for (let y = this.tileCountY - 1; y >= 0; y--) {
+    for (let y = 0; y < this.tileCountY; y++) {
       if (y === rows[index]) {
         index++
       }
       else {
-        this.grid[y + index] = this.grid[y]
+        this.grid[y - index] = this.grid[y]
       }
     }
-    for (let y = 0; y < index; y++) {
+    for (let y = this.tileCountY - index; y < this.tileCountY; y++) {
       this.grid[y] = Array(this.tileCountX).fill(0)
     }
   }
@@ -150,37 +190,65 @@ export class Level {
     Graphics.fillStyle = '#000'
     Graphics.fillRect(0, 0, width, height)
 
-    for (let y = 0; y < this.tileCountY; y++) {
+    if (!this.gameOver) {
+      this.renderBoard()
+    }
+
+    Graphics.translate(width + 25, 0)
+
+    Graphics.fillStyle = '#000'
+    Graphics.lineWidth = 2
+    Graphics.strokeStyle = '#fff'
+    Graphics.strokeRect(-16, 0, 48, 170)
+
+    this.renderNextTetrominos()
+
+    Graphics.resetTransform()
+
+    Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 10)
+    Graphics.fillText('Hold', 0, 0)
+
+    if (this.heldTetromino) {
+      if (this.controller.wasHeld) {
+        this.renderGhostTetromino(this.heldTetromino, 0, TILE_SIZE / 2, 2)
+        Graphics.fillStyle = 'rgba(0,0,0,0.5)'
+        Graphics.fillRect(-TILE_SIZE / 2, -TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2)
+      } else {
+        this.renderTetromino(this.heldTetromino, TILE_SIZE / 2, 2)
+      }
+    }
+  }
+
+  renderBoard () {
+    for (let y = 0; y < this.grid.length; y++) {
       for (let x = 0; x < this.tileCountX; x++) {
         const color = this.grid[y][x]
         if (color) {
-          this.renderBlock(x, y, COLORS[color])
+          this.renderBlock(x, this.tileCountY - 1 - y, COLORS[color])
         }
       }
     }
 
-    this.renderTetromino(this.currentTetromino)
+    this.renderGhostTetromino(this.currentTetromino, this.ghostOffset, TILE_SIZE, this.tileCountY - 1)
+    this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
 
     if (this.clearAnimation) {
       this.clearAnimation.render()
     }
+  }
 
-    Graphics.translate(width + 25, 15)
-
+  renderNextTetrominos () {
     let size = TILE_SIZE * 0.5
     for (let i = 0; i < this.nextTetrominos.length; i++) {
       const tetromino = this.nextTetrominos[i]
-      this.renderTetromino(tetromino, size)
-      Graphics.translate(0, TILE_SIZE * 1.75)
+      this.renderTetromino(tetromino, size, 3)
 
-      if (i === 0) size *= 0.75
-    }
-
-    if (this.heldTetromino) {
-      Graphics.resetTransform()
-
-      Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 18)
-      this.renderTetromino(this.heldTetromino, TILE_SIZE * 0.5)
+      if (i === 0) {
+        Graphics.translate(0, size * 5)
+        size *= 0.75
+      } else {
+        Graphics.translate(0, size * 4)
+      }
     }
   }
 
@@ -206,11 +274,21 @@ export class Level {
     this.controller = new TetrominoController(this.currentTetromino, this)
   }
 
-  renderTetromino (tetromino, size) {
+  renderTetromino (tetromino, size, bottom) {
     const positions = tetromino.getBlockPositions()
     const color = tetromino.getColor()
     for (let [px, py] of positions) {
-      this.renderBlock(px, py, color, size)
+      this.renderBlock(px, bottom - py, color, size)
+    }
+  }
+
+  renderGhostTetromino (tetromino, offset, size, bottom) {
+    const positions = tetromino.getBlockPositions()
+    const color = tetromino.getColor()
+
+    positions.forEach(el => el[1] += offset)
+    for (let [px, py] of positions) {
+      this.renderGhostBlock(px, bottom - py, color, size)
     }
   }
 
@@ -220,5 +298,12 @@ export class Level {
     Graphics.fillStyle = 'rgba(255,255,255,0.5)'
     Graphics.fillRect(x * size, y * size, 2, size - 1)
     Graphics.fillRect(x * size, y * size, size - 1, 2)
+  }
+
+  renderGhostBlock (x, y, color, size = TILE_SIZE) {
+    Graphics.fillStyle = color
+    Graphics.fillRect(x * size, y * size, size - 1, size - 1)
+    Graphics.fillStyle = '#000'
+    Graphics.fillRect(x * size + 1, y * size + 1, size - 3, size - 3)
   }
 }
