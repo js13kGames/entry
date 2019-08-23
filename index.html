@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>js13k 2019</title>
+  </head>
+  <body>
+        <canvas class="zdog-canvas" id="game" width="960" height="540"></canvas>
+        <script src="zdog.dist.min.js"></script>
+
+        <!-- Color pallete: https://www.aremycolorsaccessible.com/palette?colors=%23223e32&colors=%239db800&colors=%23b3dd52&colors=%2304bf00&colors=%23015d00 -->
+
+        <script>
+            x=game.getContext`2d`;
+            level=5; //0 is main menu, everything higher is levels, lower is states
+            var playerx = 0; var playery = 0;
+            var playermovex = 0; var playermovey = 1;
+            var horborder = 200; 
+            var paused = false;
+            setInterval(e=>{ step() },33);
+            onkeydown=e=>{ keypress(e.key); }
+
+            //https://stackoverflow.com/a/19303725
+            var seed = 1;
+            function random() {
+                var x = Math.sin(seed++) * 10000;
+                return x - Math.floor(x);
+            }
+            
+            var obstacle = []; obstacle[0] = 0; 
+            var obstacley = []; obstacley[0] = 0;
+
+            var direction = 1; var cameray = 0;
+
+            function odd(num) { return num % 2;}
+
+            function loadlevel(lvlnumber) {
+                //Clean up
+                level = lvlnumber;
+                seed = 1000*lvlnumber
+                if (obstacle.length > 1)
+                {
+                    for (i = 0; i = obstacle.length; i++)
+                    {
+                        obstacle[i].remove();
+                    }
+                    playerx = 0; playery = 0; playermovex = 0; playermovey = 0;
+                }
+                //Build new
+                direction = 1;
+                var amount = (lvlnumber*2) + 1
+
+                for (i = 0; i != amount; i++)
+                {
+                    var obstaclex = random() * (horborder - -horborder) + -horborder;
+                    var obstacley = i*30-direction;
+                    var front = (random() >= 0.5);
+                    var clr = '#015d00';
+                    if (front == true) {clr = "#b3dd52"}
+                        obstacle[i] = new Zdog.Box({
+                        addTo: illo,
+                        width: 32,
+                        height: 32*3,
+                        frontFace: false, backFace: false,
+                        depth: 8,
+                        stroke: 8,
+                        cornerRadius: 20,
+                        color: clr,
+                        translate: {x: obstaclex, y: obstacley, z: (front * 50) -25}
+                    });
+                }
+                console.log("Loaded level "+lvlnumber.toString())
+            }
+
+            function step() {
+                if (paused) {return;}
+                cameray -= direction;
+
+                playerx += playermovex;
+                if (playerx > horborder) {playerx = horborder; playermovex = 0;}
+                if (playerx < -horborder) {playerx = -horborder; playermovex = 0}
+                playery += playermovey;
+                /* QQQ Add collision checks here */
+            }
+
+            function keypress(key) {
+                console.log(key);
+                
+                if ((key == "ArrowLeft" || key == "a" || key == "q") && playermovex == 0) //Left or A or Q
+                {
+                    playermovex = -1;
+                }
+                if ((key == "ArrowRight" || key == "d") && playermovex == 0)
+                {
+                    playermovex = 1;
+                }
+                if ((key == "ArrowDown" || key == "s"))
+                {
+                    playermovex = 0;
+                    playermovey = 1;
+                }
+                if (key == "Escape")
+                {
+                    paused = !paused;
+                }
+            }
+
+            /* FPS qqq*/ 
+            const times = [];
+            let fps;
+
+            function refreshLoop() {
+            window.requestAnimationFrame(() => {
+                const now = performance.now();
+                while (times.length > 0 && times[0] <= now - 1000) {
+                    times.shift();
+                }
+                times.push(now);
+                fps = times.length;
+                document.getElementById("fps-display").innerHTML = fps.toString() + " fps";
+                document.getElementById("seed-display").innerHTML = seed.toString() + " seed";
+                document.getElementById("level-display").innerHTML = level.toString() + " level";
+                document.getElementById("cam-display").innerHTML = illo.rotate.x.toString() + "x  " + illo.rotate.y.toString() + "y  " + illo.rotate.x.toString() + "z  " + TAU.toString() + "tau";
+                refreshLoop();
+            });
+            }
+
+            refreshLoop();
+
+            const TAU = Zdog.TAU
+
+            // create illo
+            var illo = new Zdog.Illustration({
+                // set canvas with selector
+                element: '.zdog-canvas',
+                dragRotate: true,
+                zoom: 2,
+                rotate: {x: -(TAU/16), y: TAU/16},
+                onPrerender: function(ctx) {
+                    ctx.beginPath();
+                    ctx.rect(-1080, -1080, 1080*2, 1080*2);
+                    ctx.fillStyle = "#223e32";
+                    ctx.fill();
+                },
+            });
+
+            var player = new Zdog.Group({
+                addTo: illo,
+                transform: {z: 25}
+            });
+
+            var body = new Zdog.Shape({
+                addTo: player,
+                stroke: 24,
+                color: '#04bf00',
+            });
+
+            var eyes = new Zdog.Shape({
+                addTo: player,
+                stroke: 5,
+                color: '#fff',
+                translate: {z: 5},
+                path: [ //QQQ Don't make them so long but 
+                    { x: -6, y: -10 },          // start at top left
+                    { x: -6, y: 0 },          // line to top right
+                    { move: { x: 6, y: -10 } }, // move to bottom left
+                    { x: 6, y: 0 },          // line to bottom right
+                ],
+            });
+
+            var legs = new Zdog.Shape({
+                addTo: player,
+                stroke: 5,
+                color: '#04bf00',
+                translate: {y: 16, z: 5},
+                path: [ //QQQ Don't make them so long but 
+                    { x: -6, y: -10 },          // left leg at body
+                    { x: -6, y: 0 },          // to knee
+                    { x: -10, y: 0 },          // to toes
+                    { move: { x: 6, y: -10 } }, // right leg
+                    { x: 6, y: 0 },          // to knee
+                    { x: 10, y: 0 },          // to toes
+                ],
+            });
+
+            var border = new Zdog.Shape({
+                addTo: illo,
+                stroke: 8,
+                color: "#9db800",
+                path: [ //QQQ Don't make them so long but 
+                    { x: -horborder-10, y: -1000 },          // start at top left
+                    { x: -horborder-10, y: 1000 },          // line to top right
+                    { move: { x: horborder+10, y: -1000 } }, // move to bottom left
+                    { x: horborder+10, y: 1000 },          // line to bottom right
+                ],
+            });
+
+            function animate() {
+                player.translate = {x: playerx, y: playery}
+                player.rotate = { y: -playermovex*0.5, x: -playermovey*0.2} //x and y swap here
+                cameray = -playery;
+                illo.updateRenderGraph();
+                illo.translate = {y: cameray};
+                requestAnimationFrame( animate );
+            }
+            
+            animate(); //Need to disable manual rotation
+
+            loadlevel(level);
+
+        </script>
+        <p>
+            To do:
+            - Obstacles
+            - Collision checking (array with all obstacles)
+            - Scrolling
+            - "Back"
+
+            <b>Deadline 13 September!</b>
+        </p>
+        <div id="fps-display">N/A FPS</div> <div id="seed-display">N/A Random Seed</div> <div id="level-display">N/A Level</div> <div id="cam-display">N/A Camera</div>
+  </body>
+</html>
