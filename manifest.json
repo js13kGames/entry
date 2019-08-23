@@ -4,5 +4,11 @@
   "images": {
     "image_thumbnail": "screenshots/small.png",
     "image_large": "screenshots/full.jpg"
-  }
+  },
+  "user": {
+    "name": "platane",
+    "website": "https://platane.github.io/",
+    "twitter": "platane_"
+  },
+  "categories": ["desktop"]
 }
