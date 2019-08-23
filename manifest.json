@@ -1,4 +1,5 @@
 {
   "name": "missing zip",
-  "description": "This entry should yield an error because no zip file can be found in the release assets"
+  "description": "This entry should yield an error because no zip file can be found in the release assets",
+  "categories": ["desktop"]
 }
