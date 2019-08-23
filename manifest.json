@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Backout",
+  "description": "It's an avoidance game. Use arrow keys to control paddles to avoid hitting the ball. Use space to speed up the ball to earn more points.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "big.png",
+    "image_thumbnail": "small.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "eguneys",
+    "website": "https://eguneys.github.io/jsgames/",
+    "twitter": "@eguneys"
   }
 }
