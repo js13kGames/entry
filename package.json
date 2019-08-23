@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --port=3000 --mode=development",
     "build": "webpack --config webpack.config.js --env=production",
     "build-dev": "webpack --config webpack.config.js",
-    "zip": "zip dist.zip dist -r",
+    "zip": "cd dist && zip dist.zip * -r && mv dist.zip ..",
     "dist": "yarn run build && yarn run zip"
   },
   "devDependencies": {
