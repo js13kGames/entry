@@ -1,4 +1,4 @@
-const { src, dest, parallel } = require('gulp');
+const { src, dest, parallel, watch } = require('gulp');
 const minifyCSS = require('gulp-csso');
 const concat = require('gulp-concat');
 
@@ -20,7 +20,13 @@ function css () {
 function js () {
   return src(['src/*.pkg.js', 'src/index.js'], { sourcemaps: isDev })
     .pipe(concat('game.min.js'))
-    .pipe(dest('dist', { sourcemaps: isDev }));
+    .pipe(dest('dist', { sourcemaps: isDev && '.' }));
+}
+
+function dev () {
+  watch('src/*.css', css);
+  watch('src/*.js', js);
+  watch('src/*.html', html);
 }
 
 // TODO:
@@ -28,9 +34,11 @@ function js () {
 // - uglify
 // - zip
 
+
 module.exports = {
   js,
   css,
   html,
+  dev,
   default: parallel(html, css, js)
 };
