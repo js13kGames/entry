@@ -1,11 +1,28 @@
 const initModel = () => {
+  // display constants
+  const OUT_OF_BOUNDS = uid();
+  const BLOCKED = uid();
+  const B = BLOCKED;
+  const BUILDING_2X4 = uid();
+  const OUT_OF_BOUNDS_CUTOFF = uid();
+  const STREET = uid();
+  const S = STREET;
+  const PIZZA = uid();
+
   const map = [];
+  function makeMapCell (cellId) {
+    return {
+      displayId: cellId,
+      canEnter: cellId > OUT_OF_BOUNDS_CUTOFF
+    }
+  }
+
   function sliceMap (startRow, endRow, startCol, endCol) {
     const slice = [];
     for (var row = startRow; row <= endRow; row++) {
       slice[row - startRow] = [];
       for (var col = startCol; col <= endCol; col++) {
-        let value = 'black';
+        let value = makeMapCell(OUT_OF_BOUNDS);
         try {
           if (map[row][col]) value = map[row][col];
         } catch (_) {}
@@ -24,34 +41,30 @@ const initModel = () => {
     );
   }
 
-  function getColor (i = (Math.random() * 6)) {
-    return ['black', 'white', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow'][parseInt(i, 10) % 6];
-  }
-
   // Building size options
   const buildings = {
     '2x4': [
-      [0, 0],
-      [0, 0],
-      [0, 0],
-      [0, 0]
+      [BUILDING_2X4, B],
+      [B, B],
+      [B, B],
+      [B, B]
     ],
     '4x2': [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [B, B, B, B],
+      [B, B, B, B]
     ],
     '4x4': [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [B, B, B, B],
+      [B, B, B, B],
+      [B, B, B, B],
+      [B, B, B, B]
     ],
     '4x5xalley': [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [1, 1, 1, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [B, B, B, B],
+      [B, B, B, B],
+      [S, S, S, B],
+      [B, B, B, B],
+      [B, B, B, B]
     ]
   }
 
@@ -61,7 +74,7 @@ const initModel = () => {
     for (let x = 0; x < height; x++) {
       map[x] = [];
       for (let y = 0; y < width; y++) {
-        map[x][y] = getColor(1);
+        map[x][y] = makeMapCell(STREET);
       }
     }
   }
@@ -78,17 +91,18 @@ const initModel = () => {
     }
     building.forEach((buildingRow, rowIndex) => {
       buildingRow.forEach((cell, cellIndex) => {
-        map[row + rowIndex][column + cellIndex] = getColor(cell);
+        map[row + rowIndex][column + cellIndex] = makeMapCell(cell);
       })
     })
   }
   // Loop through map rows to add buildings
   // TODO add a variety of buildings
-  function addBuildings(map, buildings) {
+  function addBuildings() {
     const b = buildings['2x4'];
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
-        if (map[row][column] === 'white') {
+        // iterating building with plus one street space
+        if (map[row][column].canEnter) {
           addBuilding(map, row, column, b);
         }
       }
@@ -96,18 +110,20 @@ const initModel = () => {
   }
 
   function addFoods(percent, openSquares) {
-    let numFoods = Math.floor(openSquares * percent * 10);
+    let numFoods = floor(openSquares * percent * 10);
     // this does mean that the first open space will always have a pizza
     let counter = 1;
     map.forEach((row, rI) => {
-      row.forEach((column, cI) => {
-        if (column === 'white') {
+      row.forEach((cell, cI) => {
+        if (cell.canEnter) {
+          console.log('canEnter!')
           counter--;
           if (numFoods > 0 && counter === 0) {
-            map[rI][cI] = getColor(2);
+            console.log('adding za')
+            map[rI][cI] = makeMapCell(PIZZA);
             numFoods--;
             // randomize counter reset
-            counter = Math.ceil(Math.random() * 8);
+            counter = ceil(random() * 8);
           }
         }
       })
@@ -117,8 +133,8 @@ const initModel = () => {
   function calculateOpenSquares(mapSize) {
     let numOpenSquares = 0;
     map.forEach(row => {
-      row.forEach(column => {
-        if (column === 'white') {
+      row.forEach(cell => {
+        if (cell.canEnter) {
           numOpenSquares++;
         }
       })
@@ -132,11 +148,20 @@ const initModel = () => {
   const mapSize = height * width;
   const foodCoveragePercent = 10;
   initMap(height, width);
-  addBuildings(map, buildings);
+  addBuildings();
   const openSquares = calculateOpenSquares(mapSize);
   addFoods(foodCoveragePercent, openSquares);
+  console.log(map)
 
   return {
-    getMapView
+    getMapView,
+    cellIds: {
+      OUT_OF_BOUNDS,
+      BLOCKED,
+      BUILDING_2X4,
+      OUT_OF_BOUNDS_CUTOFF,
+      STREET,
+      PIZZA
+    }
   };
 };

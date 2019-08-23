@@ -1,8 +1,8 @@
 const initController = () => {
   const loop = () => {
     const state = getState();
-    const heightPadding = Math.ceil(((state.height / tileHeight) - 1) / 2)
-    const widthPadding = Math.ceil(((state.width / tileWidth) - 1) / 2)
+    const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
+    const widthPadding = ceil(((state.width / tileWidth) - 1) / 2)
     draw(
       getMapView(state.position, heightPadding, widthPadding),
       state
@@ -10,7 +10,8 @@ const initController = () => {
   };
 
   const {
-    getMapView
+    getMapView,
+    cellIds
   } = initModel();
 
   const {
@@ -50,7 +51,7 @@ const initController = () => {
         col: state.position.col + col
       };
       const cell = getMapView(proposedNewState, 0, 0);
-      if (cell[0][0] !== 'black') { // is not an invalid cell
+      if (cell[0][0].canEnter) {
         return { position: proposedNewState};
       }
     });
@@ -59,7 +60,7 @@ const initController = () => {
     draw,
     tileHeight,
     tileWidth
-  } = initView(modelSetState, { onWindowResize, onKeyDown });
+  } = initView(modelSetState, { onWindowResize, onKeyDown }, cellIds);
 
 
   // init

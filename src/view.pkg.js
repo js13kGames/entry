@@ -1,11 +1,9 @@
-const initView = (setState, { onWindowResize, onKeyDown }) => {
+const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
   const body = document.body;
   const element = type => document.createElement(type);
   const rAF = window.requestAnimationFrame;
   const cancelAF = window.cancelAnimationFrame;
   const windowAddEventListener = window.addEventListener.bind(window);
-  const ceil = Math.ceil;
-  const floor = Math.floor;
 
   const canvas = element('canvas');
   const ctx = canvas.getContext('2d');
@@ -13,6 +11,24 @@ const initView = (setState, { onWindowResize, onKeyDown }) => {
   const tileWidth = 100;
 
   const ape = ctx.createImageData(100, 100);
+
+  const {
+    OUT_OF_BOUNDS,
+    BLOCKED,
+    BUILDING_2X4,
+    OUT_OF_BOUNDS_CUTOFF,
+    STREET,
+    PIZZA
+  } = cellIds;
+  const cellStyles = {
+    [OUT_OF_BOUNDS]: 'pink',
+    [BLOCKED]: 'black',
+    [BUILDING_2X4]: 'gray',
+    // [OUT_OF_BOUNDS_CUTOFF]:
+    [STREET]: 'white',
+    [PIZZA]: 'yellow'
+  };
+
   // Iterate through every pixel
   for (let i = 0; i < ape.data.length; i += 4) {
     // Modify pixel data
@@ -34,7 +50,7 @@ const initView = (setState, { onWindowResize, onKeyDown }) => {
         const viewXStart = (state.width - viewWidth) / 2;
         for (let y = 0; y < view.length; y++) {
           for (let x = 0; x < view[0].length; x++) {
-            ctx.fillStyle = view[y][x];
+            ctx.fillStyle = cellStyles[view[y][x].displayId];
             ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
           }
         }
