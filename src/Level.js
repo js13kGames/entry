@@ -134,7 +134,8 @@ export class Level {
   }
 
   render () {
-    Graphics.resetTransform()
+    // So that closure compiler recognizes it as an extern
+    Graphics['resetTransform']()
 
     Graphics.fillStyle = '#000'
     Graphics.fillRect(0, 0, Canvas.width, Canvas.height)
