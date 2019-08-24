@@ -27,3 +27,8 @@ export const COLORS = [
 ]
 
 export const TILE_SIZE = 16
+
+export const AUTO_SHIFT_DELAY = 12
+export const AUTO_REPEAT_DELAY = 2
+export const LOCK_DELAY = 30
+export const MAX_LOCK_RESET_COUNT = 14
