@@ -57,8 +57,8 @@ const initController = () => {
       let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
-        if (cell.displayId === cellIds.PIZZA) {
-          cell.displayId = cellIds.STREET;
+        if (cell.itemId === cellIds.PIZZA) {
+          cell.itemId = null;
           pizzaCount = pizzaCount - 1;
         }
         if (pizzaCount === 0 && !canExit) {
