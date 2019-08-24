@@ -1,4 +1,4 @@
-const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
+const initView = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
   const body = document.body;
   const element = type => document.createElement(type);
   const rAF = window.requestAnimationFrame;
@@ -29,6 +29,8 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
     [PIZZA]: 'yellow',
     [EXIT]: 'green'
   };
+
+  const progressBar = document.getElementById('bar');
 
   const ape = ctx.createImageData(100, 100);
   // Iterate through every pixel
@@ -69,31 +71,40 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
     ctx.fill();
     // return ctx.getImageData(0, 0, 100, 100);
     return canvas.toDataURL('image/png');
-  })()
+  })();
 
-  function draw (view, state) {
+  function draw(mapView, state) {
+    canvas.width = state.width;
+    canvas.height = state.height;
+
+    const viewWidth = mapView[0].length * tileWidth;
+    const viewHeight = mapView.length * tileHeight;
+    const viewYStart = (state.height - viewHeight) / 2;
+    const viewXStart = (state.width - viewWidth) / 2;
+    for (let y = 0; y < mapView.length; y++) {
+      for (let x = 0; x < mapView[0].length; x++) {
+        const cell = mapView[y][x]
+        ctx.fillStyle = cellStyles[cell.displayId];
+        ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
+        if (cell.itemId) {
+          var img = new Image();
+          img.src = pizzaDataUrl;
+          ctx.drawImage(img, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+        }
+      }
+    }
+    ctx.putImageData(ape, canvas.width / 2 - ape.width / 2, canvas.height / 2 - ape.height / 2);
+  }
+
+  function write (state) {
+    progressBar.style.width = `${(numFoods - state.remainingFoods) / numFoods * 100}%`;
+  }
+
+  function render (mapView, state) {
     return new Promise((resolve, reject) => {
       try {
-        canvas.width = state.width;
-        canvas.height = state.height;
-
-        const viewWidth = view[0].length * tileWidth;
-        const viewHeight = view.length * tileHeight;
-        const viewYStart = (state.height - viewHeight) / 2;
-        const viewXStart = (state.width - viewWidth) / 2;
-        for (let y = 0; y < view.length; y++) {
-          for (let x = 0; x < view[0].length; x++) {
-            const cell = view[y][x]
-            ctx.fillStyle = cellStyles[cell.displayId];
-            ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
-            if (cell.itemId) {
-              var img = new Image();
-              img.src = pizzaDataUrl;
-              ctx.drawImage(img, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
-            }
-          }
-        }
-        ctx.putImageData(ape, canvas.width / 2 - ape.width / 2, canvas.height / 2 - ape.height / 2);
+        draw(mapView, state);
+        write(state);
         resolve();
       } catch (e) {
         reject(e);
@@ -123,7 +134,7 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds) => {
   );
 
   return {
-    draw,
+    render,
     tileHeight,
     tileWidth
   }

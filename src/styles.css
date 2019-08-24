@@ -8,3 +8,19 @@ canvas {
   position: absolute;
   top: 0;
 }
+
+.progress {
+  background-color: lightgray;
+  border-radius: 10px;
+  height: 15px;
+  overflow: hidden;
+  position: relative;
+  width: 200px;
+  z-index: 1;
+}
+
+.bar {
+  background-color: blue;
+  display: block;
+  height: 100%;
+}

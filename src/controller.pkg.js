@@ -3,7 +3,7 @@ const initController = () => {
     const state = getState();
     const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
     const widthPadding = ceil(((state.width / tileWidth) - 1) / 2)
-    draw(
+    render(
       getMapView(state.position, heightPadding, widthPadding),
       state
     ).then(() => isUpdated() && loop());
@@ -14,7 +14,7 @@ const initController = () => {
     cellIds,
     numFoods,
     enableExit
-  } = initModel(20, 20, .01);
+  } = initModel(20, 20, .1);
 
   const {
     getState,
@@ -53,7 +53,7 @@ const initController = () => {
         row: state.position.row + row,
         col: state.position.col + col
       };
-      let pizzaCount = state.numFoods;
+      let pizzaCount = state.remainingFoods;
       let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
@@ -69,21 +69,21 @@ const initController = () => {
         if (cell.displayId === cellIds.EXIT) {
           gameOver = true;
         }
-        return { position: proposedNewPosition, numFoods: pizzaCount, canExit, gameOver };
+        return { position: proposedNewPosition, remainingFoods: pizzaCount, canExit, gameOver };
       }
     });
   }
   const {
-    draw,
+    render,
     tileHeight,
     tileWidth
-  } = initView(modelSetState, { onWindowResize, onKeyDown }, cellIds);
+  } = initView(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods);
 
 
   // init
   modelSetState({
     position: {row: 10, col: 10 },
-    numFoods,
+    remainingFoods: numFoods,
     canExit: false,
     gameOver: false
   });
