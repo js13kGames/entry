@@ -13,7 +13,8 @@ const initModel = (height, width, foodCoveragePercent) => {
   function makeMapCell (cellId) {
     return {
       displayId: cellId,
-      canEnter: cellId > OUT_OF_BOUNDS_CUTOFF
+      canEnter: cellId > OUT_OF_BOUNDS_CUTOFF,
+      itemId: null
     }
   }
 
@@ -114,7 +115,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     while (foodsRemaining) {
       const index = floor(random() * openSquares.length);
       const square = openSquares[index];
-      square.displayId = PIZZA;
+      square.itemId = PIZZA;
       openSquares = openSquares.slice(0, index).concat(openSquares.slice(index + 1));
       foodsRemaining--;
     }
