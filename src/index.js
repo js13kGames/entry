@@ -1,1 +1,1 @@
-initController();
+initGameController();

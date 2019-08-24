@@ -1,4 +1,4 @@
-const initController = () => {
+const initLevel1 = (nextLevel) => {
   const loop = () => {
     const state = getState();
     const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
@@ -26,7 +26,7 @@ const initController = () => {
   const onWindowResize = (bodyDimensions) => setState(bodyDimensions);
   const onKeyDown = (which) => {
     setState((state) => {
-      if (state.gameOver) return;
+      if (state.gameOver) return nextLevel();
       let row = 0;
       let col = 0;
       switch (which) {
