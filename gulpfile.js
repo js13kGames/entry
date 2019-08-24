@@ -1,6 +1,10 @@
-const { src, dest, parallel, watch } = require('gulp');
+const { src, dest, parallel, watch, series } = require('gulp');
 const minifyCSS = require('gulp-csso');
 const concat = require('gulp-concat');
+const uglify = require('gulp-uglify-es').default;
+const gulpif = require('gulp-if');
+const htmlmin = require('gulp-htmlmin');
+const zip = require('gulp-zip');
 
 const env = process.env.NODE_ENV;
 const isProd = env === 'production';
@@ -8,6 +12,7 @@ const isDev = env === 'development';
 
 function html () {
   return src('src/index.html')
+    .pipe(gulpif(isProd, htmlmin({ collapseWhitespace: true })))
     .pipe(dest('dist'));
 }
 
@@ -20,6 +25,7 @@ function css () {
 function js () {
   return src(['src/*.pkg.js', 'src/index.js'], { sourcemaps: isDev })
     .pipe(concat('game.min.js'))
+    .pipe(gulpif(isProd, uglify()))
     .pipe(dest('dist', { sourcemaps: isDev && '.' }));
 }
 
@@ -29,16 +35,16 @@ function dev () {
   watch('src/*.html', html);
 }
 
-// TODO:
-// - minify (ensure dead code elimination)
-// - uglify
-// - zip
-
+function z () {
+  return src('dist/*')
+    .pipe(zip('backtoskullisland.zip'))
+    .pipe(dest('dist'));
+}
 
 module.exports = {
   js,
   css,
   html,
   dev,
-  default: parallel(html, css, js)
+  default: series( parallel(html, css, js), z )
 };
