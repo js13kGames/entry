@@ -11,9 +11,12 @@ export let Game = {
   tick () {
     requestAnimationFrame(Game.tick)
 
+    Input.preUpdate()
+
     Game.scene.step()
-    Game.scene.render()
 
     Input.postUpdate()
+
+    Game.scene.render()
   }
 }
