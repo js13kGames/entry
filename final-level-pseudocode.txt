@@ -1,0 +1,136 @@
+1 map
+  cropped view
+  2-3 sceneries
+    ground
+    mid distance
+    far distance
+
+characters
+  1 user
+  1 computer (with auto movements)
+characterState
+  currentMove
+  location
+  direction facing
+  health
+
+Moves
+  ready
+  move
+  block
+  attacking
+  damaging
+  disabled
+  jumping?
+
+Attack
+  onWhichLocation
+  attackPhaseLength
+  disabledPhaseLength
+  damageAmount
+
+Goal
+  maintain your health
+
+
+---
+To Start
+  initialize both Character states
+
+event sequence
+  get current state
+  validation of event
+  calculate effects of action
+  set effect to state
+
+On LEFT/RIGHT direction key press
+  check current state to see if you can act (are you disabled, in the middle of an attack?)
+    if can't disregard
+    else continue
+  check location to move, to see if it is a valid location (off map? is TRex there?)
+    if can't disregard
+    else continue
+  check if location is under attack
+    if so calculate effects of attack
+  set new location
+
+On key press DOWN
+  check current state to see if you can act (are you disabled, in the middle of an attack?)
+    if can't disregard
+    else continue
+  set state to blocking
+
+on key up DOWN
+  // not really necessary, but might be helpful for consistency
+  check current state to see if you can act (are you disabled, in the middle of an attack?)
+    if can't disregard
+    else continue
+  set temp state to READY
+  check if attacked
+  set calculated state and attack effects
+
+On click
+  check current state to see if you can act (are you disabled, in the middle of an attack?)
+    if can't disregard
+    else continue
+  calculate attack location
+    one spot in the same direction the character is facing (characterState)
+  check if opponent is in the under attack location
+    if so calculate effects of attack
+  start attacking sequence
+  set effects state
+
+startAttackSequence
+  set current state to attacking
+  wait XXX amount of time
+  start disabled sequence (resetting position of attack)
+
+check if attacked
+  see if subject next to opponent
+    if not break out
+  see if opponent is facing subject
+    if not break out
+  see if opponent is attacking
+    if not break out
+  see if subject is blocking
+    if so break out
+  calculate new health dependent on damage of opponent's attack strength
+  calculate new position dependent on opponent's attack force.
+    check location to move, to see if it is a valid location (off map? is TRex there?)
+      if can't disregard
+  start disabled sequence (recovering from attack)
+  check if out of health
+    if so send out of health event
+  set calculated effects
+
+startDisabledSequence
+  set as disabled
+  wait xxx amount of time
+  set current state to ready
+
+
+---
+computer intelligence
+
+step
+  same as onkeyPress LEFT/RIGHT from above
+
+move sequence (Always moves towards opponent)
+  takes at most XXX steps toward
+    if didn't move, start pre attack sequence
+  waits for XXX time before restarting sequence
+
+preattack sequence
+  wait for xxx sec
+  start attack sequence
+
+attack sequence
+  set attacking
+  wait for xxx sec
+  start retreat sequence
+
+retreat sequence
+  set as disabled
+  step away from opponent
+  wait xxx sec
+  start move sequence
