@@ -11,11 +11,12 @@ const initModel = (height, width, foodCoveragePercent) => {
   const EXIT = uid();
 
   const map = [];
-  function makeMapCell (cellId) {
+  function makeMapCell (cellId, imgData) {
     return {
       displayId: cellId,
       canEnter: cellId > OUT_OF_BOUNDS_CUTOFF,
-      itemId: null
+      itemId: null,
+      imgData
     }
   }
 
@@ -75,6 +76,41 @@ const initModel = (height, width, foodCoveragePercent) => {
     ]
   }
 
+  const buildingsPixels = {};
+
+  const building2x4Img = (() => {
+    const otherCanvas = document.createElement('canvas');
+    const ctx = otherCanvas.getContext('2d');
+    ctx.canvas.width = 200;
+    ctx.canvas.height = 400;
+
+    ctx.beginPath();
+    ctx.fillStyle = 'gray';
+    ctx.fillRect(0, 0, 200, 400);
+
+    const windowWidth = 20;
+    const windowGutter = 12;
+    const windowHeight = 30;
+    ctx.fillStyle = 'blue';
+    ctx.beginPath();
+    for (var y = 8; (y + windowHeight) < 400; y += windowHeight + windowGutter) {
+      for (var x = 10; x < 200; x += (windowWidth + windowGutter)) {
+        ctx.fillRect(x, y, windowWidth, windowHeight);
+      }
+    }
+    return ctx.getImageData(0, 0, 200, 400);
+  })();
+  const canvas = document.createElement('canvas');
+  const newCtx = canvas.getContext('2d');
+  buildingsPixels['2x4'] = buildings['2x4'].map((row, rowIdx) => (
+    row.map((_, colIdx) => {
+      newCtx.putImageData(building2x4Img, colIdx * -100, rowIdx * -100);
+      return newCtx.getImageData(0, 0, 100, 100);
+    })
+  ));
+
+  console.log(buildingsPixels)
+
   // Set map height and width
   // 1 = player can access, 0 = can't
   function initMap(height, width) {
@@ -87,7 +123,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   }
 
   // Make sure there is space on the map to add one building
-  function addBuilding(map, row, column, building) {
+  function addBuilding(map, row, column, building, pxs) {
     try {
       const start = map[row][column];
       const end = map[row + building.length - 1][column + building[0].length - 1];
@@ -97,8 +133,8 @@ const initModel = (height, width, foodCoveragePercent) => {
       return;
     }
     building.forEach((buildingRow, rowIndex) => {
-      buildingRow.forEach((cell, cellIndex) => {
-        map[row + rowIndex][column + cellIndex] = makeMapCell(cell);
+      buildingRow.forEach((cell, colIndex) => {
+        map[row + rowIndex][column + colIndex] = makeMapCell(cell, pxs[rowIndex][colIndex]);
       })
     })
   }
@@ -106,11 +142,12 @@ const initModel = (height, width, foodCoveragePercent) => {
   // TODO add a variety of buildings
   function addBuildings() {
     const b = buildings['2x4'];
+    const bpx = buildingsPixels['2x4'];
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
-          addBuilding(map, row, column, b);
+          addBuilding(map, row, column, b, bpx);
         }
       }
     }

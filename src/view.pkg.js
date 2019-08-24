@@ -22,7 +22,7 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) =>
   } = cellIds;
   const cellStyles = {
     [OUT_OF_BOUNDS]: 'lightblue',
-    [BLOCKED]: 'gray',
+    [BLOCKED]: 'transparentx',
     [BUILDING_2X4]: 'brown',
     // [OUT_OF_BOUNDS_CUTOFF]:
     [STREET]: 'black',
@@ -86,10 +86,15 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) =>
         const cell = mapView[y][x]
         ctx.fillStyle = cellStyles[cell.displayId];
         ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
+        if (cell.displayId < OUT_OF_BOUNDS_CUTOFF && cell.imgData) {
+          ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+        }
         if (cell.itemId) {
-          var img = new Image();
-          img.src = pizzaDataUrl;
-          ctx.drawImage(img, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+          if (cell.itemId === PIZZA) {
+            var img = new Image();
+            img.src = pizzaDataUrl;
+            ctx.drawImage(img, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+          }
         }
       }
     }
