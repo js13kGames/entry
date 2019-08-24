@@ -26,7 +26,7 @@ const initLevel1 = (nextLevel) => {
   const onWindowResize = (bodyDimensions) => setState(bodyDimensions);
   const onKeyDown = (which) => {
     setState((state) => {
-      if (state.gameOver) return nextLevel();
+      if (state.gameOver) return;
       let row = 0;
       let col = 0;
       switch (which) {
@@ -68,6 +68,10 @@ const initLevel1 = (nextLevel) => {
         let gameOver = state.gameOver;
         if (cell.displayId === cellIds.EXIT) {
           gameOver = true;
+          setTimeout(() => {
+            viewCleanUp();
+            nextLevel();
+          }, 2000);
         }
         return { position: proposedNewPosition, remainingFoods: pizzaCount, canExit, gameOver };
       }
@@ -76,8 +80,9 @@ const initLevel1 = (nextLevel) => {
   const {
     render,
     tileHeight,
-    tileWidth
-  } = initView(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods);
+    tileWidth,
+    cleanUp: viewCleanUp
+  } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods);
 
 
   // init

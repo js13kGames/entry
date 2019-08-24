@@ -1,15 +1,13 @@
-const initView = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
+const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
   const body = document.body;
   const element = type => document.createElement(type);
   const rAF = window.requestAnimationFrame;
   const cancelAF = window.cancelAnimationFrame;
-  const windowAddEventListener = window.addEventListener.bind(window);
 
   const canvas = element('canvas');
   const ctx = canvas.getContext('2d');
   const tileHeight = 100;
   const tileWidth = 100;
-
 
   const {
     OUT_OF_BOUNDS,
@@ -119,28 +117,36 @@ const initView = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) =>
 
   // init
   body.appendChild(canvas);
-  windowAddEventListener(
-    'resize',
-    () => onWindowResize({
-      width: body.clientWidth,
-      height: body.clientHeight
-    })
-  );
+  const removeListeners = [
+    addEventListener(
+      window,
+      'resize',
+      () => onWindowResize({
+        width: body.clientWidth,
+        height: body.clientHeight
+      })
+    ),
+    addEventListener(
+      window,
+      'keydown',
+      (e) => {
+        onKeyDown(e.which)
+      }
+    )
+  ];
 
   setState({
     width: body.clientWidth,
     height: body.clientHeight
   });
-  windowAddEventListener(
-    'keydown',
-    (e) => {
-      onKeyDown(e.which)
-    }
-  );
 
   return {
     render,
     tileHeight,
-    tileWidth
+    tileWidth,
+    cleanUp: () => {
+      body.removeChild(canvas);
+      removeListeners.forEach(remove => remove());
+    }
   }
 }
