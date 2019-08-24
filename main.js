@@ -57,9 +57,9 @@ var level_2 = `
 #.#.####e.i.#
 #.#....#....#
 #.####.#.####
-#....#.#....#
+#s...#.#....#
 ####.#.####.#
-#p..s#......#
+#p...#......#
 #############
 `
 
@@ -69,7 +69,7 @@ var level_3 = `
 #..........i#
 ######..##.##
 #e......#...#
-#ie..#..#i.e#
+#i.e.#..#i.e#
 ######..#####
 #p.........s#
 #############
@@ -92,7 +92,7 @@ var takeInput = false;/* Variable determines if we read the keyboard or not */
 /* Game Init Code */
 
 
-
+var timer = 13; // Timer which when decrements every second and if time runs out player loses
 var target = "e"; //which object to decrement the goal
 var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
@@ -132,7 +132,7 @@ deadInnocentSprite.src = "sprites/target3.png";
 
 /* Shadow Player sprite */
 var shadowPlayerSprite = new Image();
-shadowPlayerSprite.src = "sprite_3.png";
+shadowPlayerSprite.src = "sprite_shadowPlayer.png";
 
 
 //console.log("Run " + hasRun + " times");
@@ -207,6 +207,7 @@ let shadowPlayer = {
 
 // this changes which level we are current on.
 function gotoNextLevel() {
+    
     if (currentLevelIndex < levels.length - 1) {
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
@@ -216,7 +217,7 @@ function gotoNextLevel() {
     } else if (secondTry == false) {
         /* SETUP GAME FOR SECOND GOTHRU */
         secondTry = true;
-        //target = "i";
+        target = "i";
         player.key = 's'
         currentLevelIndex = 0;
         moveShadowCounter = 0;
@@ -243,6 +244,12 @@ function setupGoal(target) {
 
 
 function levelTransition(timeout) {
+
+    // stop the timer
+    clearTimeout(timerHandler);
+    timerRunning = true;
+    timer = 13;
+
     ctx.fillStyle = "black";
     let levelHeight = (this_level.length - 2) * gridSize;
     if (animationCounter < levelHeight) {
@@ -259,8 +266,12 @@ function levelTransitionEnd(timeout) {
         animationCounter--;
         setTimeout(levelTransitionEnd, timeout / 2);
     } else {
+        //allow the game to start "moving" again
         takeInput = true;
         transition = false;
+        //timer restart
+        timer = 13;
+        timerRunning = false;
     }
 }
 
@@ -270,7 +281,7 @@ function levelTransitionEnd(timeout) {
 /* CANVAS DRAWING FUNCTIONS */
 
 /* A function for drawing pixel font */
-function drawPixelText(message, x, y, size) {
+function drawPixelText(message, x, y, size, italics=false) {
     let i;
     let pixelX = x;
     let pixelY = y;
@@ -280,10 +291,12 @@ function drawPixelText(message, x, y, size) {
     for (i = 0; i < message.length; i++) {
         let j;
         let drawY = pixelY;
+        
         let drawX = pixelX;
         if (letters[message[i]] != undefined) {
             for (j = 0; j < letters[message[i]].length; j++) {
                 let k;
+                if(italics) pixelX += 1;        
                 for (k = 0; k < letters[message[i]][j].length; k++) {
                     if (letters[message[i]][j][k] == 1) {
                         ctx.fillRect(drawX, drawY, size, size);
@@ -365,13 +378,14 @@ function drawLevel(level_array) {
         }
     }
 
-    // DRAW SIDE BAR
+    /** DRAW SIDE BAR  */
     ctx.fillStyle = "black";
     let sidebarX = (this_level.length + 1)
     ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
     /* draw score */
-    drawPixelText("score: " + score.toString(), (sidebarX + 1) * gridSize, 160, 3);
-
+    drawPixelText("score " + score.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
+    /* draw timer */
+    drawPixelText("time: " + timer.toString(), (sidebarX + 1) * gridSize - 20, 210, 3, true);
 
 
     if (transition == true) {
@@ -416,7 +430,12 @@ function checkCollision(x, y) {
                 gameOver();
             }
             return false;
-
+        case 'e':
+            if ('e' != target){
+                this_level[y] = splice(this_level[y], x, y, "E");
+                gameOver();
+            }
+            return false;
         
         default:
             return true;
@@ -520,21 +539,13 @@ function moveShadowPlayer() {
 
 var gameOverCounter = 0;
 function gameOver(){
-    //reset variables then do animation
-    paths = ["", "", ""];
-    score = 0;
-    currentLevelIndex = 0;
-    this_level = levels[currentLevelIndex].split("\n");
-    secondTry = false;
-    target = 'e';
-    setupGoal(target);
-    takeInput = false; //IMPORTANT SET TO TRUE AFTER ANIMATION
+    takeInput = false; //stop player from moving
 
 
     /* Clear any loops */
     clearTimeout(shadowPlayerMoving);
     clearInterval(main);
-
+ 
     //ANIMATION
     gameOverCounter = 0;
     drawGameOver(0.025);
@@ -553,6 +564,14 @@ function drawGameOver(timeout){
         setTimeout(drawGameOver, timeout);
     } else {
         drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
+        drawPixelText("PRESS R TO RESTART", levelWidth/4, levelHeight/1.2, 2);
+        var restart = document.addEventListener("keypress", function(event){
+            console.log(event.keyCode);
+            if (event.keyCode == 114 || event.keyCode == 82){
+                // restart game by reloading page contents
+                window.location.reload(false);
+            }
+        });
     }
 }
 
@@ -566,10 +585,24 @@ function drawGameOver(timeout){
 
 /*Main game event loop */
 
+var timerRunning = false;
+var timerHandler;
+function updateTimer(){
+    if (timer > 0){
+        timer--;
+    } else {
+        gameOver();
+    }
+    timerRunning = false; //set to false so another timeout can start 
+}
+
 function mainLoop() {
     //draw the game
     //console.log('running....');
-
+    if (timerRunning == false){
+        timerRunning = true;
+        timerHandler = setTimeout(updateTimer, 1000);
+    }
     drawLevel(this_level);
     //player input but with timeout to update things
 }
