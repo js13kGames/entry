@@ -3,6 +3,7 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
   // actions
   const READY = uid();
   const BLOCKING = uid();
+  const PREPARING_ATTACK = uid();
   const ATTACKING = uid();
   const DISABLED = uid();
 
@@ -38,6 +39,7 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     actions: {
       READY,
       BLOCKING,
+      PREPARING_ATTACK,
       ATTACKING,
       DISABLED
     },

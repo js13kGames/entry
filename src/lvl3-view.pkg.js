@@ -28,6 +28,8 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
         return 'BLOCKING';
       case actions.ATTACKING:
         return 'ATTACKING';
+      case actions.PREPARING_ATTACK:
+        return 'PREPARING_ATTACK';
       case actions.DISABLED:
         return 'DISABLED';
     }
@@ -48,6 +50,8 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
       ctx.fillStyle = 'red';
     } else if (character.currentAction === actions.ATTACKING) {
       ctx.fillStyle = 'purple';
+    } else if (character.currentAction === actions.PREPARING_ATTACK) {
+      ctx.fillStyle = 'pink';
     } else if (character.currentAction === actions.DISABLED) {
       ctx.fillStyle = 'orange';
     } else {

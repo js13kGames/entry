@@ -153,7 +153,13 @@ const initLevel3 = () => {
       const oppName = state[opponent[name]].location === attackLocation ? opponent[name] : '';
       // start attack sequence = name, name, distance, damage
       setTimeout(() => attack(name, oppName, 1, 10), 500);
-      return state;
+      return {
+        ...state,
+        [name]: {
+          ...state[name],
+          currentAction: actions.PREPARING_ATTACK
+        }
+      };
     })
   }
 
@@ -189,6 +195,7 @@ const initLevel3 = () => {
     }
   }
 
+  // Only used by kong
   function clickHandler (e) {
     startAttackSequence('kong');
   }
