@@ -26,7 +26,7 @@ const initLevel3 = () => {
 
   function move (direction) {
     setState((state) => {
-      if (state.kong.currentAction === actions.DISABLED) {
+      if (state.kong.currentAction === actions.DISABLED || state.kong.currentAction === actions.BLOCKING) {
         return state;
       }
       let proposedLocation = state.kong.location;
@@ -46,7 +46,7 @@ const initLevel3 = () => {
         || proposedLocation < 0
         || proposedLocation === state.trex.location
       ) proposedLocation = state.kong.location; // reset to current state
-      // is location under attack
+      // TODO is location under attack
       return {
         ...state,
         kong: {
@@ -56,6 +56,36 @@ const initLevel3 = () => {
         }
       }
     })
+  }
+
+  function block () {
+    setState(state => {
+      if (state.kong.currentAction === actions.DISABLED) {
+        return state;
+      }
+      return {
+        ...state,
+        kong: {
+          ...state.kong,
+          currentAction: actions.BLOCKING
+        }
+      }
+    });
+  }
+
+  function unblock () {
+    setState(state => {
+      if (state.kong.currentAction === actions.DISABLED) {
+        return state;
+      }
+      return {
+        ...state,
+        kong: {
+          ...state.kong,
+          currentAction: actions.READY
+        }
+      }
+    });
   }
 
   function keydownHandler (key) {
@@ -77,9 +107,20 @@ const initLevel3 = () => {
     }
   }
 
+  function keyupHandler (key) {
+    switch (key) {
+      case 40:
+        // release down
+        unblock();
+        break;
+      default:
+        return;
+    }
+  }
+
   const {
     cleanUp,
     render
-  } = initLevel3View(keydownHandler, actions, directions);
+  } = initLevel3View(keydownHandler, keyupHandler, actions, directions);
   setState({ kong, trex });
 };

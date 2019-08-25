@@ -1,13 +1,18 @@
-const initLevel3View = (onKeydown, actions, directions) => {
+const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const root = document.getElementById('root');
   root.appendChild(canvas);
 
-  const keypress = addEventListener(
+  const keydown = addEventListener(
     window,
     'keydown',
     (e) => onKeydown(e.which)
+  );
+  const keyup = addEventListener(
+    window,
+    'keyup',
+    (e) => onKeyup(e.which)
   );
 
   function renderAction (action) {
@@ -34,7 +39,11 @@ const initLevel3View = (onKeydown, actions, directions) => {
 
         ctx.fillStyle = 'green';
         ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
-        ctx.fillStyle = 'black';
+        if (kong.currentAction === actions.BLOCKING) {
+          ctx.fillStyle = 'red';
+        } else {
+          ctx.fillStyle = 'black';
+        }
         ctx.fillRect(charSize * kong.location, canvas.height - charSize - 20, charSize, charSize);
         ctx.fillStyle = 'yellow';
         ctx.fillRect(
@@ -55,7 +64,8 @@ const initLevel3View = (onKeydown, actions, directions) => {
 
   return {
     cleanUp: () => {
-      keypress();
+      keydown();
+      keyup();
       root.removeChild(canvas);
     },
     render
