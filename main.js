@@ -387,6 +387,14 @@ function drawLevel(level_array) {
     /* draw timer */
     drawPixelText("time: " + timer.toString(), (sidebarX + 1) * gridSize - 20, 210, 3, true);
 
+    /* target draw */
+    drawPixelText("target ", (sidebarX + 1) * gridSize - 20, 110, 3, true);
+    if (target == 'i'){
+        ctx.drawImage(innocentSprite, (sidebarX + 1) * gridSize + 100, 100, innocent.width, innocent.height);
+    } else if (target == 'e'){
+        ctx.drawImage(enemySprite, (sidebarX + 1) * gridSize + 100, 100, enemy.width, enemy.height);
+    }
+
 
     if (transition == true) {
         ctx.fillStyle = "black";
