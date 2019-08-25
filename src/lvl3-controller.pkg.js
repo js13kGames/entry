@@ -48,7 +48,6 @@ const initLevel3 = () => {
       ) proposedLocation = state.kong.location; // reset to current state
       // TODO is location under attack
       return {
-        ...state,
         kong: {
           ...state.kong,
           direction: newDirection,
@@ -64,7 +63,6 @@ const initLevel3 = () => {
         return state;
       }
       return {
-        ...state,
         kong: {
           ...state.kong,
           currentAction: actions.BLOCKING
@@ -79,7 +77,6 @@ const initLevel3 = () => {
         return state;
       }
       return {
-        ...state,
         kong: {
           ...state.kong,
           currentAction: actions.READY

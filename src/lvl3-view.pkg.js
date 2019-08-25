@@ -28,32 +28,42 @@ const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
     }
   }
 
+  function renderMap (canvasHeight, canvasWidth) {
+    // grass
+    ctx.fillStyle = 'green';
+    ctx.fillRect(0, canvasHeight - 20, canvasWidth, 20);
+  }
+
+  function renderCharacter (character, charSize, charColor) {
+    const eyeSize = charSize / 5;
+    const eyeOffset = character.direction === directions.LEFT ? 0 : charSize - eyeSize;
+
+
+    if (character.currentAction === actions.BLOCKING) {
+      ctx.fillStyle = 'red';
+    } else {
+      ctx.fillStyle = charColor;
+    }
+    ctx.fillRect(charSize * character.location, canvas.height - charSize - 20, charSize, charSize);
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(
+      charSize * character.location + eyeOffset,
+      canvas.height - 20 - charSize + eyeSize,
+      eyeSize,
+      eyeSize
+    );
+  }
+
   function render (mapData, kong, trex) {
     return new Promise((resolve, reject) => {
       try {
         canvas.height = body.clientHeight;
         canvas.width = body.clientWidth;
-        const charSize = canvas.width / mapData.width;
-        const eyeSize = charSize / 5;
-        const eyeOffset = kong.direction === directions.LEFT ? 0 : charSize - eyeSize;
 
-        ctx.fillStyle = 'green';
-        ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
-        if (kong.currentAction === actions.BLOCKING) {
-          ctx.fillStyle = 'red';
-        } else {
-          ctx.fillStyle = 'black';
-        }
-        ctx.fillRect(charSize * kong.location, canvas.height - charSize - 20, charSize, charSize);
-        ctx.fillStyle = 'yellow';
-        ctx.fillRect(
-          charSize * kong.location + eyeOffset,
-          canvas.height - 20 - charSize + eyeSize,
-          eyeSize,
-          eyeSize
-        );
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(charSize * trex.location, canvas.height - charSize - 20, charSize, charSize);
+        renderMap(canvas.height, canvas.width);
+        renderCharacter(kong, canvas.width / mapData.width, 'black');
+        renderCharacter(trex, canvas.width / mapData.width, 'blue');
+
         resolve();
       } catch (e) {
         console.error(e);
