@@ -9,37 +9,49 @@ export class Ship extends Sprite.class {
     constructor(props) {
         super(props);
 
+        // The stats & info for the ship loaded from /ships/*.js
+        var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
+
         // Default properties for all ships
         this.type = 'ship';
-        this.turnRate = 4;
-        this.locationHistory = [];
-        this.maxSpeed = 3;
+
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
+        this.locationHistory = [];
         this.rewinding = 0;
         this.fireDt = 0;
         this.rewindDt = 0;
-        this.rof = .25; // Fire 4x a second
-        this.ror = 5 // Rewind once every 5 seconds
-        this.scale = 2;
-        this.mass = 4;
-        this.thrust = 4;
+        this.lines = {};
+        this.lines.random = [];
+
+        this.turnRate = props.turnRate || shipData.turnRate;
+        this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
+
+        this.rof = props.rof || shipData.rof;
+        this.ror = props.rof || shipData.rof;
+
+        // These are all done by Sprite(?)
+        this.rotation = 0;
+        this.width = props.width;
+        this.x = props.x;
+        this.y = props.y;
+        this.color = props.color;
+
+        // Modify mass & thrust values defined in shipData specs to make less crazy
+        this.mass = shipData.mass + 11;
+        this.thrust = shipData.thrust + 11;
+        this.rof = 1 / this.rof;
+
         this.cs = props.collisionSystem;
         this.player = props.player;
-        this.lines = {};
 
-        // Assign props from the ship type file e.g. 'diamondback', AND
-        // overwrite with any weird props that were passed into new Ship(...)
-        Object.assign(this, ships[props.shipType || 'tri'], props);
+        this.lines.body = shipData.lines.body || [];
+        this.lines.detail = shipData.lines.detail || [];
+        this.lines.thrust = shipData.lines.thrust || [];
 
-        this.lines.random = [];
-        this.lines.body = this.lines.body ? this.lines.body.slice() : [];
-        this.lines.detail = this.lines.detail ? this.lines.detail.slice() : [];
-        this.lines.thrust = this.lines.thrust ? this.lines.thrust.slice() : [];
-
-        // Scale all the lines (except ship as that would * scale * scale)
+        // Scale all the lines (except shipData as that would * scale * scale)
         Object.keys(this.lines).forEach(lineType => {
             this.lines[lineType].forEach((line, i) => {
-                //line.forEach((v, i) => { line[i] *= this.scale });
+                line.forEach((v, i) => { line[i] *= this.scale });
             });
         });
 
@@ -63,11 +75,6 @@ export class Ship extends Sprite.class {
         );
         this.hitbox.scale = this.scale;
         this.hitbox.owner = this;
-
-        // Modify mass & thrust values defined in ship specs to make less crazy
-        this.mass += 11;
-        this.thrust += 11;
-        this.rof = 1 / this.rof;
     }
 
     /**
