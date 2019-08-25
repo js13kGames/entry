@@ -134,6 +134,10 @@ deadInnocentSprite.src = "sprites/target3.png";
 var shadowPlayerSprite = new Image();
 shadowPlayerSprite.src = "sprite_shadowPlayer.png";
 
+/* wall sprite */
+var wallSprite = new Image();
+wallSprite.src = "sprites/wall_2.png";
+
 
 /* game object definitions */
 
@@ -315,7 +319,8 @@ function drawLevel(level_array) {
                 case '#':
                     //draw wall
                     ctx.fillStyle = wall.color;
-                    ctx.fillRect(gridSize * x, gridSize * y, wall.width, wall.height);
+                    ctx.drawImage(wallSprite, x * gridSize, y * gridSize, wall.width, wall.height);
+                    //ctx.fillRect(gridSize * x, gridSize * y, wall.width, wall.height);
                     break;
                 case 'p':
                     /* placeholder graphics */
@@ -366,7 +371,7 @@ function drawLevel(level_array) {
 
     /** DRAW SIDE BAR  */
     ctx.fillStyle = "black";
-    let sidebarX = (this_level.length + 1)
+    let sidebarX = (this_level.length + 2)
     ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
     /* draw score */
     drawPixelText("score " + score.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
@@ -384,7 +389,7 @@ function drawLevel(level_array) {
 
     if (transition == true) {
         ctx.fillStyle = "black";
-        let levelWidth = (this_level[1].length - 1) * gridSize;
+        let levelWidth = (this_level[1].length) * gridSize;
         ctx.fillRect(0, 32, levelWidth, animationCounter);
     }
 
@@ -536,7 +541,7 @@ function gameOver(){
 
 function drawGameOver(timeout){
     ctx.fillStyle = "red";
-    let levelWidth = (this_level[1].length + 5) * gridSize;
+    let levelWidth = (this_level[1].length + 6) * gridSize;
     ctx.fillRect(0, 32, levelWidth, gameOverCounter);
     let levelHeight = (this_level.length - 2) * gridSize;
     if (gameOverCounter < levelHeight){
