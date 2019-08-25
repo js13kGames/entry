@@ -22,6 +22,7 @@ export class Ship extends Sprite.class {
         this.rewindDt = 0;
         this.lines = {};
         this.lines.random = [];
+        this.scale = 2;
 
         this.turnRate = props.turnRate || shipData.turnRate;
         this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
@@ -30,11 +31,11 @@ export class Ship extends Sprite.class {
         this.ror = props.rof || shipData.rof;
 
         // These are all done by Sprite(?)
-        this.rotation = 0;
-        this.width = props.width;
-        this.x = props.x;
-        this.y = props.y;
-        this.color = props.color;
+        //this.rotation = 0;
+        //this.width = props.width;
+        //this.x = props.x;
+        //this.y = props.y;
+        //this.color = props.color;
 
         // Modify mass & thrust values defined in shipData specs to make less crazy
         this.mass = shipData.mass + 11;
