@@ -499,6 +499,19 @@ function moveShadowPlayer() {
         }
         moveShadowCounter++;
     }
+    
+    /* Kill Target Code */
+
+    if (this_level[shadowPlayer.y-1][shadowPlayer.x] == 'e'){
+        this_level[shadowPlayer.y-1] = splice(this_level[shadowPlayer.y-1], shadowPlayer.x, 1, "E");
+    } else if (this_level[shadowPlayer.y+1][shadowPlayer.x] == 'e'){
+        this_level[shadowPlayer.y+1] = splice(this_level[shadowPlayer.y+1], shadowPlayer.x, 1, "E");
+    } else if (this_level[shadowPlayer.y][shadowPlayer.x+1] == 'e'){
+        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x+1, 1, "E");
+    } else if (this_level[shadowPlayer.y][shadowPlayer.x-1] == 'e') {
+        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x-1, 1, "E");
+    }
+
     shadowPlayerMoving = setTimeout(moveShadowPlayer, 500);
 }
 
