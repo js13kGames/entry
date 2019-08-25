@@ -88,6 +88,76 @@ const initLevel3 = () => {
     });
   }
 
+  function recoverFromAttack (name, time) {
+    setState(state => {
+      return {
+        [name]: {
+          ...state[name],
+          currentAction: actions.DISABLED
+        }
+      }
+    });
+    setTimeout(() => setState(state => {
+      return {
+        [name]: {
+          ...state[name],
+          currentAction: actions.READY
+        }
+      }
+    }), time);
+  }
+
+  function attack (attacker, opponent, distance, damage) {
+    setState(state => {
+      const attState = state[attacker];
+      const oppState = state[opponent];
+      let newState = {
+        [attacker]: {
+          ...attState,
+          currentAction: actions.ATTACKING
+        }
+      };
+      if (opponent) {
+        let newLocation;
+        if (attState.location < oppState.location) {
+          newLocation = oppState.location + distance;
+        } else {
+          newLocation = oppState.location - distance;
+        }
+        newState[opponent] = {
+          ...oppState,
+          health: oppState.health - damage,
+          location: newLocation
+        }
+      };
+      // both will need to recover after the attack
+      setTimeout(() => recoverFromAttack(attacker, 1500), 1000);
+      setTimeout(() => recoverFromAttack(opponent, 1000), 500);
+      return newState;
+    });
+  }
+
+  function startAttackSequence (name) {
+    setState(state => {
+      const char = state[name];
+      // check if can attack
+      if (char.currentAction === actions.DISABLED) return state;
+      // calculate attack location
+      let attackLocation = char.location;
+      if (char.direction === directions.LEFT) {
+        attackLocation--;
+      } else {
+        attackLocation++;
+      }
+      // check if opponent is in attack location
+      const oppName = state[opponent[name]].location === attackLocation ? opponent[name] : '';
+      // start attack sequence = name, name, distance, damage
+      setTimeout(() => attack(name, oppName, 1, 10), 500);
+      return state;
+    })
+  }
+
+  // Only used by kong
   function keydownHandler (key) {
     switch (key) {
       case 37:
@@ -107,6 +177,7 @@ const initLevel3 = () => {
     }
   }
 
+  // Only used by kong
   function keyupHandler (key) {
     switch (key) {
       case 40:
@@ -118,10 +189,14 @@ const initLevel3 = () => {
     }
   }
 
+  function clickHandler (e) {
+    startAttackSequence('kong');
+  }
+
   const {
     cleanUp,
     render
-  } = initLevel3View(keydownHandler, keyupHandler, actions, directions);
+  } = initLevel3View(keydownHandler, keyupHandler, clickHandler, actions, directions);
   setState({
     kong: initialKongState,
     trex: initialTrexState

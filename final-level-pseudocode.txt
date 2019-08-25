@@ -21,7 +21,7 @@ Actions
   (x) block
   (x) attacking
   damaging
- (x)  disabled
+  (x) disabled
   jumping?
 
 Attack
@@ -71,20 +71,20 @@ on key up DOWN
   set calculated state and attack effects
 
 On click
-  check current state to see if you can act (are you disabled, in the middle of an attack?)
-    if can't disregard
-    else continue
-  calculate attack location
-    one spot in the same direction the character is facing (characterState)
-  check if opponent is in the under attack location
-    if so calculate effects of attack
-  start attacking sequence
-  set effects state
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) calculate attack location
+    (x) one spot in the same direction the character is facing (characterState)
+  (x) check if opponent is in the under attack location
+    (x) if so calculate effects of attack
+  (x) start attacking sequence
+  (x) set effects state
 
-startAttackSequence
-  set current state to attacking
-  wait XXX amount of time
-  start disabled sequence (resetting position of attack)
+(x) startAttackSequence
+  (x) set current state to attacking
+  (x) wait XXX amount of time
+  (x) start disabled sequence (resetting position of attack)
 
 check if attacked
   see if subject next to opponent
@@ -104,10 +104,10 @@ check if attacked
     if so send out of health event
   set calculated effects
 
-startDisabledSequence
-  set as disabled
-  wait xxx amount of time
-  set current state to ready
+(x) startDisabledSequence
+  (x) set as disabled
+  (x) wait xxx amount of time
+  (x) set current state to ready
 
 
 ---
