@@ -1,3 +1,5 @@
+/* JavaScript source code for backstabbers.  There were no game frameworks used mostly just relying on basic canvas manipulation*/
+
 'use strict';
 
 /* boiler plate canvas initialization */
@@ -28,6 +30,20 @@ var temp_level = `
 ##############################
 `;
 
+/* 
+    All levels are represented through template literals denoting the location of each game object.
+    These templates are then split by new line characters into an array which many functions use to determine what the level looks like.
+    This makes it easy for the main game event loop to draw each object and also makes collision checking a breeze.
+    However, there are a few drawbacks:
+        1. Not possible to implement incremental movement (i.e. moving pixel by pixel)
+        2. Non-square based level designs are basically impossible. 
+        3. String manipulation can be a hassle in JavaScript due to their immutablility.
+    And a bunch more which I can't think of right now.
+    This really only makes sense for a primitive or adventure like game; a category this game falls under!
+
+*/
+
+
 /*
 LEGEND for char object symbols
 p = player
@@ -39,7 +55,8 @@ I = dead innocent
 s = player second location
 */
 
-//twenty second timelimit per level
+
+
 var level_1 = `
 #############
 #..s........#
@@ -50,7 +67,7 @@ var level_1 = `
 #...........#
 #...........#
 #############
-`
+`;
 var level_2 = `
 #############
 #...####....#
@@ -61,7 +78,7 @@ var level_2 = `
 ####.#.####.#
 #p...#......#
 #############
-`
+`;
 
 var level_3 = `
 #############
@@ -73,11 +90,11 @@ var level_3 = `
 ######..#####
 #p.........s#
 #############
-`
+`;
 
 var levels = [level_1, level_2, level_3];
-var paths = ["", "", ""];
-var secondTry = false;
+var paths = ["", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
+var secondTry = false;//signals if the player is on the second half of the game. 
 var currentLevelIndex = 0;
 
 // 30 * 32 = 960 for widdth
@@ -232,12 +249,18 @@ function setupGoal(target) {
     }
 }
 
-
+var oldScore = 0;
 function levelTransition(timeout) {
 
     // stop the timer
     clearTimeout(timerHandler);
+    if(oldScore == 0){
+        oldScore = timer;
+        score += timer;
+    }
     timerRunning = true;
+    //add remaining time to the player's score
+    
     timer = 13;
 
     ctx.fillStyle = "black";
@@ -256,6 +279,8 @@ function levelTransitionEnd(timeout) {
         animationCounter--;
         setTimeout(levelTransitionEnd, timeout / 2);
     } else {
+        oldScore = 0;
+
         //allow the game to start "moving" again
         takeInput = true;
         transition = false;
@@ -303,7 +328,7 @@ function drawPixelText(message, x, y, size, italics=false) {
 
 
 
-
+var drawnScore = 0;
 function drawLevel(level_array) {
 
 
@@ -374,7 +399,8 @@ function drawLevel(level_array) {
     let sidebarX = (this_level.length + 2)
     ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
     /* draw score */
-    drawPixelText("score " + score.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
+    if(drawnScore < score) drawnScore++;
+    drawPixelText("score " + drawnScore.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
     /* draw timer */
     drawPixelText("time: " + timer.toString(), (sidebarX + 1) * gridSize - 20, 210, 3, true);
 
@@ -409,6 +435,15 @@ function checkCollision(x, y) {
 
         case "I":
             return false;
+        case 's':
+        case 'p':
+            if (secondTry == true){
+                gameOver();
+                return false;
+            } else {
+                return true;
+            }
+
         
         case target:
             // change out the target
@@ -549,6 +584,7 @@ function drawGameOver(timeout){
         gameOverCounter++;
         setTimeout(drawGameOver, timeout);
     } else {
+        // include score?
         drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
         drawPixelText("PRESS R TO RESTART", levelWidth/4, levelHeight/1.2, 2);
         var restart = document.addEventListener("keypress", function(event){
