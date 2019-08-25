@@ -135,20 +135,6 @@ var shadowPlayerSprite = new Image();
 shadowPlayerSprite.src = "sprite_shadowPlayer.png";
 
 
-//console.log("Run " + hasRun + " times");
-
-
-
-
-/* player controls */
-
-const moveUp = 119;
-const moveDown = 115;
-const moveRight = 100;
-const moveLeft = 97;
-
-// use string array for drawing levels?
-
 /* game object definitions */
 
 /* enemy object */
@@ -423,7 +409,7 @@ function checkCollision(x, y) {
             // change out the target
             this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
             goal--;
-            score += 100;
+            score += 10;
             if (goal <= 0) {
                 transition = true;
                 takeInput = false;
@@ -465,6 +451,9 @@ function updatePlayerArray(dx, dy, object) {
 
 
 
+
+/* GETTING GAME INPUT */
+
 var inputDelay = 50;
 var stopInput = false;
 
@@ -472,53 +461,23 @@ function resumeInput() {
     stopInput = false;
 }
 
-/* GETTING GAME INPUT */
-document.addEventListener("keypress", function (event) {
-    if ((takeInput) && (!stopInput)) {
-        switch (event.keyCode) {
-            case moveUp:
-                //call move function
-                if (checkCollision(player.x, player.y - 1)) {
-                    //alter the level array
-                    updatePlayerArray(0, -1, player);
-                    //update array
-                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "n";
-                }
-                stopInput = true;
-                setTimeout(resumeInput, inputDelay);
-                break;
-            case moveDown:
-                if (checkCollision(player.x, player.y + 1)) {
-                    updatePlayerArray(0, 1, player);
-                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "s";
-                }
-                stopInput = true;
-                setTimeout(resumeInput, inputDelay);
-                break;
-            case moveLeft:
-                if (checkCollision(player.x - 1, player.y)) {
-                    updatePlayerArray(-1, 0, player);
-                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "w";
-                }
-                stopInput = true;
-                setTimeout(resumeInput, inputDelay);
-                break;
-            case moveRight:
-                if (checkCollision(player.x + 1, player.y)) {
-                    updatePlayerArray(1, 0, player);
-                    if (secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + "e";
-                }
-                stopInput = true;
-                setTimeout(resumeInput, inputDelay);
-                break;
-            //NEXT LEVEL
-            case 110://n
-                gotoNextLevel();
-                break;
+function movePlayer(dx, dy, direction){
+    if ((takeInput) && (!stopInput)){
+        if (checkCollision(player.x+dx, player.y+dy)){
+            updatePlayerArray(dx, dy, player);
+            if(secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
         }
     }
-});
+    stopInput = true;
+    setTimeout(resumeInput, inputDelay);
+}
 
+Mousetrap.bind('w', function(){movePlayer(0, -1, 'n')});
+Mousetrap.bind('s', function(){movePlayer(0, 1, 's')});
+Mousetrap.bind('a', function(){movePlayer(-1, 0, 'w')});
+Mousetrap.bind('d', function(){movePlayer(1, 0, 'e')});
+
+/* MOVING SHADOW PLAYER */
 var shadowPlayerMoving;
 
 function moveShadowPlayer() {
