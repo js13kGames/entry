@@ -5,6 +5,7 @@ const uglify = require('gulp-uglify-es').default;
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
 const gulpZip = require('gulp-zip');
+const del = require('del');
 
 const env = process.env.NODE_ENV;
 const isProd = env === 'production';
@@ -35,6 +36,10 @@ function dev () {
   watch('src/*.html', html);
 }
 
+function clean () {
+  return del('./dist/*');
+}
+
 function zip () {
   return src('dist/*')
     .pipe(gulpZip('backtoskullisland.zip'))
@@ -46,5 +51,5 @@ module.exports = {
   css,
   html,
   dev: series(parallel(html, css, js), dev),
-  default: series(parallel(html, css, js), zip)
+  default: series(clean, parallel(html, css, js), zip)
 };
