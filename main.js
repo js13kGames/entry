@@ -64,8 +64,8 @@ var level_1 = `
 #.......i...#
 #.p.........#
 #.......e...#
-#...........#
-#...........#
+#############
+#############
 #############
 `;
 var level_2 = `
@@ -92,9 +92,21 @@ var level_3 = `
 #############
 `;
 
-var levels = [level_1, level_2, level_3];
-var paths = ["", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
-var secondTry = false;//signals if the player is on the second half of the game. 
+var level_4 = `
+#############
+##...#...#.e#
+##ei...#...i#
+######.######
+#s........e.#
+###.##.#.####
+###e##p#i####
+######i######
+#############
+`;
+
+var levels = [level_1, level_2, level_3, level_4];
+var paths = ["", "", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
+var secondTry = false;//signals if the player is on the second attempt of a level. 
 var currentLevelIndex = 0;
 
 // 30 * 32 = 960 for widdth
@@ -124,7 +136,7 @@ takeInput = true;
 
 // init generator function for the shadow player movement
 var moveShadowCounter = 0;
-
+var shadowPlayerInterval = 290;
 
 
 
@@ -215,14 +227,38 @@ let shadowPlayer = {
 // this changes which level we are current on.
 function gotoNextLevel() {
     
+    if (secondTry == false){
+        secondTry = true;
+        this_level = levels[currentLevelIndex].split("\n");
+        target = 'i';
+        setupGoal(target);
+        moveShadowCounter = 0;
+        setTimeout(moveShadowPlayer, shadowPlayerInterval);
+        player.key = 's';
+    } else {
+        secondTry = false;
+        player.key = 'p';
+        if (currentLevelIndex < levels.length-1){
+            currentLevelIndex++;
+            this_level = levels[currentLevelIndex].split("\n");
+            target = 'e';
+            setupGoal(target);
+        } else {
+            console.log("end of game");
+        }
+        //clearTimeout(shadowPlayerMoving);
+    }
+
+
+    /*
     if (currentLevelIndex < levels.length - 1) {
         currentLevelIndex++;
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
         moveShadowCounter = 0;
+        
 
     } else if (secondTry == false) {
-        /* SETUP GAME FOR SECOND GOTHRU */
         secondTry = true;
         target = "i";
         player.key = 's'
@@ -231,9 +267,9 @@ function gotoNextLevel() {
         this_level = levels[currentLevelIndex].split("\n");
         setupGoal(target);
         //start moving the shadowPlayer
-        setTimeout(moveShadowPlayer, 500);
+        setTimeout(moveShadowPlayer, shadowPlayerInterval);
 
-    }
+    }*/
 }
 
 /* calculates how many objects need to be destroyed before the player progresses */
@@ -254,6 +290,7 @@ function levelTransition(timeout) {
 
     // stop the timer
     clearTimeout(timerHandler);
+    clearTimeout(shadowPlayerMoving)
     if(oldScore == 0){
         oldScore = timer;
         score += timer;
@@ -287,6 +324,8 @@ function levelTransitionEnd(timeout) {
         //timer restart
         timer = 13;
         timerRunning = false;
+        clearTimeout(shadowPlayerMoving)
+        if (secondTry == true) shadowPlayerMoving = setTimeout(moveShadowPlayer, shadowPlayerInterval);
     }
 }
 
@@ -499,7 +538,6 @@ var stopInput = false;
 
 function resumeInput() {
     stopInput = false;
-    console.log("resumed input");
 }
 
 function movePlayer(dx, dy, direction){
@@ -553,7 +591,7 @@ function moveShadowPlayer() {
         this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x-1, 1, "E");
     }
 
-    shadowPlayerMoving = setTimeout(moveShadowPlayer, 500);
+    shadowPlayerMoving = setTimeout(moveShadowPlayer, shadowPlayerInterval);
 }
 
 /* GAME OVER CODE */
