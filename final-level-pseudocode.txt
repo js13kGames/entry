@@ -9,12 +9,12 @@ characters
   1 user
   1 computer (with auto movements)
 characterState
-  currentMove
+  currentAction
   location
   direction facing
   health
 
-Moves
+Actions
   ready
   move
   block

@@ -7,7 +7,7 @@ const initGameController = () => {
     // initCredits
   ];
 
-  let currentLevel = 0;
+  let currentLevel = 1;
   function next () {
     // cleanUp();
     levelInitters[currentLevel++](next);

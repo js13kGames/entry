@@ -1,5 +1,4 @@
 const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
-  const body = document.body;
   const element = type => document.createElement(type);
   const rAF = window.requestAnimationFrame;
   const cancelAF = window.cancelAnimationFrame;
