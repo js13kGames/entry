@@ -1,9 +1,8 @@
 const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
-  const element = type => document.createElement(type);
   const rAF = window.requestAnimationFrame;
   const cancelAF = window.cancelAnimationFrame;
 
-  const canvas = element('canvas');
+  const canvas = createElement('canvas');
   const ctx = canvas.getContext('2d');
   const tileHeight = 100;
   const tileWidth = 100;
