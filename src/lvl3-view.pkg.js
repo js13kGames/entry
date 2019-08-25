@@ -1,4 +1,4 @@
-const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
+const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const root = document.getElementById('root');
@@ -14,6 +14,11 @@ const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
     'keyup',
     (e) => onKeyup(e.which)
   );
+  const click = addEventListener(
+    window,
+    'click',
+    (e) => onClick(e)
+  );
 
   function renderAction (action) {
     switch (action) {
@@ -23,6 +28,8 @@ const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
         return 'BLOCKING';
       case actions.ATTACKING:
         return 'ATTACKING';
+      case actions.PREPARING_ATTACK:
+        return 'PREPARING_ATTACK';
       case actions.DISABLED:
         return 'DISABLED';
     }
@@ -41,6 +48,12 @@ const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
 
     if (character.currentAction === actions.BLOCKING) {
       ctx.fillStyle = 'red';
+    } else if (character.currentAction === actions.ATTACKING) {
+      ctx.fillStyle = 'purple';
+    } else if (character.currentAction === actions.PREPARING_ATTACK) {
+      ctx.fillStyle = 'pink';
+    } else if (character.currentAction === actions.DISABLED) {
+      ctx.fillStyle = 'orange';
     } else {
       ctx.fillStyle = charColor;
     }
@@ -76,6 +89,7 @@ const initLevel3View = (onKeydown, onKeyup, actions, directions) => {
     cleanUp: () => {
       keydown();
       keyup();
+      click();
       root.removeChild(canvas);
     },
     render
