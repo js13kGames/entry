@@ -1,4 +1,8 @@
 const initLevel3 = () => {
+  const opponent = {
+    trex: 'kong',
+    kong: 'trex'
+  };
   const loop = () => {
     const state = getState();
     render(
@@ -11,8 +15,8 @@ const initLevel3 = () => {
   // init
   const {
     mapData,
-    kong,
-    trex,
+    initialKongState,
+    initialTrexState,
     actions,
     directions
   } = initLevel3Model(50, 25, 35);
@@ -24,80 +28,83 @@ const initLevel3 = () => {
   } = initState();
   const setState = val => modelSetState(val) && loop();
 
-  function move (direction) {
+  function move (desiredDirection, name) {
     setState((state) => {
-      if (state.kong.currentAction === actions.DISABLED || state.kong.currentAction === actions.BLOCKING) {
-        return state;
+      const char = state[name];
+      if (char.currentAction === actions.DISABLED || char.currentAction === actions.BLOCKING) {
+        return;
       }
-      let proposedLocation = state.kong.location;
-      let newDirection;
-      switch (direction) {
+      let proposedLocation = char.location;
+      let newFacingDirection;
+      switch (desiredDirection) {
         case 'left':
           proposedLocation--;
-          newDirection = directions.LEFT;
+          newFacingDirection = directions.LEFT;
           break;
         case 'right':
           proposedLocation++;
-          newDirection = directions.RIGHT;
+          newFacingDirection = directions.RIGHT;
           break;
       }
       if (
         proposedLocation >= mapData.width
         || proposedLocation < 0
-        || proposedLocation === state.trex.location
-      ) proposedLocation = state.kong.location; // reset to current state
+        || proposedLocation === state[opponent[name]].location
+      ) proposedLocation = char.location; // reset to current state
       // TODO is location under attack
       return {
-        kong: {
-          ...state.kong,
-          direction: newDirection,
+        [name]: {
+          ...char,
+          direction: newFacingDirection,
           location: proposedLocation
         }
       }
     })
   }
 
-  function block () {
+  function block (name) {
     setState(state => {
-      if (state.kong.currentAction === actions.DISABLED) {
+      if (state[name].currentAction === actions.DISABLED) {
         return state;
       }
       return {
-        kong: {
-          ...state.kong,
+        [name]: {
+          ...state[name],
           currentAction: actions.BLOCKING
         }
       }
     });
   }
 
-  function unblock () {
+  function unblock (name) {
     setState(state => {
-      if (state.kong.currentAction === actions.DISABLED) {
-        return state;
-      }
+      // TODO check if now being attacked
       return {
-        kong: {
-          ...state.kong,
+        [name]: {
+          ...state[name],
           currentAction: actions.READY
         }
       }
     });
   }
 
+  window.move = move;
+  window.block = block;
+  window.unblock = unblock;
+
   function keydownHandler (key) {
     switch (key) {
       case 37:
         // left
-        move('left');
+        move('left', 'kong');
         break;
       case 39:
         // right
-        move('right');
+        move('right', 'kong');
         break;
       case 40:
         // down
-        block();
+        block('kong');
         break;
       default:
         return;
@@ -108,7 +115,7 @@ const initLevel3 = () => {
     switch (key) {
       case 40:
         // release down
-        unblock();
+        unblock('kong');
         break;
       default:
         return;
@@ -119,5 +126,8 @@ const initLevel3 = () => {
     cleanUp,
     render
   } = initLevel3View(keydownHandler, keyupHandler, actions, directions);
-  setState({ kong, trex });
+  setState({
+    kong: initialKongState,
+    trex: initialTrexState
+  });
 };

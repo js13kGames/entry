@@ -9,7 +9,7 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
   // directions
   const LEFT = uid();
   const RIGHT = uid();
-  
+
   // make map data
   const mapData = {
     width: mapWidth
@@ -22,7 +22,7 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     direction: RIGHT,
     health: 100
   }
-  
+
   // init trex
   const trex = {
     currentAction: READY,
@@ -31,10 +31,10 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     health: 100
   }
 
-  return { 
+  return {
     mapData,
-    kong, 
-    trex, 
+    initialKongState: kong,
+    initialTrexState: trex,
     actions: {
       READY,
       BLOCKING,
@@ -44,6 +44,6 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     directions: {
       LEFT,
       RIGHT
-    } 
+    }
   };
 }

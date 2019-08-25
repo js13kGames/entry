@@ -79,27 +79,66 @@ const initModel = (height, width, foodCoveragePercent) => {
   const buildingsPixels = {};
 
   const building2x4Img = (() => {
-    const otherCanvas = document.createElement('canvas');
-    const ctx = otherCanvas.getContext('2d');
-    ctx.canvas.width = 200;
-    ctx.canvas.height = 400;
+    const width = 200;
+    const height = 400;
+    const ctx = createElement('canvas').getContext('2d');
+    ctx.canvas.width = width;
+    ctx.canvas.height = height;
 
-    ctx.beginPath();
-    ctx.fillStyle = 'gray';
-    ctx.fillRect(0, 0, 200, 400);
-
-    const windowWidth = 20;
-    const windowGutter = 12;
-    const windowHeight = 30;
-    ctx.fillStyle = 'blue';
-    ctx.beginPath();
-    for (var y = 8; (y + windowHeight) < 400; y += windowHeight + windowGutter) {
-      for (var x = 10; x < 200; x += (windowWidth + windowGutter)) {
+    function drawWindow (ctx, x, y) {
+      const lightsOn = Math.random() >= .8;
+      ctx.fillStyle = lightsOn ? 'yellow' : 'cyan';
+      if (lightsOn) {
+        ctx.filter = 'blur(15px)';
         ctx.fillRect(x, y, windowWidth, windowHeight);
+        ctx.filter = 'none';
+      }
+      ctx.fillRect(x, y, windowWidth, windowHeight);
+      ctx.filter = 'blur(1px)';
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 16, y + 20);
+      ctx.lineTo(x + 9, y + 20);
+      ctx.lineTo(x + windowWidth, y + windowHeight);
+      ctx.stroke();
+      ctx.filter = 'none';
+    }
+
+    ctx.fillStyle = '#808080';
+    ctx.fillRect(0, 0, 200, 400);
+    ctx.fillStyle = '#4d4d4d';
+    ctx.fillRect(0, 0, 100, 400);
+
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = `#640`;
+    for (var x = 0; x < width; x++) {
+      for (var y = 0; y < height; y++) {
+        if (Math.random() >= .5) ctx.fillRect(x, y, 1, 1)
       }
     }
+    ctx.globalCompositeOperation = 'source-over';
+
+    const windowWidth = 24;
+    const windowGap = 24;
+    const windowHeight = 40;
+    const floorGap = 28;
+
+    for (var y = 18; (y + windowHeight) < 380; y += windowHeight + floorGap) {
+      for (var x = 16; x < 200; x += (windowWidth + windowGap)) {
+        drawWindow(ctx, x, y);
+      }
+    }
+
+    ctx.fillStyle = 'cyan';
+    ctx.fillRect(16, 360, 55, 30);
+    ctx.fillRect(129, 360, 55, 30);
+    ctx.fillRect(85, 360, 30, 40);
+
     return ctx.getImageData(0, 0, 200, 400);
   })();
+
   const canvas = document.createElement('canvas');
   const newCtx = canvas.getContext('2d');
   buildingsPixels['2x4'] = buildings['2x4'].map((row, rowIdx) => (
@@ -108,8 +147,6 @@ const initModel = (height, width, foodCoveragePercent) => {
       return newCtx.getImageData(0, 0, 100, 100);
     })
   ));
-
-  console.log(buildingsPixels)
 
   // Set map height and width
   // 1 = player can access, 0 = can't
