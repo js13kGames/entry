@@ -459,11 +459,12 @@ function updatePlayerArray(dx, dy, object) {
 
 /* GETTING GAME INPUT */
 
-var inputDelay = 50;
+var inputDelay = 75;
 var stopInput = false;
 
 function resumeInput() {
     stopInput = false;
+    console.log("resumed input");
 }
 
 function movePlayer(dx, dy, direction){
@@ -472,15 +473,15 @@ function movePlayer(dx, dy, direction){
             updatePlayerArray(dx, dy, player);
             if(secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
         }
+        stopInput = true;
+        setTimeout(resumeInput, inputDelay);
     }
-    stopInput = true;
-    setTimeout(resumeInput, inputDelay);
 }
 
-Mousetrap.bind('w', function(){movePlayer(0, -1, 'n')});
-Mousetrap.bind('s', function(){movePlayer(0, 1, 's')});
-Mousetrap.bind('a', function(){movePlayer(-1, 0, 'w')});
-Mousetrap.bind('d', function(){movePlayer(1, 0, 'e')});
+Mousetrap.bind('w', function(){movePlayer(0, -1, 'n')}, 'keypress');
+Mousetrap.bind('s', function(){movePlayer(0, 1, 's')}, 'keypress');
+Mousetrap.bind('a', function(){movePlayer(-1, 0, 'w')}, 'keypress');
+Mousetrap.bind('d', function(){movePlayer(1, 0, 'e')}, 'keypress');
 
 /* MOVING SHADOW PLAYER */
 var shadowPlayerMoving;
