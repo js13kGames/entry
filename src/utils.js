@@ -1,6 +1,3 @@
-import { TILE_SIZE } from './constants'
-import { frame, TheColorScheme } from './globals'
-
 /**
  * Some mathematical utilities
  */
@@ -40,27 +37,12 @@ export function randomInt (upper) {
   return Math.floor(upper * Math.random())
 }
 
-/**
- * Tiling utilities
- */
-
-export let getCellX = x => Math.floor(x / TILE_SIZE)
-export let getCellY = getCellX
-
 export let forRectangularRegion = (x0, y0, x1, y1, callback) => {
   for (let yi = y0; yi <= y1; yi++) {
     for (let xi = x0; xi <= x1; xi++) {
       callback(xi, yi)
     }
   }
-}
-
-/**
- * Entity system utilities
- */
-
-export function hasTag (obj, tag) {
-  return !!(obj.tags & tag)
 }
 
 /**
@@ -87,11 +69,6 @@ export async function generateImage (width, height, callback) {
   })
 }
 
-export function renderSolidSquare (ctx, x, y) {
-  ctx.fillStyle = makeColorWithAlpha(TheColorScheme.fg, 0.94 - 0.01 + Math.random() * 0.02)
-  ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-}
-
 /**
  * Color utilities
  */
@@ -107,12 +84,4 @@ export function makeColorWithAlpha (color, alpha) {
  */
 export async function waitForNextFrame () {
   await new Promise(resolve => requestAnimationFrame(resolve))
-}
-
-/**
- * Debugging utilities
- */
-
-export function debug (thing) {
-  console.log(frame, thing)
 }

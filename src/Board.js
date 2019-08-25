@@ -27,18 +27,26 @@ export class Board {
     return COLORS[item]
   }
 
+  isEmptyRow (y) {
+    return this.grid[y].every(val => !val)
+  }
+
   isFullRow (y) {
     return this.grid[y].every(val => val)
   }
 
-  overflows () {
-    // Overflows outside the middle 4 columns are allowed, but only with at most 2 blocks
+  overflows (nextTetromino) {
+    // Overflows are allowed, but only with at most 2 blocks, and if they don't overlap the next tetromino
     if (this.grid[this.height + 2].some(val => val)) {
       return true
     }
 
-    for (let x = this.width / 2 - 2; x < this.width / 2 + 2; x++) {
-      if (this.grid[this.height][x] || this.grid[this.height + 1][x]) {
+    const positions = nextTetromino.getBlockPositions()
+    for (let [px, py] of positions) {
+      px += this.width / 2 - 1
+      py += this.height
+
+      if (this.grid[py][px]) {
         return true
       }
     }
@@ -91,7 +99,7 @@ export class Board {
         const item = this.grid[y][x]
         if (item instanceof Tetromino) {
           this.grid[y][x] = item.getId()
-          this.tetrominoes.remove(item)
+          this.tetrominoes.delete(item)
         }
       }
     }

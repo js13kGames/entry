@@ -7,11 +7,13 @@ import { TetrominoO } from './Tetrominos/TetrominoO';
 import { TetrominoS } from './Tetrominos/TetrominoS';
 import { TetrominoZ } from './Tetrominos/TetrominoZ';
 import { TetrominoController } from './TetrominoController';
-import { TILE_SIZE, KEY_HOLD } from './constants';
+import { TILE_SIZE, KEY_HOLD, ACTION_ROTATE } from './constants';
 import { ClearAnimation } from './ClearAnimation';
 import { Input } from './Input';
 import { Board } from './Board';
 import { GameOverAnimation } from './GameOverAnimation';
+import { playSample } from './Audio';
+import { LineClearSounds, HoldSound, TSpinSound, AllClearSound } from './Assets';
 
 class TetrominoBag {
   constructor () {
@@ -97,12 +99,33 @@ export class Level {
         rows.add(position[1])
       }
 
+      if (this.isTSpin()) {
+        playSample(TSpinSound, 1, true)
+      }
+
       this.board.putTetromino(this.currentTetromino)
 
       this.checkState(rows)
     }
 
     this.updateGhostPosition()
+  }
+
+  isTSpin () {
+    if (!(this.currentTetromino instanceof TetrominoT) || this.controller.lastMove !== ACTION_ROTATE) {
+      return false
+    }
+
+    let x = this.currentTetromino.x
+    let y = this.currentTetromino.y
+
+    let emptyCorners =
+      !this.board.getItemAt(x - 1, y + 1) +
+      !this.board.getItemAt(x + 1, y + 1) +
+      !this.board.getItemAt(x + 1, y - 1) +
+      !this.board.getItemAt(x - 1, y - 1)
+
+    return emptyCorners <= 1
   }
 
   checkState (rows) {
@@ -116,14 +139,30 @@ export class Level {
     rowsToClear.sort((a, b) => a - b)
 
     if (rowsToClear.length === 0) {
-      if (this.board.overflows()) {
+      if (this.board.overflows(this.nextTetrominos[0])) {
         this.setGameOver()
         return
       }
       this.nextTetromino()
     } else {
+      // Check for all-clear
+      if (this.isAllClearConfig(rowsToClear)) {
+        playSample(AllClearSound, 1, true)
+      } else {
+        playSample(LineClearSounds[rowsToClear.length - 1], 1, true)
+      }
+
       this.clearAnimation = new ClearAnimation(this, rowsToClear)
     }
+  }
+
+  isAllClearConfig (rowsToClear) {
+    for (let y = rowsToClear.length; y < rowsToClear.length + 2; y++) {
+      if (!this.board.isEmptyRow(y)) {
+        return false
+      }
+    }
+    return true
   }
 
   setGameOver () {
@@ -236,6 +275,13 @@ export class Level {
   }
 
   holdTetromino () {
+    if (this.heldTetromino && this.board.overflows(this.heldTetromino)) {
+      this.setGameOver()
+      return
+    }
+
+    playSample(HoldSound)
+
     const heldTetromino = this.heldTetromino
     this.heldTetromino = this.currentTetromino
     this.heldTetromino.x = 0

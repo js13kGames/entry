@@ -1,3 +1,4 @@
 import { Game } from './Game'
+import { loadAssets } from './Assets'
 
-Game.start()
+loadAssets().then(Game.start)

@@ -1,14 +1,11 @@
 import { TheAudioContext, TheAudioDestination, TheReverbDestination } from './Audio/Context'
 
-export function playSample (sample, volume = 1, toReverb = false) {
+export async function playSample (sample, volume = 1, toReverb = false) {
   let source = TheAudioContext.createBufferSource()
-  source.buffer = sample
+  source.buffer = await sample
 
   if (toReverb) {
-    let gainNode = TheAudioContext.createGain()
-    gainNode.gain.value = volume * 2
-    source.connect(gainNode)
-    gainNode.connect(TheReverbDestination)
+    source.connect(TheReverbDestination)
   }
 
   if (volume !== 1) {

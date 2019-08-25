@@ -11,7 +11,7 @@ export class ClearAnimation {
 
   step () {
     this.t++
-    if (this.t > 30) {
+    if (this.t >= 30) {
       this.done = true
     }
   }

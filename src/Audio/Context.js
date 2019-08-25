@@ -8,6 +8,8 @@ TheAudioDestination.connect(TheAudioContext.destination)
 export let TheReverbDestination
 
 export function setReverbDestination (reverb) {
-  TheReverbDestination = reverb
-  TheReverbDestination.connect(TheAudioDestination)
+  TheReverbDestination = TheAudioContext.createGain()
+  TheReverbDestination.gain.value = 0.7
+  TheReverbDestination.connect(reverb)
+  reverb.connect(TheAudioDestination)
 }

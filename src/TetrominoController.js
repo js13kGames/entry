@@ -1,6 +1,14 @@
 import { Input } from './Input';
-import { KEY_ROTATE_CCW, KEY_LEFT, KEY_RIGHT, KEY_ROTATE_CW, KEY_DOWN, KEY_UP, AUTO_SHIFT_DELAY, AUTO_REPEAT_DELAY, MAX_LOCK_RESET_COUNT, LOCK_DELAY } from './constants';
+import { KEY_ROTATE_CCW, KEY_LEFT, KEY_RIGHT, KEY_ROTATE_CW, KEY_DOWN, KEY_UP, AUTO_SHIFT_DELAY, AUTO_REPEAT_DELAY, MAX_LOCK_RESET_COUNT, LOCK_DELAY, ACTION_ROTATE, ACTION_SHIFT } from './constants';
 import { TetrominoO } from './Tetrominos/TetrominoO';
+import { playSample } from './Audio';
+import {
+  RotateSound,
+  LandSound,
+  LockSound,
+  ShiftSound,
+  HardDropSound
+} from './Assets';
 
 export class TetrominoController {
   constructor (tetromino, board) {
@@ -22,6 +30,9 @@ export class TetrominoController {
 
     this.dropTimer = 60 / this.gravity
     this.manualDropTimer = 0
+
+    this.lastOnFloor = false
+    this.lastMove = null
   }
 
   step () {
@@ -72,21 +83,34 @@ export class TetrominoController {
       this.delayLock()
     }
 
+    const onFloor = this.onFloor()
+
     if (this.lockTimer > 0) {
       this.lockTimer--
 
-      const onFloor = this.onFloor()
       if (!onFloor) {
         this.lockTimer = 0
         this.lockResetCount = 0
-      } else if (this.lockTimer === 0) {
-        this.done = true
+      } else {
+        if (!this.lastOnFloor) {
+          playSample(LandSound)
+        }
+        if (this.lockTimer === 0) {
+          this.lock()
+        }
       }
     }
+
+    this.lastOnFloor = onFloor
   }
 
   delayLock () {
     this.lockTimer = LOCK_DELAY
+  }
+
+  lock () {
+    playSample(LockSound)
+    this.done = true
   }
 
   handleMovement () {
@@ -99,11 +123,19 @@ export class TetrominoController {
     if (Input.getKeyDown(KEY_LEFT) || Input.getKeyDown(KEY_RIGHT)) {
       this.actuallyMoved = this.move(dx, 0)
       this.inputDelayTimer = AUTO_SHIFT_DELAY
+
+      if (this.actuallyMoved) {
+        playSample(ShiftSound)
+      }
     } else {
       if (this.inputDelayTimer <= 0) {
         if (this.repeatTimer <= 0) {
           this.actuallyMoved = this.move(dx, 0)
           this.repeatTimer = AUTO_REPEAT_DELAY
+
+          if (this.actuallyMoved) {
+            playSample(ShiftSound)
+          }
         }
       }
     }
@@ -113,14 +145,21 @@ export class TetrominoController {
   }
 
   handleRotation () {
-    if (this.tetromino instanceof TetrominoO) {
-      return
-    }
+    const noActualRotation = this.tetromino instanceof TetrominoO
 
     if (Input.getKeyDown(KEY_ROTATE_CCW)) {
-      this.actuallyMoved = this.rotateCCW() || this.actuallyMoved
+      this.rotated = true
+      playSample(RotateSound)
+      if (!noActualRotation) {
+        this.actuallyMoved = this.rotateCCW() || this.actuallyMoved
+      }
+
     } else if (Input.getKeyDown(KEY_ROTATE_CW)) {
-      this.actuallyMoved = this.rotateCW() || this.actuallyMoved
+      this.rotated = true
+      playSample(RotateSound)
+      if (!noActualRotation) {
+        this.actuallyMoved = this.rotateCW() || this.actuallyMoved
+      }
     }
   }
 
@@ -130,6 +169,7 @@ export class TetrominoController {
       this.tetromino.move(-dx, -dy)
       return false
     }
+    this.lastMove = ACTION_SHIFT
     return true
   }
 
@@ -138,6 +178,7 @@ export class TetrominoController {
     do {
       collided = !this.move(0, -1)
     } while (!collided)
+    playSample(HardDropSound)
     this.done = true
   }
 
@@ -158,6 +199,7 @@ export class TetrominoController {
     for (let wallKick of wallKicks) {
       this.tetromino.move(wallKick[0], wallKick[1])
       if (this.validState()) {
+        this.lastMove = ACTION_ROTATE
         return true
       }
       this.tetromino.move(-wallKick[0], -wallKick[1])
@@ -175,6 +217,7 @@ export class TetrominoController {
     for (let wallKick of wallKicks) {
       this.tetromino.move(wallKick[0], wallKick[1])
       if (this.validState()) {
+        this.lastMove = ACTION_ROTATE
         return true
       }
       this.tetromino.move(-wallKick[0], -wallKick[1])

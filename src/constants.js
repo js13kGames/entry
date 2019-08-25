@@ -32,3 +32,6 @@ export const AUTO_SHIFT_DELAY = 12
 export const AUTO_REPEAT_DELAY = 2
 export const LOCK_DELAY = 30
 export const MAX_LOCK_RESET_COUNT = 14
+
+export const ACTION_SHIFT = 0
+export const ACTION_ROTATE = 1
