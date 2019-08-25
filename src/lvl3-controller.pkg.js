@@ -31,7 +31,8 @@ const initLevel3 = () => {
   function move (desiredDirection, name) {
     setState((state) => {
       const char = state[name];
-      if (char.currentAction === actions.DISABLED || char.currentAction === actions.BLOCKING) {
+      if (char.health === 0) window.alert(`${name} has no health`);
+      if (char.currentAction !== actions.READY) {
         return;
       }
       let proposedLocation = char.location;
@@ -64,7 +65,7 @@ const initLevel3 = () => {
 
   function block (name) {
     setState(state => {
-      if (state[name].currentAction === actions.DISABLED) {
+      if (state[name].currentAction !== actions.READY) {
         return state;
       }
       return {
@@ -107,7 +108,7 @@ const initLevel3 = () => {
     }), time);
   }
 
-  function attack (attacker, opponent, distance, damage) {
+  function attack (attacker, opponent, attackLocation, distance, damage) {
     setState(state => {
       const attState = state[attacker];
       const oppState = state[opponent];
@@ -117,7 +118,8 @@ const initLevel3 = () => {
           currentAction: actions.ATTACKING
         }
       };
-      if (opponent) {
+      // check if opponent is in attack location
+      if (oppState.location === attackLocation && oppState.currentAction !== actions.BLOCKING) {
         let newLocation;
         if (attState.location < oppState.location) {
           newLocation = oppState.location + distance;
@@ -129,10 +131,10 @@ const initLevel3 = () => {
           health: oppState.health - damage,
           location: newLocation
         }
+        setTimeout(() => recoverFromAttack(opponent, 1500), 100);
       };
       // both will need to recover after the attack
-      setTimeout(() => recoverFromAttack(attacker, 1500), 1000);
-      setTimeout(() => recoverFromAttack(opponent, 1000), 500);
+      setTimeout(() => recoverFromAttack(attacker, 1500), 500);
       return newState;
     });
   }
@@ -141,7 +143,7 @@ const initLevel3 = () => {
     setState(state => {
       const char = state[name];
       // check if can attack
-      if (char.currentAction === actions.DISABLED) return state;
+      if (char.currentAction !== actions.READY) return state;
       // calculate attack location
       let attackLocation = char.location;
       if (char.direction === directions.LEFT) {
@@ -149,10 +151,8 @@ const initLevel3 = () => {
       } else {
         attackLocation++;
       }
-      // check if opponent is in attack location
-      const oppName = state[opponent[name]].location === attackLocation ? opponent[name] : '';
-      // start attack sequence = name, name, distance, damage
-      setTimeout(() => attack(name, oppName, 1, 10), 500);
+      // name, name, loc, distance, damage
+      setTimeout(() => attack(name, opponent[name], attackLocation, 1, 10), 500);
       return {
         ...state,
         [name]: {
@@ -200,6 +200,24 @@ const initLevel3 = () => {
     startAttackSequence('kong');
   }
 
+  function trexBrainLoop () {
+    let time = random() * 1000;
+    setState(state => {
+      if (state.trex.location - state.kong.location <= 2) {
+        if (time > 500) {
+          startAttackSequence('trex');
+        } else {
+          block('trex');
+          setTimeout(() => unblock('trex'), 1000);
+        }
+      }
+      setTimeout(() => {
+        move('left', 'trex');
+        trexBrainLoop();
+      }, time);
+    });
+  };
+
   const {
     cleanUp,
     render
@@ -208,4 +226,5 @@ const initLevel3 = () => {
     kong: initialKongState,
     trex: initialTrexState
   });
+  trexBrainLoop();
 };
