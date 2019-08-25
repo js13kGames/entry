@@ -139,14 +139,96 @@ const initModel = (height, width, foodCoveragePercent) => {
     return ctx.getImageData(0, 0, 200, 400);
   })();
 
-  const canvas = document.createElement('canvas');
-  const newCtx = canvas.getContext('2d');
+  let canvas = createElement('canvas');
+  let newCtx = canvas.getContext('2d');
   buildingsPixels['2x4'] = buildings['2x4'].map((row, rowIdx) => (
     row.map((_, colIdx) => {
       newCtx.putImageData(building2x4Img, colIdx * -100, rowIdx * -100);
       return newCtx.getImageData(0, 0, 100, 100);
     })
   ));
+
+  const building2x4Img2 = (() => {
+    const ctx = createElement('canvas').getContext('2d');
+    ctx.canvas.height = 400;
+    ctx.canvas.width = 200;
+    function drawWindow (ctx, x, y) {
+      ctx.fillStyle = Math.random() < .8 ? 'cyan' : 'yellow';
+      console.log(ctx.fillStyle)
+      if (ctx.fillStyle === '#ffff00') {
+        ctx.filter = 'blur(15px)';
+        ctx.fillRect(x, y, windowWidth, windowHeight);
+        ctx.filter = 'none';
+      }
+      ctx.fillRect(x, y, windowWidth, windowHeight);
+      ctx.filter = 'blur(1px)';
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 16, y + 20);
+      ctx.lineTo(x + 9, y + 20);
+      ctx.lineTo(x + windowWidth, y + windowHeight);
+      ctx.stroke();
+      ctx.filter = 'none';
+    }
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, 200, 400);
+    ctx.fillStyle = 'brown';
+    ctx.beginPath();
+    ctx.moveTo(0, 30);
+    ctx.bezierCurveTo(50, 30, 25, 0, 100, 0);
+    ctx.bezierCurveTo(175, 0, 150, 30, 200, 30);
+    ctx.lineTo(200, 400);
+    ctx.lineTo(0, 400);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(100, 50);
+    ctx.arc(100, 30, 20, 0, Math.PI * 2);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = '#8c8c8c';
+    ctx.fillRect(0, 0, 100, 400);
+    ctx.fillStyle = `#640`;
+    for (var x = 0; x < ctx.canvas.width; x++) {
+      for (var y = 0; y < ctx.canvas.height; y++) {
+        if (Math.random() >= .5) ctx.fillRect(x, y, 1, 1)
+      }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    const windowWidth = 24;
+    const windowGap = 24;
+    const windowHeight = 40;
+    const floorGap = 28;
+
+    for (var y = 87; (y + windowHeight) < 380; y += windowHeight + floorGap) {
+      for (var x = 16; x < 200; x += (windowWidth + windowGap)) {
+        drawWindow(ctx, x, y);
+      }
+    }
+
+    ctx.fillStyle = 'cyan';
+    ctx.fillRect(16, 360, 55, 30);
+    ctx.fillRect(129, 360, 55, 30);
+    ctx.fillRect(85, 360, 30, 40);
+
+
+    return ctx.getImageData(0, 0, 200, 400);
+  })();
+
+  canvas = createElement('canvas');
+  newCtx = canvas.getContext('2d');
+  buildingsPixels['2x4-2'] = buildings['2x4'].map((row, rowIdx) => (
+    row.map((_, colIdx) => {
+      newCtx.putImageData(building2x4Img2, colIdx * -100, rowIdx * -100);
+      return newCtx.getImageData(0, 0, 100, 100);
+    })
+  ));
+
 
   // Set map height and width
   // 1 = player can access, 0 = can't
@@ -179,9 +261,9 @@ const initModel = (height, width, foodCoveragePercent) => {
   // TODO add a variety of buildings
   function addBuildings() {
     const b = buildings['2x4'];
-    const bpx = buildingsPixels['2x4'];
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
+        const bpx = buildingsPixels['2x4' + (Math.random() < .5 ? '' : '-2')];
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
           addBuilding(map, row, column, b, bpx);
