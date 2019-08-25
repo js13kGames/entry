@@ -48,12 +48,26 @@ export class Ship extends Sprite.class {
         this.lines.body = shipData.lines.body || [];
         this.lines.detail = shipData.lines.detail || [];
         this.lines.thrust = shipData.lines.thrust || [];
+        this.lines.hitbox = shipData.lines.hitbox || [];
 
-        // Scale all the lines (except shipData as that would * scale * scale)
-        Object.keys(this.lines).forEach(lineType => {
-            this.lines[lineType].forEach((line, i) => {
-                line.forEach((v, i) => { line[i] *= this.scale });
-            });
+        // Scale all the lines of this ship. It'd be better to do this by
+        // looping through with Object.keys, but that takes more bytes!
+        // Note that this scales the shipData.lines as well!
+
+        this.lines.body.forEach((line, i) => {
+            line.forEach((v, i) => { line[i] *= this.scale });
+        });
+
+        this.lines.detail.forEach((line, i) => {
+            line.forEach((v, i) => { line[i] *= this.scale });
+        });
+
+        this.lines.thrust.forEach((line, i) => {
+            line.forEach((v, i) => { line[i] *= this.scale });
+        });
+
+        this.lines.hitbox.forEach((line, i) => {
+            line.forEach((v, i) => { line[i] *= this.scale });
         });
 
         // Merge body & detail into 'ship' line array for doing fun effects etc
@@ -62,7 +76,7 @@ export class Ship extends Sprite.class {
         // If the ship doesn't have a collision box defined, use it's body
         // Assumes that the body is a consecutive set of lines
         // (e.g. line end coords match the following line start coords)
-        if (!this.lines.hitbox) {
+        if (!this.lines.hitbox.length) {
             this.lines.hitbox = [];
             this.lines.body.forEach(line => {
                 this.lines.hitbox.push([line[0], line[1]]);
@@ -168,6 +182,12 @@ export class Ship extends Sprite.class {
 
         this.fireDt += 1 / 60;
 
+        if (this.invuln > 0) {
+            this.invuln -= 1 / 60;
+        } else {
+            this.invuln = 0;
+        }
+
         if (this.rewinding > 0) {
             this.rewinding = this.rewinding - this.rewindSpeed;
 
@@ -250,6 +270,16 @@ export class Ship extends Sprite.class {
         this.context.strokeStyle = this.color;
         this.context.lineWidth = 2;
         this.context.beginPath();
+
+        if (this.invuln) {
+            this.flashing = this.flashing || 1;
+            this.flashing++;
+            if (this.flashing < 10) {
+                this.context.lineWidth = 1;
+            } else if (this.flashing > 20) {
+                this.flashing = 0;
+            }
+        }
 
         // Draw circle around ship for debugging
         // this.context.beginPath();  // start drawing a shape

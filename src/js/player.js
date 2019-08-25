@@ -68,8 +68,8 @@ export class Player {
         // Create a whole new ship for the player
 
         this.ship = new Ship({
-            x: 60,
-            y: 60,
+            x: 20 + Math.random() * 400,
+            y: 20 + Math.random() * 200,
             width: 6,
             color: this.color,
             shipType: this.shipType,
@@ -91,5 +91,6 @@ export class Player {
 
         // Spawn an entirely new ship for the player ???
         this.spawn(ships, sprites);
+        this.ship.invuln = 2; // seconds
     }
 }

@@ -42,6 +42,13 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                     if (ship.exploded) {
                         return;
                     }
+
+                    if (ship.invuln) {
+                        ship.x -= cResult.overlap * cResult.overlap_x;
+                        ship.y -= cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
+
                     ship.explode(sprites);
 
                     if (cResult.b.owner.owner.player) {
@@ -122,6 +129,13 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 if (otherSprite.type === 'ship') {
                     // Can't collide into ships that are rewinding
                     if (!otherSprite.rewinding) {
+
+                        if (otherSprite.invuln) {
+                            otherSprite.x += cResult.overlap * cResult.overlap_x;
+                            otherSprite.y += cResult.overlap * cResult.overlap_y;
+                            return;
+                        }
+
                         otherSprite.explode(sprites);
 
                         if (otherSprite.player) {
