@@ -88,9 +88,8 @@ export class Player {
     respawn(ships, sprites) {
         // Reset anything ???
 
-
         // Spawn an entirely new ship for the player ???
         this.spawn(ships, sprites);
-        this.ship.invuln = 2; // seconds
+        this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
     }
 }

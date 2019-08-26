@@ -272,11 +272,11 @@ export class Ship extends Sprite.class {
         this.context.beginPath();
 
         if (this.invuln) {
-            this.flashing = this.flashing || 1;
+            this.flashing = this.flashing || 0;
             this.flashing++;
-            if (this.flashing < 10) {
+            if (this.flashing <= 15) {
                 this.context.lineWidth = 1;
-            } else if (this.flashing > 20) {
+            } else if (this.flashing > 30) {
                 this.flashing = 0;
             }
         }
