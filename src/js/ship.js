@@ -6,6 +6,10 @@ import { createShrapnel } from './shrapnel';
 
 export class Ship extends Sprite.class {
 
+    /**
+     * Rotation, width, x, y, color, are all set automagically by Sprite
+     * @param {[type]} props [description]
+     */
     constructor(props) {
         super(props);
 
@@ -14,7 +18,6 @@ export class Ship extends Sprite.class {
 
         // Default properties for all ships
         this.type = 'ship';
-
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.locationHistory = [];
         this.rewinding = 0;
@@ -24,27 +27,22 @@ export class Ship extends Sprite.class {
         this.lines.random = [];
         this.scale = 2;
 
+        // Properties that could be overwritten when calling new Ship()
         this.turnRate = props.turnRate || shipData.turnRate;
         this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
-
         this.rof = props.rof || shipData.rof;
         this.ror = props.rof || shipData.rof;
 
-        // These are all done by Sprite(?)
-        //this.rotation = 0;
-        //this.width = props.width;
-        //this.x = props.x;
-        //this.y = props.y;
-        //this.color = props.color;
-
-        // Modify mass & thrust values defined in shipData specs to make less crazy
+        // Modify these values defined in shipData specs to make less crazy
         this.mass = shipData.mass + 11;
         this.thrust = shipData.thrust + 11;
         this.rof = 1 / this.rof;
 
+        // Useful stuff to have references to
         this.cs = props.collisionSystem;
         this.player = props.player;
 
+        // Ship "model" information
         this.lines.body = shipData.lines.body || [];
         this.lines.detail = shipData.lines.detail || [];
         this.lines.thrust = shipData.lines.thrust || [];
@@ -73,6 +71,7 @@ export class Ship extends Sprite.class {
         // Merge body & detail into 'ship' line array for doing fun effects etc
         this.lines.ship = this.lines.body.concat(this.lines.detail);
 
+        // Hitbox related properties
         // If the ship doesn't have a collision box defined, use it's body
         // Assumes that the body is a consecutive set of lines
         // (e.g. line end coords match the following line start coords)
@@ -82,7 +81,6 @@ export class Ship extends Sprite.class {
                 this.lines.hitbox.push([line[0], line[1]]);
             });
         }
-
         this.hitbox = props.collisionSystem.createPolygon(
             this.x,
             this.y,
@@ -194,7 +192,7 @@ export class Ship extends Sprite.class {
             // If something borked (can't go back that far?) cancel rewind
             if (!this.locationHistory[this.rewinding]) {
                 this.rewinding = 0;
-                return;
+                return false;
             }
 
             // More x and y coordinates "back in time"
@@ -209,7 +207,7 @@ export class Ship extends Sprite.class {
                 this.dy *= .8;
             }
 
-            return; // Don't do any other ship updating this game update
+            return true; // Don't do any other ship updating this game update
         }
 
         this.velocity = this.velocity.add(this.acceleration);

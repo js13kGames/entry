@@ -4,6 +4,7 @@ import { doCollision } from './doCollision';
 import { Ship } from './ship.js';
 import { Player } from './player.js';
 import { createAsteroid } from './asteroid';
+import { renderText } from './text';
 
 // Kontra init canvas
 let { canvas, context } = init();
@@ -112,6 +113,7 @@ let loop = GameLoop({  // create the main game loop
         });
     },
     render() {
+        // Render all the sprites
         sprites.map(sprite => sprite.render());
 
         // Render debug collision stuff
@@ -119,6 +121,17 @@ let loop = GameLoop({  // create the main game loop
         // context.beginPath();
         // collisionSystem.draw(context);
         // context.stroke();
+
+        // Render the scores
+        if (players[0]) {
+            renderText({
+                color: players[0].color,
+                context: context,
+                text: players[0].score,
+                x: 64,
+                y: 64
+            });
+        }
     }
 });
 
