@@ -1,5 +1,5 @@
 const initLevel3 = () => {
-  const opponent = {
+  const opponentOf = {
     trex: 'kong',
     kong: 'trex'
   };
@@ -35,29 +35,29 @@ const initLevel3 = () => {
       if (char.currentAction !== actions.READY) {
         return;
       }
-      let proposedLocation = char.location;
+      let nextLocation = char.location;
       let newFacingDirection;
       switch (desiredDirection) {
         case 'left':
-          proposedLocation--;
+          nextLocation--;
           newFacingDirection = directions.LEFT;
           break;
         case 'right':
-          proposedLocation++;
+          nextLocation++;
           newFacingDirection = directions.RIGHT;
           break;
       }
       if (
-        proposedLocation >= mapData.width
-        || proposedLocation < 0
-        || proposedLocation === state[opponent[name]].location
-      ) proposedLocation = char.location; // reset to current state
+        nextLocation >= mapData.width
+        || nextLocation < 0
+        || nextLocation === state[opponentOf[name]].location
+      ) nextLocation = char.location; // reset to current state
       // TODO is location under attack
       return {
         [name]: {
           ...char,
           direction: newFacingDirection,
-          location: proposedLocation
+          location: nextLocation
         }
       }
     })
@@ -65,13 +65,12 @@ const initLevel3 = () => {
 
   function block (name) {
     setState(state => {
-      if (state[name].currentAction !== actions.READY) {
-        return state;
-      }
-      return {
-        [name]: {
-          ...state[name],
-          currentAction: actions.BLOCKING
+      if (state[name].currentAction === actions.READY) {
+        return {
+          [name]: {
+            ...state[name],
+            currentAction: actions.BLOCKING
+          }
         }
       }
     });
@@ -89,15 +88,7 @@ const initLevel3 = () => {
     });
   }
 
-  function recoverFromAttack (name, time) {
-    setState(state => {
-      return {
-        [name]: {
-          ...state[name],
-          currentAction: actions.DISABLED
-        }
-      }
-    });
+  function recoverFromAttack (name) {
     setTimeout(() => setState(state => {
       return {
         [name]: {
@@ -108,33 +99,46 @@ const initLevel3 = () => {
     }), time);
   }
 
-  function attack (attacker, opponent, attackLocation, distance, damage) {
+  function startRecoveryFromAttack (name, time) {
     setState(state => {
-      const attState = state[attacker];
-      const oppState = state[opponent];
+      return {
+        [name]: {
+          ...state[name],
+          currentAction: actions.DISABLED
+        }
+      }
+    });
+    setTimeout(() => recoverFromAttack(name), time);
+  }
+
+  function attack (attacker, attackLocation, distance, damage) {
+    setState(state => {
+      const attackerState = state[attacker];
       let newState = {
         [attacker]: {
-          ...attState,
+          ...attackerState,
           currentAction: actions.ATTACKING
         }
       };
+      const opponentState = state[opponentOf[attacker]];
       // check if opponent is in attack location
-      if (oppState.location === attackLocation && oppState.currentAction !== actions.BLOCKING) {
-        let newLocation;
-        if (attState.location < oppState.location) {
-          newLocation = oppState.location + distance;
+      if (opponentState.location === attackLocation && opponentState.currentAction !== actions.BLOCKING) {
+        let newOpponentLocation;
+        if (attackerState.location < opponentState.location) {
+          newOpponentLocation = opponentState.location + distance;
         } else {
-          newLocation = oppState.location - distance;
+          newOpponentLocation = opponentState.location - distance;
         }
         newState[opponent] = {
-          ...oppState,
-          health: oppState.health - damage,
-          location: newLocation
+          ...opponentState,
+          health: opponentState.health - damage,
+          location: newOpponentLocation,
+          currentAction: actions.DISABLED
         }
-        setTimeout(() => recoverFromAttack(opponent, 1500), 100);
+        setTimeout(() => recoverFromAttack(opponent, 1500), 500);
       };
       // both will need to recover after the attack
-      setTimeout(() => recoverFromAttack(attacker, 1500), 500);
+      setTimeout(() => startRecoveryFromAttack(attacker, 1500), 500);
       return newState;
     });
   }
@@ -143,7 +147,7 @@ const initLevel3 = () => {
     setState(state => {
       const char = state[name];
       // check if can attack
-      if (char.currentAction !== actions.READY) return state;
+      if (char.currentAction !== actions.READY) return;
       // calculate attack location
       let attackLocation = char.location;
       if (char.direction === directions.LEFT) {
@@ -152,9 +156,8 @@ const initLevel3 = () => {
         attackLocation++;
       }
       // name, name, loc, distance, damage
-      setTimeout(() => attack(name, opponent[name], attackLocation, 1, 10), 500);
+      setTimeout(() => attack(name, attackLocation, 1, 10), 500);
       return {
-        ...state,
         [name]: {
           ...state[name],
           currentAction: actions.PREPARING_ATTACK
@@ -196,26 +199,24 @@ const initLevel3 = () => {
   }
 
   // Only used by kong
-  function clickHandler (e) {
+  function clickHandler () {
     startAttackSequence('kong');
   }
 
   function trexBrainLoop () {
-    let time = random() * 1000;
-    setState(state => {
-      if (state.trex.location - state.kong.location <= 2) {
-        if (time > 500) {
-          startAttackSequence('trex');
-        } else {
-          block('trex');
-          setTimeout(() => unblock('trex'), 1000);
-        }
+    if (state.trex.location - state.kong.location <= 2) {
+      if (random() > .5) {
+        startAttackSequence('trex');
+      } else {
+        block('trex');
+        setTimeout(() => unblock('trex'), 1000);
       }
+    } else {
       setTimeout(() => {
         move('left', 'trex');
         trexBrainLoop();
-      }, time);
-    });
+      }, random() * 1000);
+    }
   };
 
   const {
