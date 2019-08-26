@@ -88,7 +88,6 @@ export class TetrominoController {
       this.delayLock()
     }
 
-
     if (this.lockTimer > 0) {
       this.lockTimer--
 

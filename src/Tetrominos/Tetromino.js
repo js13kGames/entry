@@ -20,25 +20,25 @@ export class Tetromino {
     this.rotation = (this.rotation + 3) % 4
   }
 
-  getId () {
-    // abstract function
-  }
+  // getId () {
+  //   // abstract function
+  // }
 
-  getColor () {
-    // abstract function
-  }
+  // getColor () {
+  //   // abstract function
+  // }
 
-  getBlockPositions () {
-    // abstract function
-  }
+  // getBlockPositions () {
+  //   // abstract function
+  // }
 
-  getWallKicksCW () {
-    // abstract function
-  }
+  // getWallKicksCW () {
+  //   // abstract function
+  // }
 
-  getWallKicksCCW () {
-    // abstract function
-  }
+  // getWallKicksCCW () {
+  //   // abstract function
+  // }
 }
 
 export function makeTetromino(id, positions, wallKicks) {

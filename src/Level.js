@@ -13,7 +13,8 @@ import { Input } from './Input';
 import { Board } from './Board';
 import { GameOverAnimation } from './GameOverAnimation';
 import { playSample } from './Audio';
-import { LineClearSounds, HoldSound, TSpinSound, AllClearSound } from './Assets';
+import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1 } from './Assets';
+import { TheAudioContext } from './Audio/Context';
 
 class TetrominoBag {
   constructor () {
@@ -167,6 +168,7 @@ export class Level {
 
   setGameOver () {
     this.gameOverAnimation = new GameOverAnimation(this)
+    Song1.stop()
   }
 
   updateGhostPosition () {

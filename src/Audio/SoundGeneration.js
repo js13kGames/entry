@@ -43,6 +43,35 @@ export function sampleEnvelope (position, envelope) {
   return envelope[envelope.length - 1][1]
 }
 
+export class EnvelopeSampler {
+  constructor (envelope) {
+    this.envelope = envelope
+    this.reset()
+  }
+
+  reset () {
+    this.i = 0
+  }
+
+  sample (position) {
+    while (this.i < this.envelope.length - 1) {
+      let [t1, v1, curve = 1] = this.envelope[this.i]
+      let [t2, v2] = this.envelope[this.i + 1]
+      if (t1 <= position && position < t2) {
+        let t = (position - t1) / (t2 - t1)
+        if (curve > 1) {
+          t = Math.pow(t, curve)
+        } else {
+          t = 1 - Math.pow((1 - t), 1 / curve)
+        }
+        return v1 + t * (v2 - v1)
+      }
+      this.i++
+    }
+    return this.envelope[this.envelope.length - 1][1]
+  }
+}
+
 function ensureEnvelope (envelopeOrValue) {
   if (typeof envelopeOrValue === 'number') {
     return [[0, envelopeOrValue], [1, envelopeOrValue]]
@@ -106,9 +135,12 @@ function filter (buffer, coeffFunction, frequencies, Qs) {
   let lv1 = 0
   let lv2 = 0
 
+  const freqSampler = new EnvelopeSampler(frequencies)
+  const qSampler = new EnvelopeSampler(Qs)
+
   for (let i = 0; i < buffer.length; ++i) {
-    let freq = sampleEnvelope(i / (buffer.length - 1), frequencies)
-    let Q = sampleEnvelope(i / (buffer.length - 1), Qs)
+    let freq = freqSampler.sample(i / (buffer.length - 1))
+    let Q = qSampler.sample(i / (buffer.length - 1))
     let coeffs = coeffFunction(freq, Q)
 
     let inV = buffer[i]
@@ -186,8 +218,9 @@ export function generateSound (length, sampleFunction) {
 }
 
 export function applyEnvelope (buffer, envelope) {
+  const sampler = new EnvelopeSampler(envelope)
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] *= sampleEnvelope(i / buffer.length, envelope)
+    buffer[i] *= sampler.sample(i / buffer.length)
   }
 
   return buffer

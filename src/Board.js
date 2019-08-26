@@ -16,6 +16,9 @@ export class Board {
   }
 
   getItemAt (x, y) {
+    if (x < 0 || x >= this.width || y < 0) {
+      return 1 // "something"
+    }
     return this.grid[y][x]
   }
 

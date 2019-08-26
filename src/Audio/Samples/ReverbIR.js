@@ -1,4 +1,4 @@
-import { applyEnvelope, generateSound, sampleNoise, bandPassFilter } from '../SoundGeneration'
+import { applyEnvelope, generateSound, sampleNoise } from '../SoundGeneration';
 
 export function createReverbIR () {
   function createNoisyEnvelope () {

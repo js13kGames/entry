@@ -1,5 +1,4 @@
-import { generateSound, applyEnvelope, sampleEnvelope, getFrequencyDelta, sampleTriangle, sampleSawtooth, sampleSine, distort, bandPassFilter, sampleNoise } from '../SoundGeneration'
-import { getFrequencyForTone } from '../SongGeneration';
+import { generateSound, applyEnvelope, bandPassFilter, sampleNoise } from '../SoundGeneration'
 
 export default function createHoldSound () {
   const volumeEnvelope = [

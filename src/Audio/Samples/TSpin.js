@@ -1,4 +1,4 @@
-import { generateSound, bandPassFilter, applyEnvelope, sampleNoise, sampleSine, sampleEnvelope, getFrequencyDelta } from '../SoundGeneration'
+import { generateSound, applyEnvelope, sampleSine, getFrequencyDelta, EnvelopeSampler } from '../SoundGeneration'
 import { getFrequencyForTone } from '../SongGeneration';
 
 export function createTSpinSound () {
@@ -13,12 +13,12 @@ export function createTSpinSound () {
     [1.0, 0.0]
   ]
 
-  const pitchEnvelope = [
+  const pitchEnvelope = new EnvelopeSampler([
     [0, 5],
     [0.3, 12],
     [0.6, 11],
     [0.6, 10]
-  ]
+  ])
 
   let phase = 0
 
@@ -29,7 +29,7 @@ export function createTSpinSound () {
   }
 
   function sample (t) {
-    const pitch = sampleEnvelope(t, pitchEnvelope)
+    const pitch = pitchEnvelope.sample(t)
     phase += getFrequencyDelta(getFrequencyForTone(pitch))
     return sampleSkewedSine(phase)
   }

@@ -119,6 +119,13 @@ export class Song {
     this.channels[channel].volumeParam.linearRampToValueAtTime(volume, TheAudioContext.currentTime + time)
   }
 
+  stop () {
+    this.channels.forEach(channel => {
+      channel.source.playbackRate.setValueAtTime(1, TheAudioContext.currentTime)
+      channel.source.playbackRate.linearRampToValueAtTime(0.0001, TheAudioContext.currentTime + 1)
+    })
+  }
+
   play () {
     this.channels.forEach(channel => {
       channel.source.start()
