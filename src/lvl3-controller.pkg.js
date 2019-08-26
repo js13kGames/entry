@@ -89,14 +89,14 @@ const initLevel3 = () => {
   }
 
   function recoverFromAttack (name) {
-    setTimeout(() => setState(state => {
+    setState(state => {
       return {
         [name]: {
           ...state[name],
           currentAction: actions.READY
         }
       }
-    }), time);
+    });
   }
 
   function startRecoveryFromAttack (name, time) {
@@ -120,7 +120,8 @@ const initLevel3 = () => {
           currentAction: actions.ATTACKING
         }
       };
-      const opponentState = state[opponentOf[attacker]];
+      const opponent = opponentOf[attacker];
+      const opponentState = state[opponent];
       // check if opponent is in attack location
       if (opponentState.location === attackLocation && opponentState.currentAction !== actions.BLOCKING) {
         let newOpponentLocation;
@@ -135,7 +136,7 @@ const initLevel3 = () => {
           location: newOpponentLocation,
           currentAction: actions.DISABLED
         }
-        setTimeout(() => recoverFromAttack(opponent, 1500), 500);
+        setTimeout(() => recoverFromAttack(opponent), 1500);
       };
       // both will need to recover after the attack
       setTimeout(() => startRecoveryFromAttack(attacker, 1500), 500);
@@ -204,6 +205,7 @@ const initLevel3 = () => {
   }
 
   function trexBrainLoop () {
+    const state = getState();
     if (state.trex.location - state.kong.location <= 2) {
       if (random() > .5) {
         startAttackSequence('trex');
