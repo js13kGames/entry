@@ -91,8 +91,6 @@ let loop = GameLoop({  // create the main game loop
 
         // Remove dead & exploded sprite's hitboxes from the collision system
         sprites.forEach(sprite => {
-            if (sprite.type === 'bullet') {
-            }
             if (!sprite.isAlive() || sprite.exploded) {
                 sprite.hitbox && sprite.hitbox.remove();
             }
