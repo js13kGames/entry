@@ -13,17 +13,18 @@
         <script>
             x=game.getContext`2d`;
             level=5; //0 is main menu, everything higher is levels, lower is states
-            var playerx = 0; var playery = 0;
-            var playermovex = 0; var playermovey = 1;
-            var horborder = 200; var flipy = 9000; var flipped = 1;
-            var paused = false;
-            var direction = 1; var cameray = 0;
+            playerx = 0; playery = 0;
+            playermovex = 0; playermovey = 1;
+            horborder = 200; flipy = 9000; flipped = 1;
+            paused = false;
+            direction = 1; cameray = 0;
             const TAU = Zdog.TAU
             obstacle = []; obstacle[0] = 0; 
             shakex = 0; shakey = 0; shakeduration = 0;
+            bgcolor = "#223e32";
 
             create();
-            setInterval(e=>{ step(false) },33);
+            setInterval(e=>{ step(false) },16);
             onkeydown=e=>{ keypress(e.key); }
 
             //https://stackoverflow.com/a/19303725
@@ -47,7 +48,7 @@
                     onPrerender: function(ctx) {
                         ctx.beginPath();
                         ctx.rect(-1080, -1080, 1080*2, 1080*2);
-                        ctx.fillStyle = "#223e32";
+                        ctx.fillStyle = bgcolor;
                         ctx.fill();
                     },
                 });
@@ -154,48 +155,57 @@
                 if (paused && framestep == false) {return;}
                 cameray -= direction;
 
-                playerx += playermovex/4;
-                if (playerx > horborder) {playerx = horborder; playermovex = 0;}
-                if (playerx < -horborder) {playerx = -horborder; playermovex = 0}
-                playery += playermovey;
-
                 if (flipped == -1) 
-                {
-                    illo.rotate.x  -(TAU/16)*9;
-                } 
-
-                if (playery > flipy)
-                {
-                    playery = flipy;
-                    flipped = -1;
-                    playermovey = -1;
-                }
-                
-                for (var i = 0; i != obstacle.length; i++)
-                {
-                    xx = obstacle[i].translate.x; 
-                    yy = obstacle[i].translate.y;
-                    zz = obstacle[i].translate.z;
-                    w = obstacle[i].width-5; h = obstacle[i].height-20;
-                    //console.log(i.toString() + "i " + xx.toString() + "x "+ yy.toString() + "y "+ w.toString() + "w " + h.toString() + "h ");
-
-                    if (playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h && zz == 25)
                     {
-                        if (obstacle[i].colliding == false)
+                        if (illo.rotate.x < (TAU/16)*7)
                         {
-                            console.log("Collision detected with "+i.toString());
-                            obstacle[i].colliding = true;
-                            
-                            if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5}
-                            playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
+                            illo.rotate.x += (TAU/16);
+                            bgcolor = "#A7C06D";
+                            console.log("Flipping...")
+                            ///QQQ Maybe change some colors too? Background for example? Player for sure!
                         }
-                    }
-                    else if (obstacle[i].colliding == true)
-                    {
-                        console.log("Collision ended with "+i.toString());
-                        obstacle[i].colliding = false;
+                    } 
 
-                        //QQQ Push tile to background.
+                for (var j = 0; j != 4; j += 1) //So we're doing the step loop four times for smoother movement! They did it in Super Mario 64, so can I!
+                {
+                    playerx += playermovex/4;
+                    if (playerx > horborder) {playerx = horborder; playermovex = 0;}
+                    if (playerx < -horborder) {playerx = -horborder; playermovex = 0}
+                    playery += playermovey/4;
+
+                    if (playery > flipy)
+                    {
+                        playery = flipy;
+                        flipped = -1;
+                        playermovey = -1;
+                    }
+                    
+                    for (var i = 0; i != obstacle.length; i++)
+                    {
+                        xx = obstacle[i].translate.x; 
+                        yy = obstacle[i].translate.y;
+                        zz = obstacle[i].translate.z;
+                        w = obstacle[i].width-5; h = obstacle[i].height-20;
+                        //console.log(i.toString() + "i " + xx.toString() + "x "+ yy.toString() + "y "+ w.toString() + "w " + h.toString() + "h ");
+
+                        if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h)
+                        {
+                            if (obstacle[i].colliding == false)
+                            {
+                                console.log("Collision detected with "+i.toString());
+                                obstacle[i].colliding = true;
+                                
+                                if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
+                                playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
+                            }
+                        }
+                        else if (obstacle[i].colliding == true)
+                        {
+                            console.log("Collision ended with "+i.toString());
+                            obstacle[i].colliding = false;
+
+                            //QQQ Push tile to background.
+                        }
                     }
                 }
 
@@ -212,19 +222,27 @@
                 
                 if (paused) 
                 {
-                    if (key != "f") //Frame skip QQQ
-                        {return;}
-                        else
+                    if (key == "f") //Frame skip QQQ
                         {step(true);}
+                    if (key == " ")
+                    {
+                        draw() //Allow rotation
                     }
+                    else
+                        {return;}
+                }
+
+                var delta = 0; 
+                if (key == "ArrowLeft" || key == "a" || key == "q") {delta = -1}
+                if (key == "ArrowRight" || key == "d") {delta = 1}
                 
-                if ((key == "ArrowLeft" || key == "a" || key == "q") && playermovex == 0) //Left or A or Q
+                if (delta == -1 && playermovex == 0) //Left or A or Q
                 {
                     playermovex = -8;
                     playermovey = 0;
                     //If there's something you are colliding with it should end here
                 }
-                if ((key == "ArrowRight" || key == "d") && playermovex == 0)
+                if (delta == 1 && playermovex == 0)
                 {
                     playermovex = 8;
                     playermovey = 0;
@@ -233,33 +251,20 @@
                 if ((key == "ArrowUp" || key == "w" || key == "z"))
                 {
                     playermovex = 0;
-                    if (flipped == 1)
-                    {
-                        playermovey = 0.5*flipped;
-                    }
-                    else
-                    {
-                        playermovey = 3*flipped;
-                    }
+                    playermovey = 0.5*flipped;
                 }
                 if ((key == "ArrowDown" || key == "s"))
                 {
                     playermovex = 0;
-                    if (flipped == 1)
-                    {
-                        playermovey = 3*flipped;
-                    }
-                    else
-                    {
-                        playermovey = 0.5*flipped;
-                    }
+                    playermovey = 3*flipped;
                 }
             }
 
             function draw() {
                 player.translate = {x: playerx, y: playery}
-                player.rotate = { y: -playermovex*0.15, x: -playermovey*0.1} //x and y swap here
-                cameray = -player.translate.y*0.92; //Probably not the perfect number yet, but a pretty close approximation QQQ
+                var yoff = 0; if (flipped == -1) {yoff = -TAU/2}
+                player.rotate = { y: -(playermovex*flipped)*0.08, x: -playermovey*0.15+yoff} //x and y swap here
+                cameray = -flipped*player.translate.y*0.935; // 15/16 
                 if (shakeduration > 0) 
                 {
                     console.log("Shaking "+shakeduration.toString() + " " + cameray.toString())
@@ -297,10 +302,11 @@
         </script>
         <p>
             To do:
-            - Obstacles
-            - Colliding behavior
-            - Flipping
-            - "Back"
+            - Collision leave behavior
+            - Flipping (fix camera behavior)
+            - Interface (with ZText?)
+            - Win/fail states
+            - Touch screen/swipe support so I can compete in the Mobile category
 
             <b>Deadline 13 September!</b>
         </p>
