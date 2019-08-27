@@ -9,6 +9,15 @@
   "author": "Reece Bennett",
   "license": "MIT",
   "devDependencies": {
-    "browser-sync": "^2.26.7"
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-check-filesize": "^2.0.1",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-terser": "^1.2.0",
+    "gulp-zip": "^5.0.0"
   }
 }
