@@ -142,7 +142,7 @@ var shadowPlayerInterval = 290;
 
 /* Player Sprite Loading */
 var playerSprite = new Image();
-playerSprite.src = "sprite_0.png";
+playerSprite.src = "sprites/sprite_0.png";
 
 /* Target Sprites Alive */
 var enemySprite = new Image();
@@ -161,7 +161,7 @@ deadInnocentSprite.src = "sprites/target3.png";
 
 /* Shadow Player sprite */
 var shadowPlayerSprite = new Image();
-shadowPlayerSprite.src = "sprite_shadowPlayer.png";
+shadowPlayerSprite.src = "sprites/sprite_shadowPlayer.png";
 
 /* wall sprite */
 var wallSprite = new Image();
@@ -334,13 +334,47 @@ function levelTransitionEnd(timeout) {
 
 /* CANVAS DRAWING FUNCTIONS */
 
+/* A function which writes out text 1 char at a time */
+var slowTextCounter = 0;
+var queueCounter = 0;
+function drawPixelTextSlow(message, x, y, size, delay, color="white"){
+    if (queueCounter < message.length){
+        if (slowTextCounter < message[queueCounter].length){
+            if (message[queueCounter] === "narrator"){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "magenta");
+            } else if (message[queueCounter] === '\n') {
+                queueCounter++;
+                slowTextCounter = -1;
+                y += gridSize
+                x = -8;
+            } else if (message[queueCounter] === "stabbing robot 3000"){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
+            } else if (message[queueCounter] === "\b"){
+                //draw rectangles over previous message
+            } else {
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
+            }
+            
+            slowTextCounter++;
+            setTimeout(function(){
+                drawPixelTextSlow(message, x+size+10, y, size, delay, color);
+            }, delay);
+
+        } else {
+            slowTextCounter = 0;
+            queueCounter++;
+            drawPixelTextSlow(message, x+size+10, y, size, delay, color);
+        }
+    }
+}
+
 /* A function for drawing pixel font */
-function drawPixelText(message, x, y, size, italics=false) {
+function drawPixelText(message, x, y, size, italics=false, color="white") {
     let i;
     let pixelX = x;
     let pixelY = y;
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = color;
     message = message.toUpperCase();
     for (i = 0; i < message.length; i++) {
         let j;
@@ -432,7 +466,7 @@ function drawLevel(level_array) {
             }
         }
     }
-
+    console.log(this_level.length + 8);
     /** DRAW SIDE BAR  */
     ctx.fillStyle = "black";
     let sidebarX = (this_level.length + 2)
@@ -656,6 +690,7 @@ function updateTimer(){
     timerRunning = false; //set to false so another timeout can start 
 }
 
+
 function mainLoop() {
     //draw the game
     //console.log('running....');
@@ -668,4 +703,34 @@ function mainLoop() {
 }
 
 
-var main = setInterval(mainLoop, 25);
+// title screen
+let titleContents = [
+    "Hello dear player.  It is I the",
+    "narrator",
+    "!",
+    "\n",
+    "And you are the",
+    "stabbing robot 3000",
+    "\n",
+    "your task is to stab my",
+    "political opponents",
+    "\b",
+    ""
+];
+function titleScreen(){
+    let gameX = 5;
+    let gameY = 48;
+    let fontSize = 3;
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 75);
+    
+
+}
+
+
+
+titleScreen();
+
+//var main = setInterval(mainLoop, 25);
