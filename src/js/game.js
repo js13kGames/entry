@@ -47,7 +47,7 @@ for (var i = 0; i < 4; i++) {
 
 let player1 = new Player({
     color: 'yellow',
-    shipType: 'tri',
+    shipType: 'striker',
     controls: 'arrows',
     sprites: sprites,
     cs: collisionSystem,
