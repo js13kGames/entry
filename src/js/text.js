@@ -24,7 +24,7 @@ export function renderText(props) {
     [...props.text.toString()].forEach((char, i) => {
         var path;
         if (i) {
-            props.context.translate(7, 0);
+            props.context.translate(6.5, 0);
         }
         if (glyphs[char]) {
             path = glyphs[char];
