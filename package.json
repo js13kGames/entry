@@ -1,0 +1,14 @@
+{
+  "name": "js13k-2019",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "browser-sync start --server --files index.html assets"
+  },
+  "keywords": [],
+  "author": "Reece Bennett",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.26.7"
+  }
+}
