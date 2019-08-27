@@ -16,6 +16,7 @@ import { createReverbIR } from './Audio/Samples/ReverbIR';
 import createHoldSound from './Audio/Samples/Hold';
 import { createTSpinSound } from './Audio/Samples/TSpin';
 import createSong from './Audio/Songs/Song1';
+import FontAsset from './Sprites/Font'
 
 async function createAudioSampleAsset (createSampleFunction) {
   const array = createSampleFunction()
@@ -26,6 +27,19 @@ async function createAudioSampleAsset (createSampleFunction) {
 
   return result
 }
+
+function createSpriteAsset (spriteObject) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      spriteObject.renderable = img
+      resolve(spriteObject)
+    }
+    img.src = spriteObject.dataUrl
+  })
+}
+
+export let Font
 
 export let Song1
 
@@ -61,20 +75,20 @@ async function createReverb () {
 export async function loadAssets () {
   await Promise.all(
     [
+      Font,
       ShiftSound,
       RotateSound,
       LandSound,
       LockSound,
-      LineClearSounds[0],
-      LineClearSounds[1],
-      LineClearSounds[2],
-      LineClearSounds[3],
+      ...LineClearSounds,
       HardDropSound,
       HoldSound,
       TSpinSound,
       AllClearSound
     ]
   )
+
+  Font = await createSpriteAsset(FontAsset)
 
   await createReverb()
 

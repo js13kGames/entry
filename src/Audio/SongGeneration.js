@@ -41,7 +41,7 @@ export function getOffsetForBeat (n, bpm) {
 }
 
 export function getFrequencyForTone (n) {
-  return 440 * Math.pow(2, n / 12)
+  return 440 * 2 ** (n / 12)
 }
 
 export function repeatNotes (x, length, repeat) {

@@ -15,6 +15,10 @@ export class Board {
     this.tetrominoes = new Set()
   }
 
+  isSolidAt (x, y) {
+    return !!this.getItemAt(x, y)
+  }
+
   getItemAt (x, y) {
     if (x < 0 || x >= this.width || y < 0) {
       return 1 // "something"
@@ -106,5 +110,9 @@ export class Board {
         }
       }
     }
+  }
+
+  emptyRow (y) {
+    this.grid[y].fill(0)
   }
 }

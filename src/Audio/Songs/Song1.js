@@ -18,7 +18,7 @@ export default async function createSong () {
 
   return new Song(
     [
-      { source: channelLead, volume: decibelsToAmplitude(-14), sendToReverb: 1 },
+      { source: channelLead, volume: decibelsToAmplitude(-20), sendToReverb: 1 },
     ]
   )
 }

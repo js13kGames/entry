@@ -14,8 +14,8 @@ export function createLineClearSoundFactory (tones, length)  {
 
     let envelope = [
       [0, 0],
-      [0.01 / length, 0.5, 0.5],
-      [1 - 0.01 / length, 0.5, 0.5],
+      [0.01 / length, 0.3, 0.5],
+      [1 - 0.01 / length, 0.3, 0.5],
       [1, 0]
     ]
     return lowPassFilter(

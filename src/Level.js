@@ -7,14 +7,17 @@ import { TetrominoO } from './Tetrominos/TetrominoO';
 import { TetrominoS } from './Tetrominos/TetrominoS';
 import { TetrominoZ } from './Tetrominos/TetrominoZ';
 import { TetrominoController } from './TetrominoController';
-import { TILE_SIZE, KEY_HOLD, ACTION_ROTATE } from './constants';
+import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN } from './constants';
 import { ClearAnimation } from './ClearAnimation';
 import { Input } from './Input';
 import { Board } from './Board';
 import { GameOverAnimation } from './GameOverAnimation';
 import { playSample } from './Audio';
 import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1 } from './Assets';
-import { TheAudioContext } from './Audio/Context';
+import { resetScore, addToScore, currentScore, resetLineClears, addLineClears, currentLevel, lineClears } from './globals';
+import { zeroPad } from './utils';
+import { drawText, drawBoldText } from './fontUtils';
+import { ScoreAnimation } from './ScoreAnimation';
 
 class TetrominoBag {
   constructor () {
@@ -51,7 +54,7 @@ class TetrominoSource {
 export class Level {
   constructor () {
     this.tileCountX = 10
-    this.tileCountY = 21
+    this.tileCountY = 20
 
     this.board = new Board(this.tileCountX, this.tileCountY)
 
@@ -60,6 +63,13 @@ export class Level {
     this.nextTetrominos = Array.from(Array(6), () => this.tetrominoSource.getNext())
 
     this.nextTetromino()
+
+    resetScore()
+    resetLineClears()
+
+    Graphics.font = 'bold 12px monospace'
+
+    this.scoreAnimations = []
   }
 
   get width () {
@@ -71,6 +81,7 @@ export class Level {
   }
 
   step () {
+    let previousScore = currentScore
     if (this.clearAnimation) {
       this.clearAnimation.step()
 
@@ -82,12 +93,16 @@ export class Level {
       return
     }
 
+    for (let animation of this.scoreAnimations) {
+      animation.step()
+    }
+
     if (this.gameOverAnimation) {
       this.gameOverAnimation.step()
       return
     }
 
-    if (Input.getKeyDown(KEY_HOLD) && !this.controller.wasHeld) {
+    if (Input.getKeyDown(HOLD) && !this.controller.wasHeld) {
       this.holdTetromino()
       return
     }
@@ -100,19 +115,22 @@ export class Level {
         rows.add(position[1])
       }
 
-      if (this.isTSpin()) {
-        playSample(TSpinSound, 1, true)
-      }
-
       this.board.putTetromino(this.currentTetromino)
 
       this.checkState(rows)
     }
 
     this.updateGhostPosition()
+
+    if (currentScore !== previousScore) {
+      this.scoreAnimations.push(new ScoreAnimation(currentScore - previousScore))
+      if (this.scoreAnimations.length === 4) {
+        this.scoreAnimations.shift()
+      }
+    }
   }
 
-  isTSpin () {
+  getTSpin () {
     if (!(this.currentTetromino instanceof TetrominoT) || this.controller.lastMove !== ACTION_ROTATE) {
       return false
     }
@@ -120,13 +138,38 @@ export class Level {
     let x = this.currentTetromino.x
     let y = this.currentTetromino.y
 
-    let emptyCorners =
-      !this.board.getItemAt(x - 1, y + 1) +
-      !this.board.getItemAt(x + 1, y + 1) +
-      !this.board.getItemAt(x + 1, y - 1) +
-      !this.board.getItemAt(x - 1, y - 1)
+    let corners = [
+      this.board.isSolidAt(x - 1, y + 1),
+      this.board.isSolidAt(x + 1, y + 1),
+      this.board.isSolidAt(x + 1, y - 1),
+      this.board.isSolidAt(x - 1, y - 1)
+    ]
 
-    return emptyCorners <= 1
+    let betweens = [
+      this.board.isSolidAt(x - 1, y),
+      this.board.isSolidAt(x, y + 1),
+      this.board.isSolidAt(x + 1, y),
+      this.board.isSolidAt(x, y - 1)
+    ]
+
+    let emptyCorners =
+      !corners[0] +
+      !corners[1] +
+      !corners[2] +
+      !corners[3]
+
+    if (emptyCorners > 1) {
+      return false
+    }
+
+    const filled = [
+      corners[0] + betweens[1] + corners[1],
+      corners[1] + betweens[2] + corners[2],
+      corners[2] + betweens[3] + corners[3],
+      corners[3] + betweens[0] + corners[0]
+    ]
+
+    return filled.filter(x => x === 3).length < 2 ? T_SPIN_MINI : T_SPIN
   }
 
   checkState (rows) {
@@ -139,20 +182,19 @@ export class Level {
 
     rowsToClear.sort((a, b) => a - b)
 
-    if (rowsToClear.length === 0) {
+    let tSpinType = this.getTSpin()
+    let clearedRowsCount = rowsToClear.length
+    let allClear = this.isAllClearConfig(rowsToClear)
+
+    this.updateScore(tSpinType, clearedRowsCount, allClear)
+
+    if (clearedRowsCount === 0) {
       if (this.board.overflows(this.nextTetrominos[0])) {
         this.setGameOver()
         return
       }
       this.nextTetromino()
     } else {
-      // Check for all-clear
-      if (this.isAllClearConfig(rowsToClear)) {
-        playSample(AllClearSound, 1, true)
-      } else {
-        playSample(LineClearSounds[rowsToClear.length - 1], 1, true)
-      }
-
       this.clearAnimation = new ClearAnimation(this, rowsToClear)
     }
   }
@@ -164,6 +206,35 @@ export class Level {
       }
     }
     return true
+  }
+
+  updateScore (tSpinType, clearedRowsCount, allClear) {
+    addLineClears(clearedRowsCount)
+
+    if (tSpinType) {
+      playSample(TSpinSound, 1, true)
+    }
+
+    if (allClear) {
+      playSample(AllClearSound, 1, true)
+
+      addToScore(1500 * currentLevel)
+    } else if (clearedRowsCount > 0) {
+      playSample(LineClearSounds[clearedRowsCount - 1], 1, true)
+
+      addToScore({
+        1: 100,
+        2: 300,
+        3: 500,
+        4: 800
+      }[clearedRowsCount] * currentLevel)
+    }
+
+    if (tSpinType === T_SPIN) {
+      addToScore(currentLevel * 400 * 2 ** clearedRowsCount)
+    } else if (tSpinType === T_SPIN_MINI) {
+      addToScore(currentLevel * (clearedRowsCount + 1) * 100)
+    }
   }
 
   setGameOver () {
@@ -219,18 +290,33 @@ export class Level {
     Graphics.strokeStyle = '#fff'
     Graphics.strokeRect(-16, 0, 48, 170)
 
+    drawText(`LEVEL`, -17, 190)
+    drawBoldText(`\n${zeroPad(currentLevel, 2)}`, -15, 190)
+    drawText(`LINES`, -17, 224)
+    drawBoldText(`\n${zeroPad(lineClears, 4)}`, -15, 224)
+
+    drawText(`SCORE`, -17, 300)
+    Graphics.scale(2, 2)
+    drawBoldText(`\n${zeroPad(currentScore, 9)}`, -8, 148)
+
+    for (let animation of this.scoreAnimations) {
+      animation.render(10, 148)
+    }
+
+    Graphics.scale(0.5, 0.5)
+
     this.renderNextTetrominos()
 
-    Graphics.resetTransform()
+    Graphics['resetTransform']()
 
     Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 10)
-    Graphics.fillText('Hold', 0, 0)
+    drawBoldText(`HOLD`, -8, -8)
 
     if (this.heldTetromino) {
       if (this.controller.wasHeld) {
         this.renderGhostTetromino(this.heldTetromino, 0, TILE_SIZE / 2, 2)
         Graphics.fillStyle = 'rgba(0,0,0,0.5)'
-        Graphics.fillRect(-TILE_SIZE / 2, -TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2)
+        Graphics.fillRect(-TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE)
       } else {
         this.renderTetromino(this.heldTetromino, TILE_SIZE / 2, 2)
       }

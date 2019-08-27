@@ -85,3 +85,13 @@ export function makeColorWithAlpha (color, alpha) {
 export async function waitForNextFrame () {
   await new Promise(resolve => requestAnimationFrame(resolve))
 }
+
+
+export function zeroPad (str, n) {
+  str = str.toString()
+  if (str.length > n) {
+    return Array(str.length).fill(9).join('')
+  }
+
+  return Array(n - str.length).fill(0).join('') + str
+}

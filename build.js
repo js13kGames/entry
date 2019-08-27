@@ -143,8 +143,10 @@ async function build() {
 
   const finalFileSize = fs.readFileSync('./dist/dist.zip').byteLength
 
-  console.log('Final file size:', finalFileSize)
   const limit = 13 * 1024
+  const perc = (finalFileSize * 100 / limit).toFixed(1)
+  console.log(`Final file size: ${finalFileSize} (${perc}% of 13kb)`)
+
   if (finalFileSize > limit) {
     console.error(`That's ${finalFileSize - limit} too many bytes!`)
   }

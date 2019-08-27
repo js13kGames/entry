@@ -26,23 +26,6 @@ export function sampleNoise () {
   return Math.random() * 2 - 1
 }
 
-export function sampleEnvelope (position, envelope) {
-  for (let i = 0; i < envelope.length - 1; i++) {
-    let [t1, v1, curve = 1] = envelope[i]
-    let [t2, v2] = envelope[i + 1]
-    if (t1 <= position && position < t2) {
-      let t = (position - t1) / (t2 - t1)
-      if (curve > 1) {
-        t = Math.pow(t, curve)
-      } else {
-        t = 1 - Math.pow((1 - t), 1 / curve)
-      }
-      return v1 + t * (v2 - v1)
-    }
-  }
-  return envelope[envelope.length - 1][1]
-}
-
 export class EnvelopeSampler {
   constructor (envelope) {
     this.envelope = envelope
@@ -60,9 +43,9 @@ export class EnvelopeSampler {
       if (t1 <= position && position < t2) {
         let t = (position - t1) / (t2 - t1)
         if (curve > 1) {
-          t = Math.pow(t, curve)
+          t = t ** curve
         } else {
-          t = 1 - Math.pow((1 - t), 1 / curve)
+          t = 1 - (1 - t) ** (1 / curve)
         }
         return v1 + t * (v2 - v1)
       }

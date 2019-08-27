@@ -9,7 +9,7 @@ import {
 function createEnvelope () {
   const result = []
   for (let i = 0; i <= 1000; i++) {
-    const scale = 0.1 + 0.9 * Math.pow(1 - i / 1000, 6)
+    const scale = 0.1 + 0.9 * (1 - i / 1000) ** 6
     result.push([i / 1000, Math.random() * scale])
   }
   return result
@@ -27,7 +27,7 @@ export default function createLeadSound (frequency) {
   const pitchSampler = new EnvelopeSampler(pitchEnvelope)
   function getSample (t) {
     const offset = pitchSampler.sample(t)
-    p += getFrequencyDelta(Math.pow(2, offset / 12) * frequency)
+    p += getFrequencyDelta(2 ** (offset / 12) * frequency)
     return sampleSquare(p)
   }
 

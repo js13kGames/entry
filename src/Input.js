@@ -1,11 +1,12 @@
 import {
-  KEY_LEFT,
-  KEY_RIGHT,
-  KEY_UP,
-  KEY_DOWN,
-  KEY_ROTATE_CCW,
-  KEY_ROTATE_CW,
-  KEY_HOLD
+  MOVE_LEFT,
+  MOVE_RIGHT,
+  HARD_DROP,
+  SOFT_DROP,
+  ROTATE_CCW,
+  ROTATE_CW,
+  HOLD,
+  INPUT_MAPPING
 } from './constants'
 
 export let Input = {
@@ -31,19 +32,19 @@ export let Input = {
 
   preUpdate () {
     if (Input.gamepad) {
-      Input.current[KEY_LEFT] = Input.gamepad.axes[0] < -0.3 || Input.isPressed(14)
-      Input.current[KEY_RIGHT] = Input.gamepad.axes[0] > 0.3 || Input.isPressed(15)
-      Input.current[KEY_UP] = Input.gamepad.axes[1] < -0.3 || Input.isPressed(12)
-      Input.current[KEY_DOWN] = Input.gamepad.axes[1] > 0.3 || Input.isPressed(13)
-      Input.current[KEY_ROTATE_CW] = (
+      Input.current[MOVE_LEFT] = Input.gamepad.axes[0] < -0.3 || Input.isPressed(14)
+      Input.current[MOVE_RIGHT] = Input.gamepad.axes[0] > 0.3 || Input.isPressed(15)
+      Input.current[HARD_DROP] = Input.gamepad.axes[1] < -0.3 || Input.isPressed(12)
+      Input.current[SOFT_DROP] = Input.gamepad.axes[1] > 0.3 || Input.isPressed(13)
+      Input.current[ROTATE_CW] = (
         Input.isPressed(1) ||
         Input.isPressed(3)
       )
-      Input.current[KEY_ROTATE_CCW] = (
+      Input.current[ROTATE_CCW] = (
         Input.isPressed(0) ||
         Input.isPressed(2)
       )
-      Input.current[KEY_HOLD] = (
+      Input.current[HOLD] = (
         Input.isPressed(4) ||
         Input.isPressed(5) ||
         Input.isPressed(6) ||
@@ -54,13 +55,13 @@ export let Input = {
 
   postUpdate () {
     [
-      KEY_LEFT,
-      KEY_RIGHT,
-      KEY_UP,
-      KEY_DOWN,
-      KEY_ROTATE_CCW,
-      KEY_ROTATE_CW,
-      KEY_HOLD,
+      MOVE_LEFT,
+      MOVE_RIGHT,
+      HARD_DROP,
+      SOFT_DROP,
+      ROTATE_CCW,
+      ROTATE_CW,
+      HOLD,
     ].forEach(key => {
       Input.previous[key] = Input.current[key]
     })
@@ -68,13 +69,15 @@ export let Input = {
 }
 
 document.addEventListener('keydown', ({ keyCode }) => {
-  Input.previous[keyCode] = Input.current[keyCode]
-  Input.current[keyCode] = true
+  let target = INPUT_MAPPING[keyCode] || keyCode
+  Input.previous[target] = Input.current[target]
+  Input.current[target] = true
 }, false)
 
 document.addEventListener('keyup', ({ keyCode }) => {
-  Input.previous[keyCode] = Input.current[keyCode]
-  Input.current[keyCode] = false
+  let target = INPUT_MAPPING[keyCode] || keyCode
+  Input.previous[target] = Input.current[target]
+  Input.current[target] = false
 }, false)
 
 window.addEventListener('gamepadconnected', event => {

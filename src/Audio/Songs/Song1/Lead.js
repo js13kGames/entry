@@ -1,6 +1,6 @@
-import { addNotes } from '../../SongGeneration';
+import { addNotes, getOffsetForBeat } from '../../SongGeneration';
 import createLeadSound from '../../MusicSamples/Lead';
-import { highPassFilter } from '../../SoundGeneration';
+import { highPassFilter, EnvelopeSampler } from '../../SoundGeneration';
 
 export function createLeadTrack (output, bpm) {
   function pattern1 (offset, note) {
@@ -100,5 +100,20 @@ export function createLeadTrack (output, bpm) {
     ...leadLine
   ], output, createLeadSound, bpm)
 
-  highPassFilter(output, 500)
+  highPassFilter(output, 300)
+
+  const sidechainEnvelope = new EnvelopeSampler([
+    [0, 0.15, 5],
+    [0.5, 0.9],
+    [0.999, 1],
+    [1, 0],
+  ])
+
+  const beatLength = getOffsetForBeat(1, bpm)
+  for (let i = 0; i < output.length; i++) {
+    if (i % beatLength === 0) {
+      sidechainEnvelope.reset()
+    }
+    output[i] *= sidechainEnvelope.sample((i % beatLength) / beatLength)
+  }
 }

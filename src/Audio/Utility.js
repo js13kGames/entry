@@ -1,5 +1,5 @@
 export function decibelsToAmplitude (db) {
-  return Math.pow(10, db / 20)
+  return 10 ** (db / 20)
 }
 
 export function amplitudeToDecibels (amplitude) {
