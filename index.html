@@ -8,16 +8,19 @@
 
     <!-- build:js -->
     <script src="js/clicker.js"></script>
+    <script src="js/star.js"></script>
     <!-- endbuild -->
   </head>
   <body>
-    <a-scene background="color: #edece6" light="defaultLightsEnabled: false">
+    <a-scene background="color: #141414" light="defaultLightsEnabled: false">
       
       <a-assets>
         <a-asset-item id="ship" src="/models/cockpit_v2.obj"></a-asset-item>
       </a-assets>
       
       <a-entity position="0 0 0" rotation="0 -90 0" obj-model="obj: #ship" material="color: #3f3f3f"></a-entity>
+
+      <a-entity stars></a-entity>
       
       <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
         <a-entity cursor="fuse: false"
