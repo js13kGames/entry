@@ -1,5 +1,6 @@
 import { keyPressed } from 'kontra';
 import { Ship } from './ship.js';
+import { renderText } from './text';
 import getKeys from './controls';
 
 export class Player {
@@ -11,6 +12,7 @@ export class Player {
         this.cs = props.cs; // Ref to the game's collision system
         this.ready = false;
         this.score = 0;
+        this.context = props.context;
 
         // Set control scheme
         if (this.controls) {
@@ -91,5 +93,30 @@ export class Player {
         // Spawn an entirely new ship for the player ???
         this.spawn(ships, sprites);
         this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
+    }
+
+    renderScore(i) {
+        var textProps = {
+            color: this.color,
+            context: this.context,
+            text: this.score,
+        };
+
+        // Render the scores
+        if (i === 0) {
+            textProps.x = 10;
+            textProps.y = 10;
+        } else if (i === 1) {
+            textProps.x = this.context.canvas.width - 20;
+            textProps.y = 10;
+        } else if (i === 2) {
+            textProps.x = 10;
+            textProps.y = this.context.canvas.height - 20;
+        } else if (i === 3) {
+            textProps.x = this.context.canvas.width - 20;
+            textProps.y = this.context.canvas.height - 20;
+        }
+
+        renderText(textProps);
     }
 }
