@@ -50,7 +50,8 @@ let player1 = new Player({
     shipType: 'tri',
     controls: 'arrows',
     sprites: sprites,
-    cs: collisionSystem
+    cs: collisionSystem,
+    context: context
 });
 players.push(player1);
 
@@ -59,7 +60,8 @@ let player2 = new Player({
     shipType: 'coback',
     controls: 'wasd',
     sprites: sprites,
-    cs: collisionSystem
+    cs: collisionSystem,
+    context: context
 });
 players.push(player2);
 
@@ -116,22 +118,14 @@ let loop = GameLoop({  // create the main game loop
         // Render all the sprites
         sprites.map(sprite => sprite.render());
 
+        // Render the player scores
+        players.map((player, i) => player.renderScore(i));
+
         // Render debug collision stuff
         // context.strokeStyle = '#0F0';
         // context.beginPath();
         // collisionSystem.draw(context);
         // context.stroke();
-
-        // Render the scores
-        if (players[0]) {
-            renderText({
-                color: players[0].color,
-                context: context,
-                text: players[0].score,
-                x: 64,
-                y: 64
-            });
-        }
     }
 });
 
