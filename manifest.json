@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "watchmyback",
+  "description": "watchmyback game eat candies before they turn into bugs use direction keys for control and touch buttons for touch enabled devices",
   "images" : {
     "image_large": "image-big.jpg",
     "image_thumbnail": "image-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "John Swana",
+    "website": "https://github.com/swashvirus",
+    "twitter": "swashjunior"
   }
 }
