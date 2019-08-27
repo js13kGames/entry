@@ -112,6 +112,12 @@ let loop = GameLoop({  // create the main game loop
                     player.respawn(ships, sprites);
                 }, 3000);
             }
+
+            // Check if someone has won!
+            // TODO: See if it's likely for 2 ships to get to 10 in same update
+            if (player.score === 10) {
+                // Pause the game and put win screen up?
+            }
         });
     },
     render() {

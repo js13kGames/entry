@@ -55,7 +55,6 @@ export class Player {
 
     scoreInc() {
         this.score++;
-        console.log((this.shipType + ':').padEnd(9) + this.score);
     }
 
     scoreDec() {
@@ -63,7 +62,6 @@ export class Player {
         if (this.score > 0) {
             this.score--;
         }
-        console.log((this.shipType + ':').padEnd(9) + this.score);
     }
 
     spawn(ships, sprites) {
