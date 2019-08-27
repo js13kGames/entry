@@ -349,8 +349,15 @@ function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 x = -8;
             } else if (message[queueCounter] === "stabbing robot 3000"){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
-            } else if (message[queueCounter] === "\b"){
+            } else if (message[queueCounter] === "b"){
                 //draw rectangles over previous message
+                ctx.fillStyle = "black";
+                let rectWidth = message[queueCounter-1].length * (size + 10);
+                let rectX = x-(rectWidth+size+10);
+                let rectHeight = size;
+                ctx.fillRect(rectX, y, rectWidth, size*5);
+                //now let's draw the next thing
+                x = rectX;
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
             }
@@ -712,21 +719,31 @@ let titleContents = [
     "And you are the",
     "stabbing robot 3000",
     "\n",
-    "your task is to stab my",
-    "political opponents",
-    "\b",
-    ""
+    "your task is to stab",
+    "m y political opponents",
+    "b",
+    "very bad people.",
+    "\n",
+    "This would be a simple task but due to hardware",
+    "\n",
+    "limitations you will have to kill half the targets",
+    "\n",
+    "within two 13 second chunks. ",
+    "\n",
+    "The side bar will inform you of your target",
+    "\c"
+
 ];
 function titleScreen(){
     let gameX = 5;
     let gameY = 48;
-    let fontSize = 3;
+    let fontSize = 2;
 
     ctx.fillStyle = "black";
     ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
     drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 75);
     
-
+    drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
 }
 
 
