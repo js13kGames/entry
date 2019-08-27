@@ -18,8 +18,8 @@ export default (scheme) => {
                     right: 'd',
                     rewind: 's'
                 };
-            default:
-                console.error('Unknown control scheme');
+            //default:
+            //    console.error('Unknown control scheme');
         }
     }
 }

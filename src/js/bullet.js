@@ -20,8 +20,8 @@ export function createBullet(parent, sprites) {
         dx: parent.dx + cos * 12,
         dy: parent.dy + sin * 12,
 
-        // live 60 frames (1s)
-        ttl: 60,
+        // live 50 frames, just under 1s (1sh)
+        ttl: 50,
 
         width: 24,
         height: 24,
