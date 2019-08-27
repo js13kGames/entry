@@ -5,10 +5,10 @@
     "image_large": "image-big.jpg",
     "image_thumbnail": "image-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "John Swana",
+    "website": "https://github.com/swashvirus",
+    "twitter": "swashjunior"
   }
 }
