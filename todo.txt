@@ -1,6 +1,15 @@
-1. add font 
-2. add score UI
-3. add target UI
-4. add game over screen
-5. add game win screen
-6. add better sprites for the shadowPlayer and collision logic to gameover.
+1. finish introduction sequence
+2. add game win sequence
+3. refine level design
+4. add checkpoints?
+5. add coil monetization for skins :D
+
+Theoretical Pricing:
+$0.25	-	starship skin (galaga parody)
+$0.25	-	puck-pal skin (pacman parody)
+$0.25	-	build-boy (minecraft steve parody)
+$0.25	-	sasuge-man (super meatboy parody)
+$0.25	-	baby sad (isaac parody)
+
+Is it legal to use their likeness?... might err on the side of caution and change that up.
+

@@ -6,6 +6,11 @@
 const canvas = document.getElementById("screen");
 const ctx = canvas.getContext('2d');
 
+/* big thanks to Dan Dascalescu and Herohtar for their epic stackoverflow answer */
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 //ctx.height = 720;
 //ctx.width = 1280;
 
@@ -13,22 +18,8 @@ const ctx = canvas.getContext('2d');
 
 /** Web monitization idea: different robot skins.
  * 
- * That would be really easy to implement
+ * That would be really easy to implement he said without doing research
  */
-
-
-
-
-var temp_level = `
-##############################
-#............................#
-#............................#
-#.....p.....e................#
-#............................#
-#.....#.....i................#
-#............................#
-##############################
-`;
 
 /* 
     All levels are represented through template literals denoting the location of each game object.
@@ -82,8 +73,8 @@ var level_2 = `
 
 var level_3 = `
 #############
-#e..........#
-#..........i#
+######.....e#
+######.....i#
 ######..##.##
 #e......#...#
 #i.e.#..#i.e#
@@ -104,8 +95,32 @@ var level_4 = `
 #############
 `;
 
-var levels = [level_1, level_2, level_3, level_4];
-var paths = ["", "", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
+var level_5 = `
+#############
+##e.i#.....##
+###.##.###.##
+#s.....###p##
+######.######
+###e.......##
+#####i.e#ie##
+#############
+#############
+`;
+
+var level_6 = `
+#############
+#############
+#############
+#############
+#############
+#############
+#############
+#############
+#############
+`;
+
+var levels = [level_1, level_2, level_3, level_4, level_5];
+var paths = ["", "", "", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
 var secondTry = false;//signals if the player is on the second attempt of a level. 
 var currentLevelIndex = 0;
 
@@ -233,7 +248,7 @@ function gotoNextLevel() {
         target = 'i';
         setupGoal(target);
         moveShadowCounter = 0;
-        setTimeout(moveShadowPlayer, shadowPlayerInterval);
+        //
         player.key = 's';
     } else {
         secondTry = false;
@@ -246,30 +261,8 @@ function gotoNextLevel() {
         } else {
             console.log("end of game");
         }
-        //clearTimeout(shadowPlayerMoving);
     }
 
-
-    /*
-    if (currentLevelIndex < levels.length - 1) {
-        currentLevelIndex++;
-        this_level = levels[currentLevelIndex].split("\n");
-        setupGoal(target);
-        moveShadowCounter = 0;
-        
-
-    } else if (secondTry == false) {
-        secondTry = true;
-        target = "i";
-        player.key = 's'
-        currentLevelIndex = 0;
-        moveShadowCounter = 0;
-        this_level = levels[currentLevelIndex].split("\n");
-        setupGoal(target);
-        //start moving the shadowPlayer
-        setTimeout(moveShadowPlayer, shadowPlayerInterval);
-
-    }*/
 }
 
 /* calculates how many objects need to be destroyed before the player progresses */
@@ -337,7 +330,8 @@ function levelTransitionEnd(timeout) {
 /* A function which writes out text 1 char at a time */
 var slowTextCounter = 0;
 var queueCounter = 0;
-function drawPixelTextSlow(message, x, y, size, delay, color="white"){
+var slowTextHandler;
+async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
     if (queueCounter < message.length){
         if (slowTextCounter < message[queueCounter].length){
             if (message[queueCounter] === "narrator"){
@@ -358,12 +352,19 @@ function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 ctx.fillRect(rectX, y, rectWidth, size*5);
                 //now let's draw the next thing
                 x = rectX;
+            } else if (message[queueCounter] === 'c'){
+                await sleep(1000);
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+                drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
+                x = 5;
+                y = 48;
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
             }
             
             slowTextCounter++;
-            setTimeout(function(){
+            slowTextHandler = setTimeout(function(){
                 drawPixelTextSlow(message, x+size+10, y, size, delay, color);
             }, delay);
 
@@ -731,9 +732,24 @@ let titleContents = [
     "within two 13 second chunks. ",
     "\n",
     "The side bar will inform you of your target",
-    "\c"
-
+    "\c",
+    "If you stab the wrong target you will recieve",
+    "\n",
+    "a gameover. Also when you kill the second half",
+    "\n",
+    "of targets you'll have to avoid yourself killing",
+    "\n",
+    "the first half of targets.",
+    "\n",
+    "Confusing? Good.",
+    "\n",
+    " Just remember WASD to move the robot",
+    "\n",
+    "and to stab targets just move into them."
 ];
+
+
+var main;
 function titleScreen(){
     let gameX = 5;
     let gameY = 48;
@@ -744,10 +760,15 @@ function titleScreen(){
     drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 75);
     
     drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
+    Mousetrap.bind('space', function(){
+        clearTimeout(slowTextHandler);
+        Mousetrap.unbind('space');
+        main = setInterval(mainLoop, 25);
+    });
 }
 
 
 
 titleScreen();
 
-//var main = setInterval(mainLoop, 25);
+//main = setInterval(mainLoop, 25);
