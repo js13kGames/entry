@@ -3,7 +3,7 @@ export default () => {
     return {
         name: 'coback',
         rof: 4,
-        turnRate: 5,
+        turnRate: 0,
         radius: 9,
         mass: 9,
         thrust: 9,
