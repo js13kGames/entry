@@ -26,7 +26,6 @@ export class Ship extends Sprite.class {
         this.lines = {};
         this.lines.random = [];
         this.scale = 2;
-        this.dr = 0; // delta rotation (like dx & dy)
 
         // Properties that could be overwritten when calling new Ship()
         this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
@@ -34,7 +33,7 @@ export class Ship extends Sprite.class {
         this.ror = props.rof || shipData.rof;
 
         // Modify these values defined in shipData specs to make less crazy
-        this.turnRate = (shipData.turnRate + 11) / 2;
+        this.turnRate = (shipData.turnRate + 6) * .75;
         this.mass = shipData.mass + 11;
         this.thrust = shipData.thrust + 11;
         this.rof = 1 / this.rof;
@@ -122,24 +121,11 @@ export class Ship extends Sprite.class {
     }
 
     turnLeft() {
-        if (this.dr < this.turnRate) {
-            this.dr++;
-        }
-        this.rotation -= this.dr;
+        this.rotation -= this.turnRate;
     }
 
     turnRight() {
-        if (this.dr < this.turnRate) {
-            this.dr++;
-        }
-        this.rotation += this.dr;
-    }
-
-    turnNone() {
-        if (this.dr) {
-            console.log(this.dr);
-            this.dr--;
-        }
+        this.rotation += this.turnRate;
     }
 
     /**
