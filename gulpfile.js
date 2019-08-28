@@ -1,3 +1,4 @@
+const browserSync = require("browser-sync");
 const concat = require("gulp-concat");
 const del = require("del");
 const checkFileSize = require("gulp-check-filesize");
@@ -23,6 +24,8 @@ const paths = {
   },
   zip: "game.zip"
 };
+
+const server = browserSync.create();
 
 function clean() {
   return del(paths.dist.dir, paths.zip);
@@ -70,6 +73,31 @@ function makeZip() {
     .pipe(checkFileSize({ fileSizeLimit: thirteenKb }));
 }
 
-const build = gulp.series(clean, gulp.parallel(buildHTML, buildCSS, buildJS, copyModels));
+function reload(done) {
+  server.reload();
+  done();
+}
 
-exports.default = gulp.series(build, makeZip);
+function serve(done) {
+  server.init({
+    server: {
+      baseDir: paths.dist.dir
+    },
+    open: false
+  });
+  done();
+}
+
+function watch() {
+  gulp.watch(paths.src.css, gulp.series(buildCSS, makeZip, reload));
+  gulp.watch(paths.src.html, gulp.series(buildHTML, makeZip, reload));
+  gulp.watch(paths.src.js, gulp.series(buildJS, makeZip, reload));
+  gulp.watch(paths.src.models, gulp.series(copyModels, makeZip, reload));
+}
+
+const build = gulp.series(clean, gulp.parallel(buildHTML, buildCSS, buildJS, copyModels), makeZip);
+
+exports.build = build;
+exports.clean = clean;
+
+exports.default = gulp.series(build, serve, watch);
