@@ -127,6 +127,7 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 }
 
                 if (otherSprite.type === 'ship') {
+
                     // Can't collide into ships that are rewinding
                     if (!otherSprite.rewinding) {
 
