@@ -5,8 +5,9 @@
     <title>js13k 2019</title>
   </head>
   <body>
-        <canvas class="zdog-canvas" id="game" width="960" height="540"></canvas>
+        <canvas class="zdog-canvas" id="game"></canvas>
         <script src="zdog.dist.min.js"></script>
+        <link rel="stylesheet" href="style.css">
 
         <!-- Color pallete: https://www.aremycolorsaccessible.com/palette?colors=%23223e32&colors=%239db800&colors=%23b3dd52&colors=%2304bf00&colors=%23015d00 -->
 
@@ -22,9 +23,10 @@
             obstacle = []; obstacle[0] = 0; 
             shakex = 0; shakey = 0; shakeduration = 0;
             bgcolor = "#223e32";
+            const times = []; let fps;
 
             create();
-            setInterval(e=>{ step(false) },16);
+            setInterval(e=>{ step(false) },15);
             onkeydown=e=>{ keypress(e.key); }
 
             //https://stackoverflow.com/a/19303725
@@ -34,16 +36,14 @@
                 return x - Math.floor(x);
             }
 
-            function odd(num) { return num % 2;}
-
             function create() {
 
                 // create illo
                 illo = new Zdog.Illustration({
-                    // set canvas with selector
                     element: '.zdog-canvas',
                     dragRotate: true,
                     zoom: 2,
+                    resize: true,
                     rotate: {x: -(TAU/16), y: TAU/16},
                     onPrerender: function(ctx) {
                         ctx.beginPath();
@@ -69,7 +69,7 @@
                     stroke: 5,
                     color: '#fff',
                     translate: {z: 5},
-                    path: [ //QQQ Don't make them so long but 
+                    path: [
                         { x: -6, y: -10 },          // start at top left
                         { x: -6, y: 0 },          // line to top right
                         { move: { x: 6, y: -10 } }, // move to bottom left
@@ -82,7 +82,7 @@
                     stroke: 5,
                     color: '#04bf00',
                     translate: {y: 16, z: 5},
-                    path: [ //QQQ Don't make them so long but 
+                    path: [
                         { x: -6, y: -10 },          // left leg at body
                         { x: -6, y: 0 },          // to knee
                         { x: -10, y: 0 },          // to toes
@@ -96,7 +96,7 @@
                     addTo: illo,
                     stroke: 8,
                     color: "#9db800",
-                    path: [ //QQQ Don't make them so long but 
+                    path: [ //QQQ Don't make them so long but move with either player or camera
                         { x: -horborder-10, y: -1000 },          // start at top left
                         { x: -horborder-10, y: 1000 },          // line to top right
                         { move: { x: horborder+10, y: -1000 } }, // move to bottom left
@@ -119,8 +119,10 @@
                     {
                         obstacle[i].remove();
                     }
-                    playerx = 0; playery = 0; playermovex = 0; playermovey = 0;
                 }
+                flipped = 1;
+                playerx = 0; playery = 0; playermovex = 0; playermovey = 1;
+
                 //Build new
                 direction = 1;
                 var amount = (lvlnumber*2) + 1
@@ -130,7 +132,7 @@
                     var obstaclex = random() * (horborder - -horborder) + -horborder;
                     var obstacley = i*50-direction;
                     var front = (random() >= 0.5);
-                    var clr = '#015d00';
+                    var clr = "#015d00";
                     if (front == true) {clr = "#b3dd52"}
                         obstacle[i] = new Zdog.Box({
                         addTo: illo,
@@ -152,6 +154,18 @@
             }
 
             function step(framestep) {
+
+                const now = performance.now();
+                while (times.length > 0 && times[0] <= now - 1000) {
+                    times.shift();
+                }
+                times.push(now);
+                fps = times.length;
+                document.getElementById("fps-display").innerHTML = fps.toString() + " fps";
+                document.getElementById("seed-display").innerHTML = seed.toString() + " seed";
+                document.getElementById("level-display").innerHTML = level.toString() + " level";
+                document.getElementById("cam-display").innerHTML = illo.rotate.x.toString() + "x  " + illo.rotate.y.toString() + "y  " + illo.rotate.x.toString() + "z  " + TAU.toString() + "tau";
+
                 if (paused && framestep == false) {return;}
                 cameray -= direction;
 
@@ -162,11 +176,10 @@
                             illo.rotate.x += (TAU/16);
                             bgcolor = "#A7C06D";
                             console.log("Flipping...")
-                            ///QQQ Maybe change some colors too? Background for example? Player for sure!
                         }
                     } 
 
-                for (var j = 0; j != 4; j += 1) //So we're doing the step loop four times for smoother movement! They did it in Super Mario 64, so can I!
+                for (var j = 0; j != 4; j += 1) //So we're doing most of the step loop four times for smoother movement! They did it in Super Mario 64, so can I!
                 {
                     playerx += playermovex/4;
                     if (playerx > horborder) {playerx = horborder; playermovex = 0;}
@@ -186,12 +199,11 @@
                         yy = obstacle[i].translate.y;
                         zz = obstacle[i].translate.z;
                         w = obstacle[i].width-5; h = obstacle[i].height-20;
-                        //console.log(i.toString() + "i " + xx.toString() + "x "+ yy.toString() + "y "+ w.toString() + "w " + h.toString() + "h ");
 
                         if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h)
                         {
                             if (obstacle[i].colliding == false)
-                            {
+                            { //Collision enter
                                 console.log("Collision detected with "+i.toString());
                                 obstacle[i].colliding = true;
                                 
@@ -200,11 +212,16 @@
                             }
                         }
                         else if (obstacle[i].colliding == true)
-                        {
+                        { //Collision leave
                             console.log("Collision ended with "+i.toString());
                             obstacle[i].colliding = false;
 
-                            //QQQ Push tile to background.
+                            if (obstacle[i].translate.z == 25) //In foreground
+                            {
+                                obstacle[i].translate.z = -25; obstacle[i].color = "#015d00";
+                            } else { //In background
+                                obstacle[i].translate.z = 25; obstacle[i].color = "#b3dd52"  ;
+                            }
                         }
                     }
                 }
@@ -263,9 +280,9 @@
             function draw() {
                 player.translate = {x: playerx, y: playery}
                 var yoff = 0; if (flipped == -1) {yoff = -TAU/2}
-                player.rotate = { y: -(playermovex*flipped)*0.08, x: -playermovey*0.15+yoff} //x and y swap here
+                player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipped)+yoff} //x and y swap here
                 cameray = -flipped*player.translate.y*0.935; // 15/16 
-                if (shakeduration > 0) 
+                if (shakeduration > 0) //QQQ Remove shake counter timing away from this function.
                 {
                     console.log("Shaking "+shakeduration.toString() + " " + cameray.toString())
                     illo.translate = {x: 0 + shakex, y: cameray + shakey}; 
@@ -277,38 +294,38 @@
                 illo.updateRenderGraph();
             }
 
-            /* FPS qqq*/ 
-            const times = [];
-            let fps;
-
-            function refreshLoop() {
-            window.requestAnimationFrame(() => {
-                const now = performance.now();
-                while (times.length > 0 && times[0] <= now - 1000) {
-                    times.shift();
-                }
-                times.push(now);
-                fps = times.length;
-                document.getElementById("fps-display").innerHTML = fps.toString() + " fps";
-                document.getElementById("seed-display").innerHTML = seed.toString() + " seed";
-                document.getElementById("level-display").innerHTML = level.toString() + " level";
-                document.getElementById("cam-display").innerHTML = illo.rotate.x.toString() + "x  " + illo.rotate.y.toString() + "y  " + illo.rotate.x.toString() + "z  " + TAU.toString() + "tau";
-                refreshLoop();
+            //Utility functions
+            window.addEventListener("resize", function() {
+                resize();
             });
+
+            function resize() {
+                var canvas = document.getElementById('game');
+                if (window.innerWidth > 850 && window.innerHeight > 600) {illo.zoom = 2}
+                else if (window.innerWidth > 600 && window.innerHeight > 400) {illo.zoom = 1.5}
+                else {illo.zoom = 1}
+                console.log("Resizing... ");
+                draw();
             }
 
-            refreshLoop();
-
         </script>
-        <p>
+        <p class = "debug">
             To do:
-            - Collision leave behavior
-            - Flipping (fix camera behavior)
-            - Interface (with ZText?)
+            - Collision leave behavior (with fancier animation, bouncing into the background)
+            - Flipping (fix camera behavior, bottom trampoline using arced lines)
+            - Interface (with skewed overlay text)
+            - Title screen (text animation), level select
             - Win/fail states
+            - Using delta time
             - Touch screen/swipe support so I can compete in the Mobile category
+            - Optimization
 
             <b>Deadline 13 September!</b>
+
+            Credits
+            Game by Tom Hermans
+            Zdog by Metafizzy
+            Tweetworks by xem
         </p>
         <div id="fps-display">N/A FPS</div> <div id="seed-display">N/A Random Seed</div> <div id="level-display">N/A Level</div> <div id="cam-display">N/A Camera</div>
   </body>
