@@ -33,18 +33,13 @@ export class Player {
                 this.ship.engineOff();
             }
 
-            if (keyPressed(this.keys.left) || keyPressed(this.keys.right)) {
-                if (keyPressed(this.keys.left)) {
-                    this.ship.turnLeft();
-                }
-
-                if (keyPressed(this.keys.right)) {
-                    this.ship.turnRight();
-                }
-            } else {
-                this.ship.turnNone();
+            if (keyPressed(this.keys.left)) {
+                this.ship.turnLeft();
             }
 
+            if (keyPressed(this.keys.right)) {
+                this.ship.turnRight();
+            }
 
             if (keyPressed(this.keys.fire)) {
                 this.ship.fire(sprites);
