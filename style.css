@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    font-family: fantasy, monospace;
   }
 
 html, body { 
@@ -15,4 +16,45 @@ html, body {
     position: absolute;
     top: 0%;
     background-color: #ccccccBB;
+    font-size: 12px;
+}
+
+.stats {
+  position: absolute;
+  bottom: 5%;
+  background-color: #ccccccBB;
+  font-size: 12px;
+}
+
+.title {
+  position: absolute;
+  pointer-events: none;
+  text-align: center;
+  -webkit-text-stroke-width: 2px;
+}
+
+.top {
+  top: 30%; left: 35%; /* QQQ Make responsive! */
+  font-size: 75px;
+  -webkit-text-fill-color: #223e32;
+  -webkit-text-stroke-color: #A7C06D;
+  transform: skewY(-10deg);
+  text-shadow: -2px -2px #223e32; /* Look for different BG color on this qqq */
+}
+
+.bottom {
+  top: 40%; left: 40%; /* QQQ Make responsive! */
+  font-size: 110px;
+  -webkit-text-fill-color: #A7C06D;
+  -webkit-text-stroke-color: #223e32;
+  transform: skewY(10deg);
+  text-shadow: 2px -2px #223e32; /* Look for different BG color on this qqq */
+}
+
+.start {
+  bottom: 10%; left: 40%; /* QQQ Make responsive! */
+  font-size: 30px;
+  -webkit-text-fill-color: #A7C06D;
+  -webkit-text-stroke-width: 0px;
+  text-shadow: 2px -2px #223e32; /* Look for different BG color on this qqq */
 }
