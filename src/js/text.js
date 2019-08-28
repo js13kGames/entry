@@ -30,15 +30,15 @@ export function renderText(props) {
             path = glyphs[char];
         } else {
             switch(char) {
-                case '0': path = glyphs.zero; break;
-                case '1': path = glyphs.one;  break;
-                case '2': path = glyphs.two;  break;
-                case '3': path = glyphs.three;  break;
+                case '0': path = glyphs.zero;  break;
+                case '1': path = glyphs.one;   break;
+                case '2': path = glyphs.two;   break;
+                case '3': path = glyphs.three; break;
                 case '4': path = glyphs.four;  break;
                 case '5': path = glyphs.five;  break;
-                case '6': path = glyphs.six;  break;
-                case '7': path = glyphs.seven;  break;
-                case '8': path = glyphs.eight;  break;
+                case '6': path = glyphs.six;   break;
+                case '7': path = glyphs.seven; break;
+                case '8': path = glyphs.eight; break;
                 case '9': path = glyphs.nine;  break;
             }
         }

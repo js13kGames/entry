@@ -201,10 +201,12 @@ export class Ship extends Sprite.class {
                 this.y = this.locationHistory[this.rewinding].y;
             }
 
-            // Last rewind update, lose 20% velocity
+            // Last rewind update, lose 20% velocity and be invulnerable .2s
+            // (which is just long enough not to do the flashy flashy)
             if (this.rewinding === 0) {
                 this.dx *= .8;
                 this.dy *= .8;
+                this.invuln = .2;
             }
 
             return true; // Don't do any other ship updating this game update
@@ -272,7 +274,7 @@ export class Ship extends Sprite.class {
         if (this.invuln) {
             this.flashing = this.flashing || 0;
             this.flashing++;
-            if (this.flashing <= 15) {
+            if (this.flashing > 15 && 30 > this.flashing) {
                 this.context.lineWidth = 1;
             } else if (this.flashing > 30) {
                 this.flashing = 0;
