@@ -22,201 +22,142 @@ const FPS = 60
 const WIDTH = canvas.width
 const HEIGHT = canvas.height
 const FLOOR = HEIGHT * 0.8
-const MIDDLE = WIDTH / 2
+const SKY_COLOR = 'rgba(90, 90, 90, 1)'
+const SKY_COLOR_REAL = 'rgba(180, 180, 180, 1)'
+
 const PLAYER_WIDTH = WIDTH / 16
 const PLAYER_HEIGHT = PLAYER_WIDTH * 2
-const PLAYER_ATTACK_COOL_DOWN = 1
-const PLAYER_PARRY_COOL_DOWN = 1.5
-const PLAYER1_COLOR = 'rgba(255, 0, 0, 1)'
-const PLAYER2_COLOR = 'rgba(0, 0, 255, 1)'
-const PLAYER1_PARRY_COLOR = 'rgba(255, 0, 0, 0.6)'
-const PLAYER2_PARRY_COLOR = 'rgba(0, 0, 255, 0.6)'
-const BULLET_WIDTH = PLAYER_WIDTH
-const BULLET_HEIGHT = BULLET_WIDTH
-const BULLET_VELOCITY = 15
-const BULLET_TTL = WIDTH / BULLET_VELOCITY * FPS
-const MEGA_BULLET_WIDTH = PLAYER_HEIGHT * 2
-const MEGA_BULLET_HEIGHT = MEGA_BULLET_WIDTH
-const MEGA_BULLET_VELOCITY = 5
-const MEGA_BULLET_TTL = WIDTH / MEGA_BULLET_VELOCITY * FPS
-const PARRY_WIDTH = PLAYER_WIDTH * 1.2
-const PARRY_HEIGHT = PLAYER_HEIGHT * 1.2
-const PARRY_TTL = 0.5 * FPS
- 
-const player1 = initPlayer(1)
-const player2 = initPlayer(2)
-const bulletPool = Pool({
+const PLAYER_COLOR = 'rgba(32, 32, 32, 1)'
+const PLAYER_COLOR_REAL = 'rgba(230, 230, 230, 1)'
+
+const GRENADE_THROW_RANGE = WIDTH / 4
+const GRENADE_BLAST_RANGE = WIDTH / 4
+const GRENADE_BLAST_DURATION = 0.1
+const MINE_BLAST_RANGE = WIDTH / 4
+const MINE_BLAST_DURATION = 0.5
+
+const ENEMY_WIDTH = PLAYER_WIDTH
+const ENEMY_HEIGHT = PLAYER_HEIGHT
+const ENEMY_COLOR = 'rgba(128, 128, 128, 1)'
+const ENEMY_COLOR_REAL = 'rgba(230, 230, 230, 1)'
+
+let gameOver = false
+let blasting_duration = 0
+let total_blast_duration = 0
+const player = initPlayer()
+const enemyPool = Pool({
   create: Sprite
 })
-bulletPool.maxSize = 100
-const parryPool = Pool({
-  create: Sprite
-})
-parryPool.maxSize = 2
+makeEnemies(5)
 
 let loop = GameLoop({
   update: function(dt) {
-    updatePlayer(player1, 1, dt)
-    updatePlayer(player2, 2, dt)
-    bulletPool.update()
-    parryPool.update()
+    updatePlayer(player, dt)
+    updateEnemies()
 
-    parryPool.getAliveObjects().forEach((parry) => {
-      const player = parry.belonger === 1 ? player1 : player2
-      parry.x = player.x
-      parry.y = player.y
-    })
-    
-    // bullet collision detection
-    bulletPool.getAliveObjects().forEach((bullet) => {
-      parryPool.getAliveObjects().forEach((parry) => {
-        if (!bullet.mega && bullet.belonger !== parry.belonger && bullet.collidesWith(parry)) {
-          bullet.belonger = parry.belonger
-          bullet.dx = -bullet.dx
-          bullet.ttl = BULLET_TTL
-          bullet.color = bullet.belonger === 1 ? PLAYER1_PARRY_COLOR : PLAYER2_PARRY_COLOR
-        }
-      })
+    if (blasting_duration >= total_blast_duration) {
+      blasting_duration = total_blast_duration = 0
+    } else {
+      blasting_duration += dt
+    }
 
-      if (bullet.belonger === 1 && bullet.collidesWith(player2)) {
-        bullet.ttl = 0
-        player2.hp -= 1
-      } else if (bullet.belonger === 2 && bullet.collidesWith(player1)) {
-        bullet.ttl = 0
-        player1.hp -= 1
-      }
-    })
+    if (blasting_duration < total_blast_duration) {
+      canvas.style.background = SKY_COLOR_REAL
+    } else {
+      canvas.style.background = SKY_COLOR
+    }
   },
   render: function() {
-    player1.render()
-    player2.render()
-    bulletPool.render()
-    parryPool.render()
+    player.render()
+    enemyPool.render()
   }
 })
 
 loop.start()
 
-function initPlayer(which) {
+function initPlayer() {
   // player commons
   const playerCommonProps = {
     anchor: {
       x: 0.5,
       y: 1
     },
+    x: WIDTH / 4 * 3,
     y: FLOOR,
+    dy: -1,
     width: PLAYER_WIDTH,
     height: PLAYER_HEIGHT,
+    color: PLAYER_COLOR,
 
     // custom props
-    hp: 10,
-    mp: 5,
-    jumping: false,
-    attacking: false,
-    attackCD: 1,
-    attackCDTimer: 0,
-    parrying: false,
-    parryCD: 1.5,
-    parryCDTimer: 0
+    hp: 10
   }
   const player = Sprite(playerCommonProps)
-  // clamp position to keep players in screen
-  player.position.clamp(PLAYER_WIDTH / 2, PLAYER_HEIGHT, WIDTH - PLAYER_WIDTH / 2, FLOOR)
-  player.x = which === 1 ? PLAYER_WIDTH * 3.5 : WIDTH - PLAYER_WIDTH * 3.5
-  player.color = which === 1 ? PLAYER1_COLOR : PLAYER2_COLOR
   return player
 }
 
-function updatePlayer(player, which, dt) {
-  // player jumping handle
-  if (player.jumping) {
-    player.dy -= 15 * dt
-    player.y -= player.dy
-    if (player.y >= FLOOR) {
-      player.jumping = false
-      player.dy = 0
-    }
+function updatePlayer(player, dt) {
+  if (gameOver) return
+  if (player.hp <= 0) {
+    player.rotation = Math.PI / 2
+    gameOver = true
+    return
   }
-  // player attack handle
-  if (player.attacking) {
-    if (player.attackCDTimer > player.attackCD) {
-      player.attackCDTimer = 0
-      player.attacking = false
-    } else {
-      player.attackCDTimer += dt
-    }
+  if (blasting_duration < total_blast_duration) {
+    player.color = PLAYER_COLOR_REAL
+  } else {
+    player.color = PLAYER_COLOR
   }
-  // player parry handle
-  if (player.parrying) {
-    if (player.parryCDTimer > player.parryCD) {
-      player.parryCDTimer = 0
-      player.parrying = false
-    } else {
-      player.parryCDTimer += dt
-    }
+  // player.rotation = Math.PI / 12
+  player.y += player.dy
+  if (player.y < FLOOR - 20 || player.y > FLOOR) {
+    player.dy = -player.dy
   }
-  // player left and right
-  if (keyPressed(which === 1 ? 'a' : 'left')) {
-    player.x -= player.jumping ? 5 : 10
-  } else if (keyPressed(which === 1 ? 'd' : 'right')) {
-    player.x += player.jumping ? 5 : 10
-  }
-  if (keyPressed(which === 1 ? 'w' : 'up')) {
-    if (!player.jumping) {
-      player.jumping = true
-      player.dy = 10
-    }
-  }
-  if (keyPressed(which === 1 ? 'g' : 'num0')) {
-    if (!player.attacking) {
-      initBullet(bulletPool, player, which, false)
-      player.attacking = true
-    }
-  }
-  if (keyPressed(which === 1 ? 'h' : 'numDot')) {
-    if (!player.parrying) {
-      initParry(parryPool, player, which)
-      player.parrying = true
-    }
+
+  if (keyPressed('g')) {
+    total_blast_duration += GRENADE_BLAST_DURATION
   }
 }
 
-function initBullet(pool, player, whose, mega) {
-  const width = mega ? MEGA_BULLET_WIDTH : BULLET_WIDTH
-  const height = mega ? MEGA_BULLET_HEIGHT : BULLET_HEIGHT
-  const dx = mega ? MEGA_BULLET_VELOCITY : BULLET_VELOCITY
-  const ttl = mega ? MEGA_BULLET_TTL : BULLET_TTL
-  return pool.get({
-    anchor: {
-      x: 0.5,
-      y: 0.5
-    },
-    x: whose === 1 ? player.x + width / 2 : player.x - width / 2,
-    y: Math.min(player.y - PLAYER_HEIGHT / 2, FLOOR - height / 2),
-    width: width,
-    height: height,
-    color: whose === 1 ? PLAYER1_COLOR : PLAYER2_COLOR,
-    dx: whose === 1 ? dx : -dx,
-    ttl: ttl,
+function makeEnemies(count) {
+  for (let i = 0; i < count; i++) {
+    enemyPool.get({
+      anchor: {
+        x: 0.5,
+        y: 1
+      },
+      x: -Math.random() * ENEMY_WIDTH * 4,
+      y: FLOOR - Math.random() * 20,
+      dx: 5,
+      dy: -1.5,
+      width: ENEMY_WIDTH,
+      height: ENEMY_HEIGHT,
+      color: ENEMY_COLOR
+    })
+  }
+}
 
-    belonger: whose,
-    mega: mega
+function updateEnemies() {
+  if (gameOver) return
+  enemyPool.getAliveObjects().forEach((enemy) => {
+    // enemy.rotation = Math.PI / 10
+    if (blasting_duration < total_blast_duration) {
+      enemy.color = ENEMY_COLOR_REAL
+    } else {
+      enemy.color = ENEMY_COLOR
+    }
+    enemy.y += enemy.dy
+    if (enemy.y < FLOOR - 20 || enemy.y > FLOOR) {
+      enemy.dy = -enemy.dy
+    }
+    if (enemy.collidesWith(player)) {
+      //TODO: attack player
+    } else{
+      enemy.x += enemy.dx
+    }
   })
 }
 
-function initParry(pool, player, whose) {
-  return pool.get({
-    anchor: {
-      x: 0.5,
-      y: 1 - (1 - PLAYER_HEIGHT / PARRY_HEIGHT) / 2
-    },
-    x: player.x,
-    y: player.y,
-    width: PARRY_WIDTH,
-    height: PARRY_HEIGHT,
-    color: whose === 1 ? PLAYER1_PARRY_COLOR : PLAYER2_PARRY_COLOR,
-    ttl: PARRY_TTL,
+function makeGrenade() {
 
-    belonger: whose
-  })
 }
