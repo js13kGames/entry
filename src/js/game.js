@@ -56,7 +56,7 @@ let player1 = new Player({
 players.push(player1);
 
 let player2 = new Player({
-    color: 'red',
+    color: '#f11',
     shipType: 'coback',
     controls: 'wasd',
     sprites: sprites,
