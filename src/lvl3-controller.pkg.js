@@ -14,6 +14,7 @@ const initLevel3 = () => {
   function breakWait (name) {
     clearTimeout(currentWait[name]);
   }
+
   const loop = () => {
     const state = getSnapshot();
     render(
@@ -172,10 +173,22 @@ const initLevel3 = () => {
         }
       });
     }, (newState) => {
-      respondToHit(opponentOf[attacker])(newState);
-      wait(attacker, 500, () => setToDisabled(attacker, () => {
-        wait(attacker, 1000, () => recoverFromAttack(attacker, cb));
-      }))
+      respondToHit(
+        opponentOf[attacker],
+        opponentOf[attacker] === 'trex' ? trexLoop : noop
+      )(newState);
+      wait(
+        attacker,
+        500,
+        () => setToDisabled(
+          attacker,
+          () => wait(
+            attacker,
+            1000,
+            () => recoverFromAttack(attacker, cb)
+          )
+        )
+      )
     });
   }
 
