@@ -31,6 +31,7 @@ export class Ship extends Sprite.class {
         this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
         this.rof = props.rof || shipData.rof;
         this.ror = props.rof || shipData.rof;
+        this.radius = props.radius || shipData.radius || 9;
 
         // Modify these values defined in shipData specs to make less crazy
         this.turnRate = (shipData.turnRate + 6) * .75;
@@ -240,6 +241,23 @@ export class Ship extends Sprite.class {
         });
     }
 
+    renderUI() {
+        this.context.beginPath();
+        this.context.strokeStyle = '#0ef';
+        this.context.lineWidth = 2;
+        this.context.moveTo(
+            - this.rewindDt * 3,
+            this.radius * this.scale + 4
+        );
+        this.context.lineTo(
+            //this.ror * 3,
+            this.rewindDt * 3,
+            this.radius * this.scale + 4
+        );
+        this.context.closePath();
+        this.context.stroke();
+    }
+
     render() {
         this.context.save();
 
@@ -248,20 +266,7 @@ export class Ship extends Sprite.class {
 
         // Draw rewinding cooldown bar
         if (!this.rewinding && this.rewindDt < this.ror) {
-            this.context.beginPath();
-            this.context.strokeStyle = '#0ef';
-            this.context.lineWidth = 2;
-            this.context.moveTo(
-                - this.rewindDt * 3,
-                this.radius * this.scale + 4
-            );
-            this.context.lineTo(
-                //this.ror * 3,
-                this.rewindDt * 3,
-                this.radius * this.scale + 4
-            )
-            this.context.stroke();
-            this.context.closePath();
+            this.renderUI();
         }
 
         this.context.rotate(util.degToRad(this.rotation));
