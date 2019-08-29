@@ -22,8 +22,16 @@
 
     <a-entity stars></a-entity>
 
+    <a-sphere 
+      position="5 2 -3" 
+      color="#fd8" 
+      material="emissive: #f8a300; emissiveIntensity: .7"
+      light="type: point; castShadow: true">
+    </a-sphere>
+
     <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
 
+    <!-- Camera -->
     <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
       <a-entity cursor="fuse: false" position="0 0 -1"
         geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
@@ -35,8 +43,9 @@
       </a-entity>
     </a-entity>
 
-    <a-light position="0 1.5 -1" intensity=".5" light="castShadow: true"></a-light>
-    <a-light type="ambient" color="#d2e3fc" intensity=".6"></a-light>
+    <!-- Lights -->
+    <a-light position="0 1.8 0" intensity=".3" light="castShadow: true"></a-light>
+    <a-light type="ambient" color="#d2e3fc" intensity=".5"></a-light>
 
   </a-scene>
 </body>
