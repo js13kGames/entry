@@ -104,7 +104,7 @@ export class Ship extends Sprite.class {
      */
     fire(sprites) {
         if (this.fireDt < this.rof ||
-            this.ammo < 1 ||
+            this.ammoCurrent < 1 ||
             this.rewinding) {
             return false;
         }

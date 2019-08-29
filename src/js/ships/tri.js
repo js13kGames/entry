@@ -4,7 +4,7 @@ export default () => {
         name: 'tri',
         rof: 5,
         ror: 4,
-        turnRate: 7,
+        turnRate: 5,
         radius: 8,
         mass: 3,
         thrust: 9,
