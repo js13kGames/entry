@@ -486,7 +486,7 @@ function drawLevel(level_array) {
             }
         }
     }
-    console.log(this_level.length + 8);
+    //console.log(this_level.length + 8);
     /** DRAW SIDE BAR  */
     ctx.fillStyle = "black";
     let sidebarX = (this_level.length + 2)
@@ -635,6 +635,8 @@ function moveShadowPlayer() {
         moveShadowCounter++;
     }
     
+    console.log(paths[currentLevelIndex][moveShadowCounter]);
+
     /* Kill Target Code */
 
     if (this_level[shadowPlayer.y-1][shadowPlayer.x] == 'e'){
@@ -668,7 +670,7 @@ function gameOver(){
 
 
 }
-
+var gameoverHandler;
 function drawGameOver(timeout){
     ctx.fillStyle = "red";
     let levelWidth = (this_level[1].length + 6) * gridSize;
@@ -676,7 +678,7 @@ function drawGameOver(timeout){
     let levelHeight = (this_level.length - 2) * gridSize;
     if (gameOverCounter < levelHeight){
         gameOverCounter++;
-        setTimeout(drawGameOver, timeout);
+        gameoverHandler = setTimeout(drawGameOver, timeout);
     } else {
         // include score?
         drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
@@ -685,7 +687,7 @@ function drawGameOver(timeout){
             Mousetrap.unbind("r");
             //reset level
 
-
+            clearTimeout(gameoverHandler);
 
             timer = 13;
             
@@ -695,9 +697,10 @@ function drawGameOver(timeout){
                 target = 'e';
             } else{
                 target = 'i';
-                moveShadowPlayer();
+                shadowPlayerMoving = setTimeout(moveShadowPlayer, 200);
             }
             score = 0;
+            drawnScore = 0;
             animationCounter = 0;
             transition = false;
             this_level = levels[currentLevelIndex].split("\n");
