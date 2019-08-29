@@ -88,6 +88,8 @@ const initLevel3 = () => {
   }
 
   function block (name) {
+    const object = getState()[name];
+    if (object.currentAction !== actions.READY) return;
     setState(state => {
       if (state[name].currentAction === actions.READY) {
         return {
