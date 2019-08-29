@@ -17,7 +17,7 @@ export class Ship extends Sprite.class {
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
 
         // Default properties for all ships
-        this.ammo = shipData.ammo + 1 || 5;
+        this.ammo = shipData.ammo + 1 || 8;
         this.fireDt = 0;
         this.lines = {};
         this.lines.random = [];
@@ -217,7 +217,7 @@ export class Ship extends Sprite.class {
         }
 
         if (this.ammo < this.ammoCap) {
-            this.ammo += 1 / 60;
+            this.ammo += (1 / 60) * .5;
         } else {
             this.ammo = this.ammoCap;
         }
@@ -251,7 +251,6 @@ export class Ship extends Sprite.class {
     }
 
     renderUI() {
-        this.context.beginPath();
         this.context.strokeStyle = '#0ef';
         this.context.lineWidth = 2;
 
@@ -269,13 +268,16 @@ export class Ship extends Sprite.class {
         // }
 
         // Draw ammo
-        for (let i = 0; i < this.ammo; i++) {
+        var ammoAngle = .2 * Math.PI * 1 / this.ammoCap;
+        var gap = .05; // Gap between segments in radians
+        for (let i = 0; i < Math.floor(this.ammo); i++) {
+            this.context.beginPath();
             this.context.arc(
                 0,
                 0,
                 this.radius + 8,
-                Math.PI - (.2 * Math.PI * 1 / this.ammoCap),
-                Math.PI + (.2 * Math.PI * 1 / this.ammoCap)
+                Math.PI - (.2 * Math.PI * 1) + ammoAngle * i * 2,
+                Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI * 1) + ammoAngle * i * 2
             );
             this.context.stroke();
         }
