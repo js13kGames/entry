@@ -17,27 +17,29 @@ export class Ship extends Sprite.class {
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
 
         // Default properties for all ships
-        this.type = 'ship';
-        this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
-        this.locationHistory = [];
-        this.rewinding = 0;
+        this.ammo = shipData.ammo + 1 || 5;
         this.fireDt = 0;
-        this.rewindDt = 0;
         this.lines = {};
         this.lines.random = [];
+        this.locationHistory = [];
+        this.rewindDt = 0;
+        this.rewinding = 0;
+        this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.scale = 2;
+        this.type = 'ship';
 
         // Properties that could be overwritten when calling new Ship()
         this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
         this.rof = props.rof || shipData.rof;
-        this.ror = props.rof || shipData.rof;
-        this.radius = props.radius || shipData.radius || 9;
+        this.ror = props.ror || shipData.ror;
 
         // Modify these values defined in shipData specs to make less crazy
-        this.turnRate = (shipData.turnRate + 6) * .75;
+        this.ammoCap = shipData.ammoCap + 1 || 8;
         this.mass = shipData.mass + 11;
-        this.thrust = shipData.thrust + 11;
+        this.radius = (shipData.radius + 1) * this.scale;
         this.rof = 1 / this.rof;
+        this.thrust = shipData.thrust + 11;
+        this.turnRate = (shipData.turnRate + 6) * .75;
 
         // Useful stuff to have references to
         this.cs = props.collisionSystem;
@@ -101,11 +103,9 @@ export class Ship extends Sprite.class {
      * @return {[type]}         [description]
      */
     fire(sprites) {
-        if (this.fireDt < this.rof) {
-            return false;
-        }
-
-        if (this.rewinding) {
+        if (this.fireDt < this.rof ||
+            this.ammo < 1 ||
+            this.rewinding) {
             return false;
         }
 
@@ -113,6 +113,7 @@ export class Ship extends Sprite.class {
         const sin = Math.sin(util.degToRad(this.rotation));
 
         this.fireDt = 0;
+        this.ammo--;
 
         // Knockback (hass less effect for ships with greater mass)
         this.dx -= cos / this.mass;
@@ -204,13 +205,21 @@ export class Ship extends Sprite.class {
 
             // Last rewind update, lose 20% velocity and be invulnerable .2s
             // (which is just long enough not to do the flashy flashy)
+            //  - and get ammo back!
             if (this.rewinding === 0) {
                 this.dx *= .8;
                 this.dy *= .8;
                 this.invuln = .2;
+                this.ammo = this.ammoCap
             }
 
             return true; // Don't do any other ship updating this game update
+        }
+
+        if (this.ammo < this.ammoCap) {
+            this.ammo += 1 / 60;
+        } else {
+            this.ammo = this.ammoCap;
         }
 
         this.velocity = this.velocity.add(this.acceleration);
@@ -245,16 +254,44 @@ export class Ship extends Sprite.class {
         this.context.beginPath();
         this.context.strokeStyle = '#0ef';
         this.context.lineWidth = 2;
-        this.context.moveTo(
-            - this.rewindDt * 3,
-            this.radius * this.scale + 4
+
+        // this.context.moveTo(
+        //     - this.rewindDt * 3,
+        //     this.radius * this.scale + 4
+        // );
+        // this.context.lineTo(
+        //     //this.ror * 3,
+        //     this.rewindDt * 3,
+        //     this.radius * this.scale + 4
+        // );
+
+        // if (!this.rewinding && this.rewindDt < this.ror) {
+        // }
+
+        // Draw ammo
+        for (let i = 0; i < this.ammo; i++) {
+            this.context.arc(
+                0,
+                0,
+                this.radius + 8,
+                Math.PI - (.2 * Math.PI * 1 / this.ammoCap),
+                Math.PI + (.2 * Math.PI * 1 / this.ammoCap)
+            );
+            this.context.stroke();
+        }
+
+
+        // Draw rewind recharge
+        this.context.beginPath();
+        this.context.arc(
+            0,
+            0,
+            this.radius + 8,
+            -.2 * Math.PI * 1 / this.ror * this.rewindDt,
+            +.2 * Math.PI * 1 / this.ror * this.rewindDt
         );
-        this.context.lineTo(
-            //this.ror * 3,
-            this.rewindDt * 3,
-            this.radius * this.scale + 4
-        );
-        this.context.closePath();
+
+        //this.context.closePath();
         this.context.stroke();
     }
 
@@ -264,10 +301,8 @@ export class Ship extends Sprite.class {
         // Rotate
         this.context.translate(this.x, this.y);
 
-        // Draw rewinding cooldown bar
-        if (!this.rewinding && this.rewindDt < this.ror) {
-            this.renderUI();
-        }
+        // Draw rewinding cooldown bar and ammo
+        this.renderUI();
 
         this.context.rotate(util.degToRad(this.rotation));
 
