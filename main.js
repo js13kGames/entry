@@ -1,5 +1,4 @@
 /* JavaScript source code for backstabbers.  There were no game frameworks used mostly just relying on basic canvas manipulation*/
-
 'use strict';
 
 /* boiler plate canvas initialization */
@@ -14,7 +13,37 @@ function sleep(ms){
 ctx.canvas.width = 608;
 ctx.canvas.height = 360;
 
-//test example
+/* init tiny music code */
+var ac = new AudioContext();
+let tempo = 120;
+
+// beep sound
+let beepNote = new TinyMusic.Note('F3 0.0125');
+let beepSnd = new TinyMusic.Sequence(ac, tempo);
+beepSnd.gain.gain.value = 0.25;
+beepSnd.push(beepNote);
+beepSnd.loop = false;
+
+// walk sound
+let walkNote = new TinyMusic.Note('G2 s');
+let walkSnd = new TinyMusic.Sequence(ac, tempo);
+walkSnd.gain.gain.value = 0.25;
+walkSnd.push(walkNote);
+walkSnd.loop = false;
+
+// kill sound
+let killNote = new TinyMusic.Note('B5 s');
+let killSnd = new TinyMusic.Sequence(ac, tempo);
+killSnd.gain.gain.value = 0.25;
+killSnd.push(killNote);
+killSnd.loop = false;
+
+
+
+function playBeep(){
+    //load and play the beep sound
+    beepSnd.play();
+}
 
 /** Web monitization idea: different robot skins.
  * 
@@ -341,6 +370,7 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
         if (slowTextCounter < message[queueCounter].length){
             if (message[queueCounter] === "narrator"){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "magenta");
+                playBeep();//make sound effect
             } else if (message[queueCounter] === '\n') {
                 queueCounter++;
                 slowTextCounter = -1;
@@ -348,6 +378,7 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 x = -8;
             } else if (message[queueCounter] === "stabbing robot 3000"){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
+                playBeep();//make sound effect
             } else if (message[queueCounter] === "b"){
                 //draw rectangles over previous message
                 ctx.fillStyle = "black";
@@ -366,12 +397,16 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 y = 48;
             } else if ((message[queueCounter] === "hardware") || (message[queueCounter] === "limitations")) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 152, 240)");
+                playBeep();//make sound effect
             } else if(message[queueCounter] === "Good."){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(152, 249, 188)");
+                playBeep();//make sound effect
             } else if ( (message[queueCounter] === "Just remember WASD to move the robot") || (message[queueCounter] == "and to stab targets just move into them.") ) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 96, 19)");
+                playBeep();//make sound effect
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
+                playBeep();//make sound effect
             }
 
             
@@ -540,6 +575,7 @@ function checkCollision(x, y) {
         
         case target:
             // change out the target
+            killSnd.play();
             this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
             goal--;
             score += 10;
@@ -598,6 +634,7 @@ function movePlayer(dx, dy, direction){
     if ((takeInput) && (!stopInput)){
         if (checkCollision(player.x+dx, player.y+dy)){
             updatePlayerArray(dx, dy, player);
+            //walkSnd.play();
             if(secondTry === false) { 
                 paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
             }
