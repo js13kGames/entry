@@ -1,6 +1,6 @@
 const initState = () => {
   const state = {}
-  let updated = false;
+  let updatedSinceLastSnapshot = false;
 
   /**
    *
@@ -12,26 +12,34 @@ const initState = () => {
    *
    */
 
-  const setState = update => {
+  const setState = (update, cb = noop) => {
     let newState = update;
     if (typeof update === 'function') newState = update(state);
-    if (!newState || newState === state) return false;
+    if (!newState || newState === state) {
+      cb(state);
+      return false
+    };
     if (newState) {
       Object.assign(state, newState);
-      updated = true;
+      updatedSinceLastSnapshot = true;
     }
+    cb(state);
     return true;
   };
   const getState = () => {
-    updated = false;
     return state;
   }
-  const isUpdated = () => updated;
+  const getSnapshot = () => {
+    updatedSinceLastSnapshot = false;
+    return state;
+  }
+  const isUpdated = () => updatedSinceLastSnapshot;
 
   window.getState = getState;
 
   return {
     getState,
+    getSnapshot,
     isUpdated,
     setState
   }

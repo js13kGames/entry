@@ -154,7 +154,6 @@ const initModel = (height, width, foodCoveragePercent) => {
     ctx.canvas.width = 200;
     function drawWindow (ctx, x, y) {
       ctx.fillStyle = Math.random() < .8 ? 'cyan' : 'yellow';
-      console.log(ctx.fillStyle)
       if (ctx.fillStyle === '#ffff00') {
         ctx.filter = 'blur(15px)';
         ctx.fillRect(x, y, windowWidth, windowHeight);

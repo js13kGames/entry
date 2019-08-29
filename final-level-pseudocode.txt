@@ -7,7 +7,7 @@
 
 characters
   (x) 1 user
-  (x) 1 computer 
+  (x) 1 computer
       (with auto movements)
 characterState
   (x) currentAction
@@ -126,6 +126,8 @@ preattack sequence
   start attack sequence
 
 attack sequence
+  set wind up
+  wait for xxx sec
   set attacking
   wait for xxx sec
   start retreat sequence
@@ -135,3 +137,19 @@ retreat sequence
   step away from opponent
   wait xxx sec
   start move sequence
+
+wait
+  takes amount of time to wait
+  if hit during wait, the follow up should be cancelled
+  should go into
+
+function wait (name, time, onComplete) {
+  currentWait[name] = setTimeout(() => {
+    currentWait[name] = null;
+    onComplete();
+  }, time)
+}
+
+function breakWait (name) {
+  clearTimeout(currentWait[name]);
+}

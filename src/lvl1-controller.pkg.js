@@ -1,6 +1,6 @@
 const initLevel1 = (nextLevel) => {
   const loop = () => {
-    const state = getState();
+    const state = getSnapshot();
     const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
     const widthPadding = ceil(((state.width / tileWidth) - 1) / 2)
     render(

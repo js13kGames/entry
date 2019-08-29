@@ -3,8 +3,19 @@ const initLevel3 = () => {
     trex: 'kong',
     kong: 'trex'
   };
+
+  const currentWait = {};
+  const wait = (name, time, onComplete) => {
+    currentWait[name] = setTimeout(() => {
+      currentWait[name] = null;
+      onComplete();
+    }, time)
+  }
+  function breakWait (name) {
+    clearTimeout(currentWait[name]);
+  }
   const loop = () => {
-    const state = getState();
+    const state = getSnapshot();
     render(
       mapData,
       state.kong,
@@ -23,19 +34,29 @@ const initLevel3 = () => {
 
   const {
     getState,
+    getSnapshot,
     isUpdated,
     setState: modelSetState
   } = initState();
-  const setState = val => modelSetState(val) && loop();
+  const setState = (...args) => modelSetState(...args) && loop();
 
-  function move (desiredDirection, name) {
+  const respondToHit = (name, cb = noop) => newState => {
+    if (newState[name].currentAction === actions.READY) cb();
+    // You were hit!
+    if (newState[name].currentAction === actions.DISABLED) {
+      wait(name, 1500, () => recoverFromAttack(name, cb))
+    }
+  };
+
+  function move (desiredDirection, name, cb = noop) {
+    const state = getState();
+    const char = state[name];
+    // This needs to move somewhere else. You shouldn't be able to try to move if you're dead...
+    if (char.health <= 0) return window.alert(`${name} has no health`);
+    if (char.currentAction !== actions.READY) return;
+
     setState((state) => {
       const char = state[name];
-      // This needs to move somewhere else. You shouldn't be able to try to move if you're dead...
-      if (char.health <= 0) window.alert(`${name} has no health`);
-      if (char.currentAction !== actions.READY) {
-        return;
-      }
       let nextLocation = char.location;
       let newFacingDirection;
       switch (desiredDirection) {
@@ -53,18 +74,17 @@ const initLevel3 = () => {
         || nextLocation < 0
         || nextLocation === state[opponentOf[name]].location
       ) nextLocation = char.location; // reset to current state
-      // TODO is location under attack
-      return {
+
+      return checkIfUnderAttack(name, {
+        ...state,
         [name]: {
           ...char,
           direction: newFacingDirection,
           location: nextLocation
         }
-      }
-    });
+      });
+    }, respondToHit(name, cb));
   }
-
-  let attackInProgress = {};
 
   function block (name) {
     setState(state => {
@@ -79,56 +99,58 @@ const initLevel3 = () => {
     });
   }
 
-  function checkIfUnderAttack (name, attackLocation, attackerLocation, distance, damage) {
-    const state = getState()[name];
-    if (state.location === attackLocation && state.currentAction !== actions.BLOCKING) {
-      const attackWasInProgress = !!attackInProgress[name]
-      attackInProgress[name] && attackInProgress[name].cancel();
-      let newLocation;
-      if (attackerLocation < state.location) {
-        newLocation = state.location + distance;
-      } else {
-        newLocation = state.location - distance;
-      }
-      setState((currState) => ({
-        [name]: {
-          ...currState[name],
-          health: state.health - damage,
-          location: newLocation,
-          currentAction: actions.DISABLED
-        }
-      }));
-      wait(1500)
-        .then(() => recoverFromAttack(name))
-        .then(() => { if (name === 'trex' && attackWasInProgress) trexBrainLoop(); });
+  function checkIfUnderAttack (name, state = getState()) {
+    const object = state[name];
+    const attackerName = opponentOf[name];
+    const attackerState = state[attackerName];
+    if (attackerState.currentAction !== actions.ATTACKING) return state;
+    if (object.currentAction === actions.BLOCKING) return state;
+
+    const attackLocation = attackerState.location + (attackerState.direction === directions.LEFT ? -1 : 1);
+    if (object.location !== attackLocation) return state;
+
+    // [name] is under attack
+    breakWait(name);
+    let newLocation;
+
+    // TODO fix these mutations
+    if (attackerState.location < object.location) {
+      newLocation = object.location + 1;
+    } else {
+      newLocation = object.location - 1;
     }
+    object.health -= 10;
+    object.location = newLocation;
+    object.currentAction = actions.DISABLED
+
+    return state;
   }
 
-  function unblock (name, cb) {
+  function unblock (name, cb = noop) {
     setState(state => {
-      // TODO check if now being attacked
-      checkIfUnderAttack (name, attackLocation, state[opponentOf[name]].location, 1, 10);
-      return {
+      return checkIfUnderAttack(name, {
+        ...state,
         [name]: {
           ...state[name],
           currentAction: actions.READY
         }
-      }
-    });
+      });
+    }, respondToHit(name, cb));
   }
 
-  function recoverFromAttack (name) {
+  function recoverFromAttack (name, cb = noop) {
     setState(state => {
-      return {
+      return checkIfUnderAttack(name, {
+        ...state,
         [name]: {
           ...state[name],
           currentAction: actions.READY
         }
-      }
-    });
+      });
+    }, respondToHit(name, cb));
   }
 
-  function setToDisabled (name) {
+  function setToDisabled (name, cb = noop) {
     setState(state => {
       return {
         [name]: {
@@ -136,49 +158,31 @@ const initLevel3 = () => {
           currentAction: actions.DISABLED
         }
       }
-    });
+    }, cb);
   }
 
-  function attack (attacker, attackLocation, distance, damage) {
-    const state = getState();
-    const attackerState = state[attacker];
-    // check if opponent is in attack location
-    checkIfUnderAttack(opponentOf[attacker], attackLocation, attackerState.location, distance, damage);
+  function attack (attacker, cb = noop) {
     // both will need to recover after the attack
-    attackInProgress[attacker] = wait(500);
-    attackInProgress[attacker].then(() => setToDisabled(attacker))
-      .then(() => {
-        attackInProgress[attacker] = wait(1000);
-        return attackInProgress[attacker];
-      })
-      .then(() => recoverFromAttack(attacker));
     setState(state => {
-      return {
+      return checkIfUnderAttack(opponentOf[attacker], {
+        ...state,
         [attacker]: {
           ...state[attacker],
           currentAction: actions.ATTACKING
         }
-      };
+      });
+    }, (newState) => {
+      respondToHit(opponentOf[attacker])(newState);
+      wait(attacker, 500, () => setToDisabled(attacker, () => {
+        wait(attacker, 1000, () => recoverFromAttack(attacker, cb));
+      }))
     });
-
-    return attackInProgress[attacker];
   }
 
-  function startAttackSequence (name) {
+  function startAttackSequence (name, cb = noop) {
     const char = getState()[name];
     // check if can attack
-    if (char.currentAction !== actions.READY) return Promise.resolve();
-    // calculate attack location
-    let attackLocation = char.location;
-    if (char.direction === directions.LEFT) {
-      attackLocation--;
-    } else {
-      attackLocation++;
-    }
-    // name, name, loc, distance, damage
-    attackInProgress[name] = wait(500);
-    attackInProgress[name].then(() => attack(name, attackLocation, 1, 10));
-
+    if (char.currentAction !== actions.READY) return;
     setState(state => {
       return {
         [name]: {
@@ -186,8 +190,7 @@ const initLevel3 = () => {
           currentAction: actions.PREPARING_ATTACK
         }
       };
-    });
-    return attackInProgress[name];
+    }, () => wait(name, 500, () => attack(name, cb)));
   }
 
   // Only used by kong
@@ -226,32 +229,21 @@ const initLevel3 = () => {
   function clickHandler () {
     startAttackSequence('kong');
   }
-  let loopI = 0;
-  var runningLoops = new Set();
-  window.running = runningLoops;
-  function trexBrainLoop () {
-    const loopId = loopI++;
-    runningLoops.add(loopId);
-    // console.trace();
+
+  function trexAction () {
     const state = getState();
-    if (state.trex.location - state.kong.location <= 2) {
-      if (random() > .5) {
-        startAttackSequence('trex')
-        .then(() => runningLoops.delete(loopId))
-          .then(trexBrainLoop);
-      } else {
-        block('trex');
-        wait(1000)
-          .then(() => unblock('trex'))
-          .then(() => runningLoops.delete(loopId))
-          .then(trexBrainLoop);
-      }
+    if (state.trex.location - state.kong.location > 1) {
+      move('left', 'trex', trexLoop);
+    } else if (random() < .5) {
+      block('trex');
+      wait('trex', 1000, () => unblock('trex', trexLoop));
     } else {
-      wait(random() * 1000)
-      .then(() => move('left', 'trex'))
-      .then(() => runningLoops.delete(loopId))
-      .then(trexBrainLoop);
+      startAttackSequence('trex', trexLoop);
     }
+  }
+
+  function trexLoop () {
+    wait('trex', random() * 300 + 100, trexAction);
   };
 
   const {
@@ -262,5 +254,5 @@ const initLevel3 = () => {
     kong: initialKongState,
     trex: initialTrexState
   });
-  trexBrainLoop();
+  trexLoop();
 };
