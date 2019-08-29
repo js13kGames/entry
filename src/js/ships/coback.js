@@ -3,11 +3,11 @@ export default () => {
     return {
         name: 'coback',
         rof: 4,
-        turnRate: 0,
+        turnRate: 1,
         radius: 9,
         mass: 9,
         thrust: 9,
-        ammoCap: 9,
+        ammo: 8,
         lines: {
             body: [
                 [ -4, -9, -1, -9 ],

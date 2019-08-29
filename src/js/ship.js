@@ -17,7 +17,7 @@ export class Ship extends Sprite.class {
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
 
         // Default properties for all ships
-        this.ammo = shipData.ammo + 1 || 8;
+        this.ammoCurrent = shipData.ammo;
         this.fireDt = 0;
         this.lines = {};
         this.lines.random = [];
@@ -34,7 +34,7 @@ export class Ship extends Sprite.class {
         this.ror = props.ror || shipData.ror;
 
         // Modify these values defined in shipData specs to make less crazy
-        this.ammoCap = shipData.ammoCap + 1 || 8;
+        this.ammo = shipData.ammo;
         this.mass = shipData.mass + 11;
         this.radius = (shipData.radius + 1) * this.scale;
         this.rof = 1 / this.rof;
@@ -113,7 +113,7 @@ export class Ship extends Sprite.class {
         const sin = Math.sin(util.degToRad(this.rotation));
 
         this.fireDt = 0;
-        this.ammo--;
+        this.ammoCurrent--;
 
         // Knockback (hass less effect for ships with greater mass)
         this.dx -= cos / this.mass;
@@ -210,16 +210,16 @@ export class Ship extends Sprite.class {
                 this.dx *= .8;
                 this.dy *= .8;
                 this.invuln = .2;
-                this.ammo = this.ammoCap
+                this.ammoCurrent = this.ammo;
             }
 
             return true; // Don't do any other ship updating this game update
         }
 
-        if (this.ammo < this.ammoCap) {
-            this.ammo += (1 / 60) * .5;
+        if (this.ammoCurrent < this.ammo) {
+            this.ammoCurrent += (1 / 60) * .5;
         } else {
-            this.ammo = this.ammoCap;
+            this.ammoCurrent = this.ammo;
         }
 
         this.velocity = this.velocity.add(this.acceleration);
@@ -268,9 +268,9 @@ export class Ship extends Sprite.class {
         // }
 
         // Draw ammo
-        var ammoAngle = .2 * Math.PI * 1 / this.ammoCap;
+        var ammoAngle = .2 * Math.PI * 1 / this.ammo;
         var gap = .05; // Gap between segments in radians
-        for (let i = 0; i < Math.floor(this.ammo); i++) {
+        for (let i = 0; i < Math.floor(this.ammoCurrent); i++) {
             this.context.beginPath();
             this.context.arc(
                 0,
