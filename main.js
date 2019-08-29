@@ -65,9 +65,9 @@ var level_2 = `
 #.#.####e.i.#
 #.#....#....#
 #.####.#.####
-#s...#.#....#
+#....#.#....#
 ####.#.####.#
-#p...#......#
+#p..s#......#
 #############
 `;
 
@@ -252,6 +252,7 @@ function gotoNextLevel() {
         player.key = 's';
     } else {
         secondTry = false;
+        pathEdit = true;
         player.key = 'p';
         if (currentLevelIndex < levels.length-1){
             currentLevelIndex++;
@@ -259,6 +260,9 @@ function gotoNextLevel() {
             target = 'e';
             setupGoal(target);
         } else {
+            // game ending sequence
+            clearInterval(main);
+            gameWin();
             console.log("end of game");
         }
     }
@@ -269,6 +273,7 @@ function gotoNextLevel() {
 function setupGoal(target) {
     let y;
     let x;
+    goal = 0;
     for (y = 0; y < this_level.length; y++) {
         for (x = 0; x < this_level[1].length; x++) {
             if (this_level[y][x] == target) {
@@ -284,6 +289,7 @@ function levelTransition(timeout) {
     // stop the timer
     clearTimeout(timerHandler);
     clearTimeout(shadowPlayerMoving)
+
     if(oldScore == 0){
         oldScore = timer;
         score += timer;
@@ -357,11 +363,18 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
                 drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
-                x = 5;
+                x = -20;
                 y = 48;
+            } else if ((message[queueCounter] === "hardware") || (message[queueCounter] === "limitations")) {
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 152, 240)");
+            } else if(message[queueCounter] === "Good."){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(152, 249, 188)");
+            } else if ( (message[queueCounter] === "Just remember WASD to move the robot") || (message[queueCounter] == "and to stab targets just move into them.") ) {
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 96, 19)");
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
             }
+
             
             slowTextCounter++;
             slowTextHandler = setTimeout(function(){
@@ -586,7 +599,9 @@ function movePlayer(dx, dy, direction){
     if ((takeInput) && (!stopInput)){
         if (checkCollision(player.x+dx, player.y+dy)){
             updatePlayerArray(dx, dy, player);
-            if(secondTry == false) paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
+            if((secondTry === false) && (pathEdit === true)) { 
+                paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
+            }
         }
         stopInput = true;
         setTimeout(resumeInput, inputDelay);
@@ -646,6 +661,7 @@ function gameOver(){
     /* Clear any loops */
     clearTimeout(shadowPlayerMoving);
     clearInterval(main);
+    //clearTimeout(timerHandler);
  
     //ANIMATION
     gameOverCounter = 0;
@@ -654,7 +670,7 @@ function gameOver(){
 
 }
 
-
+var pathEdit = true;
 function drawGameOver(timeout){
     ctx.fillStyle = "red";
     let levelWidth = (this_level[1].length + 6) * gridSize;
@@ -667,22 +683,38 @@ function drawGameOver(timeout){
         // include score?
         drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
         drawPixelText("PRESS R TO RESTART", levelWidth/4, levelHeight/1.2, 2);
-        var restart = document.addEventListener("keypress", function(event){
-            console.log(event.keyCode);
-            if (event.keyCode == 114 || event.keyCode == 82){
-                // restart game by reloading page contents
-                window.location.reload(false);
+        Mousetrap.bind("r", function(){
+            Mousetrap.unbind("r");
+            //reset level
+
+
+
+            timer = 13;
+            
+            clearTimeout(shadowPlayerMoving);
+            moveShadowCounter = 0;
+            if(secondTry == false){
+                target = 'e';
+                pathEdit = true;
+            } else{
+                pathEdit = false; 
+                target = 'i';
+                moveShadowPlayer();
             }
+            score = 0;
+            animationCounter = 0;
+            transition = false;
+            this_level = levels[currentLevelIndex].split("\n");
+            goal = 0;
+            setupGoal(target);
+            takeInput = true;
+            
+            main = setInterval(mainLoop, 25);
+            
         });
+        
     }
 }
-
-
-
-
-
-
-
 
 
 /*Main game event loop */
@@ -707,7 +739,7 @@ function mainLoop() {
         timerHandler = setTimeout(updateTimer, 1000);
     }
     drawLevel(this_level);
-    //player input but with timeout to update things
+
 }
 
 
@@ -725,9 +757,11 @@ let titleContents = [
     "b",
     "very bad people.",
     "\n",
-    "This would be a simple task but due to hardware",
+    "This would be a simple task but due to",
+    "hardware",
     "\n",
-    "limitations you will have to kill half the targets",
+    "limitations",
+    "you will have to kill half the targets",
     "\n",
     "within two 13 second chunks. ",
     "\n",
@@ -741,11 +775,35 @@ let titleContents = [
     "\n",
     "the first half of targets.",
     "\n",
-    "Confusing? Good.",
+    "Confusing?",
+    "Good.",
     "\n",
-    " Just remember WASD to move the robot",
+    "Just remember WASD to move the robot",
     "\n",
     "and to stab targets just move into them."
+];
+
+
+let endscreenText = [
+    "GOOD JOB!",
+    "You have taken down all the targets.",
+    "\n",
+    "You even netted a total of " + score + " points!",
+    "\n",
+    "HOWEVER, this is not the end of our journey",
+    "\n",
+    "stabbing robot 3000",
+    "there will inevitably be",
+    "\n",
+    "more targets to be stabbed during",
+    "\n",
+    "my illegal seizure of power",
+    "b",
+    'LEGITIMATE CAMPAIGN.',
+    "\n",
+    "so uhh.. great  job hero!",
+    "\n",
+    "err.. power off?"
 ];
 
 
@@ -757,7 +815,7 @@ function titleScreen(){
 
     ctx.fillStyle = "black";
     ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
-    drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 75);
+    drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 65);
     
     drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
     Mousetrap.bind('space', function(){
@@ -765,6 +823,19 @@ function titleScreen(){
         Mousetrap.unbind('space');
         main = setInterval(mainLoop, 25);
     });
+}
+
+function gameWin(){
+
+    let gameX = 5;
+    let gameY = 48;
+    let fontSize = 2;
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    drawPixelTextSlow(endscreenText, gameX, gameY, fontSize, 50);
+
+
 }
 
 
