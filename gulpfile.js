@@ -83,7 +83,8 @@ function serve(done) {
     server: {
       baseDir: paths.dist.dir
     },
-    open: false
+    open: false,
+    https: true
   });
   done();
 }
