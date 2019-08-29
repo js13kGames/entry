@@ -6,9 +6,9 @@ export default () => {
         ror: 4,
         turnRate: 7,
         radius: 8,
-        mass: 0,
+        mass: 3,
         thrust: 9,
-        ammoCap: 3,
+        ammo: 3,
         lines: {
             body: [
                 [ -6, -5,  7,  0 ],
