@@ -11,8 +11,8 @@ function sleep(ms){
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-//ctx.height = 720;
-//ctx.width = 1280;
+ctx.canvas.width = 608;
+ctx.canvas.height = 360;
 
 //test example
 
@@ -252,7 +252,6 @@ function gotoNextLevel() {
         player.key = 's';
     } else {
         secondTry = false;
-        pathEdit = true;
         player.key = 'p';
         if (currentLevelIndex < levels.length-1){
             currentLevelIndex++;
@@ -599,7 +598,7 @@ function movePlayer(dx, dy, direction){
     if ((takeInput) && (!stopInput)){
         if (checkCollision(player.x+dx, player.y+dy)){
             updatePlayerArray(dx, dy, player);
-            if((secondTry === false) && (pathEdit === true)) { 
+            if(secondTry === false) { 
                 paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
             }
         }
@@ -670,7 +669,6 @@ function gameOver(){
 
 }
 
-var pathEdit = true;
 function drawGameOver(timeout){
     ctx.fillStyle = "red";
     let levelWidth = (this_level[1].length + 6) * gridSize;
@@ -695,9 +693,7 @@ function drawGameOver(timeout){
             moveShadowCounter = 0;
             if(secondTry == false){
                 target = 'e';
-                pathEdit = true;
             } else{
-                pathEdit = false; 
                 target = 'i';
                 moveShadowPlayer();
             }

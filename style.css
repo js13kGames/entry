@@ -1,19 +1,13 @@
-/* Stylesheet for game.html */
-
-body{
-    padding:0px;
-    margin: 0px;
-}
-.dummy{
-    
+#wrap{
     width:100%;
-    
 }
-
 canvas {
-    display: block;
-    image-rendering: pixelated;
+    padding-left: 0;
+    padding-right: 0;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 25px;
+    margin-top:80px;
+    width:900px;
+    display: block;
+    /*border:1px solid black; for debugging canvas size*/
 }
