@@ -44,7 +44,8 @@ createAsteroid({
     sprites: sprites,
     cs: collisionSystem,
     dx: 0,
-    dy: 0
+    dy: 0,
+    dr: .1
 });
 
 for (var i = 0; i < 4; i++) {

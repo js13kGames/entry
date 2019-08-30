@@ -102,17 +102,17 @@ export class Player {
 
         // Render the scores
         if (i === 0) {
-            textProps.x = 10;
-            textProps.y = 10;
+            textProps.x = this.context.canvas.width / 2 - 20;
+            textProps.y = this.context.canvas.height / 2 - 20;
         } else if (i === 1) {
-            textProps.x = this.context.canvas.width - 20;
-            textProps.y = 10;
+            textProps.x = this.context.canvas.width / 2 + 10;
+            textProps.y = this.context.canvas.height / 2 - 20;
         } else if (i === 2) {
-            textProps.x = 10;
-            textProps.y = this.context.canvas.height - 20;
+            textProps.x = this.context.canvas.width / 2 - 20;
+            textProps.y = this.context.canvas.height / 2 + 10;
         } else if (i === 3) {
-            textProps.x = this.context.canvas.width - 20;
-            textProps.y = this.context.canvas.height - 20;
+            textProps.x = this.context.canvas.width / 2 + 10;
+            textProps.y = this.context.canvas.height / 2 + 10;
         }
 
         renderText(textProps);

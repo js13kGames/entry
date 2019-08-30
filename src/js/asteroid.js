@@ -1,4 +1,5 @@
 import { Sprite } from 'kontra';
+import * as util from './utility';
 import { createShrapnel } from './shrapnel';
 
 function createLines(radius) {
@@ -42,10 +43,12 @@ export function createAsteroid(props) {
         lines: createLines(props.radius),
         cs: props.cs,
         color: '#fff',
+        dr: props.dr || 0,
 
         render() {
             this.context.save();
             this.context.translate(this.x, this.y);
+            this.context.rotate(util.degToRad(this.rotation));
             this.context.strokeStyle = '#fff';
             this.context.lineWidth = 2;
             this.context.beginPath();
@@ -63,9 +66,11 @@ export function createAsteroid(props) {
         },
 
         update() {
+            this.rotation += this.dr;
             this.advance();
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
+            this.hitbox.angle = util.degToRad(this.rotation);
         },
 
         explode(sprites) {
