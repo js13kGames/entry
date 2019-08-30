@@ -1,4 +1,6 @@
 import { TheAudioContext } from './Context'
+import { EnvelopeSampler } from '../utils'
+export { EnvelopeSampler } from '../utils'
 
 // D:\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.cpp
 
@@ -24,35 +26,6 @@ export function samplePulse (position, length) {
 
 export function sampleNoise () {
   return Math.random() * 2 - 1
-}
-
-export class EnvelopeSampler {
-  constructor (envelope) {
-    this.envelope = envelope
-    this.reset()
-  }
-
-  reset () {
-    this.i = 0
-  }
-
-  sample (position) {
-    while (this.i < this.envelope.length - 1) {
-      let [t1, v1, curve = 1] = this.envelope[this.i]
-      let [t2, v2] = this.envelope[this.i + 1]
-      if (t1 <= position && position < t2) {
-        let t = (position - t1) / (t2 - t1)
-        if (curve > 1) {
-          t = t ** curve
-        } else {
-          t = 1 - (1 - t) ** (1 / curve)
-        }
-        return v1 + t * (v2 - v1)
-      }
-      this.i++
-    }
-    return this.envelope[this.envelope.length - 1][1]
-  }
 }
 
 function ensureEnvelope (envelopeOrValue) {

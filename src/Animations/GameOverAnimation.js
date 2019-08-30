@@ -1,11 +1,13 @@
 import { ClearAnimation } from './ClearAnimation';
+import { AnimationBase } from './Animation';
 
-export class GameOverAnimation {
+export class GameOverAnimation extends AnimationBase {
   constructor (level) {
+    super(60)
+
     this.level = level
 
     this.row = 0
-    this.t = 0
 
     this.clearAnimations = []
 
@@ -13,10 +15,10 @@ export class GameOverAnimation {
   }
 
   step () {
-    if (++this.t > 2) {
-      if (this.row === this.level.board.height) {
-        this.done = this.t > 60
-      } else {
+    super.step()
+
+    if (this.t > 2) {
+      if (this.row < this.level.board.height) {
         this.addAnimation()
       }
     }

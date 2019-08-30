@@ -17,6 +17,7 @@ import createHoldSound from './Audio/Samples/Hold';
 import { createTSpinSound } from './Audio/Samples/TSpin';
 import createSong from './Audio/Songs/Song1';
 import FontAsset from './Sprites/Font'
+import TextsAsset from './Sprites/Texts'
 
 async function createAudioSampleAsset (createSampleFunction) {
   const array = createSampleFunction()
@@ -40,6 +41,7 @@ function createSpriteAsset (spriteObject) {
 }
 
 export let Font
+export let TextsSprite
 
 export let Song1
 
@@ -76,6 +78,7 @@ export async function loadAssets () {
   await Promise.all(
     [
       Font,
+      TextsSprite,
       ShiftSound,
       RotateSound,
       LandSound,
@@ -89,6 +92,7 @@ export async function loadAssets () {
   )
 
   Font = await createSpriteAsset(FontAsset)
+  TextsSprite = await createSpriteAsset(TextsAsset)
 
   await createReverb()
 

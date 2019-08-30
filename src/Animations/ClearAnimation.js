@@ -1,19 +1,13 @@
-import { Graphics } from './Graphics';
-import { TILE_SIZE } from './constants';
+import { Graphics } from '../Graphics';
+import { TILE_SIZE } from '../constants';
+import { AnimationBase } from './Animation';
 
-export class ClearAnimation {
+export class ClearAnimation extends AnimationBase {
   constructor (level, rows) {
+    super(30)
+
     this.level = level
     this.rows = rows
-
-    this.t = 0
-  }
-
-  step () {
-    this.t++
-    if (this.t >= 30) {
-      this.done = true
-    }
   }
 
   render () {

@@ -16,6 +16,10 @@ export function approach (x, target, acc) {
   return x > target ? Math.max(x - acc, target) : Math.min(x + acc, target)
 }
 
+export function ease (t) {
+  return t * t * (3 - 2 * t)
+}
+
 export function overlapping (rect1, rect2) {
   return (
     rect1.x + rect1.width > rect2.x && rect1.x < rect2.x + rect2.width &&
@@ -79,6 +83,38 @@ export function makeColorWithAlpha (color, alpha) {
 }
 
 /**
+ * Animation and audio utils
+ */
+export class EnvelopeSampler {
+  constructor (envelope) {
+    this.envelope = envelope
+    this.reset()
+  }
+
+  reset () {
+    this.i = 0
+  }
+
+  sample (position) {
+    while (this.i < this.envelope.length - 1) {
+      let [t1, v1, curve = 1] = this.envelope[this.i]
+      let [t2, v2] = this.envelope[this.i + 1]
+      if (t1 <= position && position < t2) {
+        let t = (position - t1) / (t2 - t1)
+        if (curve > 1) {
+          t = t ** curve
+        } else {
+          t = 1 - (1 - t) ** (1 / curve)
+        }
+        return v1 + t * (v2 - v1)
+      }
+      this.i++
+    }
+    return this.envelope[this.envelope.length - 1][1]
+  }
+}
+
+/**
  * Waiting for the next frame is useful for preventing the browser to hang
  * while the assets are being generated
  */
@@ -95,3 +131,4 @@ export function zeroPad (str, n) {
 
   return Array(n - str.length).fill(0).join('') + str
 }
+

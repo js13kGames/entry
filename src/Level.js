@@ -1,55 +1,20 @@
-import { Graphics, Canvas } from "./Graphics";
-import { TetrominoI } from './Tetrominos/TetrominoI';
-import { TetrominoL } from './Tetrominos/TetrominoL';
-import { TetrominoJ } from './Tetrominos/TetrominoJ';
+import { Graphics, Canvas, drawSprite, drawAt } from "./Graphics";
 import { TetrominoT } from './Tetrominos/TetrominoT';
-import { TetrominoO } from './Tetrominos/TetrominoO';
-import { TetrominoS } from './Tetrominos/TetrominoS';
-import { TetrominoZ } from './Tetrominos/TetrominoZ';
 import { TetrominoController } from './TetrominoController';
-import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN } from './constants';
-import { ClearAnimation } from './ClearAnimation';
+import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR } from './constants';
+import { ClearAnimation } from './Animations/ClearAnimation';
 import { Input } from './Input';
 import { Board } from './Board';
-import { GameOverAnimation } from './GameOverAnimation';
+import { GameOverAnimation } from './Animations/GameOverAnimation';
 import { playSample } from './Audio';
-import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1 } from './Assets';
+import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1, TextsSprite } from './Assets';
 import { resetScore, addToScore, currentScore, resetLineClears, addLineClears, currentLevel, lineClears } from './globals';
 import { zeroPad } from './utils';
 import { drawText, drawBoldText } from './fontUtils';
-import { ScoreAnimation } from './ScoreAnimation';
-
-class TetrominoBag {
-  constructor () {
-    this.tetrominos = [TetrominoI, TetrominoL, TetrominoJ, TetrominoT, TetrominoO, TetrominoS, TetrominoZ]
-    for (let i = 6; i > 1; i--) {
-      let j = Math.floor(Math.random() * (i + 1))
-      let temp = this.tetrominos[j]
-      this.tetrominos[j] = this.tetrominos[i]
-      this.tetrominos[i] = temp
-    }
-  }
-
-  pick () {
-    return this.tetrominos.pop()
-  }
-}
-
-class TetrominoSource {
-  constructor () {
-    this.bag = new TetrominoBag()
-  }
-
-  getNext() {
-    const Type = this.bag.pick()
-    if (!Type) {
-      this.bag = new TetrominoBag()
-      return this.getNext()
-    }
-
-    return new Type()
-  }
-}
+import { ScoreAnimation } from './Animations/ScoreAnimation';
+import { Back2BackAnimation } from './Animations/Back2BackAnimation';
+import { MoveTypeAnimation } from './Animations/MoveTypeAnimation';
+import { TetrominoSource } from './TetrominoSource';
 
 export class Level {
   constructor () {
@@ -61,6 +26,9 @@ export class Level {
     this.tetrominoSource = new TetrominoSource()
     this.heldTetromino = null
     this.nextTetrominos = Array.from(Array(6), () => this.tetrominoSource.getNext())
+
+    this.lastClearWasSpecial = false
+    this.clearStreak = 0
 
     this.nextTetromino()
 
@@ -81,6 +49,14 @@ export class Level {
   }
 
   step () {
+    if (this.moveTypeAnimation && !this.moveTypeAnimation.done) {
+      this.moveTypeAnimation.step()
+    }
+
+    if (this.back2BackAnimation && !this.back2BackAnimation.done) {
+      this.back2BackAnimation.step()
+    }
+
     let previousScore = currentScore
     if (this.clearAnimation) {
       this.clearAnimation.step()
@@ -120,14 +96,85 @@ export class Level {
       this.checkState(rows)
     }
 
-    this.updateGhostPosition()
-
     if (currentScore !== previousScore) {
       this.scoreAnimations.push(new ScoreAnimation(currentScore - previousScore))
       if (this.scoreAnimations.length === 4) {
         this.scoreAnimations.shift()
       }
     }
+  }
+
+  render () {
+    this.updateGhostPosition()
+
+    // So that closure compiler recognizes it as an extern
+    Graphics['resetTransform']()
+
+    Graphics.fillStyle = '#000'
+    Graphics.fillRect(0, 0, Canvas.width, Canvas.height)
+
+    const width = TILE_SIZE * this.tileCountX
+    const height = TILE_SIZE * this.tileCountY
+
+    Graphics.translate((Canvas.width - width) / 2, (Canvas.height - height) / 2)
+
+    Graphics.fillStyle = '#fff'
+    Graphics.fillRect(-2, -2, width + 4, height + 4)
+    Graphics.fillStyle = '#000'
+    Graphics.fillRect(0, 0, width, height)
+
+    this.renderBoard()
+
+    Graphics.translate(width + 25, 0)
+
+    Graphics.fillStyle = '#000'
+    Graphics.lineWidth = 2
+    Graphics.strokeStyle = '#fff'
+    Graphics.strokeRect(-16, 0, 48, 170)
+
+    drawText(`LEVEL:`, -17, 190)
+    drawBoldText(`\n${zeroPad(currentLevel, 2)}`, -17, 190)
+    drawText(`LINES:`, -17, 224)
+    drawBoldText(`\n${zeroPad(lineClears, 4)}`, -17, 224)
+
+    drawText(`SCORE:`, -17, 297)
+    drawBoldText(`\n${zeroPad(currentScore, 9)}`, -17, 295, 2)
+
+    for (let animation of this.scoreAnimations) {
+      animation.render(20, 296)
+    }
+
+    this.renderNextTetrominos()
+
+    Graphics['resetTransform']()
+
+    Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 10)
+    drawBoldText(`HOLD`, -8, -8)
+
+    if (this.heldTetromino) {
+      if (this.controller.wasHeld) {
+        this.renderGhostTetromino(this.heldTetromino, 0, TILE_SIZE / 2, 2)
+        Graphics.fillStyle = 'rgba(0,0,0,0.5)'
+        Graphics.fillRect(-TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE)
+      } else {
+        this.renderTetromino(this.heldTetromino, TILE_SIZE / 2, 2)
+      }
+    }
+
+    drawAt(-10, 50, () => {
+      if (this.clearStreak > 1) {
+        drawSprite(TextsSprite, 0, 0, 7)
+        drawBoldText(`\n${this.clearStreak < 10 ? ' ' : ''}${this.clearStreak - 1}`, -5, 0, 2)
+      }
+
+      if (this.moveTypeAnimation) {
+        this.moveTypeAnimation.render()
+      }
+
+      if (this.back2BackAnimation) {
+        this.back2BackAnimation.render()
+      }
+    })
   }
 
   getTSpin () {
@@ -209,6 +256,9 @@ export class Level {
   }
 
   updateScore (tSpinType, clearedRowsCount, allClear) {
+    // Combo
+    addToScore(currentLevel * 50 * this.clearStreak)
+
     addLineClears(clearedRowsCount)
 
     if (tSpinType) {
@@ -216,30 +266,63 @@ export class Level {
     }
 
     if (allClear) {
+      this.setMoveType(ALL_CLEAR)
+
       playSample(AllClearSound, 1, true)
 
       addToScore(1500 * currentLevel)
     } else if (clearedRowsCount > 0) {
       playSample(LineClearSounds[clearedRowsCount - 1], 1, true)
 
-      addToScore({
-        1: 100,
-        2: 300,
-        3: 500,
-        4: 800
-      }[clearedRowsCount] * currentLevel)
+      if (this.lastClearWasSpecial && clearedRowsCount === 4) {
+        this.setBack2Back()
+        addToScore(1200 * currentLevel)
+      } else {
+        addToScore({
+          1: 100,
+          2: 300,
+          3: 500,
+          4: 800
+        }[clearedRowsCount] * currentLevel)
+      }
+
+      this.setMoveType(SINGLE_CLEAR - 1 + clearedRowsCount)
     }
 
     if (tSpinType === T_SPIN) {
-      addToScore(currentLevel * 400 * 2 ** clearedRowsCount)
+      if (this.lastClearWasSpecial && clearedRowsCount > 0) {
+        this.setBack2Back()
+        addToScore(600 * (clearedRowsCount + 1) * currentLevel)
+      } else {
+        addToScore(400 * clearedRowsCount * currentLevel)
+      }
+      this.setMoveType(T_SPIN + clearedRowsCount)
     } else if (tSpinType === T_SPIN_MINI) {
       addToScore(currentLevel * (clearedRowsCount + 1) * 100)
+      this.setMoveType(T_SPIN_MINI + clearedRowsCount)
+    }
+
+    if (clearedRowsCount > 0) {
+      this.clearStreak++
+      this.lastClearWasSpecial = tSpinType || clearedRowsCount === 4
+    } else {
+      this.clearStreak = 0
     }
   }
 
   setGameOver () {
     this.gameOverAnimation = new GameOverAnimation(this)
     Song1.stop()
+  }
+
+  setBack2Back () {
+    this.back2BackAnimation = new Back2BackAnimation()
+  }
+
+  setMoveType (type) {
+    if (type) {
+      this.moveTypeAnimation = new MoveTypeAnimation(type)
+    }
   }
 
   updateGhostPosition () {
@@ -262,65 +345,6 @@ export class Level {
 
   removeRows (rows) {
     this.board.clearRows(rows)
-  }
-
-  render () {
-    // So that closure compiler recognizes it as an extern
-    Graphics['resetTransform']()
-
-    Graphics.fillStyle = '#000'
-    Graphics.fillRect(0, 0, Canvas.width, Canvas.height)
-
-    const width = TILE_SIZE * this.tileCountX
-    const height = TILE_SIZE * this.tileCountY
-
-    Graphics.translate((Canvas.width - width) / 2, (Canvas.height - height) / 2)
-
-    Graphics.fillStyle = '#fff'
-    Graphics.fillRect(-2, -2, width + 4, height + 4)
-    Graphics.fillStyle = '#000'
-    Graphics.fillRect(0, 0, width, height)
-
-    this.renderBoard()
-
-    Graphics.translate(width + 25, 0)
-
-    Graphics.fillStyle = '#000'
-    Graphics.lineWidth = 2
-    Graphics.strokeStyle = '#fff'
-    Graphics.strokeRect(-16, 0, 48, 170)
-
-    drawText(`LEVEL`, -17, 190)
-    drawBoldText(`\n${zeroPad(currentLevel, 2)}`, -15, 190)
-    drawText(`LINES`, -17, 224)
-    drawBoldText(`\n${zeroPad(lineClears, 4)}`, -15, 224)
-
-    drawText(`SCORE`, -17, 300)
-    Graphics.scale(2, 2)
-    drawBoldText(`\n${zeroPad(currentScore, 9)}`, -8, 148)
-
-    for (let animation of this.scoreAnimations) {
-      animation.render(10, 148)
-    }
-
-    Graphics.scale(0.5, 0.5)
-
-    this.renderNextTetrominos()
-
-    Graphics['resetTransform']()
-
-    Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 10)
-    drawBoldText(`HOLD`, -8, -8)
-
-    if (this.heldTetromino) {
-      if (this.controller.wasHeld) {
-        this.renderGhostTetromino(this.heldTetromino, 0, TILE_SIZE / 2, 2)
-        Graphics.fillStyle = 'rgba(0,0,0,0.5)'
-        Graphics.fillRect(-TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE)
-      } else {
-        this.renderTetromino(this.heldTetromino, TILE_SIZE / 2, 2)
-      }
-    }
   }
 
   renderBoard () {
