@@ -127,6 +127,7 @@ let loop = GameLoop({  // create the main game loop
         sprites.forEach(sprite => {
             if (!sprite.isAlive() || sprite.exploded) {
                 sprite.hitbox && sprite.hitbox.remove();
+                sprite.shieldHitbox && sprite.shieldHitbox.remove();
             }
         });
 
@@ -159,10 +160,10 @@ let loop = GameLoop({  // create the main game loop
         players.map((player, i) => player.renderScore(i));
 
         // Render debug collision stuff
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // collisionSystem.draw(context);
-        // context.stroke();
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 

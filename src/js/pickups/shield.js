@@ -12,7 +12,7 @@ export class ShieldPickup extends Pickup {
     }
 
     applyTo(ship) {
-        ship.shield = 1;
+        ship.addShield();
     }
 
     render() {
