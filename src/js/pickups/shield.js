@@ -41,7 +41,6 @@ export class ShieldPickup extends Pickup {
         this.context.restore();
 
         // Render the circle around the edge
-        //super(props);
         super.render();
     }
 }
