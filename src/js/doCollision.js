@@ -25,12 +25,21 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
             return;
         }
 
+        // A ship with a shield can't collide with anything
+        if (ship.shield) {
+            return;
+        }
+
         potentials = ship.hitbox.potentials();
 
         for (const otherHitbox of potentials) {
             var otherSprite = otherHitbox.owner;
 
             if (ship.hitbox.collides(otherHitbox, cResult)) {
+
+                if (otherSprite === ship) {
+                    return false;
+                }
 
                 if (otherSprite.type === 'pickup') {
                     otherSprite.applyTo(ship);
@@ -42,7 +51,7 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                     otherSprite.y += cResult.overlap * cResult.overlap_y;
                 }
 
-                if (otherSprite.type === 'bullet') {
+                if (otherSprite.type === 'bullet' && !ship.shield.value) {
                     // If you're (or ya bullets) not colliding with yourself
                     if (otherSprite.owner === ship) {
                         return;

@@ -93,6 +93,21 @@ export class Ship extends Sprite.class {
         this.hitbox.owner = this;
     }
 
+    addShield() {
+        this.shield = Math.floor(this.shield + 1) || 1;
+        this.shieldHitbox = this.cs.createCircle(
+            this.x,
+            this.y,
+            this.radius + 4 * this.shield
+        );
+        this.shieldHitbox.owner = this;
+    }
+
+    removeShield() {
+        this.shield = 0;
+        this.shieldHitbox.remove();
+    }
+
     /**
      * Pew pew a bullet out.
      *
@@ -237,6 +252,11 @@ export class Ship extends Sprite.class {
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
         this.hitbox.angle = util.degToRad(this.rotation);
+
+        if (this.shieldHitbox) {
+            this.shieldHitbox.x = this.x;
+            this.shieldHitbox.y = this.y;
+        }
     }
 
     explode(sprites) {
@@ -365,10 +385,25 @@ export class Ship extends Sprite.class {
                     }
                 });
             }
+
+            this.context.strokeStyle = this.color;
+            this.context.stroke();
+
+            if (this.shield === 1) {
+                this.context.beginPath();
+                this.context.arc(
+                    0,
+                    0,
+                    this.radius + 4 * this.shield,
+                    0,
+                    2 * Math.PI
+                );
+
+                this.context.strokeStyle = '#fff';
+                this.context.stroke();
+            }
         }
 
-        this.context.strokeStyle = this.color;
-        this.context.stroke();
         this.context.restore();
     }
 }
