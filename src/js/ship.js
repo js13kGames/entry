@@ -191,6 +191,13 @@ export class Ship extends Sprite.class {
 
     shipUpdate() {
 
+        if (this.shieldDegrading) {
+            this.shieldDegrading--;
+            if (this.shieldDegrading === 0) {
+                this.removeShield();
+            }
+        }
+
         if (this.rewindDt < this.ror) {
             this.rewindDt += 1 / 60;
         }
@@ -351,6 +358,8 @@ export class Ship extends Sprite.class {
                 this.context.lineTo(line[2], line[3]);
             });
 
+            this.context.stroke();
+
         } else {
 
             this.context.moveTo(
@@ -398,6 +407,16 @@ export class Ship extends Sprite.class {
                     0,
                     2 * Math.PI
                 );
+
+                if (this.shieldDegrading) {
+                    //console.log(this.shieldDegrading);
+                    //console.log(Math.floor(this.shieldDegrading / 15) % 2);
+                    if (Math.floor(this.shieldDegrading / 15) % 2) {
+                        this.context.lineWidth = 1;
+                    } else {
+                        this.context.lineWidth = 2;
+                    }
+                }
 
                 this.context.strokeStyle = '#fff';
                 this.context.stroke();

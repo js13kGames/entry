@@ -25,21 +25,23 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
             return;
         }
 
-        // A ship with a shield can't collide with anything
         if (ship.shield) {
-            return;
+            potentials = ship.shieldHitbox.potentials();
+        } else {
+            potentials = ship.hitbox.potentials();
         }
-
-        potentials = ship.hitbox.potentials();
 
         for (const otherHitbox of potentials) {
             var otherSprite = otherHitbox.owner;
 
-            if (ship.hitbox.collides(otherHitbox, cResult)) {
+            // Colliding with self (e.g. shield w/ship hitbox)
+            if (otherSprite === ship) {
+                break; // Break out of for ... of
+            }
 
-                if (otherSprite === ship) {
-                    return false;
-                }
+            if ((ship.hitbox.collides(otherHitbox, cResult)) ||
+                (ship.shieldHitbox &&
+                 ship.shieldHitbox.collides(otherHitbox, cResult))) {
 
                 if (otherSprite.type === 'pickup') {
                     otherSprite.applyTo(ship);
@@ -51,20 +53,28 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                     otherSprite.y += cResult.overlap * cResult.overlap_y;
                 }
 
-                if (otherSprite.type === 'bullet' && !ship.shield.value) {
+                if (otherSprite.type === 'bullet') {
+                    otherSprite.ttl = 0;
+
                     // If you're (or ya bullets) not colliding with yourself
                     if (otherSprite.owner === ship) {
-                        return;
+                        break;
                     }
+
                     // The ship might have already exploded due to a collision
                     if (ship.exploded) {
-                        return;
+                        break;
+                    }
+
+                    if (ship.shield) {
+                        if (!ship.shieldDegrading) {
+                            ship.shieldDegrading = 60;
+                        }
+                        break;
                     }
 
                     if (ship.invuln) {
-                        ship.x -= cResult.overlap * cResult.overlap_x;
-                        ship.y -= cResult.overlap * cResult.overlap_y;
-                        return;
+                        break;
                     }
 
                     ship.explode(sprites);
@@ -81,10 +91,10 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 if (otherSprite.type === 'ship') {
                     // Can't collide into other ships that are rewinding
                     if (otherSprite.rewinding) {
-                        return;
+                        break;
                     }
-                    ship.x -= cResult.overlap * cResult.overlap_x;
-                    ship.y -= cResult.overlap * cResult.overlap_y;
+                    otherSprite.x += cResult.overlap * cResult.overlap_x;
+                    otherSprite.y += cResult.overlap * cResult.overlap_y;
                 }
             }
         }
@@ -154,6 +164,15 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
                     // Can't collide into ships that are rewinding
                     if (otherSprite.rewinding) {
+                        return;
+                    }
+
+                    if (otherSprite.shield) {
+                        if (!otherSprite.shieldDegrading) {
+                            otherSprite.shieldDegrading = 60;
+                        }
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
                         return;
                     }
 
