@@ -18,6 +18,7 @@ const initLevel1 = (nextLevel) => {
 
   const {
     getState,
+    getSnapshot,
     isUpdated,
     setState: modelSetState
   } = initState();
