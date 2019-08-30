@@ -21,6 +21,7 @@ export class Pickup extends Sprite.class {
         this.dr = Math.random() < .5 ? -1 : 1;
         this.hitbox = props.cs.createCircle(props.x, props.y, this.radius * this.scale);
         this.hitbox.owner = this;
+        this.colorCounter = 0;
     }
 
     update() {
@@ -28,6 +29,11 @@ export class Pickup extends Sprite.class {
         this.advance();
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
+        // Every 10 frames change to a random color
+        if (this.colorCounter % 10) {
+            this.color = 'hsl(' + this.colorCounter + ', 100%, 60%)';
+        }
+        this.colorCounter++;
     }
 
     render() {
@@ -37,6 +43,9 @@ export class Pickup extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
+
+        //'#'+Math.floor(Math.random()*16777215).toString(16);
+
         this.context.lineWidth = 2;
         this.context.beginPath();
 

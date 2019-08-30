@@ -16,9 +16,9 @@ export class AmmoPickup extends Pickup {
         this.context.translate(this.x, this.y);
         this.context.rotate(util.degToRad(this.rotation));
 
-        this.context.strokeStyle = this.color;
-        this.context.lineWidth = 2;
         this.context.beginPath();
+        this.context.lineWidth = 2;
+        this.context.strokeStyle = '#fff';
 
         this.context.rect(
             Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5),
@@ -26,6 +26,10 @@ export class AmmoPickup extends Pickup {
             Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
             Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
         );
+        this.context.stroke();
+
+        this.context.beginPath();
+        this.context.strokeStyle = '#0ef';
 
         this.context.rect(
             this.scale * -1.5,
