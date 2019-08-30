@@ -134,19 +134,28 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 if (otherSprite.type === 'ship') {
 
                     // Can't collide into ships that are rewinding
-                    if (!otherSprite.rewinding) {
+                    if (otherSprite.rewinding) {
+                        return;
+                    }
 
-                        if (otherSprite.invuln) {
-                            otherSprite.x += cResult.overlap * cResult.overlap_x;
-                            otherSprite.y += cResult.overlap * cResult.overlap_y;
-                            return;
-                        }
+                    if (otherSprite.invuln) {
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
 
-                        otherSprite.explode(sprites);
+                    // The ship and asteroid aren't going fast enough to collide
+                    if (Math.abs(asteroid.dx - otherSprite.dx) < .2 ||
+                        Math.abs(asteroid.dy - otherSprite.dy) < .2) {
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
+                    
+                    otherSprite.explode(sprites);
 
-                        if (otherSprite.player) {
-                            otherSprite.player.scoreDec();
-                        }
+                    if (otherSprite.player) {
+                        otherSprite.player.scoreDec();
                     }
                 }
 

@@ -39,7 +39,7 @@ createAsteroid({
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: Math.min(canvas.width / 4, canvas.height / 4),
-    mass: 999999,
+    mass: 10000,
     asteroids: asteroids,
     sprites: sprites,
     cs: collisionSystem,

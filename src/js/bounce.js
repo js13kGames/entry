@@ -11,10 +11,18 @@ import { normalize, dotProduct } from './vector';
 export function bounce(circle1, circle2, cResult) {
 
     // Separate the two sprites so they're not inside each other
-    circle1.x -= (cResult.overlap * cResult.overlap_x) / 2;
-    circle1.y -= (cResult.overlap * cResult.overlap_y) / 2;
-    circle2.x += (cResult.overlap * cResult.overlap_x) / 2;
-    circle2.y += (cResult.overlap * cResult.overlap_y) / 2;
+    if (circle1.mass > 10000) {
+        circle2.x += (cResult.overlap * cResult.overlap_x);
+        circle2.y += (cResult.overlap * cResult.overlap_y);
+    } else if (circle2.mass > 10000) {
+        circle1.x -= (cResult.overlap * cResult.overlap_x);
+        circle1.y -= (cResult.overlap * cResult.overlap_y);
+    } else {
+        circle1.x -= (cResult.overlap * cResult.overlap_x) / 2;
+        circle1.y -= (cResult.overlap * cResult.overlap_y) / 2;
+        circle2.x += (cResult.overlap * cResult.overlap_x) / 2;
+        circle2.y += (cResult.overlap * cResult.overlap_y) / 2;
+    }
 
     var interSecVec = normalize({x: cResult.overlap_x, y: cResult.overlap_y});
 
@@ -34,10 +42,14 @@ export function bounce(circle1, circle2, cResult) {
     var m2 = (dpNorm2 * (circle2.mass - circle1.mass) + 2 * circle1.mass * dpNorm1) / (circle1.mass + circle2.mass);
 
     // Update velocities
-    circle1.dx = tanVec.x * dpTan1 + interSecVec.x * m1;
-    circle1.dy = tanVec.y * dpTan1 + interSecVec.y * m1;
-    circle2.dx = tanVec.x * dpTan2 + interSecVec.x * m2;
-    circle2.dy = tanVec.y * dpTan2 + interSecVec.y * m2;
+    if (circle1.mass < 10000) {
+        circle1.dx = tanVec.x * dpTan1 + interSecVec.x * m1;
+        circle1.dy = tanVec.y * dpTan1 + interSecVec.y * m1;
+    }
+    if (circle2.mass < 10000) {
+        circle2.dx = tanVec.x * dpTan2 + interSecVec.x * m2;
+        circle2.dy = tanVec.y * dpTan2 + interSecVec.y * m2;
+    }
 
     // Don't allow bounce again until after .bounceed is reset at end of update
     circle1.bounced = circle2.bounced = true;
