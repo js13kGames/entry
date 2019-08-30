@@ -2,6 +2,9 @@ import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
 import { Collisions } from 'collisions';
 import { doCollision } from './doCollision';
 import { Ship } from './ship.js';
+import { AmmoPickup } from './pickups/ammo.js';
+import { ShieldPickup } from './pickups/shield.js';
+import { StarPickup } from './pickups/star.js';
 import { Player } from './player.js';
 import { createAsteroid } from './asteroid';
 import { renderText } from './text';
@@ -48,7 +51,7 @@ createAsteroid({
     dr: .1
 });
 
-for (var i = 0; i < 4; i++) {
+for (var i = 0; i < 1; i++) {
     createAsteroid({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -58,6 +61,13 @@ for (var i = 0; i < 4; i++) {
         cs: collisionSystem
     });
 }
+
+let pickup = new AmmoPickup({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    cs: collisionSystem
+});
+sprites.push(pickup);
 
 let player1 = new Player({
     color: 'yellow',
@@ -142,10 +152,10 @@ let loop = GameLoop({  // create the main game loop
         players.map((player, i) => player.renderScore(i));
 
         // Render debug collision stuff
-        context.strokeStyle = '#0F0';
-        context.beginPath();
-        collisionSystem.draw(context);
-        context.stroke();
+        // context.strokeStyle = '#0F0';
+        // context.beginPath();
+        // collisionSystem.draw(context);
+        // context.stroke();
     }
 });
 
