@@ -1,6 +1,7 @@
 body {
     margin: 0;
     font-family: fantasy, monospace;
+    overflow: hidden;
   }
 
 html, body { 
@@ -31,30 +32,84 @@ html, body {
   pointer-events: none;
   text-align: center;
   -webkit-text-stroke-width: 2px;
+  font-weight: 800;
+  top: 50%;
+  left: 50%;
 }
 
 .top {
-  top: 30%; left: 35%; /* QQQ Make responsive! */
-  font-size: 75px;
+  font-size: 70px;
   -webkit-text-fill-color: #223e32;
   -webkit-text-stroke-color: #A7C06D;
-  transform: skewY(-10deg);
-  text-shadow: -2px -2px #223e32; /* Look for different BG color on this qqq */
+  transform: translate(-125%,-190%) skewY(-10deg) ;
+  text-shadow: -2px -5px #223e32; /* Look for different BG color on this qqq */
 }
 
 .bottom {
-  top: 40%; left: 40%; /* QQQ Make responsive! */
-  font-size: 110px;
+  font-size: 90px;
   -webkit-text-fill-color: #A7C06D;
   -webkit-text-stroke-color: #223e32;
-  transform: skewY(10deg);
-  text-shadow: 2px -2px #223e32; /* Look for different BG color on this qqq */
+  transform: skewY(10deg) translate(-40%,-65%);
+  text-shadow: 2px -5px #A7C06D;
 }
 
 .start {
-  bottom: 10%; left: 40%; /* QQQ Make responsive! */
-  font-size: 30px;
-  -webkit-text-fill-color: #A7C06D;
+  font-size: 30px; width: 250px;
+  -webkit-text-fill-color: #04BF00;
   -webkit-text-stroke-width: 0px;
-  text-shadow: 2px -2px #223e32; /* Look for different BG color on this qqq */
+  text-shadow: 3px -3px #223e32;
+  transform: translate(-50%,300%);
+  animation-name: gamestart-start;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.notification {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-size: 16px;
+  padding: 5px; padding-top: 10px; padding-bottom: 10px;
+  color: white;
+}
+
+/* https://stackoverflow.com/a/53812597 */
+.notification::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  transform: skewY(4deg);
+  border: white solid 2px;
+}
+
+@keyframes gamestart-top {
+  from {
+    transform: translate(-125%,-190%) skewY(-10deg) scale(1,1);
+    opacity: 1
+  }
+  to {
+    transform: translate(-125%,-190%) skewY(-10deg) scale(-1.5,1.5);
+    opacity: 0
+  }
+}
+
+@keyframes gamestart-bottom {
+  from {
+    transform: skewY(10deg) translate(-40%,-65%) scale(1,1);
+    opacity: 1
+  }
+  to {
+    transform: skewY(10deg) translate(-40%,-65%) scale(1.5,-1.5);
+    opacity: 0
+  }
+}
+
+@keyframes gamestart-start {
+  from {
+    transform: translate(-50%,300%);
+  }
+  to {
+    transform: translate(-50%,250%);
+  }
 }

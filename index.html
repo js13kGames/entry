@@ -2,21 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>js13k 2019</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <canvas class="zdog-canvas" id="game"></canvas>
+    <title>BackFlipped - js13k 2019</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon16.png" type="image/png">
   </head>
   <body>
-        <canvas class="zdog-canvas" id="game"></canvas>
+
         <script src="zdog.dist.min.js"></script>
         <script src="jsfxr.min.js"></script>
-        <link rel="stylesheet" href="style.css">
+        <script src="game.js"></script>
 
         <!-- Color pallete: https://www.aremycolorsaccessible.com/palette?colors=%23223e32&colors=%239db800&colors=%23b3dd52&colors=%2304bf00&colors=%23015d00 -->
 
-        <script src="game.js"></script>
+        <!--<script src="code.min.js"></script>-->
 
-        <p class="title top">Back</p>
-        <p class="title bottom">Flipped</p>
-        <p class="title start">Press a key or tap to start</p>
+        <p class="title top" id="l1">Back</p>
+        <p class="title bottom" id="l2">Flipped</p>
+        <p class="title start" id="l3">Press Space or tap screen</p>
 
         <p class = "debug">
             To do:<br>
@@ -24,23 +28,23 @@
             - Landing on top of platforms should stop your fall?<br>
             - Flipping (fix camera behavior, bottom trampoline using arced lines)<br>
             - Interface (with skewed overlay text)<br>
-            - Title screen (text animation) with credits, level select<br>
             - Win/fail states<br>
             - Using delta time<br>
-            - Optimization (squared shouldn't render if camera is too far removed from them)<br>
-            - Byte squeezing
+            - Easing hero animations<br>
+            - Optimization (squares shouldn't render if not in view)<br>
+            - Cram in 13kb<br>
 
             <b>Deadline 13 September!</b>
-
-            Credits
-            Game by Tom Hermans
-
-            Zdog by Metafizzy
-            Tweetworks by xem
-            jsfxr by mneubrand
-            Swipe detector by c7x43t
-            Seeded rng by Antti Kissaniemi
-        </p>
+          </p>
+          <div class="notification" id="not">
+            Game by <b>Tom Hermans</b><br>
+            <br>
+            Zdog by Metafizzy<br>
+            Tweetworks by xem<br>
+            jsfxr by mneubrand<br>
+            Swipe detector by c7x43t<br>
+            RNG by Antti Kissaniemi
+          </div>
         <div class="stats">
             <div id="fps-display">N/A FPS</div> <div id="seed-display">N/A Random Seed</div> <div id="level-display">N/A Level</div> <div id="cam-display">N/A Camera</div>
         </div>
