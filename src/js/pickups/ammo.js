@@ -70,5 +70,4 @@ export class AmmoPickup extends Pickup {
         //super(props);
         super.render();
     }
-
 }
