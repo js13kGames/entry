@@ -101,27 +101,32 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                 }
 
                 if (otherSprite.type === 'bullet') {
-                    otherSprite.ttl = asteroid.ttl = 0;
+                    otherSprite.ttl = 0;
                     // Medium asteroids split into smaller ones
-                    if (asteroid.radius > 15) {
+                    if (60 > asteroid.radius && asteroid.radius > 15) {
 
                         // Split the asteroid
                         for (var i = 0; i < 3; i++) {
-                            createAsteroid(
-                                asteroid.x,
-                                asteroid.y,
-                                asteroid.radius / 1.8,
-                                asteroids,
-                                sprites,
-                                collisionSystem
-                            );
+                            createAsteroid({
+                                x: asteroid.x,
+                                y: asteroid.y,
+                                radius: asteroid.radius / 1.8,
+                                asteroids: asteroids,
+                                sprites: sprites,
+                                cs: collisionSystem
+                            });
                         }
+                        asteroid.ttl = 0
+                    } else if (asteroid.radius > 60) {
+                        // Asteroid is too big, don't explode but do make some
+                        // particles
                     } else {
                         asteroid.explode(sprites);
 
                         if (otherSprite.owner.player) {
                             otherSprite.owner.player.scoreInc();
                         }
+                        asteroid.ttl = 0
                     }
 
                 }

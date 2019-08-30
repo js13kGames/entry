@@ -19,7 +19,7 @@ const collisionResult = collisionSystem.createResult();
 initKeys();
 
 canvas.style = 'width:100%;background:#000';
-canvas.height = 350;
+canvas.height = 400;
 canvas.width = 800;
 
 // Testing making canvas px match display px rather than scaling
@@ -34,15 +34,28 @@ let ships = [];
 let asteroids = [];
 let players = [];
 
-for (var i = 0; i < 3; i++) {
-    createAsteroid(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height,
-        36,
-        asteroids,
-        sprites,
-        collisionSystem
-    );
+// Big asteroid in the middle (dioretsa)
+createAsteroid({
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: Math.min(canvas.width / 4, canvas.height / 4),
+    mass: 999999,
+    asteroids: asteroids,
+    sprites: sprites,
+    cs: collisionSystem,
+    dx: 0,
+    dy: 0
+});
+
+for (var i = 0; i < 4; i++) {
+    createAsteroid({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: 36,
+        asteroids: asteroids,
+        sprites: sprites,
+        cs: collisionSystem
+    });
 }
 
 let player1 = new Player({
@@ -128,10 +141,10 @@ let loop = GameLoop({  // create the main game loop
         players.map((player, i) => player.renderScore(i));
 
         // Render debug collision stuff
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // collisionSystem.draw(context);
-        // context.stroke();
+        context.strokeStyle = '#0F0';
+        context.beginPath();
+        collisionSystem.draw(context);
+        context.stroke();
     }
 });
 

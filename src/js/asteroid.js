@@ -6,7 +6,7 @@ function createLines(radius) {
     var pointNum =  Math.round(3 + Math.random() * 3 + Math.sqrt(radius));
     var lines = [];
 
-    for (var i = 0; i <= pointNum; i++) {
+    for (var i = 1; i <= pointNum; i++) {
         // Increase the (end) multiplier here for more wonky asteroids (inwards)
         // Decrease the (start) integer here for more-outside-ey hitboxes
         var rand = .99 + Math.random() * .1;
@@ -14,7 +14,7 @@ function createLines(radius) {
         var y = Math.sin((2 * Math.PI * i) / pointNum) * radius * rand;
 
         // If not the first point
-        if (i) {
+        if (i > 1) {
             // Put the new x, y coords in the 3rd and 4th items in prev line
             lines[lines.length - 1].push(x, y);
         }
@@ -30,18 +30,17 @@ function createLines(radius) {
     return lines;
 }
 
-export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
+export function createAsteroid(props) {
     let asteroid = Sprite({
         type: 'asteroid',
-        x: x,
-        y: y,
-        dx: Math.random() * 3 - 1.5,
-        dy: Math.random() * 3 - 1.5,
-        radius: radius || 25,
-        mass: Math.PI * (radius || 25) * (radius || 25),
-        hitbox: cs.createCircle(x, y, radius),
-        lines: createLines(radius),
-        cs: cs,
+        x: props.x,
+        y: props.y,
+        dx: props.dx !== undefined ? props.dx : Math.random() * 3 - 1.5,
+        dy: props.dy !== undefined ? props.dy : Math.random() * 3 - 1.5,
+        radius: props.radius,
+        mass: props.mass || (Math.PI * props.radius * props.radius),
+        lines: createLines(props.radius),
+        cs: props.cs,
         color: '#fff',
 
         render() {
@@ -52,10 +51,11 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
             this.context.beginPath();
             this.lines.forEach((line, i) => {
                 if (!i) {
-                    this.context.moveTo(line[2], line[3]);
-                } else {
-                    this.context.lineTo(line[0], line[1]);
+                    // For the first line, start at it's start x,y
+                    this.context.moveTo(line[0], line[1]);
                 }
+                // For every line, draw a line to it's end x,y
+                this.context.lineTo(line[2], line[3]);
             });
             this.context.closePath();
             this.context.stroke();
@@ -78,8 +78,22 @@ export function createAsteroid(x, y, radius, asteroids, sprites, cs) {
         }
     });
 
+    if (asteroid.radius > 50) {
+        asteroid.hitboxLines = [];
+        asteroid.lines.forEach((line, i) => {
+            asteroid.hitboxLines.push([line[0], line[1]]);
+        });
+        asteroid.hitbox = props.cs.createPolygon(
+            asteroid.x,
+            asteroid.y,
+            asteroid.hitboxLines
+        );
+    } else {
+        asteroid.hitbox = props.cs.createCircle(props.x, props.y, props.radius);
+    }
+
     asteroid.hitbox.owner = asteroid;
 
-    sprites.push(asteroid);
-    asteroids.push(asteroid);
+    props.sprites.push(asteroid);
+    props.asteroids.push(asteroid);
 }
