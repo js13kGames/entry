@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kontra": "^6.4.0"
+    "kontra": "^6.4.0",
+    "parcel": "^1.12.3"
   },
   "devDependencies": {
     "typescript": "^3.6.2"
