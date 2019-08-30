@@ -210,6 +210,13 @@ export class Ship extends Sprite.class {
             this.invuln = 0;
         }
 
+
+        if (this.rainbow > 0) {
+            this.rainbow -= 1 / 60;
+        } else {
+            this.rainbow = 0;
+        }
+
         if (this.rewinding > 0) {
             this.rewinding = this.rewinding - this.rewindSpeed;
 
@@ -321,17 +328,24 @@ export class Ship extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
         this.context.lineWidth = 2;
-        this.context.beginPath();
 
         if (this.invuln) {
-            this.flashing = this.flashing || 0;
-            this.flashing++;
-            if (this.flashing > 15 && 30 > this.flashing) {
+            // invuln is 1 / 60, and want to flash every 15 frames...
+            if (Math.floor(this.invuln * 4 + .1) % 2) {
                 this.context.lineWidth = 1;
-            } else if (this.flashing > 30) {
-                this.flashing = 0;
             }
         }
+
+        if (this.rainbow) {
+            this.tmpColor = this.tmpColor || '';
+            // rainbow is 1 / 60, and want to change every 5 frames...
+            if (Math.floor(this.rainbow * 12) % 2) {
+                this.tmpColor = 'hsl(' + Math.random() * 360 + ', 100%, 60%)';
+            }
+            this.context.strokeStyle = this.tmpColor;
+        }
+
+        this.context.beginPath();
 
         // Draw circle around ship for debugging
         // this.context.beginPath();  // start drawing a shape
@@ -395,7 +409,6 @@ export class Ship extends Sprite.class {
                 });
             }
 
-            this.context.strokeStyle = this.color;
             this.context.stroke();
 
             if (this.shield === 1) {
@@ -409,8 +422,6 @@ export class Ship extends Sprite.class {
                 );
 
                 if (this.shieldDegrading) {
-                    //console.log(this.shieldDegrading);
-                    //console.log(Math.floor(this.shieldDegrading / 15) % 2);
                     if (Math.floor(this.shieldDegrading / 15) % 2) {
                         this.context.lineWidth = 1;
                     } else {

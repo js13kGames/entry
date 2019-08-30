@@ -76,6 +76,13 @@ let pickup2 = new ShieldPickup({
 });
 sprites.push(pickup2);
 
+let pickup3 = new StarPickup({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    cs: collisionSystem
+});
+sprites.push(pickup3);
+
 let player1 = new Player({
     color: 'yellow',
     shipType: 'tri',
