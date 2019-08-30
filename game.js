@@ -1,17 +1,23 @@
+c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
+//c[0] = "#223e32"; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; 
+c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";
+//c[0] = "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff";
+
 x=game.getContext`2d`;
 state = 0; //0 is title screen, 1 is gameplay
 level = 5; //0 and lower are states, everything higher are game levels
 playerx = 0; playery = 0;
 playermovex = 0; playermovey = 1;
-horborder = 200; flipy = 9000; flipped = 1;
+horborder = 200; flipy = 9000; flipvisual = 1; flipped = 1;
 paused = false;
 direction = 1; cameray = 0;
 const TAU = Zdog.TAU
 obstacle = [];
 shakex = 0; shakey = 0; shakeduration = 0;
-bgcolor = "#223e32";
+bgcolor = c[0];
 const times = []; let fps;
 interval = 0;
+canstartgame = true;
 
 create();
 setInterval(e=>{ step(false) },15);
@@ -69,7 +75,7 @@ function create() {
     new Zdog.Shape({ //body
         addTo: player,
         stroke: 24,
-        color: '#04bf00',
+        color: c[4],
     });
 
     new Zdog.Shape({ //eyes
@@ -88,7 +94,7 @@ function create() {
     new Zdog.Shape({ // legs
         addTo: player,
         stroke: 5,
-        color: '#04bf00',
+        color: c[4],
         translate: {y: 16, z: 5},
         path: [
             { x: -6, y: -10 },          // left leg at body
@@ -103,19 +109,19 @@ function create() {
     border = new Zdog.Shape({
         addTo: illo,
         stroke: 8,
-        color: "#9db800",
+        color: c[1],
         path: [ //QQQ Don't make them so long but move with either player or camera
-            { x: -horborder-10, y: -1000 },          // start at top left
-            { x: -horborder-10, y: 1000 },          // line to top right
-            { move: { x: horborder+10, y: -1000 } }, // move to bottom left
-            { x: horborder+10, y: 1000 },          // line to bottom right
+            { x: -horborder-10, y: -5000 },          // start at top left
+            { x: -horborder-10, y: 5000 },          // line to top right
+            { move: { x: horborder+10, y: -5000 } }, // move to bottom left
+            { x: horborder+10, y: 5000 },          // line to bottom right
         ],
     });
 
     flipline = new Zdog.Shape({
         addTo: illo,
         stroke: 8,
-        color: "#9db800",
+        color: c[1],
         translate: {z: 25},
         path: [
             { x: -horborder*1 },
@@ -167,7 +173,7 @@ function loadlevel(lvlnumber) {
         }
     }
     obstacle = []
-    flipped = 1; bgcolor = "#223e32"; 
+    flipped = 1; flipvisual = 1; bgcolor = c[0]; 
     playerx = 0; playery = 0; playermovex = 0; playermovey = 1;
     illo.rotate = {x: -(TAU/16), y: TAU/16};
 
@@ -180,7 +186,7 @@ function loadlevel(lvlnumber) {
         var obstaclex = random() * (horborder - -horborder) + -horborder;
         var obstacley = i*50-direction;
         var front = (random() >= 0.2);
-        var clr = "#015d00"; if (front == true) {clr = "#b3dd52"}
+        var clr = c[4]; if (front == true) {clr = c[2]}
 
         obstacle[i] = new Zdog.Box({
             addTo: illo,
@@ -194,6 +200,7 @@ function loadlevel(lvlnumber) {
             translate: {x: obstaclex, y: obstacley, z: (front * 50) -25}
         });
         obstacle[i].colliding = false;
+        obstacle[i].zspeed = 0;
         console.log[i];
     }
 
@@ -205,6 +212,7 @@ function loadlevel(lvlnumber) {
 
 function step(framestep) {
 
+    //Update interface
     const now = performance.now();
     while (times.length > 0 && times[0] <= now - 1000) {
         times.shift();
@@ -219,6 +227,7 @@ function step(framestep) {
     if (paused && framestep == false) {return;}
     cameray -= direction;
 
+    //Screen shake and camera movement
     if (shakeduration > 0)
     {
         illo.translate = {x: 0 + shakex, y: cameray + shakey}; 
@@ -227,91 +236,118 @@ function step(framestep) {
         illo.translate = {x: 0, y: cameray}; 
     }
 
+    //Flipping camera after screen swap
+    if (flipvisual != flipped)
+    {
+        if (flipped == -1)
+        {
+            illo.rotate.x += (TAU/64);
+            flipvisual -= (1/16);
+        }
+        else //Negative
+        {
+            illo.rotate.x += (TAU/64);
+            flipvisual += (1/16);
+        }
+    }
+
+    //Flipping player after reaching bottom of level
     if ((flipped == 1 && playery > flipy) || (flipped == -1 && playery < flipy) )
     {
         playery = flipy;
-        flipy = -flipy;
-        flipline.transform.y = flipy;
+        flipy = -flipy; //QQQ Push further back each round
+        flipline.translate.y = flipy;
         flipped = -flipped;
-        sound([0,,0.0371,,0.3841,0.3887,,0.1299,,,,,,0.566,,0.4401,,,1,,,,,0.31])
+        if (state == 1) //Otherwise we don't have audio permission yet
+        {sound([0,,0.0371,,0.3841,0.3887,,0.1299,,,,,,0.566,,0.4401,,,1,,,,,0.31])}
         playermovey = flipped;
         if (flipped == -1)
         {
-            bgcolor = "#A7C06D";
-            interval = setInterval(rotatecameratoback(), 100);
+            bgcolor = c[1];
+            border.color = c[0];
+            flipline.color = c[0];
         }
         else
         {
-            bgcolor = "#223e32";
-            setTimeout(rotatecameratofront(), 100);
+            bgcolor = c[0];
+            border.color = c[1];
+            flipline.color = c[1];
         }
     }
 
-    function rotatecameratoback() {
-        console.log("Flip "+illo.rotate.x.toString())
-        if (illo.rotate.x < (TAU/16)*7)
-        {
-            illo.rotate.x += (TAU/16);
-            console.log("Flipped "+illo.rotate.x.toString())
-        }
-        else
-        {
-            clearInterval(interval);
-        }
-    }
-
-    function rotatecameratofront() {
-        if (illo.rotate.x > -(TAU/16))
-        {
-            illo.rotate.x -= (TAU/16);
-            setTimeout(rotatecameratofront(), 200);
-        }
-    }
-
-    for (var j = 0; j != 4; j += 1) //So we're doing most of the step loop four times for smoother movement! They did it in Super Mario 64, so can I!
+    for (var i = 0; i != obstacle.length; i++)
     {
+        if (obstacle[i].zspeed != 0)
+        {
+            if (obstacle[i].translate.z >= 35) {
+                obstacle[i].translate.z = 25;
+                obstacle[i].zspeed = 0;
+            } else if (obstacle[i].translate.z <= -35) {
+                obstacle[i].translate.z = -25;
+                obstacle[i].zspeed = 0;
+            } else {
+                obstacle[i].translate.z += 5*Math.sign(obstacle[i].zspeed)
+            }
+        }
+    }
+    
+    for (var j = 0; j != 4; j += 1) //So we're doing most of the step loop four times for smoother movement! They did it in Super Mario 64, so we can do it here!
+    {
+        //Moving player
         playerx += playermovex/4;
         if (playerx > horborder) {playerx = horborder; playermovex = 0; playermovey = 1*flipped}
         if (playerx < -horborder) {playerx = -horborder; playermovex = 0; playermovey = 1*flipped}
         playery += playermovey/4;
         
-        for (var i = 0; i != obstacle.length; i++)
+        //Collisions
+        if (state == 1) //Only in gameplay
         {
-            xx = obstacle[i].translate.x; 
-            yy = obstacle[i].translate.y;
-            zz = obstacle[i].translate.z;
-            w = obstacle[i].width-5; h = obstacle[i].height-20;
-
-            if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h)
+            for (var i = 0; i != obstacle.length; i++)
             {
-                if (obstacle[i].colliding == false)
-                { //Collision enter
-                    console.log("Collision detected with "+i.toString());
-                    obstacle[i].colliding = true;
-                    
-                    if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
-                    playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
+                xx = obstacle[i].translate.x; 
+                yy = obstacle[i].translate.y;
+                zz = obstacle[i].translate.z;
+                w = obstacle[i].width-5; h = obstacle[i].height-20;
 
-                    if (state == 1) //Otherwise we don't have audio permission yet
-                    {sound([0,,0.035,,0.1449+(random()*0.5),0.4918,,-0.5252,,,,,,0.034,,,,,1,,,,,0.2+(random()*0.2)])}
-                }
-            }
-            else if (obstacle[i].colliding == true)
-            { //Collision leave
-                console.log("Collision ended with "+i.toString());
-                obstacle[i].colliding = false;
-
-                if (obstacle[i].translate.z == 25) //In foreground
+                if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h)
                 {
-                    obstacle[i].translate.z = -25; obstacle[i].color = "#015d00";
-                } else { //In background
-                    obstacle[i].translate.z = 25; obstacle[i].color = "#b3dd52"  ;
+                    if (obstacle[i].colliding == false)
+                    { //Collision enter
+                        console.log("Collision detected with "+i.toString());
+                        obstacle[i].colliding = true;
+                        
+                        if (playermovex == 0) //Player fell on top of this block
+                        {
+                            playermovey = 0; shakey = 2; shakeduration = 2;
+                        } else { //Player kicked side of this block
+                            if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
+                            playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
+                        }
+
+                        sound([0,,0.035,,0.1449+(random()*0.5),0.4918,,-0.5252,,,,,,0.034,,,,,1,,,,,0.2+(random()*0.2)])
+                    }
+                }
+                else if (obstacle[i].colliding == true)
+                { //Collision leave
+                    collisionend(i)
                 }
             }
         }
     }
 
     draw();
+}
+
+function collisionend(i){
+    console.log("Collision ended with "+i.toString());
+    obstacle[i].colliding = false;
+
+    if (obstacle[i].translate.z == 25) //In foreground
+    {
+        obstacle[i].zspeed = -10; obstacle[i].color = c[4];
+    } else { //In background
+        obstacle[i].zspeed = 10; obstacle[i].color = c[2];
+    }
 }
 
 function handleGesture(e) { //Taken from https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d#gistcomment-2577818
@@ -344,7 +380,7 @@ function input(key) {
 
     if (state == 0) //Main menu
     {
-        if (key == " ") {
+        if (key == " " && canstartgame) {
             document.getElementById("l1").style.animation = "gamestart-top 1s ease-in";
             document.getElementById("l2").style.animation = "gamestart-bottom 1s ease-in";
             document.getElementById("l3").style.visibility = "hidden"; 
@@ -355,7 +391,7 @@ function input(key) {
             setTimeout(function(){
                 document.getElementById("l1").style.visibility = "hidden";
                 document.getElementById("l2").style.visibility = "hidden";
-            }, 990);
+            }, 975);
         }
     }
     else if (state == 1) //Gameplay
@@ -386,7 +422,13 @@ function input(key) {
             playermovex = 8*delta;
             playermovey = 0;
             sound([1,,0.2159,0.2603,0.1064,0.4074+(random()*0.3),0.2062,-0.3031,-0.0065,0.0638,0.0206,-0.0114,,0.4332,0.1898,,-0.0074,-0.0091,1,-0.0456,,0.1791,0.0109,0.3])
-            //QQQ If there's something you are colliding with it should end here
+            for (var i = 0; i != obstacle.length; i++)
+            {
+                if (obstacle[i].colliding == true)
+                {
+                    collisionend(i)
+                }
+            }
         }
         if ((key == "ArrowUp" || key == "w" || key == "z") && playermovey != 3*flipped)
         {
@@ -399,6 +441,16 @@ function input(key) {
             playermovex = 0;
             playermovey = 3*flipped;
             sound([1,,0.2506,0.0144,0.0071,0.4263+(random()*0.2),0.2723,-0.252,,,,,,0.7952,-0.6573,,0.1965,-0.182,1,,,,,0.3])
+            if (playermovex == 0)
+            {
+                for (var i = 0; i != obstacle.length; i++)
+                {
+                    if (obstacle[i].colliding == true)
+                    {
+                        collisionend(i)
+                    }
+                }
+            }
         }
         if (key == " ")
         {
@@ -409,12 +461,32 @@ function input(key) {
 
 function draw() {
     player.translate = {x: playerx, y: playery}
-    var yoff = 0; if (flipped == -1) {yoff = -TAU/2}
-    player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipped)+yoff} //x and y swap here
-    cameray = (-flipped*player.translate.y*0.935)-100; // 15/16 
+    var yoff = (TAU/4)*(1-flipvisual); if (flipped == -1) {yoff = ((TAU/4)*flipvisual)+(TAU/4)*3} //Some fancy numbers to make the player rotate smoothly while flipping screen
+    player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipvisual)+yoff} //x and y swap here
     border.y = playery
 
+    cameray = (-flipvisual*player.translate.y*0.935)-100; // 15/16 
+
     illo.updateRenderGraph();
+}
+
+function gameover() {
+    state = 0;
+    player.visible = false;
+    playermovey = 1;
+    canstartgame = false;
+    document.getElementById("l1").style.animation = ""; //Reset animations
+    document.getElementById("l2").style.animation = "";
+    document.getElementById("l1").style.visibility = "visible";
+    document.getElementById("l2").style.visibility = "visible";
+    document.getElementById("l1").innerHTML = "Time up";
+    document.getElementById("l2").innerHTML = "Game Over!";
+    document.getElementById("l3").innerHTML = "Space or Tap to try again";
+    sound([0,,0.0214,,0.2823,0.3797,,-0.4003,,,,,,0.1188,,,,,1,,,,,0.36])
+    setTimeout(function(){
+        canstartgame = true;
+        document.getElementById("l3").style.visibility = "visible"; 
+    }, 1000);
 }
 
 //Utility functions
@@ -449,7 +521,7 @@ function pause(toggle) {
 
     var n = document.getElementById('not')
     if (paused) {
-        n.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br><br>How to play:<br>⬅➡ Flying kick<br>⬆⬇ Slow/fasten fall<br><br>Touched platforms move to<br>background and increase jackpot.<br>Reach bottom of level to claim<br>jackpot and flip to the backside!<br> You lose when time runs out...";
+        n.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume";
     }
     else {
         n.style.visibility = "hidden";
