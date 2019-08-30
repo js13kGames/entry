@@ -24,18 +24,27 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
         if (ship.rewinding) {
             return;
         }
-        potentials = ship.hitbox.potentials();
-        for (const otherSprites of potentials) {
-            if (ship.hitbox.collides(otherSprites, cResult)) {
 
-                if (cResult.b.owner.type === 'shrapnel') {
-                    cResult.b.owner.x += cResult.overlap * cResult.overlap_x;
-                    cResult.b.owner.y += cResult.overlap * cResult.overlap_y;
+        potentials = ship.hitbox.potentials();
+
+        for (const otherHitbox of potentials) {
+            var otherSprite = otherHitbox.owner;
+
+            if (ship.hitbox.collides(otherHitbox, cResult)) {
+
+                if (otherSprite.type === 'pickup') {
+                    otherSprite.applyTo(ship);
+                    otherSprite.ttl = 0;
                 }
 
-                if (cResult.b.owner.type === 'bullet') {
+                if (otherSprite.type === 'shrapnel') {
+                    otherSprite.x += cResult.overlap * cResult.overlap_x;
+                    otherSprite.y += cResult.overlap * cResult.overlap_y;
+                }
+
+                if (otherSprite.type === 'bullet') {
                     // If you're (or ya bullets) not colliding with yourself
-                    if (cResult.b.owner.owner === ship) {
+                    if (otherSprite.owner === ship) {
                         return;
                     }
                     // The ship might have already exploded due to a collision
@@ -51,8 +60,8 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
                     ship.explode(sprites);
 
-                    if (cResult.b.owner.owner.player) {
-                        cResult.b.owner.owner.player.scoreInc();
+                    if (otherSprite.owner.player) {
+                        otherSprite.owner.player.scoreInc();
                     }
 
                     if (ship.player) {
@@ -60,9 +69,9 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                     }
                 }
 
-                if (cResult.b.owner.type === 'ship') {
+                if (otherSprite.type === 'ship') {
                     // Can't collide into other ships that are rewinding
-                    if (cResult.b.owner.rewinding) {
+                    if (otherSprite.rewinding) {
                         return;
                     }
                     ship.x -= cResult.overlap * cResult.overlap_x;

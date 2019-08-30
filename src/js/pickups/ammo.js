@@ -11,6 +11,10 @@ export class AmmoPickup extends Pickup {
         super.update();
     }
 
+    applyTo(ship) {
+        ship.ammoCurrent = ship.ammo * 2;
+    }
+
     render() {
         this.context.save();
         this.context.translate(this.x, this.y);

@@ -44,8 +44,6 @@ export class Pickup extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
 
-        //'#'+Math.floor(Math.random()*16777215).toString(16);
-
         this.context.lineWidth = 2;
         this.context.beginPath();
 
