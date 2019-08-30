@@ -18,6 +18,7 @@ export class Game {
         this.hiScoreEl = document.getElementById('highscore');
         this.modalEl = document.getElementById('modal');
         this.gameCanvas = canvas;
+        this.initCanvasDimensions();
         this.gameObjects = [];
         initPointer();
         this.createLevel(this.currentLevel);
@@ -34,6 +35,12 @@ export class Game {
         this.gameObjects.forEach(go => {
             go.render();
         });
+    }
+    initCanvasDimensions(){
+        let width = window.innerWidth - 200;
+        let height = window.innerHeight - 300;
+        this.gameCanvas.width = width;
+        this.gameCanvas.height = height;
     }
     update = (dt: number) => {
         if(!this.creatingGameInterval) {
