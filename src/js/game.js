@@ -62,12 +62,19 @@ for (var i = 0; i < 1; i++) {
     });
 }
 
-let pickup = new AmmoPickup({
+let pickup1 = new AmmoPickup({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     cs: collisionSystem
 });
-sprites.push(pickup);
+sprites.push(pickup1);
+
+let pickup2 = new ShieldPickup({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    cs: collisionSystem
+});
+sprites.push(pickup2);
 
 let player1 = new Player({
     color: 'yellow',

@@ -218,8 +218,6 @@ export class Ship extends Sprite.class {
 
         if (this.ammoCurrent < this.ammo) {
             this.ammoCurrent += (1 / 60) * .5;
-        } else {
-            this.ammoCurrent = this.ammo;
         }
 
         this.velocity = this.velocity.add(this.acceleration);
