@@ -95,7 +95,8 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
             if (asteroid.hitbox.collides(otherHitbox, cResult)) {
 
-                if (otherSprite.type === 'asteroid' &&
+                if ((otherSprite.type === 'asteroid' ||
+                     otherSprite.type === 'pickup') &&
                     !asteroid.bounced && !otherSprite.bounced) {
                         bounce(asteroid, otherSprite, cResult);
                 }
@@ -151,7 +152,7 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         otherSprite.y += cResult.overlap * cResult.overlap_y;
                         return;
                     }
-                    
+
                     otherSprite.explode(sprites);
 
                     if (otherSprite.player) {
@@ -168,7 +169,7 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
         }
     });
 
-    asteroids.forEach(asteroid => {
-        asteroid.bounced = false;
+    sprites.forEach(sprite => {
+        sprite.bounced = false;
     });
 }

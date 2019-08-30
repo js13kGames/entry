@@ -116,8 +116,8 @@ export class Ship extends Sprite.class {
         this.ammoCurrent--;
 
         // Knockback (hass less effect for ships with greater mass)
-        this.dx -= cos / this.mass;
-        this.dy -= sin / this.mass;
+        this.dx -= cos / (this.mass / 4);
+        this.dy -= sin / (this.mass / 4);
 
         createBullet(this, sprites);
     }
@@ -253,19 +253,6 @@ export class Ship extends Sprite.class {
     renderUI() {
         this.context.strokeStyle = '#0ef';
         this.context.lineWidth = 2;
-
-        // this.context.moveTo(
-        //     - this.rewindDt * 3,
-        //     this.radius * this.scale + 4
-        // );
-        // this.context.lineTo(
-        //     //this.ror * 3,
-        //     this.rewindDt * 3,
-        //     this.radius * this.scale + 4
-        // );
-
-        // if (!this.rewinding && this.rewindDt < this.ror) {
-        // }
 
         // Draw ammo
         var ammoAngle = .2 * Math.PI * 1 / this.ammo;
