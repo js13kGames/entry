@@ -269,7 +269,6 @@ export class Ship extends Sprite.class {
             this.context.stroke();
         }
 
-
         // Draw rewind recharge
         this.context.beginPath();
         this.context.arc(
@@ -280,7 +279,6 @@ export class Ship extends Sprite.class {
             +.2 * Math.PI * 1 / this.ror * this.rewindDt
         );
 
-        //this.context.closePath();
         this.context.stroke();
     }
 
