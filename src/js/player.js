@@ -1,5 +1,5 @@
 import { keyPressed } from 'kontra';
-import { Ship } from './ship.js';
+import { Ship } from './ship';
 import { renderText } from './text';
 import getKeys from './controls';
 
@@ -16,32 +16,32 @@ export class Player {
 
         // Set control scheme
         if (this.controls) {
-            this.keys = getKeys(this.controls);
+            this.keys = getKeys(this.controls, 0);
         }
     }
 
     handleKeyPresses(sprites) {
         if (this.ship && this.ship.isAlive) {
             // Rewind is first here so it has priority over everything
-            if (keyPressed(this.keys.rewind)) {
+            if (this.keys.rewind()) {
                 this.ship.rewind();
             }
 
-            if (keyPressed(this.keys.thrust)) {
+            if (this.keys.thrust()) {
                 this.ship.engineOn();
             } else {
                 this.ship.engineOff();
             }
 
-            if (keyPressed(this.keys.left)) {
+            if (this.keys.left()) {
                 this.ship.turnLeft();
             }
 
-            if (keyPressed(this.keys.right)) {
+            if (this.keys.right()) {
                 this.ship.turnRight();
             }
 
-            if (keyPressed(this.keys.fire)) {
+            if (this.keys.fire()) {
                 this.ship.fire(sprites);
             }
         }
