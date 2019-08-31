@@ -1,8 +1,15 @@
 const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
+  const progressWrapper = createElement('div');
+  progressWrapper.className = 'progress-wrapper';
+  const [kongProgressBar, kongSpan] = createProgressBar('kong-progress', 'Kong Health');
+  const [trexProgressBar, trexSpan] = createProgressBar('trex-progress', 'TRex Health');
   const root = document.getElementById('root');
   root.appendChild(canvas);
+  progressWrapper.appendChild(kongProgressBar);
+  progressWrapper.appendChild(trexProgressBar);
+  body.appendChild(progressWrapper);
 
   const keydown = addEventListener(
     window,
@@ -67,6 +74,24 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
     );
   }
 
+  function write(kong, trex) {
+    // the first (actually only) child will be the span that shows progress
+    kongSpan.style.width = `${kong.initialHealth - (kong.initialHealth - kong.health)}%`;
+    if (kong.health < 60) {
+      kongSpan.classList.add('below-60');
+    }
+    if (kong.health < 30) {
+      kongSpan.classList.add('below-30');
+    }
+    trexSpan.style.width = `${trex.initialHealth - (trex.initialHealth - trex.health)}%`;
+    if (trex.health < 60) {
+      trexSpan.classList.add('below-60');
+    }
+    if (trex.health < 30) {
+      trexSpan.classList.add('below-30');
+    }
+  }
+
   function render (mapData, kong, trex) {
     return new Promise((resolve, reject) => {
       try {
@@ -74,6 +99,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
         canvas.width = body.clientWidth;
 
         renderMap(canvas.height, canvas.width);
+        write(kong, trex);
         renderCharacter(kong, canvas.width / mapData.width, 'black');
         renderCharacter(trex, canvas.width / mapData.width, 'blue');
 

@@ -26,7 +26,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     [EXIT]: 'green'
   };
 
-  const progressBar = document.getElementById('bar');
+  const [progressBar, pizzaSpan] = createProgressBar('pizza-progress', 'Pizzas Eaten');
 
   const ape = ctx.createImageData(100, 100);
   // Iterate through every pixel
@@ -98,7 +98,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   }
 
   function write (state) {
-    progressBar.style.width = `${(numFoods - state.remainingFoods) / numFoods * 100}%`;
+    pizzaSpan.style.width = `${(numFoods - state.remainingFoods) / numFoods * 100}%`;
   }
 
   function render (mapView, state) {
@@ -115,6 +115,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
 
   // init
   body.appendChild(canvas);
+  body.appendChild(progressBar);
   const removeListeners = [
     addEventListener(
       window,
@@ -144,6 +145,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     tileWidth,
     cleanUp: () => {
       body.removeChild(canvas);
+      body.removeChild(progressBar);
       removeListeners.forEach(remove => remove());
     }
   }

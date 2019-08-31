@@ -1,12 +1,34 @@
 body {
-  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
   height: 100vh;
+  margin: 0;
 }
 
 canvas {
   left: 0;
   position: absolute;
   top: 0;
+}
+
+.progress-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-box {
+  background-color: black;
+  border: 2px solid orange;
+  padding: 0.5em;
+  position: relative;
+  width: 200px;
+  z-index: 1;
+}
+
+.progress-box p {
+  color: white;
+  display: inline-block;
+  margin: 0 auto;
+  padding-top: 0.25em;
 }
 
 .progress {
@@ -16,11 +38,34 @@ canvas {
   overflow: hidden;
   position: relative;
   width: 200px;
-  z-index: 1;
+}
+
+.progress.kong-progress {
+  left: 0px;
+}
+
+.progress.trex-progress {
+  right: 0px;
 }
 
 .bar {
-  background-color: blue;
   display: inline-block;
   height: 100%;
+}
+
+.bar.pizza-progress {
+  background-color: orange;
+}
+
+.bar.kong-progress,
+.bar.trex-progress {
+  background-color: green;
+}
+
+.bar.below-60 {
+  background-color: yellow;
+}
+
+.bar.below-30 {
+  background-color: red;
 }

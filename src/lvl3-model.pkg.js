@@ -16,12 +16,15 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     width: mapWidth
   }
 
+  const initialHealth = 100;
+
   // init kong
   const kong = {
     currentAction: READY,
     location: kongStart,
     direction: RIGHT,
-    health: 100
+    health: initialHealth,
+    initialHealth: initialHealth
   }
 
   // init trex
@@ -29,7 +32,8 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     currentAction: READY,
     location: trexStart,
     direction: LEFT,
-    health: 100
+    health: initialHealth,
+    initialHealth: initialHealth
   }
 
   return {
