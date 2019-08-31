@@ -287,7 +287,7 @@ export class Level {
         this.setBack2Back()
         addToScore(600 * (clearedRowsCount + 1) * currentLevel)
       } else {
-        addToScore(400 * clearedRowsCount * currentLevel)
+        addToScore(400 * (clearedRowsCount + 1) * currentLevel)
       }
       this.setMoveType(T_SPIN + clearedRowsCount)
     } else if (tSpinType === T_SPIN_MINI) {
