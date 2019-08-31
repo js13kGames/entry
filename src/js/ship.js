@@ -29,7 +29,6 @@ export class Ship extends Sprite.class {
         this.type = 'ship';
 
         // Properties that could be overwritten when calling new Ship()
-        this.maxSpeed = props.maxSpeed || shipData.maxSpeed;
         this.rof = props.rof || shipData.rof;
         this.ror = props.ror || shipData.ror;
 
@@ -40,6 +39,7 @@ export class Ship extends Sprite.class {
         this.rof = 1 / this.rof;
         this.thrust = shipData.thrust + 11;
         this.turnRate = (shipData.turnRate + 6) * .75;
+        this.maxSpeed = (shipData.maxSpeed + 11) / 5;
 
         // Useful stuff to have references to
         this.cs = props.collisionSystem;
@@ -351,7 +351,7 @@ export class Ship extends Sprite.class {
             this.tmpColor = this.tmpColor || '';
             // rainbow is 1 / 60, and want to change every 5 frames...
             if (Math.floor(this.rainbow * 12) % 2) {
-                this.tmpColor = 'hsl(' + Math.random() * 360 + ', 100%, 60%)';
+                this.tmpColor = 'hsl(' + Math.random() * 360 + ',100%,60%)';
             }
             this.context.strokeStyle = this.tmpColor;
         }

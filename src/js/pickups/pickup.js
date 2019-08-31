@@ -13,7 +13,8 @@ export class Pickup extends Sprite.class {
         this.type = 'pickup';
         this.scale = 2;
         this.radius = 5;
-        this.mass = 200;
+        this.mass = 3000;
+        this.maxSpeed = 1;
         this.x = props.x;
         this.y = props.y;
         this.dx = props.dx !== undefined ? props.dx : Math.random() - .5;
@@ -26,12 +27,13 @@ export class Pickup extends Sprite.class {
 
     update() {
         this.rotation += this.dr;
-        this.advance();
+        util.applyMaxSpeed(this.velocity, this.maxSpeed);
+        this.position = this.position.add(this.velocity);
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
         // Every 10 frames change to a random color
         if (this.colorCounter % 10) {
-            this.color = 'hsl(' + this.colorCounter + ', 100%, 60%)';
+            this.color = 'hsl(' + this.colorCounter + ',100%,60%)';
         }
         this.colorCounter++;
     }

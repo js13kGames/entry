@@ -12,7 +12,7 @@ export class StarPickup extends Pickup {
     }
 
     applyTo(ship) {
-        ship.rainbow = 5; // Be all rainbowy & invincible for 5s
+        ship.rainbow = 8; // Be all rainbowy & invincible for 8s
     }
 
     render() {

@@ -8,6 +8,7 @@ export default () => {
         mass: 9,
         thrust: 9,
         ammo: 8,
+        maxSpeed: 4,
         lines: {
             body: [
                 [ -4, -9, -1, -9 ],
