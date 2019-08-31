@@ -256,7 +256,6 @@
           this.startButton = document.getElementById('start-button');
           this.startButton.classList.add('button');
           this.startButton.addEventListener('click', function(e) {
-              console.log(e.detail.intersection.point);
               _self.start();
           })
 
@@ -381,7 +380,7 @@
       }
   });
 
-  document.querySelector('a-scene').addEventListener('loaded', function() {
-      this.setAttribute('dont-look-back', '');
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('a-scene').setAttribute('dont-look-back', '');
+  })
 })();
