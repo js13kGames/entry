@@ -30,6 +30,7 @@ const PLAYER_HEIGHT = PLAYER_WIDTH * 2
 const PLAYER_COLOR = 'rgba(255, 255, 255, 1)'
 const PLAYER_COLOR_REAL = 'rgba(230, 230, 230, 1)'
 const PLAYER_SPEED = 120
+const PLAYER_HIT_DURATION = 0.5
 
 const GRENADE_WIDTH = WIDTH / 32
 const GRENADE_HEIGHT = GRENADE_WIDTH
@@ -56,6 +57,7 @@ const ENEMY_COLOR_REAL = 'rgba(230, 230, 230, 1)'
 let gameOver = false
 let blasting_duration = 0
 let total_blast_duration = 0
+let playerHitTimer = 0
 const player = initPlayer()
 const enemyPool = Pool({
   create: Sprite
@@ -78,28 +80,33 @@ const blastPool = Pool({
   create: Sprite
 })
 
-makeEnemies(5)
+setInterval(() => {
+  makeEnemies(8)
+}, 3000)
 
 let loop = GameLoop({
   update: function(dt) {
+    if (gameOver) return
+
     updatePlayer(player, dt)
     updateEnemies()
     updateGrenades(dt)
     updateMines()
     updateBlast(dt)
 
+    // blast effect
     if (blasting_duration >= total_blast_duration) {
       blasting_duration = total_blast_duration = 0
     } else {
       blasting_duration += dt
     }
-
     if (blasting_duration < total_blast_duration) {
       canvas.style.background = SKY_COLOR_REAL
     } else {
       canvas.style.background = SKY_COLOR
     }
 
+    // grenades
     if (grenades < 3) {
       if (grenadeReg < GRENADE_REGENERATE) {
         grenadeReg += dt
@@ -116,6 +123,7 @@ let loop = GameLoop({
       }
     }
 
+    // mines
     if (mines < 1) {
       if (mineReg < MINE_REGENERATE) {
         mineReg += dt
@@ -126,6 +134,51 @@ let loop = GameLoop({
     }
     if (keyPressed('space')) {
       makeMine()
+    }
+
+    // collisions
+    // blast and enemy
+    blastPool.getAliveObjects().forEach(blast => {
+      enemyPool.getAliveObjects().forEach(enemy => {
+        if (blast.collidesWith(enemy)) {
+          enemy.ttl = 0
+        }
+      })
+    })
+    // mine and enemy
+    minePool.getAliveObjects().forEach(mine => {
+      let hit = false
+      for (let e of enemyPool.getAliveObjects()) {
+        if (mine.collidesWith(e)) {
+          hit = true
+          break
+        }
+      }
+      if (hit) {
+        mine.ttl = 0
+        total_blast_duration += MINE_BLAST_DURATION
+        makeBlast('m', mine.x)
+      }
+    })
+    // enemy and player
+    if (playerHitTimer === 0) {
+      let hit = false
+      enemyPool.getAliveObjects().forEach(enemy => {
+        if (enemy.collidesWith(player)) {
+          hit = true
+        }
+      })
+      if (hit) {
+        player.hp--
+        if (player.hp <= 0) {
+          gameOver = true
+        }
+        playerHitTimer += 0.01
+      }
+    } else if (playerHitTimer >= PLAYER_HIT_DURATION) {
+      playerHitTimer = 0
+    } else {
+      playerHitTimer += dt
     }
   },
   render: function() {
@@ -166,7 +219,6 @@ function initPlayer() {
 }
 
 function updatePlayer(player, dt) {
-  if (gameOver) return
   if (player.hp <= 0) {
     player.rotation = Math.PI / 2
     gameOver = true
@@ -197,22 +249,21 @@ function makeEnemies(count) {
         x: 0.5,
         y: 1
       },
-      x: -Math.random() * ENEMY_WIDTH * 4,
+      x: -Math.random() * ENEMY_WIDTH * 8,
       y: FLOOR - Math.random() * 20,
-      dx: 5,
-      dy: -1.5,
       width: ENEMY_WIDTH,
       height: ENEMY_HEIGHT,
       color: color,
       collidesWith: collidesWith,
 
+      vx: 5,
+      vy: -1.5,
       itsColor: color
     })
   }
 }
 
 function updateEnemies() {
-  if (gameOver) return
   enemyPool.getAliveObjects().forEach((enemy) => {
     enemy.rotation = Math.PI / 10
     if (blasting_duration < total_blast_duration) {
@@ -220,16 +271,15 @@ function updateEnemies() {
     } else {
       enemy.color = enemy.itsColor
     }
-    enemy.y += enemy.dy
+    enemy.y += enemy.vy
     if (enemy.y < FLOOR - 20 || enemy.y > FLOOR) {
-      enemy.dy = -enemy.dy
+      enemy.vy = -enemy.vy
     }
-    if (enemy.collidesWith(player)) {
-      //TODO: attack player
-    } else{
-      enemy.x += enemy.dx
+    if (!enemy.collidesWith(player)) {
+      enemy.x += enemy.vx
     }
   })
+  enemyPool.update()
 }
 
 function makeGrenade() {
@@ -253,7 +303,6 @@ function makeGrenade() {
 }
 
 function updateGrenades(dt) {
-  if (gameOver) return
   grenadePool.getAliveObjects().forEach((grenade) => {
     if (grenade.deltaX >= GRENADE_THROW_RANGE) {
       grenade.ttl = 0
@@ -280,23 +329,13 @@ function makeMine() {
     color: MINE_COLOR,
     x: player.x,
     y: FLOOR,
-    dx: -PLAYER_SPEED / FPS
+    dx: -PLAYER_SPEED / FPS,
+    collidesWith: collidesWith
   })
   mines -= 1
 }
 
 function updateMines() {
-  grenadePool.getAliveObjects().forEach(mine => {
-    let hit = false
-    for(let enemy of enemyPool.getAliveObjects()) {
-      if (mine.collidesWith(enemy)) {
-        mine.ttl = 0
-        total_blast_duration += MINE_BLAST_DURATION
-        makeBlast('m', player.x)
-        break;
-      }
-    }
-  })
   minePool.update()
 }
 
@@ -315,6 +354,7 @@ function makeBlast(type, x) {
     color: GRENADE_COLOR,
     ttl: ttl,
     dx: -PLAYER_SPEED / FPS,
+    collidesWith: collidesWith,
 
     type: type
   })
