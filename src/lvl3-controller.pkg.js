@@ -41,6 +41,12 @@ const initLevel3 = () => {
   } = initState();
   const setState = (...args) => modelSetState(...args) && loop();
 
+  const isLocationValid = (nextLocation, name, state = getState()) => {
+    return nextLocation < mapData.width
+      && nextLocation >= 0
+      && nextLocation !== state[opponentOf[name]].location
+  }
+
   const respondToHit = (name, cb = noop) => newState => {
     if (newState[name].currentAction === actions.READY) cb();
     // You were hit!
@@ -70,11 +76,7 @@ const initLevel3 = () => {
           newFacingDirection = directions.RIGHT;
           break;
       }
-      if (
-        nextLocation >= mapData.width
-        || nextLocation < 0
-        || nextLocation === state[opponentOf[name]].location
-      ) nextLocation = char.location; // reset to current state
+      if (!isLocationValid(nextLocation, name, state)) nextLocation = char.location; // reset to current state
 
       return checkIfUnderAttack(name, {
         ...state,
@@ -123,7 +125,7 @@ const initLevel3 = () => {
       newLocation = object.location - 1;
     }
     object.health -= 10;
-    object.location = newLocation;
+    object.location = isLocationValid(newLocation, name, state) ? newLocation : object.location;
     object.currentAction = actions.DISABLED
 
     return state;
