@@ -20,13 +20,13 @@ export default (scheme, gamepadIndex) => {
                     right:  () => keyPressed('d'),
                     rewind: () => keyPressed('s')
                 };
-            case 'joycon':
+            case 'gamepad':
                 return {
-                    thrust: () => buttonPressed(gamepadIndex, '3'),
-                    fire:   () => buttonPressed(gamepadIndex, '5'),
-                    left:   () => axisValue(gamepadIndex, 4) < 0,
-                    right:  () => axisValue(gamepadIndex, 4) > 0,
-                    rewind: () => buttonPressed(gamepadIndex, '4')
+                    thrust: () => buttonPressed(gamepadIndex, 'a'),
+                    fire:   () => buttonPressed(gamepadIndex, 'r'),
+                    left:   () => axisValue(gamepadIndex, 'x') < 0,
+                    right:  () => axisValue(gamepadIndex, 'x') > 0,
+                    rewind: () => buttonPressed(gamepadIndex, 'l')
                 }
             //default:
             //    console.error('Unknown control scheme');
