@@ -24,6 +24,18 @@ export function normalise(vec) {
     return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
 }
 
+export function applyMaxSpeed(velocity, maxSpeed) {
+    const magnitude = normalise(velocity);
+    var [ dx, dy ] = [ velocity.x, velocity.y ];
+
+    if (magnitude > maxSpeed) {
+        dx = dx / magnitude * maxSpeed;
+        dy = dy / magnitude * maxSpeed;
+    }
+
+    [ velocity.x, velocity.y ] = [ dx, dy ];
+}
+
 /**
  * Slows a ship (or whatever sprite) velocity down, with
  * heavier ships taking longer to slow. If the ships velocity

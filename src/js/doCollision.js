@@ -45,28 +45,20 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
                     if (otherSprite.type === 'ship') {
                         // Can't collide into other ships that are rewinding
-                        if (otherSprite.rewinding) {
-                            break;
+                        if (!otherSprite.rewinding) {
+                            otherSprite.x += cResult.overlap * cResult.overlap_x;
+                            otherSprite.y += cResult.overlap * cResult.overlap_y;
                         }
-                        otherSprite.x += cResult.overlap * cResult.overlap_x;
-                        otherSprite.y += cResult.overlap * cResult.overlap_y;
                     }
 
                     if (otherSprite.type === 'bullet') {
                         otherSprite.ttl = 0;
 
                         // If you're (or ya bullets) not colliding with yourself
-                        if (otherSprite.owner === ship) {
-                            break;
-                        }
-
-                        if (ship.invuln) {
-                            break;
-                        }
-
-                        if (!ship.shieldDegrading) {
+                        if (otherSprite.owner !== ship &&
+                            !ship.invuln &&
+                            !ship.shieldDegrading) {
                             ship.shieldDegrading = 60;
-                            break;
                         }
                     }
                 }
@@ -92,37 +84,28 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
                     if (otherSprite.type === 'ship') {
                         // Can't collide into other ships that are rewinding
-                        if (otherSprite.rewinding) {
-                            break;
+                        if (!otherSprite.rewinding) {
+                            otherSprite.x += cResult.overlap * cResult.overlap_x;
+                            otherSprite.y += cResult.overlap * cResult.overlap_y;
                         }
-                        otherSprite.x += cResult.overlap * cResult.overlap_x;
-                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+
                     }
 
                     if (otherSprite.type === 'bullet') {
                         otherSprite.ttl = 0;
 
                         // If you're (or ya bullets) not colliding with yourself
-                        if (otherSprite.owner === ship) {
-                            break;
-                        }
+                        if (otherSprite.owner !== ship &&
+                            !ship.invuln) {
+                            ship.explode(sprites);
 
-                        if (ship.invuln) {
-                            break;
-                        }
+                            if (otherSprite.owner.player) {
+                                otherSprite.owner.player.scoreInc();
+                            }
 
-                        if (ship.invuln) {
-                            break;
-                        }
-
-                        ship.explode(sprites);
-
-                        if (otherSprite.owner.player) {
-                            otherSprite.owner.player.scoreInc();
-                        }
-
-                        if (ship.player) {
-                            ship.player.scoreDec();
+                            if (ship.player) {
+                                ship.player.scoreDec();
+                            }
                         }
                     }
                 }
