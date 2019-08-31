@@ -4,6 +4,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const BLOCKED = uid();
   const B = BLOCKED;
   const BUILDING_2X4 = uid();
+  const POLICE = uid();
   const OUT_OF_BOUNDS_CUTOFF = uid();
   const STREET = uid();
   const S = STREET;
@@ -11,6 +12,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const EXIT = uid();
 
   const map = [];
+  // Create cell object
   function makeMapCell (cellId, imgData) {
     return {
       displayId: cellId,
@@ -20,12 +22,14 @@ const initModel = (height, width, foodCoveragePercent) => {
     }
   }
 
+  // 2D slice of map matrix
   function sliceMap (startRow, endRow, startCol, endCol) {
     const slice = [];
+    const oob = makeMapCell(OUT_OF_BOUNDS);
     for (var row = startRow; row <= endRow; row++) {
       slice[row - startRow] = [];
       for (var col = startCol; col <= endCol; col++) {
-        let value = makeMapCell(OUT_OF_BOUNDS);
+        let value = oob;
         try {
           if (map[row][col]) value = map[row][col];
         } catch (_) {}
@@ -35,6 +39,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     return slice;
   }
 
+  // Get the required cells for the view
   function getMapView (position, bufferRow, bufferCol) {
     return sliceMap(
       position.row - bufferRow,
@@ -44,8 +49,9 @@ const initModel = (height, width, foodCoveragePercent) => {
     );
   }
 
+  // Add the exit cell
   function enableExit () {
-    const newCell = makeMapCell(EXIT);
+    const newCell = makeMapCell(map.length, 0, EXIT);
     map.push([newCell]);
   }
 
@@ -76,8 +82,10 @@ const initModel = (height, width, foodCoveragePercent) => {
     ]
   }
 
-  const buildingsPixels = {};
+  // Container to hold sliced image cells
+  const buildingsImageCells = {};
 
+  // Create full size building image data 200x400
   const building2x4Img = (() => {
     const width = 200;
     const height = 400;
@@ -139,15 +147,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     return ctx.getImageData(0, 0, 200, 400);
   })();
 
-  let canvas = createElement('canvas');
-  let newCtx = canvas.getContext('2d');
-  buildingsPixels['2x4'] = buildings['2x4'].map((row, rowIdx) => (
-    row.map((_, colIdx) => {
-      newCtx.putImageData(building2x4Img, colIdx * -100, rowIdx * -100);
-      return newCtx.getImageData(0, 0, 100, 100);
-    })
-  ));
-
+  // Create Full size building image data 200x400 (style 2)
   const building2x4Img2 = (() => {
     const ctx = createElement('canvas').getContext('2d');
     ctx.canvas.height = 400;
@@ -215,18 +215,88 @@ const initModel = (height, width, foodCoveragePercent) => {
     ctx.fillRect(129, 360, 55, 30);
     ctx.fillRect(85, 360, 30, 40);
 
-
     return ctx.getImageData(0, 0, 200, 400);
   })();
 
-  canvas = createElement('canvas');
-  newCtx = canvas.getContext('2d');
-  buildingsPixels['2x4-2'] = buildings['2x4'].map((row, rowIdx) => (
-    row.map((_, colIdx) => {
-      newCtx.putImageData(building2x4Img2, colIdx * -100, rowIdx * -100);
-      return newCtx.getImageData(0, 0, 100, 100);
-    })
-  ));
+  // Create police car image 100x100
+  const policeLeftImg = (() => {
+    const ctx = createElement('canvas').getContext('2d');
+    const size = 100;
+    ctx.canvas.height = size;
+    ctx.canvas.width = size;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, size, size);
+
+    // 40 x 27
+    function makeCar (x, y) {
+      ctx.beginPath();
+      // siren light
+      ctx.fillStyle = 'red';
+      ctx.filter = 'blur(1px)';
+      ctx.fillRect(x+15, y-2, 6, 5);
+      ctx.filter = 'none';
+
+      ctx.fillRect(x+16, y, 4, 3);
+
+      const blue = 'blue';
+      // car top
+      ctx.strokeStyle = blue;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x+8, y+3, 25, 9);
+
+      // car body
+      ctx.fillStyle = blue;
+      ctx.fillRect(x, y+10, 40, 12);
+
+      // car white section
+      ctx.fillStyle = 'white';
+      ctx.fillRect(x + 12, y+10, 17, 12);
+
+      // front wheel
+      ctx.fillStyle = 'darkgray';
+      ctx.arc(x+8, y+22, 5, 0, 2*Math.PI);
+      ctx.fill();
+
+      // back wheel
+      ctx.arc(x+31, y+22, 5, 0, 2*Math.PI);
+      ctx.fill();
+
+      // light
+      ctx.beginPath();
+      ctx.fillStyle = 'yellow';
+      ctx.arc(x+3, y+13, 2, 0, 2*Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function makeCars (x, y) {
+      makeCar(60, 1);
+      makeCar(30, 19);
+      makeCar(0, 37);
+      makeCar(30, 53);
+      makeCar(60, 71);
+    }
+
+    makeCars(0, 0);
+
+    return ctx.getImageData(0, 0, size, size);
+  })();
+
+  // slice building in to 100x100 image datas
+  const sliceBuilding = (building, imageData) => {
+    const ctx = createElement('canvas').getContext('2d');
+    return building.map((row, rowIdx) => (
+      row.map((_, colIdx) => {
+        ctx.putImageData(imageData, colIdx * -100, rowIdx * -100);
+        return ctx.getImageData(0, 0, 100, 100);
+      })
+    ));
+  }
+
+  buildingsImageCells['2x4'] = sliceBuilding(buildings['2x4'], building2x4Img);
+  buildingsImageCells['2x4-2'] = sliceBuilding(buildings['2x4'], building2x4Img2);
+  // buildingsImageCells['police'] = policeLeftImg;
 
 
   // Set map height and width
@@ -262,7 +332,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     const b = buildings['2x4'];
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
-        const bpx = buildingsPixels['2x4' + (Math.random() < .5 ? '' : '-2')];
+        const bpx = buildingsImageCells['2x4' + (Math.random() < .5 ? '' : '-2')];
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
           addBuilding(map, row, column, b, bpx);
@@ -271,14 +341,22 @@ const initModel = (height, width, foodCoveragePercent) => {
     }
   }
 
-  function addFoods(numFoods, openSquares) {
-    let foodsRemaining = numFoods;
-    while (foodsRemaining) {
+  function dealShuffled (arr, draw) {
+    let shuffled = [...arr];
+    for (let i = 0; i < draw; i++) {
+      const swap = Math.floor(random() * arr.length);
+      [shuffled[i], shuffled[swap]] = [shuffled[swap], shuffled[i]];
+    }
+    return shuffled.slice(0, draw);
+  }
+
+  function addItems(numItems, openSquares, itemId) {
+    let itemsRemaining = numItems;
+    while (itemsRemaining) {
       const index = floor(random() * openSquares.length);
       const square = openSquares[index];
-      square.itemId = PIZZA;
-      openSquares = openSquares.slice(0, index).concat(openSquares.slice(index + 1));
-      foodsRemaining--;
+
+      itemsRemaining--;
     }
   }
 
@@ -297,9 +375,21 @@ const initModel = (height, width, foodCoveragePercent) => {
   // init
   initMap(height, width);
   addBuildings();
-  const openSquares = getOpenSquares();
-  const numFoods = floor(openSquares.length * foodCoveragePercent);
-  addFoods(numFoods, openSquares);
+  dealShuffled(getOpenSquares(), 5)
+    .forEach(cell => {
+      cell.canEnter = false;
+      cell.displayId = POLICE;
+      cell.imgData = policeLeftImg;
+    })
+
+  const openSquaresForPizzas = getOpenSquares();
+  const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
+  dealShuffled(openSquaresForPizzas, numFoods)
+    .forEach(square => { square.itemId = PIZZA; });
+  // addItems(numFoods, openSquaresForPizzas, PIZZA);
+  // addItems(15, getOpenSquares(), POLICE, policeLeftImg);
+
+  // TODO ensure port entrance is open
 
   return {
     getMapView,
@@ -307,6 +397,7 @@ const initModel = (height, width, foodCoveragePercent) => {
       OUT_OF_BOUNDS,
       BLOCKED,
       BUILDING_2X4,
+      POLICE,
       OUT_OF_BOUNDS_CUTOFF,
       STREET,
       PIZZA,
