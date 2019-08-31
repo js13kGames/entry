@@ -1,4 +1,4 @@
-const game = {
+var game = {
     /*
      * 0: waiting for new game start
      * 1: in game
@@ -17,11 +17,19 @@ const game = {
     width: 800,
     height: 600,
     gridSize: 20,
+    marginGrids: 2,
 
-    roundFrames: 0
+    roundFrames: 0,
+
+    colorGrass: '#528258'
+
 };
 game.gridWidth = game.width / game.gridSize;
 game.gridHeight = game.height / game.gridSize;
+game.insideWidth = game.width - game.marginGrids * game.gridSize * 2;
+game.insideHeight = game.height - game.marginGrids * game.gridSize * 2;
+game.insideGridWidth = game.insideWidth / game.gridSize;
+game.insideGridHeight = game.insideHeight / game.gridSize;
 
 init();
 
@@ -47,8 +55,8 @@ function newRound() {
     game.roundScore = 0;
     game.roundFrames = 0;
 
-    var pos = getRandomPos();
-    game.snake = new Snake(pos[0], pos[1], 3, 1 / 16);
+    var pos = getRandomPos(3);
+    game.snake = new Snake(pos[0], pos[1], 3, 1 / 16, game);
     setFood();
 
     game.status = 1;
@@ -63,7 +71,7 @@ function tick() {
 
     game.snake.tick();
 
-    if (game.snake.checkCollision(game.gridWidth, game.gridHeight, game.historySnakes)) {
+    if (game.snake.checkCollision()) {
         game.status = 2;
         console.log('collision');
 
@@ -85,19 +93,31 @@ function tick() {
             game.snake.speedUp();
         }
         setFood();
-        console.log(game.snake.food);
     }
 
-    game.ctx.clearRect(0, 0, game.width, game.height);
-    renderHistorySnakes();
-    game.snake.render(game.ctx, game.gridSize);
+    render();
 
     requestAnimationFrame(tick);
 }
 
+function render() {
+    game.ctx.clearRect(0, 0, game.width, game.height);
+
+    game.ctx.fillStyle = game.colorGrass;
+    game.ctx.fillRect(
+        game.marginGrids * game.gridSize,
+        game.marginGrids * game.gridSize,
+        game.insideWidth,
+        game.insideHeight
+    );
+
+    renderHistorySnakes();
+    game.snake.render(game.ctx, game.gridSize);
+}
+
 function renderHistorySnakes() {
     var ctx = game.ctx;
-    ctx.fillStyle = 'rgba(255,0,0,0.3)';
+    ctx.fillStyle = '#fff';
 
     var frame = game.snake.totalFrames;
     for (var h = 0; h < game.historySnakes.length; ++h) {
@@ -111,7 +131,7 @@ function renderHistorySnakes() {
             }
         }
         if (lastFrame) {
-            renderList(game.ctx, lastFrame, game.gridSize);
+            renderList(game.ctx, lastFrame, game.gridSize, game.marginGrids);
         }
     }
 }
@@ -143,9 +163,10 @@ function setFood() {
     game.snake.food = [getRandomPos()];
 }
 
-function getRandomPos() {
+function getRandomPos(margin) {
+    margin = margin || 0;
     return [
-        Math.floor(Math.random() * game.gridWidth),
-        Math.floor(Math.random() * game.gridHeight)
+        margin + Math.floor(Math.random() * (game.insideGridWidth - margin * 2)),
+        margin + Math.floor(Math.random() * (game.insideGridHeight - margin * 2))
     ];
 }

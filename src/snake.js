@@ -6,7 +6,8 @@
  * direction: 0: left, 1: top, 2: right, 3: bottom
  * food: positions of each food
  */
-function Snake(x, y, length, speed) {
+function Snake(x, y, length, speed, game) {
+    this.game = game;
     this.body = [];
     for (var i = 0; i < length; ++i) {
         this.body.push([
@@ -14,7 +15,7 @@ function Snake(x, y, length, speed) {
         y]);
     }
 
-    this.direction = x > 20 ? 0 : 2;
+    this.direction = x > game.insideGridWidth / 2 ? 0 : 2;
 
     this._growNextTick = false;
     this._skippedFrames = 0;
@@ -62,10 +63,10 @@ Snake.prototype.tick = function () {
 
 Snake.prototype.render = function (ctx, gridSize) {
     ctx.fillStyle = 'red';
-    renderList(ctx, this.body, gridSize);
+    renderList(ctx, this.body, gridSize, this.game.marginGrids);
 
     ctx.fillStyle = 'blue';
-    renderList(ctx, this.food, gridSize);
+    renderList(ctx, this.food, gridSize, this.game.marginGrids);
 };
 
 Snake.prototype.checkEat = function () {
@@ -82,11 +83,11 @@ Snake.prototype.checkEat = function () {
     return false;
 };
 
-Snake.prototype.checkCollision = function (gridWidth, gridHeight, historySnakes) {
+Snake.prototype.checkCollision = function () {
     var head = this.body[0];
 
     // wall collision
-    if (head[0] < 0 || head[0] >= gridWidth || head[1] < 0 || head[1] >= gridHeight) {
+    if (head[0] < 0 || head[0] >= this.game.insideGridWidth || head[1] < 0 || head[1] >= this.game.insideGridHeight) {
         return true;
     }
 
@@ -98,8 +99,8 @@ Snake.prototype.checkCollision = function (gridWidth, gridHeight, historySnakes)
     }
 
     // history snake collision
-    for (var h = 0; h < historySnakes.length; ++h) {
-        var history = historySnakes[h].items;
+    for (var h = 0; h < this.game.historySnakes.length; ++h) {
+        var history = this.game.historySnakes[h].items;
         var frame = history[this.totalFrames];
         if (frame) {
             for (var i = 0; i < frame.length; ++i) {
