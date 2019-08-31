@@ -19,7 +19,7 @@ bgcolor = c[0]; //Each time before the zdog illustration is updated, this color 
 const times = []; let fps; //Used to display FPS during debugging.
 canstartgame = false; //Set to true when HTML is fully loaded, and to prevent player to start a new game instantly after getting a game over
 timeleft = 30; timejackpot = 3; score = 0; hiscore = 0; //timeleft ticks down, but gets refilled with the jackpot upon flipping.
-flipy = 9000; ytop = 0; ybottom = 0; //These tell the player
+flipy = 9000; fliptop = 0; flipbottom = 0; //These tell the player
 
 document.addEventListener("DOMContentLoaded", HtmlLoaded);
 
@@ -180,34 +180,58 @@ function loadLevel(lvlnumber) {
     //Build new
     var amount = (lvlnumber*2) + 1
 
+    flipy = generateObstacles(lvlnumber*2,100,flipped)
+
+    flipline.translate.y = flipy;
+    fliptop = 0; flipbottom = flipy;
+
+    console.log("Loaded level "+lvlnumber.toString())
+}
+
+function generateObstacles(amount,position,direction) {
+
+    var off = 0;
     for (var i = 0; i != amount; i++)
     {
         var obstaclex = random() * (horborder - -horborder) + -horborder;
-        var obstacley = i*50;
+        var thisoff = 40+(random()*100)*direction
+        var obstacley = position+off
         var front = (random() >= 0.2);
-        var clr = c[4]; if (front == true) {clr = c[2]}
 
-        obstacle[i] = new Zdog.Box({
-            addTo: illo,
-            width: 32,
-            height: 32*3,
-            frontFace: false, backFace: false,
-            depth: 8,
-            stroke: 8,
-            cornerRadius: 20,
-            color: clr,
-            visible: false, //This will be enabled and added to the step event if this is near the player.
-            translate: {x: obstaclex, y: obstacley, z: (front * 50) -25}
-        });
-        obstacle[i].colliding = false;
-        obstacle[i].zspeed = 0;
-        console.log[i];
+        if (random() > 0.75) //Generate one block on the same height
+        {
+            obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), thisoff, front)
+        }
+        else //Generate two long blocks on the same height, one higher than the other QQQ
+        {
+            obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), thisoff, front)
+            obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), thisoff, front)
+        }
+
+        off += 20+thisoff;
     }
 
-    flipy = i*50
-    flipline.translate.y = flipy;
+    return(position+off)
+}
 
-    console.log("Loaded level "+lvlnumber.toString())
+function addObstacle(xx,yy,width,height,front) {
+    var clr = c[3]; if (front == true) {clr = c[2]}
+    var newobstacle = new Zdog.Box({
+        addTo: illo,
+        width: width,
+        height: height,
+        frontFace: false, backFace: false,
+        depth: 8,
+        stroke: 8,
+        cornerRadius: 20,
+        color: clr,
+        visible: false, //This will be enabled and added to the step event if this is near the player.
+        translate: {x: xx, y: yy, z: (front * 50) -25}
+    });
+
+    newobstacle.colliding = false;
+    newobstacle.zspeed = 0;
+    return(newobstacle);
 }
 
 function step(framestep) {
@@ -267,12 +291,24 @@ function step(framestep) {
     if ((flipped == 1 && player.translate.y > flipy) || (flipped == -1 && player.translate.y < flipy) )
     {
         player.translate.y = flipy;
-        flipy = -flipy; //QQQ Push further back each round
-        flipline.translate.y = flipy;
         flipped = -flipped;
         playermovey = flipped;
 
-        timeleft += timejackpot; //QQQ Activate animation?
+        if (flipped == 1)
+        {
+            flipbottom += 200;
+            flipy = flipbottom;
+            //QQQ Generate new platforms in that area
+        }
+        else
+        {
+            fliptop -= 200;
+            flipy = fliptop;
+            //QQQ Generate new platforms in that area
+        }
+        flipline.translate.y = flipy;
+
+        timeleft += timejackpot;
         i2.style.animation = ""; //Reset
         i2.style.animation = "jackpot-claim 1s ease-in-out";
         timejackpot = 3;
@@ -376,14 +412,24 @@ function collisionEnd(obstacle){
 
     if (obstacle.translate.z == 25) //In foreground
     {
-        obstacle.zspeed = -10; obstacle.color = c[4];
+        obstacle.zspeed = -10; obstacle.color = c[3];
     } else { //In background
         obstacle.zspeed = 10; obstacle.color = c[2];
     }
 
     timejackpot += 1;
     i2.style.animation = ""; //Reset
-    i2.style.animation = "jackpot-gain 0.5s ease-out";
+
+    if (isOdd(timejackpot)) //Swap between identical animations so the animation restarts properly. See https://css-tricks.com/restart-css-animation/
+    {
+        i2.style.animation = "jackpot-gain 0.5s ease-out";
+        console.log("Animation 1");
+    }
+    else
+    {
+        i2.style.animation = "jackpot-gain-2 0.5s ease-out";
+        console.log("Animation 2");
+    }
 }
 
 function handleGesture(e) { //Taken from https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d#gistcomment-2577818
@@ -511,7 +557,7 @@ function draw() {
 function gameOver() {
     state = 0;
     player.visible = false;
-    playermovey = 1;
+    playermovey = 1*flipped;
     canstartgame = false;
     l1.style.animation = ""; //Reset animations
     l2.style.animation = "";
@@ -528,7 +574,11 @@ function gameOver() {
     }, 1000);
     if (score > hiscore)
     {
-        not.style.visibility = "visible"; not.innerHTML = "Congrats, you beat your old highscore of "+hiscore.toString+"with a new score of "+score.toString()+"!";
+        if (hiscore > 0)
+        {
+            not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke your old highscore of<br>"+hiscore.toString()+" with a new score of "+score.toString()+"!";
+        }
+        hiscore = score;
     }
 }
 
@@ -590,3 +640,5 @@ function HtmlLoaded() {
     n = document.getElementById("not");
     canstartgame = true;
 }
+
+function isOdd(num) { return num % 2;}
