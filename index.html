@@ -10,7 +10,7 @@
   </head>
   <body>
 
-        <script src="zdog.dist.min.js"></script>
+        <script src="zdog.dist.js"></script>
         <script src="jsfxr.min.js"></script>
         <script src="game.js"></script>
 
@@ -20,15 +20,21 @@
 
         <p class="title top" id="l1">Back</p>
         <p class="title bottom" id="l2">Flipped</p>
-        <p class="title start" id="l3">Press Space or Tap screen</p>
+        <p class="title start" id="l3">Press Space or Tap Screen</p>
+        <p class="int remaining" id="i1">Time: ?</p>
+        <p class="int jackpot" id="i2">+? sec</p>
+        <p class="int score" id="i3">Flips: ?</p>
 
         <p class = "debug">
             To do:<br>
-            - Interface (with skewed overlay text)<br>
             - Tweak level generation<br>
-            - Dynamic level building<br>
-            - Optimization (boxes invisible if not in view)<br>
+            - Remove unused shapes from Zdog<br>
+            - Web Monetization<br>
             - Cram in 13kb<br>
+            - Rotating (moving?) coins that jump to a random position each flip, worth time?<br>
+            - Improve color palletes?<br>
+            - Screenshots (160x & 400x250)<br>
+            - Make timer red when under 10 seconds<br>
 
             <b>Deadline 13 September!</b>
           </p>
@@ -36,8 +42,8 @@
             Game by <b>Tom Hermans (@Auroriax)</b><br>
             <br>
             <b>How to play:</b><br>
-            🡸 🡺 Flying kick<br>
-            🡹 🡻 Slow/fasten fall<br><br>
+            🡸 🡺: Flying kick<br>
+            🡹 🡻: Slow/fasten fall<br><br>
             Touched platforms move to<br>
             background and increase jackpot.<br>
             Reach bottom of level to claim<br

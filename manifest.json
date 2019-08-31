@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "BackFlipped",
+  "description": "Fall to bottom to flip to the back, then fall back up on the other side... How long can you keep switching between the back and front of the stage? Game by <b>Tom Hermans (@Auroriax). \n\nHow to play (Arrow keys/WASD/ZQSD/Swipes):🡸 🡺: Flying kick, 🡹 🡻: Slow/fasten fall.\n Touched platforms move to background and increase jackpot. Reach bottom of level to claim jackpot and flip to the backside! You lose when time runs out... \n\nCoil subscribers can play the game with a different color palette! Or should I say... COILor palette? Hah!",
   "images" : {
     "image_large": "image-big.jpg",
     "image_thumbnail": "image-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile", "Web Monetization" ],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Tom Hermans (@Auroriax)",
+    "website": "https://auroriax.com",
+    "twitter": "https://twitter.com/Auroriax"
   }
 }

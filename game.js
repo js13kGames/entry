@@ -1,29 +1,36 @@
 c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
-//c[0] = "#223e32"; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; 
-c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";
+c[0] = "#223e32"; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; 
+//c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";
 //c[0] = "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff";
+
+const TAU = Zdog.TAU;
 
 x=game.getContext`2d`;
 state = 0; //0 is title screen, 1 is gameplay
-level = 5; //0 and lower are states, everything higher are game levels
-playerx = 0; playery = 0;
-playermovex = 0; playermovey = 1;
-horborder = 200; flipy = 9000; flipvisual = 1; flipped = 1;
-paused = false;
-direction = 1; cameray = 0;
-const TAU = Zdog.TAU
-obstacle = [];
-shakex = 0; shakey = 0; shakeduration = 0;
-bgcolor = c[0];
-const times = []; let fps;
-interval = 0;
-canstartgame = true;
+paused = false; //If the game is paused no step events will trigger.
+level = 500; //How long the stage should be the player is playing in.
+playermovex = 0; playermovey = 1; //Direction the player's going into.
+horborder = 200;
+flipvisual = 1; flipped = 1;
+cameray = 0; //This controls where the camera is currently looking at.
+obstacle = []; visobstacle = []; //Optimalization array that only holds the blocks that are currently visible.
+shakex = 0; shakey = 0; shakeduration = 0; //Control screen shake.
+bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
+const times = []; let fps; //Used to display FPS during debugging.
+canstartgame = false; //Set to true when HTML is fully loaded, and to prevent player to start a new game instantly after getting a game over
+timeleft = 30; timejackpot = 3; score = 0; hiscore = 0; //timeleft ticks down, but gets refilled with the jackpot upon flipping.
+flipy = 9000; ytop = 0; ybottom = 0; //These tell the player
 
-create();
+document.addEventListener("DOMContentLoaded", HtmlLoaded);
+
+initGame();
+
 setInterval(e=>{ step(false) },15);
+
+//Mobile input init
 onkeydown=e=>{ input(e.key); }
 let pageWidth = window.innerWidth || document.body.clientWidth;
-let treshold = Math.max(1,Math.floor(0.01 * (pageWidth)));
+let treshold = 10;
 let touchstartX = 0;
 let touchstartY = 0;
 let touchendX = 0;
@@ -43,16 +50,9 @@ gestureZone.addEventListener('touchend', function(event) {
     handleGesture(event);
 }, false);
 
-//Taken from https://stackoverflow.com/a/19303725
-var seed = 1;
-function random() {
-    var x = Math.sin(seed++) * 10000;
-    return x - Math.floor(x);
-}
+function initGame() {
 
-function create() {
-
-    // create illo
+    // init illo
     illo = new Zdog.Illustration({
         element: '.zdog-canvas',
         dragRotate: true,
@@ -111,10 +111,10 @@ function create() {
         stroke: 8,
         color: c[1],
         path: [ //QQQ Don't make them so long but move with either player or camera
-            { x: -horborder-10, y: -5000 },          // start at top left
-            { x: -horborder-10, y: 5000 },          // line to top right
-            { move: { x: horborder+10, y: -5000 } }, // move to bottom left
-            { x: horborder+10, y: 5000 },          // line to bottom right
+            { x: -horborder-10, y: -500 },          // start at top left
+            { x: -horborder-10, y: 500 },          // line to top right
+            { move: { x: horborder+10, y: -500 } }, // move to bottom left
+            { x: horborder+10, y: 500 },          // line to bottom right
         ],
     });
 
@@ -149,14 +149,14 @@ function create() {
         ],
     });
 
-    resizescreen();
+    resizeScreen();
 
-    loadlevel(level);
+    loadLevel(level);
 
     draw();
 }
 
-function loadlevel(lvlnumber) {
+function loadLevel(lvlnumber) {
     //Clean up
     level = lvlnumber;
 
@@ -174,17 +174,16 @@ function loadlevel(lvlnumber) {
     }
     obstacle = []
     flipped = 1; flipvisual = 1; bgcolor = c[0]; 
-    playerx = 0; playery = 0; playermovex = 0; playermovey = 1;
+    player.translate.x = 0; player.translate.y = 0; playermovex = 0; playermovey = 1;
     illo.rotate = {x: -(TAU/16), y: TAU/16};
 
     //Build new
-    direction = 1;
     var amount = (lvlnumber*2) + 1
 
     for (var i = 0; i != amount; i++)
     {
         var obstaclex = random() * (horborder - -horborder) + -horborder;
-        var obstacley = i*50-direction;
+        var obstacley = i*50;
         var front = (random() >= 0.2);
         var clr = c[4]; if (front == true) {clr = c[2]}
 
@@ -197,6 +196,7 @@ function loadlevel(lvlnumber) {
             stroke: 8,
             cornerRadius: 20,
             color: clr,
+            visible: false, //This will be enabled and added to the step event if this is near the player.
             translate: {x: obstaclex, y: obstacley, z: (front * 50) -25}
         });
         obstacle[i].colliding = false;
@@ -204,13 +204,22 @@ function loadlevel(lvlnumber) {
         console.log[i];
     }
 
-    flipy = i*50-direction;
+    flipy = i*50
     flipline.translate.y = flipy;
 
     console.log("Loaded level "+lvlnumber.toString())
 }
 
 function step(framestep) {
+
+    if (state == 1 && paused == false)
+    {
+        timeleft -= (1/60);
+        if (timeleft <= 0)
+        {
+            gameOver();
+        }
+    }
 
     //Update interface
     const now = performance.now();
@@ -224,8 +233,11 @@ function step(framestep) {
     document.getElementById("level-display").innerHTML = level.toString() + " level";
     document.getElementById("cam-display").innerHTML = illo.rotate.x.toString() + "x  " + illo.rotate.y.toString() + "y  " + illo.rotate.x.toString() + "z  " + TAU.toString() + "tau";
 
+    i1.innerHTML = "Time: " +timeleft.toFixed(2).toString();
+    i2.innerHTML = "+" +timejackpot.toString() + " sec";
+    i3.innerHTML = "Flips: " +score.toString();
+
     if (paused && framestep == false) {return;}
-    cameray -= direction;
 
     //Screen shake and camera movement
     if (shakeduration > 0)
@@ -252,15 +264,23 @@ function step(framestep) {
     }
 
     //Flipping player after reaching bottom of level
-    if ((flipped == 1 && playery > flipy) || (flipped == -1 && playery < flipy) )
+    if ((flipped == 1 && player.translate.y > flipy) || (flipped == -1 && player.translate.y < flipy) )
     {
-        playery = flipy;
+        player.translate.y = flipy;
         flipy = -flipy; //QQQ Push further back each round
         flipline.translate.y = flipy;
         flipped = -flipped;
-        if (state == 1) //Otherwise we don't have audio permission yet
-        {sound([0,,0.0371,,0.3841,0.3887,,0.1299,,,,,,0.566,,0.4401,,,1,,,,,0.31])}
         playermovey = flipped;
+
+        timeleft += timejackpot; //QQQ Activate animation?
+        i2.style.animation = ""; //Reset
+        i2.style.animation = "jackpot-claim 1s ease-in-out";
+        timejackpot = 3;
+        score += 1;
+
+        if (state == 1) //Otherwise we don't have audio permission yet
+            {sound([0,,,,0.39,0.39,,0.13,,,,,,0.57,,0.44,,,1,,,,,0.15])}
+
         if (flipped == -1)
         {
             bgcolor = c[1];
@@ -275,8 +295,20 @@ function step(framestep) {
         }
     }
 
-    for (var i = 0; i != obstacle.length; i++)
+    visobstacle = []; var obstaclelen = obstacle.length;
+    for (var i = 0; i != obstaclelen; i++)
     {
+        //Optimization, don't render squares that are not in view
+        if (obstacle[i].translate.y > player.translate.y - 500 && obstacle[i].translate.y < player.translate.y + 1000) //QQQ 500 and 1000 should change depending on flip direction
+        {
+            obstacle[i].visible = true;
+            visobstacle[visobstacle.length] = obstacle[i];
+        }
+        else
+        {
+            obstacle[i].visible = false
+        }
+
         if (obstacle[i].zspeed != 0)
         {
             if (obstacle[i].translate.z >= 35) {
@@ -294,27 +326,27 @@ function step(framestep) {
     for (var j = 0; j != 4; j += 1) //So we're doing most of the step loop four times for smoother movement! They did it in Super Mario 64, so we can do it here!
     {
         //Moving player
-        playerx += playermovex/4;
-        if (playerx > horborder) {playerx = horborder; playermovex = 0; playermovey = 1*flipped}
-        if (playerx < -horborder) {playerx = -horborder; playermovex = 0; playermovey = 1*flipped}
-        playery += playermovey/4;
+        player.translate.x += playermovex/4;
+        if (player.translate.x > horborder) {player.translate.x = horborder; playermovex = 0; playermovey = 1*flipped}
+        if (player.translate.x < -horborder) {player.translate.x = -horborder; playermovex = 0; playermovey = 1*flipped}
+        player.translate.y += playermovey/4;
         
         //Collisions
         if (state == 1) //Only in gameplay
         {
-            for (var i = 0; i != obstacle.length; i++)
+            for (var i = 0; i != visobstacle.length; i++)
             {
-                xx = obstacle[i].translate.x; 
-                yy = obstacle[i].translate.y;
-                zz = obstacle[i].translate.z;
-                w = obstacle[i].width-5; h = obstacle[i].height-20;
+                xx = visobstacle[i].translate.x; 
+                yy = visobstacle[i].translate.y;
+                zz = visobstacle[i].translate.z;
+                w = visobstacle[i].width-5; h = visobstacle[i].height-20;
 
-                if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && playerx > xx - w && playerx < xx + w && playery > yy - h && playery < yy + h)
+                if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - w && player.translate.x < xx + w && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
-                    if (obstacle[i].colliding == false)
+                    if (visobstacle[i].colliding == false)
                     { //Collision enter
                         console.log("Collision detected with "+i.toString());
-                        obstacle[i].colliding = true;
+                        visobstacle[i].colliding = true;
                         
                         if (playermovex == 0) //Player fell on top of this block
                         {
@@ -324,12 +356,13 @@ function step(framestep) {
                             playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
                         }
 
-                        sound([0,,0.035,,0.1449+(random()*0.5),0.4918,,-0.5252,,,,,,0.034,,,,,1,,,,,0.2+(random()*0.2)])
+                        sound([0,,0.035,,0.1449+(random()*0.5),0.4918,,-0.5252,,,,,,0.034,,,,,1,,,,,0.15])
                     }
                 }
-                else if (obstacle[i].colliding == true)
+                else if (visobstacle[i].colliding == true)
                 { //Collision leave
-                    collisionend(i)
+                    collisionEnd(visobstacle[i])
+                    console.log("Collision ended with "+i.toString());
                 }
             }
         }
@@ -338,16 +371,19 @@ function step(framestep) {
     draw();
 }
 
-function collisionend(i){
-    console.log("Collision ended with "+i.toString());
-    obstacle[i].colliding = false;
+function collisionEnd(obstacle){
+    obstacle.colliding = false;
 
-    if (obstacle[i].translate.z == 25) //In foreground
+    if (obstacle.translate.z == 25) //In foreground
     {
-        obstacle[i].zspeed = -10; obstacle[i].color = c[4];
+        obstacle.zspeed = -10; obstacle.color = c[4];
     } else { //In background
-        obstacle[i].zspeed = 10; obstacle[i].color = c[2];
+        obstacle.zspeed = 10; obstacle.color = c[2];
     }
+
+    timejackpot += 1;
+    i2.style.animation = ""; //Reset
+    i2.style.animation = "jackpot-gain 0.5s ease-out";
 }
 
 function handleGesture(e) { //Taken from https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d#gistcomment-2577818
@@ -381,16 +417,19 @@ function input(key) {
     if (state == 0) //Main menu
     {
         if (key == " " && canstartgame) {
-            document.getElementById("l1").style.animation = "gamestart-top 1s ease-in";
-            document.getElementById("l2").style.animation = "gamestart-bottom 1s ease-in";
-            document.getElementById("l3").style.visibility = "hidden"; 
-            document.getElementById("not").style.visibility = "hidden";
+            l1.style.animation = "gamestart-top 1s ease-in";
+            l2.style.animation = "gamestart-bottom 1s ease-in";
+            l3.style.visibility = "hidden"; 
+            i1.style.visibility = "visible"; 
+            i2.style.visibility = "visible"; 
+            i3.style.visibility = "visible"; 
+            not.style.visibility = "hidden";
             state = 1;
-            sound([1,,0.0806,,0.4981,0.2637,,0.4277,,,,,,,,0.6758,,,1,,,,,0.3]);
-            loadlevel(5)
+            sound([1,,0.0806,,0.4981,0.2637,,0.4277,,,,,,,,0.6758,,,1,,,,,0.15]);
+            loadLevel(5)
             setTimeout(function(){
-                document.getElementById("l1").style.visibility = "hidden";
-                document.getElementById("l2").style.visibility = "hidden";
+                l1.style.visibility = "hidden";
+                l2.style.visibility = "hidden";
             }, 975);
         }
     }
@@ -421,12 +460,12 @@ function input(key) {
         {
             playermovex = 8*delta;
             playermovey = 0;
-            sound([1,,0.2159,0.2603,0.1064,0.4074+(random()*0.3),0.2062,-0.3031,-0.0065,0.0638,0.0206,-0.0114,,0.4332,0.1898,,-0.0074,-0.0091,1,-0.0456,,0.1791,0.0109,0.3])
+            sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
             for (var i = 0; i != obstacle.length; i++)
             {
                 if (obstacle[i].colliding == true)
                 {
-                    collisionend(i)
+                    collisionEnd(obstacle[i])
                 }
             }
         }
@@ -434,20 +473,20 @@ function input(key) {
         {
             playermovex = 0;
             playermovey = 0.5*flipped;
-            sound([0,,0.0549,0.0019,0.1806,0.3751+(random()*0.3),0.0193,0.2378,0.0414,,0.0453,,,0.3062,0.0736,0.0563,0.014,0.0768,0.936,-0.0341,0.0175,0.1448,0.0321,0.3])
+            sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
         }
         if ((key == "ArrowDown" || key == "s") && playermovey != 3*flipped )
         {
             playermovex = 0;
             playermovey = 3*flipped;
-            sound([1,,0.2506,0.0144,0.0071,0.4263+(random()*0.2),0.2723,-0.252,,,,,,0.7952,-0.6573,,0.1965,-0.182,1,,,,,0.3])
+            sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
             if (playermovex == 0)
             {
                 for (var i = 0; i != obstacle.length; i++)
                 {
                     if (obstacle[i].colliding == true)
                     {
-                        collisionend(i)
+                        collisionEnd(obstacle[i])
                     }
                 }
             }
@@ -460,41 +499,52 @@ function input(key) {
 }
 
 function draw() {
-    player.translate = {x: playerx, y: playery}
     var yoff = (TAU/4)*(1-flipvisual); if (flipped == -1) {yoff = ((TAU/4)*flipvisual)+(TAU/4)*3} //Some fancy numbers to make the player rotate smoothly while flipping screen
     player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipvisual)+yoff} //x and y swap here
-    border.y = playery
+    border.translate.y = player.translate.y
 
     cameray = (-flipvisual*player.translate.y*0.935)-100; // 15/16 
 
     illo.updateRenderGraph();
 }
 
-function gameover() {
+function gameOver() {
     state = 0;
     player.visible = false;
     playermovey = 1;
     canstartgame = false;
-    document.getElementById("l1").style.animation = ""; //Reset animations
-    document.getElementById("l2").style.animation = "";
-    document.getElementById("l1").style.visibility = "visible";
-    document.getElementById("l2").style.visibility = "visible";
-    document.getElementById("l1").innerHTML = "Time up";
-    document.getElementById("l2").innerHTML = "Game Over!";
-    document.getElementById("l3").innerHTML = "Space or Tap to try again";
-    sound([0,,0.0214,,0.2823,0.3797,,-0.4003,,,,,,0.1188,,,,,1,,,,,0.36])
+    l1.style.animation = ""; //Reset animations
+    l2.style.animation = "";
+    l1.style.visibility = "visible";
+    l2.style.visibility = "visible";
+    l1.innerHTML = "Time up";
+    l2.innerHTML = "Game Over!";
+    l3.innerHTML = "Space or Tap to try again";
+    i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
+    sound([0,,0.021,,0.28,0.38,,-0.40,,,,,,0.12,,,,,1,,,,,0.16])
     setTimeout(function(){
         canstartgame = true;
-        document.getElementById("l3").style.visibility = "visible"; 
+        l3.style.visibility = "visible"; 
     }, 1000);
+    if (score > hiscore)
+    {
+        not.style.visibility = "visible"; not.innerHTML = "Congrats, you beat your old highscore of "+hiscore.toString+"with a new score of "+score.toString()+"!";
+    }
 }
 
-//Utility functions
+//Utility functions and features
+//Taken from https://stackoverflow.com/a/19303725
+var seed = 1;
+function random() {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
+
 window.addEventListener("resize", function() {
-    resizescreen();
+    resizeScreen();
 });
 
-function resizescreen() {
+function resizeScreen() {
     var canvas = document.getElementById('game');
     if (window.innerWidth > 850 && window.innerHeight > 600) {illo.zoom = 2}
     else if (window.innerWidth > 600 && window.innerHeight > 400) {illo.zoom = 1.5}
@@ -519,11 +569,24 @@ function pause(toggle) {
     if (toggle == -1) {paused = !paused;}
     else if (paused != toggle) {paused = toggle} else {return;}
 
-    var n = document.getElementById('not')
     if (paused) {
-        n.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume";
+        not.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume";
+        i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
     }
     else {
-        n.style.visibility = "hidden";
+        not.style.visibility = "hidden";
+        i1.style.visibility = "visible"; i2.style.visibility = "visible"; i3.style.visibility = "visible";
     }
+}
+
+function HtmlLoaded() {
+    //Caching all references to HTML elements
+    l1 = document.getElementById("l1");
+    l2 = document.getElementById("l2");
+    l3 = document.getElementById("l3");
+    i1 = document.getElementById("i1");
+    i2 = document.getElementById("i2");
+    i3 = document.getElementById("i3");
+    n = document.getElementById("not");
+    canstartgame = true;
 }

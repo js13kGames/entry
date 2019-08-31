@@ -18,6 +18,7 @@ html, body {
     top: 0%;
     background-color: #ccccccBB;
     font-size: 12px;
+    visibility: hidden; /*QQQ*/
 }
 
 .stats {
@@ -25,6 +26,7 @@ html, body {
   bottom: 5%;
   background-color: #ccccccBB;
   font-size: 12px;
+  visibility: hidden; /*QQQ*/
 }
 
 .title {
@@ -83,13 +85,46 @@ html, body {
   border: white solid 2px;
 }
 
+.int {
+  color: white;
+  position: absolute;
+  pointer-events: none;
+  text-align: center;
+  /*-webkit-text-stroke-width: 2px;*/
+  font-weight: 800;
+  top: 0%;
+  left: 50%;
+  visibility: hidden;
+}
+
+.remaining {
+  font-size: 30px;
+  transform: translate(-50%,-50%);
+  width: 250px;
+}
+
+.jackpot {
+  font-size: 20px;
+  transform: translate(50%,100%) rotate(-10deg);
+  width: 100px;
+  color: black;
+  background-color: white;
+  mix-blend-mode: screen; /* This makes the cutout text possible */
+}
+
+.score {
+  font-size: 20px;
+  transform: translate(-110%,50%);
+  width: 80px;
+}
+
 @keyframes gamestart-top {
   from {
     transform: translate(-125%,-190%) skewY(-10deg) scale(1,1);
     opacity: 1
   }
   to {
-    transform: translate(-125%,-190%) skewY(-10deg) scale(-1.5,1.5);
+    transform: translate(-125%,-190%) skewY(-10deg) scale(-1.5,1.5) rotate(20deg);
     opacity: 0
   }
 }
@@ -100,7 +135,7 @@ html, body {
     opacity: 1
   }
   to {
-    transform: skewY(10deg) translate(-40%,-65%) scale(1.5,-1.5);
+    transform: skewY(10deg) translate(-40%,-65%) scale(1.5,-1.5) rotate(-20deg);
     opacity: 0
   }
 }
@@ -111,5 +146,26 @@ html, body {
   }
   to {
     transform: translate(-50%,250%);
+  }
+}
+
+@keyframes jackpot-gain {
+  from {
+    transform: translate(50%,80%) rotate(-10deg);
+  }
+  to {
+    transform: translate(50%,100%) rotate(-10deg);
+  }
+}
+
+@keyframes jackpot-claim {
+  0% {
+    transform: translate(50%,100%) rotate(-10deg);
+  }
+  50% {
+    transform: translate(50%,100%) rotate(-190deg);
+  }
+  100% {
+    transform: translate(50%,100%) rotate(-370deg);
   }
 }
