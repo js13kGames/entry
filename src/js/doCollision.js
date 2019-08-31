@@ -27,76 +27,106 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
 
         if (ship.shield) {
             potentials = ship.shieldHitbox.potentials();
-        } else {
-            potentials = ship.hitbox.potentials();
-        }
 
-        for (const otherHitbox of potentials) {
-            var otherSprite = otherHitbox.owner;
+            for (const otherHitbox of potentials) {
+                var otherSprite = otherHitbox.owner;
 
-            // Colliding with self (e.g. shield w/ship hitbox)
-            if (otherSprite === ship) {
-                break; // Break out of for ... of
-            }
+                if (ship.shieldHitbox.collides(otherHitbox, cResult)) {
 
-            if ((ship.hitbox.collides(otherHitbox, cResult)) ||
-                (ship.shieldHitbox &&
-                 ship.shieldHitbox.collides(otherHitbox, cResult))) {
-
-                if (otherSprite.type === 'pickup') {
-                    otherSprite.applyTo(ship);
-                    otherSprite.ttl = 0;
-                }
-
-                if (otherSprite.type === 'shrapnel') {
-                    otherSprite.x += cResult.overlap * cResult.overlap_x;
-                    otherSprite.y += cResult.overlap * cResult.overlap_y;
-                }
-
-                if (otherSprite.type === 'bullet') {
-                    otherSprite.ttl = 0;
-
-                    // If you're (or ya bullets) not colliding with yourself
-                    if (otherSprite.owner === ship) {
-                        break;
+                    if (otherSprite.type === 'pickup') {
+                        otherSprite.applyTo(ship);
+                        otherSprite.ttl = 0;
                     }
 
-                    // The ship might have already exploded due to a collision
-                    if (ship.exploded) {
-                        break;
+                    if (otherSprite.type === 'shrapnel') {
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
                     }
 
-                    if (ship.shield) {
+                    if (otherSprite.type === 'ship') {
+                        // Can't collide into other ships that are rewinding
+                        if (otherSprite.rewinding) {
+                            break;
+                        }
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+                    }
+
+                    if (otherSprite.type === 'bullet') {
+                        otherSprite.ttl = 0;
+
+                        // If you're (or ya bullets) not colliding with yourself
+                        if (otherSprite.owner === ship) {
+                            break;
+                        }
+
+                        if (ship.invuln) {
+                            break;
+                        }
+
                         if (!ship.shieldDegrading) {
                             ship.shieldDegrading = 60;
+                            break;
                         }
-                        break;
-                    }
-
-                    if (ship.invuln) {
-                        break;
-                    }
-
-                    ship.explode(sprites);
-
-                    if (otherSprite.owner.player) {
-                        otherSprite.owner.player.scoreInc();
-                    }
-
-                    if (ship.player) {
-                        ship.player.scoreDec();
                     }
                 }
+            } // end for
 
-                if (otherSprite.type === 'ship') {
-                    // Can't collide into other ships that are rewinding
-                    if (otherSprite.rewinding) {
-                        break;
+        } else {
+            potentials = ship.hitbox.potentials();
+
+            for (const otherHitbox of potentials) {
+                var otherSprite = otherHitbox.owner;
+
+                if (ship.hitbox.collides(otherHitbox, cResult)) {
+
+                    if (otherSprite.type === 'pickup') {
+                        otherSprite.applyTo(ship);
+                        otherSprite.ttl = 0;
                     }
-                    otherSprite.x += cResult.overlap * cResult.overlap_x;
-                    otherSprite.y += cResult.overlap * cResult.overlap_y;
+
+                    if (otherSprite.type === 'shrapnel') {
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+                    }
+
+                    if (otherSprite.type === 'ship') {
+                        // Can't collide into other ships that are rewinding
+                        if (otherSprite.rewinding) {
+                            break;
+                        }
+                        otherSprite.x += cResult.overlap * cResult.overlap_x;
+                        otherSprite.y += cResult.overlap * cResult.overlap_y;
+                    }
+
+                    if (otherSprite.type === 'bullet') {
+                        otherSprite.ttl = 0;
+
+                        // If you're (or ya bullets) not colliding with yourself
+                        if (otherSprite.owner === ship) {
+                            break;
+                        }
+
+                        if (ship.invuln) {
+                            break;
+                        }
+
+                        if (ship.invuln) {
+                            break;
+                        }
+
+                        ship.explode(sprites);
+
+                        if (otherSprite.owner.player) {
+                            otherSprite.owner.player.scoreInc();
+                        }
+
+                        if (ship.player) {
+                            ship.player.scoreDec();
+                        }
+                    }
                 }
-            }
+            } // end for
         }
     });
 
