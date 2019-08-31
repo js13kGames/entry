@@ -1,6 +1,7 @@
 import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
 import { Collisions } from 'collisions';
 import { doCollision } from './doCollision';
+import { initGamepads, pollGamepads, buttonPressed, axisValue } from './gamepad';
 import { Ship } from './ship.js';
 import { AmmoPickup } from './pickups/ammo.js';
 import { ShieldPickup } from './pickups/shield.js';
@@ -8,6 +9,7 @@ import { StarPickup } from './pickups/star.js';
 import { Player } from './player.js';
 import { createAsteroid } from './asteroid';
 import { renderText } from './text';
+
 
 // Kontra init canvas
 let { canvas, context } = init();
@@ -20,6 +22,9 @@ const collisionResult = collisionSystem.createResult();
 
 // Kontra init keyboard stuff
 initKeys();
+
+// Init gamepad event listeners n stuff
+initGamepads();
 
 canvas.style = 'width:100%;background:#000';
 canvas.height = 400;
@@ -96,7 +101,7 @@ players.push(player1);
 let player2 = new Player({
     color: '#f11',
     shipType: 'coback',
-    controls: 'wasd',
+    controls: 'joycon',
     sprites: sprites,
     cs: collisionSystem,
     context: context
@@ -109,6 +114,8 @@ players.forEach(player => {
 
 let loop = GameLoop({  // create the main game loop
     update() { // update the game state
+        pollGamepads();
+
         players.forEach(player => {
             player.update(sprites);
         });
@@ -167,10 +174,10 @@ let loop = GameLoop({  // create the main game loop
         players.map((player, i) => player.renderScore(i));
 
         // Render debug collision stuff
-        context.strokeStyle = '#0F0';
-        context.beginPath();
-        collisionSystem.draw(context);
-        context.stroke();
+        // context.strokeStyle = '#0F0';
+        // context.beginPath();
+        // collisionSystem.draw(context);
+        // context.stroke();
     }
 });
 
