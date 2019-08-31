@@ -3,6 +3,8 @@ import { Ship } from './ship';
 import { renderText } from './text';
 import getKeys from './controls';
 
+let gamepadIndex = 0;
+
 export class Player {
     constructor(props) {
         this.color = props.color || '#fff';
@@ -15,8 +17,10 @@ export class Player {
         this.context = props.context;
 
         // Set control scheme
-        if (this.controls) {
-            this.keys = getKeys(this.controls, 0);
+        if (this.controls === 'gamepad') {
+            this.keys = getKeys(this.controls, gamepadIndex++);
+        } else if (this.controls) {
+            this.keys = getKeys(this.controls);
         }
     }
 

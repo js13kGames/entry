@@ -101,7 +101,7 @@ players.push(player1);
 let player2 = new Player({
     color: '#f11',
     shipType: 'coback',
-    controls: 'joycon',
+    controls: 'gamepad',
     sprites: sprites,
     cs: collisionSystem,
     context: context
