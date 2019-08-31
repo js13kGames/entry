@@ -126,7 +126,7 @@ export async function waitForNextFrame () {
 export function zeroPad (str, n) {
   str = str.toString()
   if (str.length > n) {
-    return Array(str.length).fill(9).join('')
+    return Array(n).fill(9).join('')
   }
 
   return Array(n - str.length).fill(0).join('') + str

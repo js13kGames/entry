@@ -21,6 +21,8 @@ export class Level {
     this.tileCountX = 10
     this.tileCountY = 20
 
+    this.time = 0
+
     this.board = new Board(this.tileCountX, this.tileCountY)
 
     this.width = TILE_SIZE * this.tileCountX
@@ -39,6 +41,8 @@ export class Level {
     resetLineClears()
 
     this.scoreAnimations = []
+
+    Graphics.lineWidth = 2
   }
 
   step () {
@@ -70,6 +74,8 @@ export class Level {
       this.gameOverAnimation.step()
       return
     }
+
+    this.time++
 
     if (Input.getKeyDown(HOLD) && !this.controller.wasHeld) {
       this.holdTetromino()
@@ -111,30 +117,27 @@ export class Level {
 
     Graphics.translate((Canvas.width - width) / 2, (Canvas.height - height) / 2)
 
-    Graphics.fillStyle = '#fff'
-    Graphics.fillRect(-2, -2, width + 4, height + 4)
-    Graphics.fillStyle = '#000'
-    Graphics.fillRect(0, 0, width, height)
+    Graphics.strokeStyle = '#fff'
+    Graphics.strokeRect(-1, -1, width + 2, height + 2)
 
     this.renderBoard()
 
     Graphics.translate(width + 25, 0)
 
-    Graphics.fillStyle = '#000'
-    Graphics.lineWidth = 2
-    Graphics.strokeStyle = '#fff'
-    Graphics.strokeRect(-16, 0, 48, 170)
+    Graphics.strokeRect(-16, -1, 48, 170)
 
-    drawText(`LEVEL:`, -17, 190)
-    drawBoldText(`${zeroPad(currentLevel, 2)}`, -17, 197)
-    drawText(`LINES:`, -17, 224)
-    drawBoldText(`${zeroPad(lineClears, 4)}`, -17, 231)
+    drawText(`TIME:`, -17, 27 * 7)
+    drawBoldText(this.getTimeText(), -17, 28 * 7)
+    drawText(`LEVEL:`, -17, 30 * 7)
+    drawBoldText(zeroPad(currentLevel, 2), -17, 31 * 7)
+    drawText(`LINES:`, -17, 33 * 7)
+    drawBoldText(zeroPad(lineClears, 4), -17, 34 * 7)
 
     drawText(`SCORE:`, -17, 297)
-    drawBoldText(`${zeroPad(currentScore, 9)}`, -17, 309, 2)
+    drawBoldText(zeroPad(currentScore, 9), -17, 309, 2)
 
     for (let animation of this.scoreAnimations) {
-      animation.render(20, 296)
+      animation.render(20, 294)
     }
 
     this.renderNextTetrominos()
@@ -142,7 +145,10 @@ export class Level {
     Graphics['resetTransform']()
 
     Graphics.translate((Canvas.width - width) / 2 - 40, (Canvas.height - height) / 2 + 10)
-    drawBoldText(`HOLD`, -8, -8)
+
+    Graphics.strokeRect(-17, -11, 48, 40)
+
+    drawBoldText(`HOLD`, -6, -8)
 
     if (this.heldTetromino) {
       if (this.controller.wasHeld) {
@@ -439,5 +445,14 @@ export class Level {
     Graphics.fillRect(x * size, y * size, size - 1, size - 1)
     Graphics.fillStyle = '#000'
     Graphics.fillRect(x * size + 1, y * size + 1, size - 3, size - 3)
+  }
+
+  getTimeText () {
+    let milliseconds = Math.floor((this.time / 60) % 1 * 100)
+    let seconds = Math.floor(this.time / 60)
+    let hours = Math.floor(seconds / 3600)
+    let minutes = Math.floor(seconds / 60)
+
+    return `${zeroPad(hours, 2)}:${zeroPad(minutes % 60, 2)}:${zeroPad(seconds % 60, 2)}.${zeroPad(milliseconds, 2)}`
   }
 }

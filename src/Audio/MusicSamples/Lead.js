@@ -3,14 +3,15 @@ import {
   applyEnvelope,
   getFrequencyDelta,
   sampleSquare,
-  EnvelopeSampler
+  EnvelopeSampler,
+  sampleTriangle
 } from '../SoundGeneration'
 
 function createEnvelope () {
   const result = []
   for (let i = 0; i <= 1000; i++) {
     const scale = 0.1 + 0.9 * (1 - i / 1000) ** 6
-    result.push([i / 1000, Math.random() * scale])
+    result.push([i / 1000, sampleTriangle((i % 4) / 4) * scale, 2])
   }
   return result
 }

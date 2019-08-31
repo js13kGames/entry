@@ -41,7 +41,7 @@ export const createTripleLineSound = createLineClearSoundFactory(
 )
 
 export const createAllClearSound = createLineClearSoundFactory(
-  [ 10, 17, 10, 5, 8 ],
+  [ 10, 17, 10, 17, 10, 5, 5, 8, 8 ],
   0.5
 )
 

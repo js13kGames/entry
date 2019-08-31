@@ -3,6 +3,16 @@ export let Graphics = Canvas.getContext('2d')
 
 Graphics.imageSmoothingEnabled = false
 
+export function drawRectangle(x, y, width, height, color) {
+  Graphics.fillStyle = color
+  Graphics.fillRect(x, y, width, height)
+}
+
+export function drawRectangleOutline(x, y, width, height, color) {
+  Graphics.strokeStyle = color
+  Graphics.strokeRect(x, y, width, height)
+}
+
 export function drawAt(x, y, callback) {
   Graphics.save()
 
