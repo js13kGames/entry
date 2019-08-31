@@ -9,7 +9,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   root.appendChild(canvas);
   progressWrapper.appendChild(kongProgressBar);
   progressWrapper.appendChild(trexProgressBar);
-  body.appendChild(progressWrapper);
+  root.appendChild(progressWrapper);
 
   const keydown = addEventListener(
     window,
@@ -117,6 +117,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
       keyup();
       click();
       root.removeChild(canvas);
+      root.removeChild(progressWrapper);
     },
     render
   }
