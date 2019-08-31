@@ -6,6 +6,17 @@ const initIntro = (nextLevel) => {
   } = initIntroModel();
 
   const {
-    render
-  } = initIntroView(500, 500, title, instructions, buttonText, nextLevel);
+    render,
+    cleanUp
+  } = initIntroView();
+
+  render(
+    title,
+    instructions,
+    buttonText,
+    () => {
+      cleanUp();
+      nextLevel();
+    }
+  );
 };

@@ -1,33 +1,44 @@
-const initIntroView = (height, width, title, instructions, buttonText, nextLevel) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+const initIntroView = (height, width) => {
   const root = document.getElementById('root');
-  root.appendChild(canvas);
+  // const canvas = createElement('canvas');
+  // const ctx = canvas.getContext('2d');
+  // root.appendChild(canvas);
 
-  ctx.fillStyle = 'black';
-  canvas.height = height;
-  canvas.width = width;
-  canvas.setAttribute('style', 'z-index: 0;');
+  // ctx.fillStyle = 'black';
+  // canvas.height = height;
+  // canvas.width = width;
+  // canvas.setAttribute('style', 'z-index: 0;');
 
-  const heading = document.createElement('h1');
-  heading.innerHTML = title;
-  root.appendChild(heading);
+  const heading = createElement('h1');
+  const p = createElement('p');
+  const nextButton = createElement('button');
+  let listeners = [];
 
-  const p = document.createElement('p');
-  p.innerHTML = instructions;
-  root.appendChild(p);
+  const render = (title, instructions, buttonText, onNextButtonClick) => {
+    heading.innerHTML = title;
+    root.appendChild(heading);
 
-  const nextButton = document.createElement('button');
-  nextButton.innerHTML = buttonText;
-  nextButton.setAttribute('style', 'position: relative;');
-  nextButton.addEventListener('click', nextLevel);
-  root.appendChild(nextButton);
+    p.innerHTML = instructions;
+    root.appendChild(p);
 
-  const render = () => {
-    return canvas;
+    nextButton.innerHTML = buttonText;
+    nextButton.setAttribute('style', 'position: relative;');
+    listeners.push(
+      addEventListener(nextButton, 'click', onNextButtonClick)
+    )
+    root.appendChild(nextButton);
   };
 
+  const cleanUp = () => {
+    listeners.forEach(remove => remove());
+    listeners = [];
+    root.removeChild(heading);
+    root.removeChild(p);
+    root.removeChild(nextButton);
+  }
+
   return {
-    render
+    render,
+    cleanUp
   };
 };
