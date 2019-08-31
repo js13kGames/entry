@@ -23,6 +23,9 @@ export class Level {
 
     this.board = new Board(this.tileCountX, this.tileCountY)
 
+    this.width = TILE_SIZE * this.tileCountX
+    this.height = TILE_SIZE * this.tileCountY
+
     this.tetrominoSource = new TetrominoSource()
     this.heldTetromino = null
     this.nextTetrominos = Array.from(Array(6), () => this.tetrominoSource.getNext())
@@ -35,17 +38,7 @@ export class Level {
     resetScore()
     resetLineClears()
 
-    Graphics.font = 'bold 12px monospace'
-
     this.scoreAnimations = []
-  }
-
-  get width () {
-    return TILE_SIZE * this.tileCountX
-  }
-
-  get height () {
-    return TILE_SIZE * this.tileCountY
   }
 
   step () {
@@ -133,12 +126,12 @@ export class Level {
     Graphics.strokeRect(-16, 0, 48, 170)
 
     drawText(`LEVEL:`, -17, 190)
-    drawBoldText(`\n${zeroPad(currentLevel, 2)}`, -17, 190)
+    drawBoldText(`${zeroPad(currentLevel, 2)}`, -17, 197)
     drawText(`LINES:`, -17, 224)
-    drawBoldText(`\n${zeroPad(lineClears, 4)}`, -17, 224)
+    drawBoldText(`${zeroPad(lineClears, 4)}`, -17, 231)
 
     drawText(`SCORE:`, -17, 297)
-    drawBoldText(`\n${zeroPad(currentScore, 9)}`, -17, 295, 2)
+    drawBoldText(`${zeroPad(currentScore, 9)}`, -17, 309, 2)
 
     for (let animation of this.scoreAnimations) {
       animation.render(20, 296)
@@ -164,7 +157,7 @@ export class Level {
     drawAt(-10, 50, () => {
       if (this.clearStreak > 1) {
         drawSprite(TextsSprite, 0, 0, 7)
-        drawBoldText(`\n${this.clearStreak < 10 ? ' ' : ''}${this.clearStreak - 1}`, -5, 0, 2)
+        drawBoldText(`${this.clearStreak < 10 ? ' ' : ''}${this.clearStreak - 1}`, -5, 7, 2)
       }
 
       if (this.moveTypeAnimation) {
