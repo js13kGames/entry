@@ -94,6 +94,9 @@ export class Ship extends Sprite.class {
     }
 
     addShield() {
+        // Remove the normal hitbox
+        this.hitbox.remove();
+
         this.shield = Math.floor(this.shield + 1) || 1;
         this.shieldHitbox = this.cs.createCircle(
             this.x,
@@ -106,6 +109,15 @@ export class Ship extends Sprite.class {
     removeShield() {
         this.shield = 0;
         this.shieldHitbox.remove();
+
+        // Re-add normal hitbox
+        this.hitbox = this.cs.createPolygon(
+            this.x,
+            this.y,
+            this.lines.hitbox
+        );
+        this.hitbox.scale = this.scale;
+        this.hitbox.owner = this;
     }
 
     /**
@@ -209,7 +221,6 @@ export class Ship extends Sprite.class {
         } else {
             this.invuln = 0;
         }
-
 
         if (this.rainbow > 0) {
             this.rainbow -= 1 / 60;
