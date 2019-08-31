@@ -1,4 +1,5 @@
-const initLevel3 = () => {
+const initLevel3 = (nextLevel) => {
+  let gameIsOver = false;
   const opponentOf = {
     trex: 'kong',
     kong: 'trex'
@@ -51,7 +52,15 @@ const initLevel3 = () => {
     if (newState[name].currentAction === actions.READY) cb();
     // You were hit!
     if (newState[name].currentAction === actions.DISABLED) {
-      wait(name, 1500, () => recoverFromAttack(name, cb))
+      if (newState[name].health <= 0) {
+        gameIsOver = true;
+        wait(name, 500, () => {
+          window.alert(`${opponentOf[name]} won!`);
+          nextLevel();
+        });
+      } else {
+        wait(name, 1500, () => recoverFromAttack(name, cb))
+      }
     }
   };
 
@@ -212,6 +221,7 @@ const initLevel3 = () => {
 
   // Only used by kong
   function keydownHandler (key) {
+    if (gameIsOver) return;
     switch (key) {
       case 37:
         // left
@@ -260,6 +270,7 @@ const initLevel3 = () => {
   }
 
   function trexLoop () {
+    if (gameIsOver) return;
     wait('trex', random() * 300 + 100, trexAction);
   };
 
