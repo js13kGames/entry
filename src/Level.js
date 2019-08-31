@@ -15,6 +15,8 @@ import { ScoreAnimation } from './Animations/ScoreAnimation';
 import { Back2BackAnimation } from './Animations/Back2BackAnimation';
 import { MoveTypeAnimation } from './Animations/MoveTypeAnimation';
 import { TetrominoSource } from './TetrominoSource';
+import { Tetromino } from './Tetrominos/Tetromino';
+import { ScaredTetrominoController } from './ScaredTetrominoController';
 
 export class Level {
   constructor () {
@@ -54,14 +56,31 @@ export class Level {
       this.back2BackAnimation.step()
     }
 
+    if (this.scaredTetrominoController) {
+      this.scaredTetrominoController.step()
+      if (this.scaredTetrominoController.done) {
+        this.nextTetromino()
+        this.scaredTetrominoController = null
+      }
+      return
+    }
+
     let previousScore = currentScore
     if (this.clearAnimation) {
       this.clearAnimation.step()
 
       if (this.clearAnimation.done) {
-        this.removeRows(this.clearAnimation.rows)
+        let effectedTetrominoes = this.board.getTetrominoesInRows(this.clearAnimation.rows)
+        this.board.changeTetrominosToBlocks(effectedTetrominoes)
+        this.scaredTetrominoController = this.getScaredTetrominoController(this.clearAnimation.rows)
+        this.board.clearRows(this.clearAnimation.rows)
         this.clearAnimation = null
-        this.nextTetromino()
+         if (this.scaredTetrominoController) {
+           this.board.removeTetromino(this.scaredTetrominoController.tetromino)
+           this.currentTetromino = null
+         } else {
+          this.nextTetromino()
+         }
       }
       return
     }
@@ -104,8 +123,6 @@ export class Level {
   }
 
   render () {
-    this.updateGhostPosition()
-
     // So that closure compiler recognizes it as an extern
     Graphics['resetTransform']()
 
@@ -324,7 +341,29 @@ export class Level {
     }
   }
 
-  updateGhostPosition () {
+  getScaredTetrominoController (rows) {
+    let items = new Set()
+    for (let x = 0; x < this.tileCountX; x++) {
+      items.add(this.board.getItemAt(x, rows[0] - 1))
+      items.add(this.board.getItemAt(x, rows[rows.length - 1] + 1))
+    }
+    let controllers = new Set()
+    for (let item of items) {
+      if (item instanceof Tetromino) {
+        const controller = new ScaredTetrominoController(item, this.board)
+        if (controller.isFreeableTetromino()) {
+          controllers.add(controller)
+        }
+      }
+    }
+    if (controllers.size > 0) {
+      return [...controllers][Math.floor(Math.random() * controllers.size)]
+    } else {
+      return null
+    }
+  }
+
+  getGhostOffset () {
     const positions = this.currentTetromino.getBlockPositions()
     let maxDeltas = [0, 0, 0, 0]
     for (let i = 0; i < 4; i++) {
@@ -339,11 +378,7 @@ export class Level {
       }
     }
 
-    this.ghostOffset = -Math.min(...maxDeltas)
-  }
-
-  removeRows (rows) {
-    this.board.clearRows(rows)
+    return -Math.min(...maxDeltas)
   }
 
   renderBoard () {
@@ -356,9 +391,13 @@ export class Level {
       }
     }
 
-    if (!this.gameOverAnimation) {
-      this.renderGhostTetromino(this.currentTetromino, this.ghostOffset, TILE_SIZE, this.tileCountY - 1)
+    if (!this.gameOverAnimation && this.currentTetromino) {
+      this.renderGhostTetromino(this.currentTetromino, this.getGhostOffset(), TILE_SIZE, this.tileCountY - 1)
       this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
+    }
+
+    if (this.scaredTetrominoController) {
+      this.renderTetromino(this.scaredTetrominoController.tetromino, TILE_SIZE, this.tileCountY - 1)
     }
 
     if (this.clearAnimation) {
