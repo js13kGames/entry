@@ -1,9 +1,12 @@
 const initGameController = () => {
   const levelInitters = [
-    initIntro,
-    initLevel1,
+    (next) => initIntro('intro', next),
+    // initLevel1,
+    (next) => initIntro('pre-lvl-2', next),
     // initLevel2,
-    initLevel3,
+    (next) => initIntro('pre-lvl-3', next),
+    // initLevel3,
+    (next) => initIntro('credits', next),
     // initCredits
   ];
 

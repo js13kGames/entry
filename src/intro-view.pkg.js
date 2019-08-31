@@ -21,12 +21,14 @@ const initIntroView = (height, width) => {
     p.innerHTML = instructions;
     root.appendChild(p);
 
-    nextButton.innerHTML = buttonText;
-    nextButton.setAttribute('style', 'position: relative;');
-    listeners.push(
-      addEventListener(nextButton, 'click', onNextButtonClick)
-    )
-    root.appendChild(nextButton);
+    if (buttonText) {
+      nextButton.innerHTML = buttonText;
+      nextButton.setAttribute('style', 'position: relative;');
+      listeners.push(
+        addEventListener(nextButton, 'click', onNextButtonClick)
+      );
+      root.appendChild(nextButton);
+    }
   };
 
   const cleanUp = () => {

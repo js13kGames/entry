@@ -1,9 +1,9 @@
-const initIntro = (nextLevel) => {
+const initIntro = (level, nextLevel) => {
   const {
     buttonText,
     instructions,
     title
-  } = initIntroModel();
+  } = initIntroModel(level);
 
   const {
     render,
