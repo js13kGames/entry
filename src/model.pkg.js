@@ -51,7 +51,7 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   // Add the exit cell
   function enableExit () {
-    const newCell = makeMapCell(map.length, 0, EXIT);
+    const newCell = makeMapCell(EXIT);
     map.push([newCell]);
   }
 
@@ -296,7 +296,6 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   buildingsImageCells['2x4'] = sliceBuilding(buildings['2x4'], building2x4Img);
   buildingsImageCells['2x4-2'] = sliceBuilding(buildings['2x4'], building2x4Img2);
-  // buildingsImageCells['police'] = policeLeftImg;
 
 
   // Set map height and width
@@ -350,16 +349,6 @@ const initModel = (height, width, foodCoveragePercent) => {
     return shuffled.slice(0, draw);
   }
 
-  function addItems(numItems, openSquares, itemId) {
-    let itemsRemaining = numItems;
-    while (itemsRemaining) {
-      const index = floor(random() * openSquares.length);
-      const square = openSquares[index];
-
-      itemsRemaining--;
-    }
-  }
-
   function getOpenSquares() {
     let openSquares = [];
     map.forEach(row => {
@@ -375,7 +364,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   // init
   initMap(height, width);
   addBuildings();
-  dealShuffled(getOpenSquares(), 5)
+  dealShuffled(getOpenSquares(), 2)
     .forEach(cell => {
       cell.canEnter = false;
       cell.displayId = POLICE;
@@ -386,8 +375,6 @@ const initModel = (height, width, foodCoveragePercent) => {
   const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
   dealShuffled(openSquaresForPizzas, numFoods)
     .forEach(square => { square.itemId = PIZZA; });
-  // addItems(numFoods, openSquaresForPizzas, PIZZA);
-  // addItems(15, getOpenSquares(), POLICE, policeLeftImg);
 
   // TODO ensure port entrance is open
 
