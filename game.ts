@@ -40,7 +40,7 @@ export class Game {
         this.createCanvasSprite();
         this.loop.start();
         this.onGameObjectKill();
-        if(localStorage.getItem('johnonym-hiscore')) {
+        if(localStorage.getItem('johnonym-hiscore') && !location.host.match('localhost')) {
             this.currentHeighScore = parseInt(localStorage.getItem('johnonym-hiscore'),10);
             const currentHeighScoreText = document.createTextNode('' + this.currentHeighScore);
             this.hiScoreEl.replaceChild(currentHeighScoreText, this.hiScoreEl.childNodes[0]);       
@@ -67,6 +67,19 @@ export class Game {
     initCanvasDimensions(){
         let width = window.outerWidth;
         let height = window.outerHeight - this.topGutter;
+        if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)
+        ){
+            // use outer-width/height for mobile
+        } else{
+            width = window.innerWidth;
+            height = window.innerHeight - this.topGutter;
+        }
         this.gameCanvas.width = width - 4; //minus border width
         this.gameCanvas.height = height - 4;
     }
@@ -107,7 +120,7 @@ export class Game {
                     // GAME OVER
                     this.currentLevel = 0;
                     this.gameObjects = [];
-                    this.createMessage('GAME OVER. NEW GAME STARTING');
+                    this.createMessage('GAME OVER. NEW GAME STARTED');
                     this.audio.resetSequence(this.audio.killSequence);
                     this.audio.playNextPitch(this.audio.gameOverSequence);
                     this.deathObjects.push(new DeathScreen(this.gameCanvas.width, this.gameCanvas.height));
@@ -134,7 +147,7 @@ export class Game {
             const currentHeighScoreText = document.createTextNode('' + this.currentHeighScore);
             this.hiScoreEl.replaceChild(currentHeighScoreText, this.hiScoreEl.childNodes[0]);
             this.audio.playNextPitch(this.audio.hiscoreSequence);
-            this.createMessage('NEW HIGHSCORE!!')
+            this.createMessage('dogeQuote')
             localStorage.setItem('johnonym-hiscore', ''+this.currentHeighScore);
         }
     }
@@ -161,11 +174,13 @@ export class Game {
         }
     }
     createGameObject (level: number) {
-        const maxX = Math.random() * this.gameCanvas.width;
+        let maxX = Math.random() * this.gameCanvas.width;
         let maxY = Math.random() * this.gameCanvas.height;
-        if (maxY > this.gameCanvas.height - 50) {
-            maxY -= 50; // prevent the circle from being created below the navigation bar on mobile
-        }
+        // prevent the circle from being cut in border
+        if (maxY > this.gameCanvas.height/2) maxY -= 50; 
+        else maxY += 50;
+        if (maxX > this.gameCanvas.width/2) maxX -= 50;
+        else maxX += 50;
         const randomHex = this.createRandomHexColor();
         this.gameObjects.push(new Circle(randomHex, 30, maxX, maxY));
         if (this.gameObjects.length === level) {
@@ -179,6 +194,10 @@ export class Game {
         const hexValues = '0123456789ABCDEF';
         for (let i = 0; i < 6; i++) {
             color += hexValues[Math.floor(Math.random() * 16)];
+        }
+        if (color === '#FFFFFF' || color === '#BEBEBE') {
+            // create new if white or gray;
+            return this.createRandomHexColor();
         }
         return color;
     }
@@ -207,6 +226,9 @@ export class Game {
 
     createMessage(msg: string){
         const modalChild = this.modalEl.childNodes[0];
+        if (msg === 'dogeQuote') {
+            msg = this.getRandomDogeQuote();
+        }
         this.modalEl.classList.add('open');
         this.modalEl.classList.remove('close');
         this.modalEl.replaceChild(document.createTextNode(msg), modalChild);
@@ -238,12 +260,26 @@ export class Game {
         const monetization: any = document.monetization;
         setTimeout(()=> {
             if (monetization && monetization.state === 'started') { 
-                this.createMessage('Hello Subscriber! You are now able to restart the level');
+                this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
                 this.isSubscriber = true;
                 const restartBtnEl = document.getElementById('restartBtn');
                 restartBtnEl.classList.remove('hidden');
                 restartBtnEl.addEventListener('click', (event) => this.restartLevel(event));
+
+                document.getElementById('game').classList.add('subscriber');
             }
         });
+    }
+    getRandomDogeQuote(): string{
+        const quotes = [
+            'Many memory 🐕',
+            'Amaze new Record 🐕',
+            'Wow very hiscore 🐕',
+            'Much hiscore wow 🐕',
+            'Very points 🐕',
+            'Such memory 🐕',
+            'Amaze new hiscore 🐕',
+        ];
+        return quotes[Math.floor(Math.random() * quotes.length)];
     }
 }
