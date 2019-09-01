@@ -20,7 +20,11 @@ export class Pickup extends Sprite.class {
         this.dx = props.dx !== undefined ? props.dx : Math.random() - .5;
         this.dy = props.dy !== undefined ? props.dy : Math.random() - .5;
         this.dr = Math.random() < .5 ? -1 : 1;
-        this.hitbox = props.cs.createCircle(props.x, props.y, this.radius * this.scale);
+        this.hitbox = props.game.cSystem.createCircle(
+            props.x,
+            props.y,
+            this.radius * this.scale
+        );
         this.hitbox.owner = this;
         this.colorCounter = 0;
     }

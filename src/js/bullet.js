@@ -26,7 +26,7 @@ export function createBullet(parent, sprites) {
         width: 24,
         height: 24,
         color: parent.color,
-        hitbox: parent.cs.createPoint(parent.x, parent.y),
+        hitbox: parent.game.cSystem.createPoint(parent.x, parent.y),
 
         update() {
             this.advance();

@@ -13,6 +13,8 @@ export class Ship extends Sprite.class {
     constructor(props) {
         super(props);
 
+        this.game = props.game;
+
         // The stats & info for the ship loaded from /ships/*.js
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
 
@@ -42,7 +44,6 @@ export class Ship extends Sprite.class {
         this.maxSpeed = (shipData.maxSpeed + 11) / 6;
 
         // Useful stuff to have references to
-        this.cs = props.collisionSystem;
         this.player = props.player;
 
         // Ship "model" information
@@ -84,7 +85,7 @@ export class Ship extends Sprite.class {
                 this.lines.hitbox.push([line[0], line[1]]);
             });
         }
-        this.hitbox = props.collisionSystem.createPolygon(
+        this.hitbox = this.game.cSystem.createPolygon(
             this.x,
             this.y,
             this.lines.hitbox
@@ -98,20 +99,20 @@ export class Ship extends Sprite.class {
         this.hitbox.remove();
 
         this.shield = Math.floor(this.shield + 1) || 1;
-        this.shieldHitbox = this.cs.createCircle(
+        this.hitbox = this.game.cSystem.createCircle(
             this.x,
             this.y,
             this.radius + 4 * this.shield
         );
-        this.shieldHitbox.owner = this;
+        this.hitbox.owner = this; // Re-add the hitbox owner
     }
 
     removeShield() {
+        this.hitbox.remove();
         this.shield = 0;
-        this.shieldHitbox.remove();
 
         // Re-add normal hitbox
-        this.hitbox = this.cs.createPolygon(
+        this.hitbox = this.game.cSystem.createPolygon(
             this.x,
             this.y,
             this.lines.hitbox
@@ -129,7 +130,7 @@ export class Ship extends Sprite.class {
      * @param  {[type]} sprites [description]
      * @return {[type]}         [description]
      */
-    fire(sprites) {
+    fire() {
         if (this.fireDt < this.rof ||
             this.ammoCurrent < 1 ||
             this.rewinding) {
@@ -146,7 +147,7 @@ export class Ship extends Sprite.class {
         this.dx -= cos / (this.mass / 4);
         this.dy -= sin / (this.mass / 4);
 
-        createBullet(this, sprites);
+        createBullet(this, this.game.sprites);
     }
 
     turnLeft() {
@@ -277,19 +278,14 @@ export class Ship extends Sprite.class {
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
         this.hitbox.angle = util.degToRad(this.rotation);
-
-        if (this.shieldHitbox) {
-            this.shieldHitbox.x = this.x;
-            this.shieldHitbox.y = this.y;
-        }
     }
 
-    explode(sprites) {
+    explode() {
         this.exploded = true;
 
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
-            createShrapnel(line, this, sprites);
+            createShrapnel(line, this, this.game.sprites);
         });
     }
 

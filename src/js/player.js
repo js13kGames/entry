@@ -10,8 +10,7 @@ export class Player {
         this.color = props.color || '#fff';
         this.shipType = props.shipType || 'tri';
         this.controls = props.controls;
-        this.sprites = props.sprites; // Ref to all the sprites in the game
-        this.cs = props.cs; // Ref to the game's collision system
+        this.game = props.game;
         this.ready = false;
         this.score = 0;
         this.context = props.context;
@@ -24,7 +23,7 @@ export class Player {
         }
     }
 
-    handleKeyPresses(sprites) {
+    handleKeyPresses() {
         if (this.ship && this.ship.isAlive) {
             // Rewind is first here so it has priority over everything
             if (this.keys.rewind()) {
@@ -46,14 +45,14 @@ export class Player {
             }
 
             if (this.keys.fire()) {
-                this.ship.fire(sprites);
+                this.ship.fire();
             }
         }
     }
 
-    update(sprites) {
+    update() {
         if (this.keys && this.keys !== 'AI') {
-            this.handleKeyPresses(sprites);
+            this.handleKeyPresses();
         }
     }
 
@@ -68,7 +67,7 @@ export class Player {
         }
     }
 
-    spawn(ships, sprites) {
+    spawn() {
         // Create a whole new ship for the player
 
         this.ship = new Ship({
@@ -77,7 +76,7 @@ export class Player {
             width: 6,
             color: this.color,
             shipType: this.shipType,
-            collisionSystem: this.cs,
+            game: this.game,
             player: this,
 
             update() {
@@ -85,15 +84,14 @@ export class Player {
             }
         });
 
-        ships.push(this.ship);
-        sprites.push(this.ship);
+        this.game.sprites.push(this.ship);
     }
 
-    respawn(ships, sprites) {
+    respawn() {
         // Reset anything ???
 
         // Spawn an entirely new ship for the player ???
-        this.spawn(ships, sprites);
+        this.spawn();
         this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
     }
 
