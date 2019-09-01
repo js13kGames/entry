@@ -38,8 +38,8 @@ export class Ship extends Sprite.class {
         this.radius = (shipData.radius + 1) * this.scale;
         this.rof = 1 / this.rof;
         this.thrust = shipData.thrust + 11;
-        this.turnRate = (shipData.turnRate + 6) * .75;
-        this.maxSpeed = (shipData.maxSpeed + 11) / 5;
+        this.turnRate = (shipData.turnRate + 6) / 2;
+        this.maxSpeed = (shipData.maxSpeed + 11) / 6;
 
         // Useful stuff to have references to
         this.cs = props.collisionSystem;

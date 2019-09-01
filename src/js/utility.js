@@ -56,8 +56,8 @@ export function slow(velocity, mass = 10, maxSpeed = 3) {
         dx = dx / magnitude * maxSpeed;
         dy = dy / magnitude * maxSpeed;
     } else {
-        dx = Math.abs(dx) > minSpeed ? dx * Math.min(.99, .85 + mass / 99) : 0;
-        dy = Math.abs(dy) > minSpeed ? dy * Math.min(.99, .85 + mass / 99) : 0;
+        dx = Math.abs(dx) > minSpeed ? dx * Math.min(.99, .84 + mass / 99) : 0;
+        dy = Math.abs(dy) > minSpeed ? dy * Math.min(.99, .84 + mass / 99) : 0;
     }
 
     [ velocity.x, velocity.y ] = [ dx, dy ];

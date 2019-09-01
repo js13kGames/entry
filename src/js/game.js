@@ -123,15 +123,17 @@ let loop = GameLoop({  // create the main game loop
         sprites.map(sprite => {
             sprite.update();
 
-            if (sprite.x > canvas.width) {
-                sprite.x = 0;
-            } else if (sprite.x < 0) {
-                sprite.x = canvas.width;
-            }
-            if (sprite.y > canvas.height) {
-                sprite.y = 0;
-            } else if (sprite.y < 0) {
-                sprite.y = canvas.height;
+            if (sprite.type !== 'bullet') {
+                if (sprite.x > canvas.width) {
+                    sprite.x = 0;
+                } else if (sprite.x < 0) {
+                    sprite.x = canvas.width;
+                }
+                if (sprite.y > canvas.height) {
+                    sprite.y = 0;
+                } else if (sprite.y < 0) {
+                    sprite.y = canvas.height;
+                }
             }
         });
 
