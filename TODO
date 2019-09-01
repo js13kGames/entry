@@ -1,4 +1,2 @@
 TODO
-- build script fails to inline <script src="https://js13kgames.com/webxr-src/aframe.js"></script>
-  -> inline a local copy for dev, use the JS13kgames.com copy for build
 - changes to index.html aren't hot-reloaded

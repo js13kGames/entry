@@ -7,15 +7,12 @@
     "clean": "rm -rf dist && mkdir dist",
     "build": "run-s clean build:*",
     "build:js": "rollup -c --environment MINIFY",
-    "build:html": "html-inline -i src/index.html -b dist | html-minifier -c htmlmin.json -o dist/index.html",
+    "build:html": "grep -v aframe-v0.9.2.min.js src/index.html | html-inline -b dist | sed 's_<script>_<script src=https://js13kgames.com/webxr-src/aframe.js></script><script>_' | html-minifier -c htmlmin.json -o dist/index.html",
     "build:zip": "zip -FS -qjX9 dist/game.zip dist/index.html",
     "dev": "npm-run-all -s clean -p dev:*",
     "dev:js": "rollup -c -w --environment DEBUG",
-    "dev:html": "cp src/index.html dist",
+    "dev:html": "cp src/index.html src/lib/* dist",
     "dev:serve": "browser-sync start --server dist --files dist --host 0.0.0.0"
-  },
-  "dependencies": {
-    "aframe": "^0.9.2"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",

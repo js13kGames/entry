@@ -1,1 +1,1 @@
-console.log('Hello WebXR')
+console.log('hello WebXR ', AFRAME);
