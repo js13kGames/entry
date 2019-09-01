@@ -1,4 +1,4 @@
-import { Sprite, initPointer, track, Pool, GameLoop} from 'kontra';
+import { Sprite, initPointer, track, untrack, Pool, GameLoop} from 'kontra';
 import {IGameObject} from './gameObject';
 import { on, off, emit } from 'kontra';
 import { GameEvent, GameEventData } from './gameEvent';
@@ -37,5 +37,8 @@ export class Circle implements IGameObject {
     }
     trackObject(){
         track(this.sprite);
+    }
+    untrackObject(){
+        untrack(this.sprite);
     }
 }
