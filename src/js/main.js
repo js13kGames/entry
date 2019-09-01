@@ -102,6 +102,7 @@
     **/
     gameOver: function(method) {
       this.dead = true;
+      this.level = 1;
 
       // Display game over text
       this.textLevelEndEl.setAttribute('visible', true);
