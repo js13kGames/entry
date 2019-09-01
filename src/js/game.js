@@ -21,8 +21,8 @@ initKeys();
 initGamepads();
 
 canvas.style = 'width:100%;background:#000';
-canvas.height = 400;
-canvas.width = 800;
+canvas.height = 720;
+canvas.width = 1281; // Fixes scrollbars on my laptop when fullscreen sigh
 
 // Testing making canvas px match display px rather than scaling
 // var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
