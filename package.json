@@ -13,7 +13,7 @@
     "dev:js": "rollup -c -w --environment DEBUG",
     "dev:html": "cp src/index.html dist",
     "dev:lib": "cp src/lib/* dist",
-    "dev:serve": "browser-sync start --server dist --files dist --host 0.0.0.0",
+    "dev:serve": "browser-sync start --server dist --files dist --host 0.0.0.0 --https",
     "dev:watch": "chokidar src/index.html -c 'npm run-s dev:html'"
   },
   "devDependencies": {
