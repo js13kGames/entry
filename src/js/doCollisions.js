@@ -178,6 +178,15 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                     return;
                 }
 
+                // If the ship and the asteroid are both going super slow,
+                // don't explode. Ideally this'd take into account mass etc.
+                if (util.normalise(sprite1.velocity) < .5 &&
+                    util.normalise(sprite2.velocity) < .5) {
+                    sprite1.x -= cResult.overlap * cResult.overlap_x;
+                    sprite1.y -= cResult.overlap * cResult.overlap_y;
+                    return;
+                }
+
                 sprite1.explode(sprites);
             }
             return;
