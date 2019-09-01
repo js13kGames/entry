@@ -75,6 +75,7 @@ export function createAsteroid(props) {
 
         explode(sprites) {
             this.exploded = true;
+            this.ttl = 0;
 
             // Create new line sprites where the ship lines were
             this.lines.forEach(line => {

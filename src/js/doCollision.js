@@ -89,6 +89,9 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                             otherSprite.y += cResult.overlap * cResult.overlap_y;
                         }
 
+                        if (ship.rainbow) {
+                            otherSprite.explode(sprites);
+                        }
                     }
 
                     if (otherSprite.type === 'bullet') {
@@ -164,11 +167,6 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         // particles
                     } else {
                         asteroid.explode(sprites);
-
-                        if (otherSprite.owner.player) {
-                            otherSprite.owner.player.scoreInc();
-                        }
-                        asteroid.ttl = 0
                     }
 
                 }
@@ -186,6 +184,31 @@ export function doCollision(collisionSystem, cResult, ships, asteroids, sprites)
                         }
                         otherSprite.x += cResult.overlap * cResult.overlap_x;
                         otherSprite.y += cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
+
+                    if (otherSprite.rainbow) {
+                        // Medium asteroids split into smaller ones
+                        if (60 > asteroid.radius && asteroid.radius > 15) {
+
+                            // Split the asteroid
+                            for (var i = 0; i < 3; i++) {
+                                createAsteroid({
+                                    x: asteroid.x,
+                                    y: asteroid.y,
+                                    radius: asteroid.radius / 1.8,
+                                    asteroids: asteroids,
+                                    sprites: sprites,
+                                    cs: collisionSystem
+                                });
+                            }
+                            asteroid.ttl = 0
+                        } else if (asteroid.radius > 60) {
+                            otherSprite.x += cResult.overlap * cResult.overlap_x;
+                            otherSprite.y += cResult.overlap * cResult.overlap_y;
+                        } else {
+                            asteroid.explode(sprites);
+                        }
                         return;
                     }
 
