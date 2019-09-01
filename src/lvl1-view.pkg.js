@@ -14,6 +14,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     OUT_OF_BOUNDS_CUTOFF,
     STREET,
     PIZZA,
+    HOTDOG,
     EXIT
   } = cellIds;
   const cellStyles = {
@@ -38,36 +39,10 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     ape.data[i + 3] = 255;  // A value
   }
 
-  const pizzaDataUrl = (() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 100;
-    canvas.height = 100;
-    const ctx = canvas.getContext('2d');
-    ctx.beginPath();
-    ctx.moveTo(10, 15);
-    ctx.quadraticCurveTo(50, 0, 90, 15);
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = 'brown';
-    ctx.stroke();
-    ctx.lineTo(50, 90);
-    ctx.lineTo(10, 15);
-    ctx.fillStyle = 'yellow';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(35, 20, 7, 0, Math.PI * 2);
-    ctx.fillStyle = 'red';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(60, 40, 7, 0, Math.PI * 2);
-    ctx.fillStyle = 'red';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(44, 60, 7, 0, Math.PI * 2);
-    ctx.fillStyle = 'red';
-    ctx.fill();
-    // return ctx.getImageData(0, 0, 100, 100);
-    return canvas.toDataURL('image/png');
-  })();
+  const pizzaImg = new Image();
+  pizzaImg.src = 'assets/pizza.svg';
+  const hotdogImg = new Image();
+  hotdogImg.src = 'assets/hot-dog.svg';
 
   function draw(mapView, state) {
     canvas.width = state.width;
@@ -86,11 +61,8 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
           ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
         if (cell.itemId) {
-          if (cell.itemId === PIZZA) {
-            var img = new Image();
-            img.src = pizzaDataUrl;
-            ctx.drawImage(img, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
-          }
+          if (cell.itemId === PIZZA) ctx.drawImage(pizzaImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+          if (cell.itemId === HOTDOG) ctx.drawImage(hotdogImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
       }
     }

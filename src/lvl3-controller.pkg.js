@@ -54,10 +54,7 @@ const initLevel3 = (nextLevel) => {
     if (newState[name].currentAction === actions.DISABLED) {
       if (newState[name].health <= 0) {
         gameIsOver = true;
-        wait(name, 500, () => {
-          window.alert(`${opponentOf[name]} won!`);
-          nextLevel();
-        });
+        wait(name, 500, () => endGame(opponentOf[name]));
       } else {
         wait(name, 1500, () => recoverFromAttack(name, cb))
       }
@@ -67,8 +64,7 @@ const initLevel3 = (nextLevel) => {
   function move (desiredDirection, name, cb = noop) {
     const state = getState();
     const char = state[name];
-    // This needs to move somewhere else. You shouldn't be able to try to move if you're dead...
-    if (char.health <= 0) return window.alert(`${name} has no health`);
+
     if (char.currentAction !== actions.READY) return;
 
     setState((state) => {
@@ -276,6 +272,12 @@ const initLevel3 = (nextLevel) => {
     if (gameIsOver) return;
     wait('trex', random() * 300 + 100, trexAction);
   };
+
+  function endGame (winner) {
+    window.alert(`${winner} won!`);
+    cleanUp();
+    nextLevel();
+  }
 
   const {
     cleanUp,

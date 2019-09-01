@@ -9,6 +9,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const STREET = uid();
   const S = STREET;
   const PIZZA = uid();
+  const HOTDOG = uid();
   const EXIT = uid();
 
   const map = [];
@@ -374,7 +375,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const openSquaresForPizzas = getOpenSquares();
   const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
   dealShuffled(openSquaresForPizzas, numFoods)
-    .forEach(square => { square.itemId = PIZZA; });
+    .forEach(square => { square.itemId = random() < .5 ? PIZZA : HOTDOG; });
 
   // TODO ensure port entrance is open
 
@@ -388,6 +389,7 @@ const initModel = (height, width, foodCoveragePercent) => {
       OUT_OF_BOUNDS_CUTOFF,
       STREET,
       PIZZA,
+      HOTDOG,
       EXIT
     },
     numFoods,
