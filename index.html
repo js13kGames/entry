@@ -2,6 +2,8 @@
 <head>
     <style>
     body{
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 12px;
         height: 100%;
         width: auto;
         display: flex;
@@ -42,7 +44,18 @@
         align-items: center;
     }
     .btn {
-
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 12px;
+    }
+    #instructions {
+        font-size: 16px;
+        font-weight: bolder;
+        position: absolute;
+        width: 100%;
+        height: 20px;
+        top: 100px;
+        pointer-events: none;
+        text-align: center;
     }
     .hidden{
         display: none;
@@ -53,11 +66,10 @@
 </head>
 <body>
     <div class="game-info">
-        <span>Click the circles in the opposite order as they appear</span>
         <div>Hiscore: <span id="hiscore">1</span></div>
         <button id="restartBtn" type="button" class="btn hidden">Restart Current Level</button>
     </div>
-    
+    <span id="instructions">Click the circles in the opposite order as they appear</span>
     <canvas id="game" width="400"
         height="400"></canvas>
     <div id="modal" class="modal close">

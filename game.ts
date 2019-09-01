@@ -145,7 +145,20 @@ export class Game {
                 this.createGameObject(level);
             },1000);
         }
-        
+        this.displayOrHideInstructions(level);
+    }
+    displayOrHideInstructions(level: number){
+        if (level <= 1) {
+            const instructionEl = document.getElementById('instructions');
+            if (instructionEl && instructionEl.classList.contains('hidden')) {
+                instructionEl.classList.remove('hidden')
+            }
+        } else {
+            const instructionEl = document.getElementById('instructions');
+            if (instructionEl && !instructionEl.classList.contains('hidden')) {
+                instructionEl.classList.add('hidden')
+            }
+        }
     }
     createGameObject (level: number) {
         const maxX = Math.random() * this.gameCanvas.width;

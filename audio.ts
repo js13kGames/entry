@@ -30,7 +30,7 @@ export class Audio {
             this._hiscoreSequence.gain.gain.value = 0.15;
             this._hiscoreSequence.push(note3, note3, note3);
         } catch (error) {
-            alert('audio not supported');
+            console.warn('audio is not supported on this device');
             this._isSupported = false;
         }
     }
