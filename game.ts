@@ -65,8 +65,8 @@ export class Game {
         });
     }
     initCanvasDimensions(){
-        let width = window.innerWidth;
-        let height = window.innerHeight - this.topGutter;
+        let width = window.outerWidth;
+        let height = window.outerHeight - this.topGutter;
         this.gameCanvas.width = width - 4; //minus border width
         this.gameCanvas.height = height - 4;
     }
