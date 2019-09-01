@@ -20,7 +20,7 @@ let tempo = 120;
 // beep sound
 let beepNote = new TinyMusic.Note('F3 0.0125');
 let beepSnd = new TinyMusic.Sequence(ac, tempo);
-beepSnd.gain.gain.value = 0.25;
+beepSnd.gain.gain.value = 0.10;
 beepSnd.push(beepNote);
 beepSnd.loop = false;
 
@@ -32,18 +32,24 @@ walkSnd.push(walkNote);
 walkSnd.loop = false;
 
 // kill sound
-let killNote = new TinyMusic.Note('B5 s');
-let killSnd = new TinyMusic.Sequence(ac, tempo);
+let killNote = new TinyMusic.Note('B3 s');
+let killSnd = new TinyMusic.Sequence(ac, tempo/2);
+killSnd.waveType = "sawtooth";
 killSnd.gain.gain.value = 0.25;
+killSnd.staccato = 0;
+killSnd.bass.gain.value = 25;
+killSnd.treble.gain.value = 15;
 killSnd.push(killNote);
 killSnd.loop = false;
 
+// success sound
+let goodNote = new TinyMusic.Note('C5 s');
+let goodSnd = new TinyMusic.Sequence(ac, tempo);
+goodSnd.waveType = "sine";
+goodSnd.gain.gain.value = 0.10;
+goodSnd.push(goodNote);
+goodSnd.loop = false;
 
-
-function playBeep(){
-    //load and play the beep sound
-    beepSnd.play();
-}
 
 /** Web monitization idea: different robot skins.
  * 
@@ -331,7 +337,10 @@ function levelTransition(timeout) {
     let levelHeight = (this_level.length - 2) * gridSize;
     if (animationCounter < levelHeight) {
         animationCounter++;
-        setTimeout(levelTransition, timeout/2);
+        setTimeout(function(){
+            timeout = timeout/4
+            levelTransition(timeout);
+        }, timeout);
     } else {
         gotoNextLevel();
         levelTransitionEnd(100)
@@ -366,11 +375,12 @@ var slowTextCounter = 0;
 var queueCounter = 0;
 var slowTextHandler;
 async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
+
     if (queueCounter < message.length){
         if (slowTextCounter < message[queueCounter].length){
             if (message[queueCounter] === "narrator"){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "magenta");
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
             } else if (message[queueCounter] === '\n') {
                 queueCounter++;
                 slowTextCounter = -1;
@@ -378,7 +388,7 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 x = -8;
             } else if (message[queueCounter] === "stabbing robot 3000"){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
             } else if (message[queueCounter] === "b"){
                 //draw rectangles over previous message
                 ctx.fillStyle = "black";
@@ -392,21 +402,41 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 await sleep(1000);
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
-                drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
+                if(score === 0){
+                    drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
+                }
                 x = -20;
                 y = 48;
             } else if ((message[queueCounter] === "hardware") || (message[queueCounter] === "limitations")) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 152, 240)");
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
             } else if(message[queueCounter] === "Good."){
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(152, 249, 188)");
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
             } else if ( (message[queueCounter] === "Just remember WASD to move the robot") || (message[queueCounter] == "and to stab targets just move into them.") ) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 96, 19)");
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
+            } else if (message[queueCounter] === "d"){
+                await sleep(400);
+            } else if (message[queueCounter] === "            STABBING NOISES"){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
+                //beepSnd.play();//make sound effect
+            } else if (message[queueCounter] === "x"){
+                let i;
+                let sidebarX = (this_level.length + 2)
+                for (i=0; i < 23; i++){
+                    ctx.fillStyle = "black";
+                    ctx.fillRect((sidebarX + 1) * gridSize - 20, 160, 180, 20);
+                    drawnScore++;
+                    goodSnd.play();
+                    drawPixelText("score " + drawnScore.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
+                    await sleep(25);
+                }
+                //queueCounter++;
+
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
-                playBeep();//make sound effect
+                beepSnd.play();//make sound effect
             }
 
             
@@ -420,6 +450,9 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
             queueCounter++;
             drawPixelTextSlow(message, x+size+10, y, size, delay, color);
         }
+    } else{
+        slowTextCounter = 0;
+        queueCounter = 0;
     }
 }
 
@@ -527,7 +560,10 @@ function drawLevel(level_array) {
     let sidebarX = (this_level.length + 2)
     ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
     /* draw score */
-    if(drawnScore < score) drawnScore++;
+    if(drawnScore < score){ 
+        drawnScore++;
+        goodSnd.play();
+    }
     drawPixelText("score " + drawnScore.toString(), (sidebarX + 1) * gridSize - 20, 160, 3, true);
     /* draw timer */
     drawPixelText("time: " + timer.toString(), (sidebarX + 1) * gridSize - 20, 210, 3, true);
@@ -551,7 +587,6 @@ function drawLevel(level_array) {
 
 /* GAME INPUT FUNCTIONS */
 
-/* TODO: write collision checking function for a particular spot */
 function checkCollision(x, y) {
     switch (this_level[y][x]) {
         case '#':
@@ -575,7 +610,7 @@ function checkCollision(x, y) {
         
         case target:
             // change out the target
-            killSnd.play();
+            // goodSnd.play();
             this_level[y] = splice(this_level[y], x, 1, target.toUpperCase());
             goal--;
             score += 10;
@@ -648,6 +683,16 @@ Mousetrap.bind('w', function(){movePlayer(0, -1, 'n')}, 'keypress');
 Mousetrap.bind('s', function(){movePlayer(0, 1, 's')}, 'keypress');
 Mousetrap.bind('a', function(){movePlayer(-1, 0, 'w')}, 'keypress');
 Mousetrap.bind('d', function(){movePlayer(1, 0, 'e')}, 'keypress');
+Mousetrap.bind('n', function(){
+    transition = true;
+    takeInput = false;
+    animationCounter = 0;
+    levelTransition(100);
+});
+
+
+/**/
+
 
 /* MOVING SHADOW PLAYER */
 var shadowPlayerMoving;
@@ -672,7 +717,7 @@ function moveShadowPlayer() {
         moveShadowCounter++;
     }
     
-    console.log(paths[currentLevelIndex][moveShadowCounter]);
+    //console.log(paths[currentLevelIndex][moveShadowCounter]);
 
     /* Kill Target Code */
 
@@ -694,7 +739,7 @@ function moveShadowPlayer() {
 var gameOverCounter = 0;
 function gameOver(){
     takeInput = false; //stop player from moving
-
+    killSnd.play(); //play sound
 
     /* Clear any loops */
     clearTimeout(shadowPlayerMoving);
@@ -784,6 +829,7 @@ let titleContents = [
     "Hello dear player.  It is I the",
     "narrator",
     "!",
+    "d",
     "\n",
     "And you are the",
     "stabbing robot 3000",
@@ -793,6 +839,7 @@ let titleContents = [
     "b",
     "very bad people.",
     "\n",
+    "d",
     "This would be a simple task but due to",
     "hardware",
     "\n",
@@ -812,6 +859,9 @@ let titleContents = [
     "the first half of targets.",
     "\n",
     "Confusing?",
+    "d",
+    "d",
+    "d",
     "Good.",
     "\n",
     "Just remember WASD to move the robot",
@@ -820,27 +870,7 @@ let titleContents = [
 ];
 
 
-let endscreenText = [
-    "GOOD JOB!",
-    "You have taken down all the targets.",
-    "\n",
-    "You even netted a total of " + score + " points!",
-    "\n",
-    "HOWEVER, this is not the end of our journey",
-    "\n",
-    "stabbing robot 3000",
-    "there will inevitably be",
-    "\n",
-    "more targets to be stabbed during",
-    "\n",
-    "my illegal seizure of power",
-    "b",
-    'LEGITIMATE CAMPAIGN.',
-    "\n",
-    "so uhh.. great  job hero!",
-    "\n",
-    "err.. power off?"
-];
+
 
 
 var main;
@@ -857,25 +887,153 @@ function titleScreen(){
     Mousetrap.bind('space', function(){
         clearTimeout(slowTextHandler);
         Mousetrap.unbind('space');
+        slowTextCounter = 0;
+        queueCounter = 0;
         main = setInterval(mainLoop, 25);
     });
 }
 
+//first screen player sees
+function splashScreen(){
+    let alignX = 60;
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    drawPixelText("BACKSTABBERS", alignX, 48, 7, true, "red");
+    drawPixelText("BACKSTABBERS", alignX+3, 50, 7, true, "lime");
+
+    drawPixelText("A GAME ABOUT STABBING", alignX+20, 90, 3, true, "lime");
+
+    drawPixelText("PRESS ENTER TO START GAME", 90, 180, 2, false, "red");
+    drawPixelText("PRESS ENTER TO START GAME", 91, 180, 2, false, "lime");
+    
+
+    drawPixelText("PRESS S TO BUY SKINS", 90, 240, 2, false, "red");
+    drawPixelText("PRESS S TO BUY SKINS", 91, 240, 2, false, "lime");
+
+    //drawPixelText("JavaScript ");
+
+    Mousetrap.bind("enter", function(){
+        Mousetrap.unbind("enter");
+        titleScreen();
+    });
+}
+
+
 function gameWin(){
 
-    let gameX = 5;
-    let gameY = 48;
+    let endscreenText = [
+        "GOOD JOB!",
+        "\n",
+        "You have taken down all the targets.",
+        "\n",
+        "You even netted a total of " + score + " points!",
+        "\n",
+        "HOWEVER, this is not the end of our journey,",
+        "\n",
+        "stabbing robot 3000",
+        "there will inevitably be",
+        "\n",
+        "more targets to be stabbed during my",
+        "\n",
+        "illegal seizure of power               ",
+        "b",
+        'LEGITIMATE CAMPAIGN.',
+        "\c",
+        "so uhh.. great  job hero!",
+        "d",
+        "\n",
+        "err..",
+        "d",
+        "power off?",
+        "d",
+        "d",
+        "d",
+        "\n",
+        "wait what are you doing with that knife?",
+        "\n",
+        "d",
+        "d",
+        "TURN OFF  ROBOT!   STOP!",
+        "\n",
+        "d","d",
+        "I DEMAND YOU STOP ROBOT",
+        "d",
+        "\n",
+        "ROBOT TURN OF F",
+        "\n",
+        "            STABBING NOISES",
+        "d","d","d", "d","d","d","d",
+        "x",//pointgag
+        "\c",
+        "d","d","d","d","d","d","d","d","d",
+        "\n",
+        "you win.",
+        "d","d","d","d","d","d","d","d","d",
+        "\n",
+        "\c",
+        "Here's some trivia:",
+        "\n",
+        "Backstabbers was remorsefully developed by",
+        "\n",
+        "Milan Donhowe",
+        "for the 2019 13kb JS GameJam",
+        "\n",
+        "Libraries used include:",
+        '\n',
+        "Voca.js",
+        "Mousetrap",
+        "PixelFont",
+        "And TinyMusic."
+    ];
+
+    //let gameX = 0;
+    //let gameY = 54;
     let fontSize = 2;
 
     ctx.fillStyle = "black";
     ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
-    drawPixelTextSlow(endscreenText, gameX, gameY, fontSize, 50);
+    drawPixelTextSlow(endscreenText, 5, 54, fontSize, 50);
 
 
 }
 
 
+function endGame(bool){
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    if(bool){
+        //kill narrator
+        console.log('z pressed');
+    } else {
+        // end game credit
+        let endingText = [
+            "\c",
+            "SHUTTING DOWN PROCESSES",
+            "d",
+            "d",
+            "d",
+            "COMPLETE.",
+        ];
+        drawPixelTextSlow(endingText, 0, 32, 2, 50);
+    }
+    let endingText = [
+        "\c",
+        "Wait,",
+        "stabbing robot 3000",
+        "what are yo-",
+        "\n",
+        "d",
+        "STABBING SOUNDS",
+        "d",
+        "d",
+        "d",
+        "d",
+        "d",
+        "scorejoke"
+    ];
+    drawPixelTextSlow(endingText, 0, 32, 2, 50);
 
-titleScreen();
+}
 
-//main = setInterval(mainLoop, 25);
+
+splashScreen();
