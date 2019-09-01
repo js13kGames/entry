@@ -3,7 +3,6 @@ const {
   Sprite,
   GameLoop,
   load,
-  setImagePath,
   imageAssets,
   on,
   SpriteSheet,
@@ -61,7 +60,6 @@ const { canvas, context } = init();
 const canvasWidth = canvas.width;
 const centerX = canvasWidth / 2;
 // Set image path and init pointer
-setImagePath("./assets/sprites");
 initPointer();
 
 // Check loaded assets
@@ -75,7 +73,7 @@ on("assetLoaded", (asset, url) => {
 });
 
 // Loading assets
-load("Coiner.png")
+load("./assets/sprites/Coiner.png")
   .then(function(assets) {
     initLoadingVariables();
 
