@@ -32,12 +32,12 @@ walkSnd.push(walkNote);
 walkSnd.loop = false;
 
 // kill sound
-let killNote = new TinyMusic.Note('B3 s');
+let killNote = new TinyMusic.Note('B2 s');
 let killSnd = new TinyMusic.Sequence(ac, tempo/2);
-killSnd.waveType = "sawtooth";
-killSnd.gain.gain.value = 0.25;
+killSnd.waveType = "sine";
+killSnd.gain.gain.value = 0.12;
 killSnd.staccato = 0;
-killSnd.bass.gain.value = 25;
+killSnd.bass.gain.value = 30;
 killSnd.treble.gain.value = 15;
 killSnd.push(killNote);
 killSnd.loop = false;
@@ -124,8 +124,8 @@ var level_4 = `
 ##ei...#...i#
 ######.######
 #s........e.#
-###.##.#.####
-###e##p#i####
+###.##.######
+###e##p######
 ######i######
 #############
 `;
@@ -182,7 +182,7 @@ var this_level = levels[currentLevelIndex].split("\n");//turns the level templat
 setupGoal(target);//counts number of targets in the level
 takeInput = true;
 
-
+var RFD;//0=time 1=wrong target 2=shadowPlayer
 
 // init generator function for the shadow player movement
 var moveShadowCounter = 0;
@@ -601,6 +601,7 @@ function checkCollision(x, y) {
         case 's':
         case 'p':
             if (secondTry == true){
+                RFD = 2;
                 gameOver();
                 return false;
             } else {
@@ -625,12 +626,14 @@ function checkCollision(x, y) {
         case 'i':
             if ('i' != target){
                 this_level[y] = splice(this_level[y], x, 1, 'I');
+                RFD = 1;
                 gameOver();
             }
             return false;
         case 'e':
             if ('e' != target){
                 this_level[y] = splice(this_level[y], x, y, "E");
+                RFD = 1;
                 gameOver();
             }
             return false;
@@ -764,6 +767,19 @@ function drawGameOver(timeout){
     } else {
         // include score?
         drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
+
+        switch(RFD){
+            case 0:
+                drawPixelText("TIME RAN OUT", levelWidth/4, levelHeight/1.5, 2);
+                break;
+            case 1:
+                drawPixelText("YOU KILLED THE INCORRECT TARGET", levelWidth/4, levelHeight/1.5, 2);
+                break;
+            case 2:
+                drawPixelText("YOU GOT KILLED BY YOUR PAST SELF", levelWidth/4, levelHeight/1.5, 2);
+                break;
+        }
+
         drawPixelText("PRESS R TO RESTART", levelWidth/4, levelHeight/1.2, 2);
         Mousetrap.bind("r", function(){
             Mousetrap.unbind("r");
@@ -806,6 +822,7 @@ function updateTimer(){
     if (timer > 0){
         timer--;
     } else {
+        RFD = 0;
         gameOver();
     }
     timerRunning = false; //set to false so another timeout can start 
