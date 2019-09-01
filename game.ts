@@ -72,7 +72,7 @@ export class Game {
     }
     update = (dt: number) => {
         if(!this.creatingGameInterval) {
-            this.canvasSprite.color = "rgba(0,0,0,0)"
+            this.canvasSprite.color = "rgba(255,255,255,1)"
         } else {
             this.canvasSprite.color = "rgba(125,125,125,0.5)"
         }
@@ -181,7 +181,12 @@ export class Game {
         if(this.creatingGameInterval) {
             this.createMessage('Initializing game. Wait until gray background vanish');
         }
-        this.pointerRipples.push(new PointerRipple(pointer.x, pointer.y - this.topGutter));
+        if(pointer && pointer instanceof TouchEvent) {
+            pointer = <TouchEvent> pointer;
+            this.pointerRipples.push(new PointerRipple(pointer.touches[0].clientX, pointer.touches[0].clientY - this.topGutter));
+        } else {
+            this.pointerRipples.push(new PointerRipple(pointer.x, pointer.y - this.topGutter));
+        }
     }
 
     createMessage(msg: string){
