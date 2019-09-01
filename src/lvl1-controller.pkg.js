@@ -58,7 +58,7 @@ const initLevel1 = (nextLevel) => {
       let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
-        if (cell.itemId === cellIds.PIZZA) {
+        if (cell.itemId === cellIds.PIZZA || cell.itemId === cellIds.HOTDOG) {
           cell.itemId = null;
           pizzaCount = pizzaCount - 1;
         }
