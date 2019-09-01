@@ -189,34 +189,9 @@ var moveShadowCounter = 0;
 var shadowPlayerInterval = 290;
 
 
-
-/* Player Sprite Loading */
-var playerSprite = new Image();
-playerSprite.src = "sprites/sprite_0.png";
-
-/* Target Sprites Alive */
-var enemySprite = new Image();
-enemySprite.src = "sprites/target0.png";
-
-var innocentSprite = new Image();
-innocentSprite.src = "sprites/target2.png";
-
-/* Target Sprites Dead */
-
-var deadEnemySprite = new Image();
-deadEnemySprite.src = "sprites/target1.png";
-
-var deadInnocentSprite = new Image();
-deadInnocentSprite.src = "sprites/target3.png";
-
-/* Shadow Player sprite */
-var shadowPlayerSprite = new Image();
-shadowPlayerSprite.src = "sprites/sprite_shadowPlayer.png";
-
-/* wall sprite */
-var wallSprite = new Image();
-wallSprite.src = "sprites/wall_2.png";
-
+/* the spritesheet */
+var monoSprite = new Image();
+monoSprite.src = "sprites.png";
 
 /* game object definitions */
 
@@ -508,8 +483,7 @@ function drawLevel(level_array) {
                 case '#':
                     //draw wall
                     ctx.fillStyle = wall.color;
-                    ctx.drawImage(wallSprite, x * gridSize, y * gridSize, wall.width, wall.height);
-                    //ctx.fillRect(gridSize * x, gridSize * y, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 6*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case 'p':
                     /* placeholder graphics */
@@ -518,11 +492,11 @@ function drawLevel(level_array) {
                     if (secondTry == false) {
                         player.x = x;
                         player.y = y;
-                        ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
+                        ctx.drawImage(monoSprite, 0, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     } else {
                         shadowPlayer.x = x;
                         shadowPlayer.y = y;
-                        ctx.drawImage(shadowPlayerSprite, shadowPlayer.x * gridSize, shadowPlayer.y * gridSize, shadowPlayer.width, shadowPlayer.height);
+                        ctx.drawImage(monoSprite, 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     }
                     break;
 
@@ -530,30 +504,27 @@ function drawLevel(level_array) {
                     if (secondTry == true) {
                         player.x = x;
                         player.y = y;
-                        ctx.drawImage(playerSprite, player.x * gridSize, player.y * gridSize, player.width, player.height);
+                        ctx.drawImage(monoSprite, 0, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     }
                     break;
 
                 case 'e':
                     ctx.fillStyle = enemy.color;
-                    ctx.drawImage(enemySprite, x * gridSize, y * gridSize, enemy.width, enemy.height);
+                    ctx.drawImage(monoSprite, 2*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     //draw enemy object
                     break;
                 case "E":
-                    ctx.drawImage(deadEnemySprite, x * gridSize, y * gridSize, gridSize, gridSize);
+                    ctx.drawImage(monoSprite, 3*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case "I":
-                    ctx.drawImage(deadInnocentSprite, x * gridSize, y * gridSize, gridSize, gridSize);
+                    ctx.drawImage(monoSprite, 5*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
-                    ctx.drawImage(innocentSprite, x * gridSize, y * gridSize, innocent.width, innocent.height);
-                    //draw innocent object
+                    ctx.drawImage(monoSprite, 4*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 default:
                     break;
-                //debug log
-                //console.log(`empty space at y: ${y} x: ${x}`);
             }
         }
     }
@@ -574,9 +545,11 @@ function drawLevel(level_array) {
     /* target draw */
     drawPixelText("target ", (sidebarX + 1) * gridSize - 20, 110, 3, true);
     if (target == 'i'){
-        ctx.drawImage(innocentSprite, (sidebarX + 1) * gridSize + 100, 100, innocent.width, innocent.height);
+        ctx.drawImage(monoSprite, 4*32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+        //ctx.drawImage(innocentSprite, (sidebarX + 1) * gridSize + 100, 100, innocent.width, innocent.height);
     } else if (target == 'e'){
-        ctx.drawImage(enemySprite, (sidebarX + 1) * gridSize + 100, 100, enemy.width, enemy.height);
+        ctx.drawImage(monoSprite, 2*32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+        //ctx.drawImage(enemySprite, (sidebarX + 1) * gridSize + 100, 100, enemy.width, enemy.height);
     }
 
 
