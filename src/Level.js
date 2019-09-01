@@ -56,18 +56,9 @@ export class Level {
       this.time++
     }
 
-    if (this.moveTypeAnimation && !this.moveTypeAnimation.done) {
-      this.moveTypeAnimation.step()
-    }
+    this.updateAnimations()
 
-    if (this.back2BackAnimation && !this.back2BackAnimation.done) {
-      this.back2BackAnimation.step()
-    }
-
-    let previousScore = currentScore
     if (this.clearAnimation) {
-      this.clearAnimation.step()
-
       if (this.clearAnimation.done) {
         this.board.clearRows(this.clearAnimation.rows)
         this.clearAnimation = null
@@ -83,12 +74,54 @@ export class Level {
       return
     }
 
+    let previousScore = currentScore
+
+    this.updateControllers()
+
+    if (currentScore !== previousScore) {
+      this.scoreAnimations.push(new ScoreAnimation(currentScore - previousScore))
+      if (this.scoreAnimations.length === 4) {
+        this.scoreAnimations.shift()
+      }
+    }
+  }
+
+  updateAnimations () {
+    if (this.moveTypeAnimation && !this.moveTypeAnimation.done) {
+      this.moveTypeAnimation.step()
+    }
+
+    if (this.back2BackAnimation && !this.back2BackAnimation.done) {
+      this.back2BackAnimation.step()
+    }
+
+    if (this.clearAnimation && !this.clearAnimation.done) {
+      this.clearAnimation.step()
+      return
+    }
+
+    if (this.gameOverAnimation) {
+      this.gameOverAnimation.step()
+    }
+
     for (let animation of this.fallingEyes) {
       animation.step()
       if (animation.done) {
         this.fallingEyes.delete(animation)
       }
     }
+
+    for (let animation of this.scoreAnimations) {
+      animation.step()
+    }
+
+    for (let tetromino of this.board.tetrominoes) {
+      tetromino.updateEyes()
+    }
+  }
+
+  updateControllers () {
+    let disableControls = this.scaredTetrominoControllers.size > 0 || this.gameOverAnimation
 
     if (this.scaredTetrominoControllers.size > 0) {
       for (let controller of this.scaredTetrominoControllers) {
@@ -100,45 +133,25 @@ export class Level {
       if (this.scaredTetrominoControllers.size === 0) {
         this.nextTetromino()
       }
-      return
     }
 
-    for (let animation of this.scoreAnimations) {
-      animation.step()
-    }
+    if (!disableControls) {
+      if (Input.getKeyDown(HOLD) && !this.controller.wasHeld) {
+        this.holdTetromino()
+      } else {
+        this.controller.step()
+        if (this.controller.done) {
+          this.currentTetromino.eyeDirection = [0, 0]
+          const positions = this.currentTetromino.getBlockPositions()
+          let rows = new Set()
+          for (let position of positions) {
+            rows.add(position[1])
+          }
 
-    if (this.gameOverAnimation) {
-      this.gameOverAnimation.step()
-      return
-    }
+          this.board.putTetromino(this.currentTetromino)
 
-    if (Input.getKeyDown(HOLD) && !this.controller.wasHeld) {
-      this.holdTetromino()
-      return
-    }
-
-    this.controller.step()
-    if (this.controller.done) {
-      this.currentTetromino.eyeDirection = [0, 0]
-      const positions = this.currentTetromino.getBlockPositions()
-      let rows = new Set()
-      for (let position of positions) {
-        rows.add(position[1])
-      }
-
-      this.board.putTetromino(this.currentTetromino)
-
-      this.checkState(rows)
-    }
-
-    for (let tetromino of this.board.tetrominoes) {
-      tetromino.updateEyes()
-    }
-
-    if (currentScore !== previousScore) {
-      this.scoreAnimations.push(new ScoreAnimation(currentScore - previousScore))
-      if (this.scoreAnimations.length === 4) {
-        this.scoreAnimations.shift()
+          this.checkState(rows)
+        }
       }
     }
   }
@@ -174,7 +187,7 @@ export class Level {
     drawBoldText(zeroPad(currentScore, 9), -17, 309, 2)
 
     for (let animation of this.scoreAnimations) {
-      animation.render(20, 294)
+      animation.render()
     }
 
     this.renderNextTetrominos()
@@ -279,6 +292,7 @@ export class Level {
       this.nextTetromino()
     } else {
       this.startClearingLines(rowsToClear)
+      this.currentTetromino = null
     }
   }
 
@@ -303,7 +317,7 @@ export class Level {
       this.fallingEyes.add(new FallingEyePair(x, y))
     }
 
-    const scaredTetrominoes = this.getScaredTetrominos(rowsToClear)
+    const scaredTetrominoes = this.getScaredTetrominos(rowsToClear, effectedTetrominoes)
     const alreadyScared = new Set()
     for (let tetromino of scaredTetrominoes) {
       if (tetromino.scared) {
@@ -386,20 +400,59 @@ export class Level {
     }
   }
 
-  getScaredTetrominos (rows) {
-    let items = new Set()
-    for (let x = 0; x < this.tileCountX; x++) {
-      items.add(this.board.getItemAt(x, rows[0] - 1))
-      items.add(this.board.getItemAt(x, rows[rows.length - 1] + 1))
-    }
-
-    let tetrominoes = new Set()
-    for (let item of items) {
-      if (item instanceof Tetromino) {
-        tetrominoes.add(item)
+  getScaredTetrominos (clearedRows, killedTetrominos) {
+    let killedBlocks = new Set()
+    for (let y of clearedRows) {
+      for (let x = 0; x < this.tileCountX; x++) {
+        killedBlocks.add(`${x}:${y}`)
       }
     }
-    return tetrominoes
+
+    for (let tetromino of killedTetrominos) {
+      for (let [x, y] of tetromino.getBlockPositions()) {
+        killedBlocks.add(`${x}:${y}`)
+      }
+    }
+
+    let minY = 1000
+    let maxY = -1000
+
+    for (let block of killedBlocks) {
+      const y = Number(block.split(':')[1])
+      minY = Math.min(y, minY)
+      maxY = Math.max(y, maxY)
+    }
+
+    let result = new Set()
+
+    for (let y = minY - 1; y <= maxY + 1; y++) {
+      for (let x = 0; x < this.tileCountX; x++) {
+        if (killedBlocks.has(`${x}:${y}`)) {
+          continue
+        }
+
+        let item = this.board.getItemAt(x, y)
+        if (!(item instanceof Tetromino)) {
+          continue
+        }
+
+        const neighbours = [
+          `${x - 1}:${y}`,
+          `${x + 1}:${y}`,
+          `${x}:${y - 1}`,
+          `${x}:${y + 1}`
+        ]
+
+        for (let i = 0; i < 4; i++) {
+          if (killedBlocks.has(neighbours[i])) {
+            result.add(item)
+            break
+          }
+        }
+      }
+    }
+
+    return result
   }
 
   getScaredTetrominoControllers (tetrominoes) {
@@ -441,13 +494,15 @@ export class Level {
       }
     }
 
-    for (let tetromino of this.board.tetrominoes) {
-      this.renderTetrominoEyes(tetromino)
-    }
+    if (!this.gameOverAnimation) {
+      for (let tetromino of this.board.tetrominoes) {
+        this.renderTetrominoEyes(tetromino)
+      }
 
-    if (!this.gameOverAnimation && this.currentTetromino) {
-      this.renderGhostTetromino(this.currentTetromino, this.getGhostOffset(), TILE_SIZE, this.tileCountY - 1)
-      this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
+      if (this.currentTetromino) {
+        this.renderGhostTetromino(this.currentTetromino, this.getGhostOffset(), TILE_SIZE, this.tileCountY - 1)
+        this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
+      }
     }
 
     if (this.clearAnimation) {

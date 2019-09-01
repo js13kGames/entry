@@ -10,13 +10,14 @@ export class ScoreAnimation extends AnimationBase {
     this.x = Math.random() * 60
   }
 
-  render (xOff, yOff) {
+  render () {
     if (this.done) {
       return
     }
 
     Graphics.globalAlpha = 1 - this.relativeT ** 2
-    drawText('+' + this.score, xOff + this.x, yOff - this.t / 2, 2)
+    const prefix = this.score > 0 ? '+' : ''
+    drawText(prefix + this.score, 20 + this.x, 294 - this.t / 2, 2)
     Graphics.globalAlpha = 1
   }
 }

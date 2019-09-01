@@ -32,8 +32,9 @@ export class Tetromino {
       if (this.eyesIndex) {
         this.eyesIndex = 0
       } else {
+        // Blink
         if (Math.random() < 0.4) {
-          this.eyeUpdateTimer = 30
+          this.eyeUpdateTimer = 50
           this.randomness = 1
           this.eyesIndex = 1
           return

@@ -2,6 +2,7 @@ import { TetrominoControllerBase } from './TetrominoControllerBase';
 import { TetrominoO } from './Tetrominos/TetrominoO';
 import { playSample } from './Audio';
 import { RotateSound, ShiftSound } from './Assets';
+import { addToScore, currentLevel } from './globals';
 
 const MOVE_UP = '1'
 const MOVE_LEFT = '2'
@@ -18,7 +19,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     this.timer = 0
     this.cachedInstructionsIndex = 0
 
-    this.timerDuration = Math.max(1, Math.round(this.tetromino.y / 8))
+    this.timerDuration = Math.max(1, Math.round(this.tetromino.y / 4))
   }
 
   step () {
@@ -38,6 +39,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
   }
 
   escape () {
+    addToScore(-currentLevel * 25)
     if (this.cachedInstructionsIndex < this.cachedInstructions.length) {
       switch (this.cachedInstructions[this.cachedInstructionsIndex]) {
         case MOVE_UP:
@@ -65,6 +67,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     }
 
     if (!this.move(0, 1)) {
+      this.board.putTetromino(this.tetromino)
       this.done = true
     } else {
       playSample(ShiftSound)
