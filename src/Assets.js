@@ -19,6 +19,7 @@ import createSong from './Audio/Songs/Song1';
 import FontAsset from './Sprites/Font'
 import TextsAsset from './Sprites/Texts'
 import EyesAsset from './Sprites/Eyes'
+import GamepadAsset from './Sprites/Gamepad'
 
 async function createAudioSampleAsset (createSampleFunction) {
   const array = createSampleFunction()
@@ -44,6 +45,7 @@ function createSpriteAsset (spriteObject) {
 export let Font
 export let TextsSprite
 export let EyesSprite
+export let GamepadSprite
 
 export let Song1
 
@@ -94,11 +96,13 @@ export async function loadAssets () {
   ;[
     Font,
     TextsSprite,
-    EyesSprite
+    EyesSprite,
+    GamepadSprite
   ] = await Promise.all([
     createSpriteAsset(FontAsset),
     createSpriteAsset(TextsAsset),
-    createSpriteAsset(EyesAsset)
+    createSpriteAsset(EyesAsset),
+    createSpriteAsset(GamepadAsset),
   ])
 
   await createReverb()

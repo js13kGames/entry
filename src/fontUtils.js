@@ -17,10 +17,15 @@ export const specialGlyphs = {
 
 export function drawText (text, x, y, scale = 1, extraPadding = 0) {
   let ox = x
+  let oy = y
   let px = 0
+  let py = 0
   for (let i = 0; i < text.length; i++) {
     if (text[i] === ' ') {
       px += GLYPH_WIDTH + extraPadding
+    } else if (text[i] === '\n') {
+      px = 0
+      py += GLYPH_HEIGHT + 2
     } else {
       const custom = specialGlyphs[text[i]]
       let offset
@@ -29,9 +34,9 @@ export function drawText (text, x, y, scale = 1, extraPadding = 0) {
         offset = custom[0]
         width = custom[1]
       } else if (text[i] < 'A') {
-        offset = 16 + (text.charCodeAt(i) - 48) * GLYPH_WIDTH
+        offset = 23 + (text.charCodeAt(i) - 48) * GLYPH_WIDTH
       } else {
-        offset = 76 + (text.charCodeAt(i) - 65) * GLYPH_WIDTH
+        offset = 83 + (text.charCodeAt(i) - 65) * GLYPH_WIDTH
       }
       Graphics.drawImage(
         Font.renderable,
@@ -39,7 +44,7 @@ export function drawText (text, x, y, scale = 1, extraPadding = 0) {
         0,
         width - 1,
         GLYPH_HEIGHT,
-        ox + scale * px, y,
+        ox + scale * px, oy + scale * py,
         scale * (width - 1),
         scale * (GLYPH_HEIGHT)
       )

@@ -14,8 +14,17 @@ export let Input = {
   previous: {},
   gamepad: null,
 
+  reset () {
+    Input.current = {}
+    Input.previous = {}
+  },
+
   isPressed (button) {
     return Input.gamepad.buttons[button].pressed
+  },
+
+  getAnyKey () {
+    return Object.values(Input.current).some(val => val)
   },
 
   getKey (input) {

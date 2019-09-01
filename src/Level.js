@@ -170,7 +170,9 @@ export class Level {
     Graphics.strokeStyle = '#fff'
     Graphics.strokeRect(-1, -1, width + 2, height + 2)
 
-    this.renderBoard()
+    if (!this.paused) {
+      this.renderBoard()
+    }
 
     Graphics.translate(width + 25, 0)
 
@@ -190,7 +192,9 @@ export class Level {
       animation.render()
     }
 
-    this.renderNextTetrominoes()
+    if (!this.paused) {
+      this.renderNextTetrominoes()
+    }
 
     Graphics['resetTransform']()
 
