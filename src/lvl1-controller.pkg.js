@@ -31,20 +31,20 @@ const initLevel1 = (nextLevel) => {
       let row = 0;
       let col = 0;
       switch (which) {
-        case 37:
-          // left
+        case 37: // left
+        case 65: // a
           col--;
           break;
-        case 38:
-          // up
+        case 38: // up
+        case 87: // w
           row--;
           break;
-        case 39:
-          // right
+        case 39: // right
+        case 68: // d
           col++;
           break;
-        case 40:
-          // down
+        case 40: // down
+        case 83: // s
           row++;
           break;
         default:

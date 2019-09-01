@@ -223,17 +223,20 @@ const initLevel3 = (nextLevel) => {
   function keydownHandler (key) {
     if (gameIsOver) return;
     switch (key) {
-      case 37:
-        // left
+      case 37: // left
+      case 65: // a
         move('left', 'kong');
         break;
-      case 39:
-        // right
+      case 39: // right
+      case 68: // d
         move('right', 'kong');
         break;
-      case 40:
-        // down
+      case 40: // down
+      case 83: // s
         block('kong');
+        break;
+      case 32: // space bar
+        startAttackSequence('kong');
         break;
       default:
         return;
@@ -243,8 +246,8 @@ const initLevel3 = (nextLevel) => {
   // Only used by kong
   function keyupHandler (key) {
     switch (key) {
-      case 40:
-        // release down
+      case 40: // release down
+      case 83: // release s
         unblock('kong');
         break;
       default:
