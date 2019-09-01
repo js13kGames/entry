@@ -1,7 +1,8 @@
 const initIntro = (level, nextLevel) => {
   const {
     buttonText,
-    instructions,
+    description,
+    directions,
     title
   } = initIntroModel(level);
 
@@ -11,9 +12,10 @@ const initIntro = (level, nextLevel) => {
   } = initIntroView();
 
   render(
-    title,
-    instructions,
     buttonText,
+    description,
+    directions,
+    title,
     () => {
       cleanUp();
       nextLevel();
