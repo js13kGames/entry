@@ -162,7 +162,10 @@ export class Game {
     }
     createGameObject (level: number) {
         const maxX = Math.random() * this.gameCanvas.width;
-        const maxY = Math.random() * this.gameCanvas.height;
+        let maxY = Math.random() * this.gameCanvas.height;
+        if (maxY > this.gameCanvas.height - 50) {
+            maxY -= 50; // prevent the circle from being created below the navigation bar on mobile
+        }
         const randomHex = this.createRandomHexColor();
         this.gameObjects.push(new Circle(randomHex, 30, maxX, maxY));
         if (this.gameObjects.length === level) {
