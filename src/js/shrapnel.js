@@ -26,7 +26,7 @@ export function createShrapnel(line, parent, sprites) {
             y: line[3] - center.y
         },
 
-        hitbox: parent.cs.createPolygon(
+        hitbox: parent.game.cSystem.createPolygon(
             parent.x + (center.x * cos - center.y * sin),
             parent.y + (center.y * cos + center.x * sin),
             [

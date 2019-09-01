@@ -1,3 +1,8 @@
+/**
+ * Techically the big one in the middle is supposed to be
+ * 20461 Dioretsa, and the smaller space rocks are meteoroids!
+ */
+
 import { Sprite } from 'kontra';
 import * as util from './utility';
 import { createShrapnel } from './shrapnel';
@@ -31,9 +36,9 @@ function createLines(radius) {
     return lines;
 }
 
-export function createAsteroid(props) {
-    let asteroid = Sprite({
-        type: 'asteroid',
+export function createMeteor(props) {
+    let meteor = Sprite({
+        type: 'meteor',
         x: props.x,
         y: props.y,
         dx: props.dx !== undefined ? props.dx : Math.random() * 3 - 1.5,
@@ -41,7 +46,7 @@ export function createAsteroid(props) {
         radius: props.radius,
         mass: props.mass || (Math.PI * props.radius * props.radius),
         lines: createLines(props.radius),
-        cs: props.cs,
+        game: props.game,
         color: '#fff',
         dr: props.dr || 0,
 
@@ -73,33 +78,37 @@ export function createAsteroid(props) {
             this.hitbox.angle = util.degToRad(this.rotation);
         },
 
-        explode(sprites) {
+        explode() {
             this.exploded = true;
             this.ttl = 0;
 
             // Create new line sprites where the ship lines were
             this.lines.forEach(line => {
-                createShrapnel(line, this, sprites);
+                createShrapnel(line, this, this.game.sprites);
             });
         }
     });
 
-    if (asteroid.radius > 50) {
-        asteroid.hitboxLines = [];
-        asteroid.lines.forEach((line, i) => {
-            asteroid.hitboxLines.push([line[0], line[1]]);
+    if (meteor.radius > 50) {
+        meteor.hitboxLines = [];
+        meteor.lines.forEach((line, i) => {
+            meteor.hitboxLines.push([line[0], line[1]]);
         });
-        asteroid.hitbox = props.cs.createPolygon(
-            asteroid.x,
-            asteroid.y,
-            asteroid.hitboxLines
+        meteor.hitbox = meteor.game.cSystem.createPolygon(
+            meteor.x,
+            meteor.y,
+            meteor.hitboxLines
         );
     } else {
-        asteroid.hitbox = props.cs.createCircle(props.x, props.y, props.radius);
+        meteor.hitbox = meteor.game.cSystem.createCircle(
+            meteor.x,
+            meteor.y,
+            meteor.radius
+        );
     }
 
-    asteroid.hitbox.owner = asteroid;
+    meteor.hitbox.owner = meteor;
 
-    props.sprites.push(asteroid);
-    props.asteroids.push(asteroid);
+    props.game.sprites.push(meteor);
+    props.game.meteors.push(meteor);
 }
