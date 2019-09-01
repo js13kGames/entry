@@ -1,0 +1,8 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "target": "es6",
+    "allowJs": true
+  }
+}
