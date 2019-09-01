@@ -1,5 +1,5 @@
 import { TetrominoControllerBase } from './TetrominoControllerBase';
-import { TetrominoO } from './Tetrominos/TetrominoO';
+import { TetrominoO } from './Tetrominoes/TetrominoO';
 import { playSample } from './Audio';
 import { RotateSound, ShiftSound } from './Assets';
 import { addToScore, currentLevel } from './globals';

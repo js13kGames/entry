@@ -1,5 +1,5 @@
 import { Graphics, Canvas, drawSprite, drawAt } from "./Graphics";
-import { TetrominoT } from './Tetrominos/TetrominoT';
+import { TetrominoT } from './Tetrominoes/TetrominoT';
 import { TetrominoController } from './TetrominoController';
 import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR } from './constants';
 import { ClearAnimation } from './Animations/ClearAnimation';
@@ -15,7 +15,7 @@ import { ScoreAnimation } from './Animations/ScoreAnimation';
 import { Back2BackAnimation } from './Animations/Back2BackAnimation';
 import { MoveTypeAnimation } from './Animations/MoveTypeAnimation';
 import { TetrominoSource } from './TetrominoSource';
-import { Tetromino } from './Tetrominos/Tetromino';
+import { Tetromino } from './Tetrominoes/Tetromino';
 import { ScaredTetrominoController } from './ScaredTetrominoController';
 import { FallingEyePair } from './Animations/FallingEyePair';
 
@@ -33,7 +33,7 @@ export class Level {
 
     this.tetrominoSource = new TetrominoSource()
     this.heldTetromino = null
-    this.nextTetrominos = Array.from(Array(6), () => this.tetrominoSource.getNext())
+    this.nextTetrominoes = Array.from(Array(6), () => this.tetrominoSource.getNext())
 
     this.lastClearWasSpecial = false
     this.clearStreak = 0
@@ -190,7 +190,7 @@ export class Level {
       animation.render()
     }
 
-    this.renderNextTetrominos()
+    this.renderNextTetrominoes()
 
     Graphics['resetTransform']()
 
@@ -285,7 +285,7 @@ export class Level {
     this.updateScore(tSpinType, clearedRowsCount, allClear)
 
     if (clearedRowsCount === 0) {
-      if (this.board.overflows(this.nextTetrominos[0])) {
+      if (this.board.overflows(this.nextTetrominoes[0])) {
         this.setGameOver()
         return
       }
@@ -308,7 +308,7 @@ export class Level {
   startClearingLines (rowsToClear) {
     this.clearAnimation = new ClearAnimation(this, rowsToClear)
     let effectedTetrominoes = this.board.getTetrominoesInRows(rowsToClear)
-    this.board.changeTetrominosToBlocks(effectedTetrominoes)
+    this.board.changeTetrominoesToBlocks(effectedTetrominoes)
 
     for (let tetromino of effectedTetrominoes) {
       let [px, py] = tetromino.getEyesPosition()
@@ -317,7 +317,7 @@ export class Level {
       this.fallingEyes.add(new FallingEyePair(x, y))
     }
 
-    const scaredTetrominoes = this.getScaredTetrominos(rowsToClear, effectedTetrominoes)
+    const scaredTetrominoes = this.getScaredTetrominoes(rowsToClear, effectedTetrominoes)
     const alreadyScared = new Set()
     for (let tetromino of scaredTetrominoes) {
       if (tetromino.scared) {
@@ -400,7 +400,7 @@ export class Level {
     }
   }
 
-  getScaredTetrominos (clearedRows, killedTetrominos) {
+  getScaredTetrominoes (clearedRows, killedTetrominoes) {
     let killedBlocks = new Set()
     for (let y of clearedRows) {
       for (let x = 0; x < this.tileCountX; x++) {
@@ -408,7 +408,7 @@ export class Level {
       }
     }
 
-    for (let tetromino of killedTetrominos) {
+    for (let tetromino of killedTetrominoes) {
       for (let [x, y] of tetromino.getBlockPositions()) {
         killedBlocks.add(`${x}:${y}`)
       }
@@ -522,10 +522,10 @@ export class Level {
     }
   }
 
-  renderNextTetrominos () {
+  renderNextTetrominoes () {
     let size = TILE_SIZE * 0.5
-    for (let i = 0; i < this.nextTetrominos.length; i++) {
-      const tetromino = this.nextTetrominos[i]
+    for (let i = 0; i < this.nextTetrominoes.length; i++) {
+      const tetromino = this.nextTetrominoes[i]
       this.renderTetromino(tetromino, size, 3)
 
       if (i === 0) {
@@ -560,8 +560,8 @@ export class Level {
   }
 
   nextTetromino () {
-    this.currentTetromino = this.nextTetrominos.shift()
-    this.nextTetrominos.push(this.tetrominoSource.getNext())
+    this.currentTetromino = this.nextTetrominoes.shift()
+    this.nextTetrominoes.push(this.tetrominoSource.getNext())
 
     this.controller = new TetrominoController(this.currentTetromino, this.board)
   }

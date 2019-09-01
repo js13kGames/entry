@@ -12,7 +12,7 @@ import {
   LOCK_DELAY,
   ACTION_ROTATE
 } from './constants';
-import { TetrominoO } from './Tetrominos/TetrominoO';
+import { TetrominoO } from './Tetrominoes/TetrominoO';
 import { playSample } from './Audio';
 import {
   RotateSound,
