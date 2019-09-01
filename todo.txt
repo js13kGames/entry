@@ -13,3 +13,6 @@ $0.25	-	baby sad (isaac parody)
 
 Is it legal to use their likeness?... might err on the side of caution and change that up.
 
+
+FEEDBACK:
+- improve player responsiveness ("player unresponsive", "it doesnt move very smoothly")

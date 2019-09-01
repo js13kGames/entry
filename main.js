@@ -434,6 +434,9 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 }
                 //queueCounter++;
 
+            } else if (message[queueCounter] === "v") { 
+                Mousetrap.unbind('space');
+                main = setInterval(mainLoop, 25);
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
                 beepSnd.play();//make sound effect
@@ -883,7 +886,9 @@ let titleContents = [
     "\n",
     "Just remember WASD to move the robot",
     "\n",
-    "and to stab targets just move into them."
+    "and to stab targets just move into them.",
+    "d","d","d","d","d",
+    "v"
 ];
 
 
