@@ -61,7 +61,7 @@ const { canvas, context } = init();
 const canvasWidth = canvas.width;
 const centerX = canvasWidth / 2;
 // Set image path and init pointer
-setImagePath("/assets/sprites");
+setImagePath("./assets/sprites");
 initPointer();
 
 // Check loaded assets
