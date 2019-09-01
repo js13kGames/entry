@@ -2,6 +2,7 @@
   <head>
     <title>JS13KGames - Jerome Lecomte</title>
     <script src="aframe-v0.9.2.min.js"></script>
+    <script src="aframe-event-set-component.js"></script>
     <script src="game.js"></script>
   </head>
   <body>
@@ -9,9 +10,23 @@
       <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
       <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
       <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-plane
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="4"
+        height="4"
+        color="#7BC8A4"
+        event-set__enter="_event: mouseenter; color: #FF00FF"
+        event-set__click="_event: click; color: #00FF00"
+        event-set__leave="_event: mouseleave; color: #7BC8A4"
+      ></a-plane>
       <a-sky color="#ECECEC"></a-sky>
-      <a-camera look-controls></a-camera>
+      <a-camera
+        look-controls
+        wasd-controls
+      >
+        <a-cursor></a-cursor>
+      </a-camera>
     </a-scene>
   </body>
 </html>

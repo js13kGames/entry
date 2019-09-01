@@ -35,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/herebefrogs/js13kgames-2019/issues"
   },
-  "homepage": "https://github.com/herebefrogs/js13kgames-2019#readme"
+  "homepage": "https://github.com/herebefrogs/js13kgames-2019#readme",
+  "dependencies": {
+    "aframe": "^0.9.2",
+    "aframe-event-set-component": "^5.0.0"
+  }
 }
