@@ -7,7 +7,7 @@ import { Input } from './Input';
 import { Board } from './Board';
 import { GameOverAnimation } from './Animations/GameOverAnimation';
 import { playSample } from './Audio';
-import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1, TextsSprite } from './Assets';
+import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1, TextsSprite, EyesSprite } from './Assets';
 import { resetScore, addToScore, currentScore, resetLineClears, addLineClears, currentLevel, lineClears } from './globals';
 import { zeroPad } from './utils';
 import { drawText, drawBoldText } from './fontUtils';
@@ -17,6 +17,7 @@ import { MoveTypeAnimation } from './Animations/MoveTypeAnimation';
 import { TetrominoSource } from './TetrominoSource';
 import { Tetromino } from './Tetrominos/Tetromino';
 import { ScaredTetrominoController } from './ScaredTetrominoController';
+import { FallingEyePair } from './Animations/FallingEyePair';
 
 export class Level {
   constructor () {
@@ -37,17 +38,24 @@ export class Level {
     this.lastClearWasSpecial = false
     this.clearStreak = 0
 
+    this.scaredTetrominoControllers = new Set()
+
     this.nextTetromino()
 
     resetScore()
     resetLineClears()
 
     this.scoreAnimations = []
+    this.fallingEyes = new Set()
 
     Graphics.lineWidth = 2
   }
 
   step () {
+    if (!this.gameOverAnimation) {
+      this.time++
+    }
+
     if (this.moveTypeAnimation && !this.moveTypeAnimation.done) {
       this.moveTypeAnimation.step()
     }
@@ -56,31 +64,41 @@ export class Level {
       this.back2BackAnimation.step()
     }
 
-    if (this.scaredTetrominoController) {
-      this.scaredTetrominoController.step()
-      if (this.scaredTetrominoController.done) {
-        this.nextTetromino()
-        this.scaredTetrominoController = null
-      }
-      return
-    }
-
     let previousScore = currentScore
     if (this.clearAnimation) {
       this.clearAnimation.step()
 
       if (this.clearAnimation.done) {
-        let effectedTetrominoes = this.board.getTetrominoesInRows(this.clearAnimation.rows)
-        this.board.changeTetrominosToBlocks(effectedTetrominoes)
-        this.scaredTetrominoController = this.getScaredTetrominoController(this.clearAnimation.rows)
         this.board.clearRows(this.clearAnimation.rows)
         this.clearAnimation = null
-         if (this.scaredTetrominoController) {
-           this.board.removeTetromino(this.scaredTetrominoController.tetromino)
-           this.currentTetromino = null
-         } else {
+        for (let controller of this.scaredTetrominoControllers) {
+          this.board.removeTetromino(controller.tetromino)
+        }
+        if (this.scaredTetrominoControllers.size > 0) {
+          this.currentTetromino = null
+        } else {
           this.nextTetromino()
-         }
+        }
+      }
+      return
+    }
+
+    for (let animation of this.fallingEyes) {
+      animation.step()
+      if (animation.done) {
+        this.fallingEyes.delete(animation)
+      }
+    }
+
+    if (this.scaredTetrominoControllers.size > 0) {
+      for (let controller of this.scaredTetrominoControllers) {
+        controller.step()
+        if (controller.done) {
+          this.scaredTetrominoControllers.delete(controller)
+        }
+      }
+      if (this.scaredTetrominoControllers.size === 0) {
+        this.nextTetromino()
       }
       return
     }
@@ -94,8 +112,6 @@ export class Level {
       return
     }
 
-    this.time++
-
     if (Input.getKeyDown(HOLD) && !this.controller.wasHeld) {
       this.holdTetromino()
       return
@@ -103,6 +119,7 @@ export class Level {
 
     this.controller.step()
     if (this.controller.done) {
+      this.currentTetromino.eyeDirection = [0, 0]
       const positions = this.currentTetromino.getBlockPositions()
       let rows = new Set()
       for (let position of positions) {
@@ -112,6 +129,10 @@ export class Level {
       this.board.putTetromino(this.currentTetromino)
 
       this.checkState(rows)
+    }
+
+    for (let tetromino of this.board.tetrominoes) {
+      tetromino.updateEyes()
     }
 
     if (currentScore !== previousScore) {
@@ -126,8 +147,7 @@ export class Level {
     // So that closure compiler recognizes it as an extern
     Graphics['resetTransform']()
 
-    Graphics.fillStyle = '#000'
-    Graphics.fillRect(0, 0, Canvas.width, Canvas.height)
+    Graphics.clearRect(0, 0, Canvas.width, Canvas.height)
 
     const width = TILE_SIZE * this.tileCountX
     const height = TILE_SIZE * this.tileCountY
@@ -258,7 +278,7 @@ export class Level {
       }
       this.nextTetromino()
     } else {
-      this.clearAnimation = new ClearAnimation(this, rowsToClear)
+      this.startClearingLines(rowsToClear)
     }
   }
 
@@ -269,6 +289,31 @@ export class Level {
       }
     }
     return true
+  }
+
+  startClearingLines (rowsToClear) {
+    this.clearAnimation = new ClearAnimation(this, rowsToClear)
+    let effectedTetrominoes = this.board.getTetrominoesInRows(rowsToClear)
+    this.board.changeTetrominosToBlocks(effectedTetrominoes)
+
+    for (let tetromino of effectedTetrominoes) {
+      let [px, py] = tetromino.getEyesPosition()
+      let y = (this.tileCountY - 1 - py + 0.5) * TILE_SIZE
+      let x = (px + 0.5) * TILE_SIZE
+      this.fallingEyes.add(new FallingEyePair(x, y))
+    }
+
+    const scaredTetrominoes = this.getScaredTetrominos(rowsToClear)
+    const alreadyScared = new Set()
+    for (let tetromino of scaredTetrominoes) {
+      if (tetromino.scared) {
+        alreadyScared.add(tetromino)
+      }
+      tetromino.scared = true
+      tetromino.lookDown()
+    }
+
+    this.scaredTetrominoControllers = this.getScaredTetrominoControllers(alreadyScared)
   }
 
   updateScore (tSpinType, clearedRowsCount, allClear) {
@@ -341,26 +386,31 @@ export class Level {
     }
   }
 
-  getScaredTetrominoController (rows) {
+  getScaredTetrominos (rows) {
     let items = new Set()
     for (let x = 0; x < this.tileCountX; x++) {
       items.add(this.board.getItemAt(x, rows[0] - 1))
       items.add(this.board.getItemAt(x, rows[rows.length - 1] + 1))
     }
-    let controllers = new Set()
+
+    let tetrominoes = new Set()
     for (let item of items) {
       if (item instanceof Tetromino) {
-        const controller = new ScaredTetrominoController(item, this.board)
-        if (controller.isFreeableTetromino()) {
-          controllers.add(controller)
-        }
+        tetrominoes.add(item)
       }
     }
-    if (controllers.size > 0) {
-      return [...controllers][Math.floor(Math.random() * controllers.size)]
-    } else {
-      return null
+    return tetrominoes
+  }
+
+  getScaredTetrominoControllers (tetrominoes) {
+    let controllers = new Set()
+    for (let tetromino of tetrominoes) {
+      const controller = new ScaredTetrominoController(tetromino, this.board)
+      if (controller.isFreeableTetromino()) {
+        controllers.add(controller)
+      }
     }
+    return controllers
   }
 
   getGhostOffset () {
@@ -391,21 +441,29 @@ export class Level {
       }
     }
 
+    for (let tetromino of this.board.tetrominoes) {
+      this.renderTetrominoEyes(tetromino)
+    }
+
     if (!this.gameOverAnimation && this.currentTetromino) {
       this.renderGhostTetromino(this.currentTetromino, this.getGhostOffset(), TILE_SIZE, this.tileCountY - 1)
       this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
     }
 
-    if (this.scaredTetrominoController) {
-      this.renderTetromino(this.scaredTetrominoController.tetromino, TILE_SIZE, this.tileCountY - 1)
-    }
-
     if (this.clearAnimation) {
       this.clearAnimation.render()
+    } else  {
+      for (let controller of this.scaredTetrominoControllers) {
+        this.renderTetromino(controller.tetromino, TILE_SIZE, this.tileCountY - 1)
+      }
     }
 
     if (this.gameOverAnimation) {
       this.gameOverAnimation.render()
+    }
+
+    for (let animation of this.fallingEyes) {
+      animation.render()
     }
   }
 
@@ -458,6 +516,32 @@ export class Level {
     const color = tetromino.getColor()
     for (let [px, py] of positions) {
       this.renderBlock(px, bottom - py, color, size)
+    }
+    if (size === TILE_SIZE) this.renderTetrominoEyes(tetromino)
+  }
+
+  renderTetrominoEyes (tetromino) {
+    Graphics.fillStyle = '#000'
+
+    let [px, py] = tetromino.getEyesPosition()
+    let y = (this.tileCountY - 1 - py + 0.5) * TILE_SIZE
+    let x1 = (px + 0.25) * TILE_SIZE
+    let x2 = (px + 0.75) * TILE_SIZE
+
+    if (tetromino.scared) {
+      tetromino.eyesIndex = 0
+      let offsetX = Math.random() * 2 - 1
+      x1 += offsetX
+      x2 += offsetX
+      y += Math.random() * 2 - 1
+    }
+
+    drawSprite(EyesSprite, x1, y, tetromino.eyesIndex)
+    drawSprite(EyesSprite, x2, y, tetromino.eyesIndex)
+
+    if (tetromino.eyesIndex === 0) {
+      Graphics.fillRect(x1 - 1 + tetromino.eyeDirection[0], y - 1 + tetromino.eyeDirection[1], 2, 2)
+      Graphics.fillRect(x2 - 1 + tetromino.eyeDirection[0], y - 1 + tetromino.eyeDirection[1], 2, 2)
     }
   }
 

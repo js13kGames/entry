@@ -5,6 +5,12 @@ export class Tetromino {
     this.rotation = 0
     this.x = 0
     this.y = 0
+
+    this.scared = false
+    this.eyesIndex = 0
+    this.eyeDirection = [0, 0]
+    this.eyeUpdateTimer = 0
+    this.randomness = 0.01
   }
 
   move (dx, dy) {
@@ -18,6 +24,35 @@ export class Tetromino {
 
   rotateCCW () {
     this.rotation = (this.rotation + 3) % 4
+  }
+
+  updateEyes () {
+    this.eyeUpdateTimer++
+    if (this.eyeUpdateTimer > 60 && Math.random() < this.randomness) {
+      if (this.eyesIndex) {
+        this.eyesIndex = 0
+      } else {
+        if (Math.random() < 0.4) {
+          this.eyeUpdateTimer = 30
+          this.randomness = 1
+          this.eyesIndex = 1
+          return
+        }
+      }
+      this.eyeUpdateTimer = 0
+      this.randomness = 0.01
+      this.eyeDirection = [Math.random() * 4 - 2, Math.random() * 4 - 2]
+    }
+  }
+
+  getEyesPosition () {
+    return this.getBlockPositions()[1]
+  }
+
+  lookDown () {
+    this.eyeDirection = [0, 2]
+    this.eyeUpdateTimer = 30
+    this.randomness = 1
   }
 
   // getId () {

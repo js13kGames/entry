@@ -30,6 +30,7 @@ export class TetrominoController extends TetrominoControllerBase {
 
     this.tetromino.x = board.width / 2 - 1
     this.tetromino.y = board.height - 2
+    this.tetromino.eyeDirection = [0, 2]
 
     while (this.invalidState()) {
       this.tetromino.move(0, 1)

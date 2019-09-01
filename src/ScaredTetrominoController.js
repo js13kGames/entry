@@ -17,6 +17,8 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     this.cachedInstructions = []
     this.timer = 0
     this.cachedInstructionsIndex = 0
+
+    this.timerDuration = Math.max(1, Math.round(this.tetromino.y / 8))
   }
 
   step () {
@@ -24,8 +26,11 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
       return
     }
 
+    this.tetromino.eyeDirection = [0, -2]
+    this.tetromino.scared = false
+
     this.timer++
-    if (this.timer === 3) {
+    if (this.timer === this.timerDuration) {
       this.timer = 0
 
       this.escape()
