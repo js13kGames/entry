@@ -9,7 +9,6 @@ export class Audio {
     currentFrequency = 440;
     constructor(){
         try {
-            
             var AudioContext = (<any>window).AudioContext || (<any>window).webkitAudioContext; 
             this.audioContext = new AudioContext();
         } catch (error) {
@@ -26,7 +25,7 @@ export class Audio {
     get hiscoreSequence(){
         return this._hiscoreSequence;
     }
-    playNextPitch(sequence: Sequence, pitch: number = 0) {
+    playNextPitch(sequence: any, pitch: number = 0) {
         if (this._isSupported) {
             this.myOscillator = this.audioContext.createOscillator();
             this.currentFrequency += pitch;
@@ -40,7 +39,7 @@ export class Audio {
             this.myOscillator.stop(this.audioContext.currentTime + 0.5);
         }
     }
-    resetSequence(sequence: Sequence) {
+    resetSequence(sequence: any) {
         if (this._isSupported) {
             if (sequence === this._killSequence) {
                 this.currentFrequency = this.REAL_TIME_FREQUENCY;
