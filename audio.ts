@@ -9,6 +9,8 @@ export class Audio {
     currentFrequency = 440;
     constructor(){
         try {
+            
+            var AudioContext = (<any>window).AudioContext || (<any>window).webkitAudioContext; 
             this.audioContext = new AudioContext();
         } catch (error) {
             alert('audio is not supported on this device');
