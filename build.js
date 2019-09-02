@@ -123,11 +123,11 @@ function minify() {
     const startTime = Date.now();
     const options = {
         compress: {
-            passes: 4,
+            passes: 2,
             unsafe: true,
             unsafe_arrows: true,
             unsafe_comps: true,
-            unsafe_math: true,
+            unsafe_math: true
         },
         toplevel: true,
         module: true,
