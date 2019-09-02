@@ -87,7 +87,7 @@ game.sprites.push(pickup3);
 let player1 = new Player({
     color: 'yellow',
     shipType: 'tri',
-    controls: 'arrows',
+    controls: 'gamepad',
     context: context,
     game: game
 });
