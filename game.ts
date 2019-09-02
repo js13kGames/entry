@@ -1,4 +1,4 @@
-import { init, GameLoop, initPointer, on, Sprite, emit, track, pointerPressed} from 'kontra';
+import { init, GameLoop, initPointer, on, Sprite, setStoreItem, getStoreItem, emit, track} from 'kontra';
 import {Circle} from './circle';
 import { IGameObject } from './gameObject';
 import { GameEvent, GameEventData } from './gameEvent';
@@ -10,6 +10,7 @@ export class Game {
     gameObjects: IGameObject[] = [];
     pointerRipples: PointerRipple[] = [];
     deathObjects: DeathScreen[] = [];
+    particles: IGameObject[] = [];
     gameCanvas;
     currentLevel = 1;
     currentHeighScore = 1;
@@ -40,8 +41,8 @@ export class Game {
         this.createCanvasSprite();
         this.loop.start();
         this.onGameObjectKill();
-        if(localStorage.getItem('johnonym-hiscore') && !location.host.match('localhost')) {
-            this.currentHeighScore = parseInt(localStorage.getItem('johnonym-hiscore'),10);
+        if (getStoreItem('johnonym-hiscore') && !location.host.match('localhost')) {
+            this.currentHeighScore = getStoreItem('johnonym-hiscore');
             const currentHeighScoreText = document.createTextNode('' + this.currentHeighScore);
             this.hiScoreEl.replaceChild(currentHeighScoreText, this.hiScoreEl.childNodes[0]);       
         }
@@ -148,7 +149,7 @@ export class Game {
             this.hiScoreEl.replaceChild(currentHeighScoreText, this.hiScoreEl.childNodes[0]);
             this.audio.playNextPitch(this.audio.hiscoreSequence);
             this.createMessage('dogeQuote')
-            localStorage.setItem('johnonym-hiscore', ''+this.currentHeighScore);
+            setStoreItem('johnonym-hiscore', this.currentHeighScore);
         }
     }
     createLevel(level: number){
