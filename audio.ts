@@ -1,7 +1,7 @@
 export class Audio {
-    private _killSequence: Sequence;
-    private _gameOverSequence: Sequence;
-    private _hiscoreSequence: Sequence;
+    private _killSequence: any;
+    private _gameOverSequence: any;
+    private _hiscoreSequence: any;
     private _isSupported = true;
     private myOscillator;
     private audioContext: AudioContext;
@@ -11,7 +11,7 @@ export class Audio {
         try {
             this.audioContext = new AudioContext();
         } catch (error) {
-            console.warn('audio is not supported on this device');
+            alert('audio is not supported on this device');
             this._isSupported = false;
         }
     }
