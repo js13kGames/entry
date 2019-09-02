@@ -312,6 +312,9 @@ export class Ship extends Sprite.class {
         }
 
         // Draw rewind recharge
+        if (this.rewindDt <= this.ror) {
+            this.context.strokeStyle = '#0ef9';
+        }
         this.context.beginPath();
         this.context.arc(
             0,
