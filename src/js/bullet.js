@@ -7,7 +7,6 @@ export function createBullet(parent) {
     const sin = Math.sin(util.degToRad(parent.rotation));
 
     let bullet = Sprite({
-        name: 'bullet',
         type: 'bullet',
         parent: parent,
 
