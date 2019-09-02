@@ -24,7 +24,7 @@ export class Ship extends Sprite.class {
         this.fireDt = 0;
         this.lines = {};
         this.lines.random = [];
-        this.locationHistory = [];
+        this.history = [];
         this.rewindDt = 0;
         this.rewinding = 0;
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
@@ -148,7 +148,7 @@ export class Ship extends Sprite.class {
         this.dx -= cos / (this.mass / 4);
         this.dy -= sin / (this.mass / 4);
 
-        createBullet(this, this.game.sprites);
+        createBullet(this);
     }
 
     turnLeft() {
@@ -200,7 +200,7 @@ export class Ship extends Sprite.class {
         }
 
         this.rewindDt = 0;
-        this.rewinding = this.locationHistory.length;
+        this.rewinding = this.history.length;
     }
 
     shipUpdate() {
@@ -236,15 +236,15 @@ export class Ship extends Sprite.class {
             this.rewinding = this.rewinding - this.rewindSpeed;
 
             // If something borked (can't go back that far?) cancel rewind
-            if (!this.locationHistory[this.rewinding]) {
+            if (!this.history[this.rewinding]) {
                 this.rewinding = 0;
                 return false;
             }
 
             // More x and y coordinates "back in time"
-            if (this.rewinding < this.locationHistory.length) {
-                this.x = this.locationHistory[this.rewinding].x;
-                this.y = this.locationHistory[this.rewinding].y;
+            if (this.rewinding < this.history.length) {
+                this.x = this.history[this.rewinding].x;
+                this.y = this.history[this.rewinding].y;
             }
 
             // Last rewind update, lose 20% velocity and be invulnerable .2s
@@ -272,10 +272,10 @@ export class Ship extends Sprite.class {
         this.position = this.position.add(this.velocity);
 
         // Record current location into locations history
-        this.locationHistory.push({ x: this.x, y: this.y});
+        this.history.push({ x: this.x, y: this.y});
         // Remove last update location from location history
-        if (this.locationHistory.length > 90) {
-            this.locationHistory.shift();
+        if (this.history.length > 90) {
+            this.history.shift();
         }
 
         this.hitbox.x = this.x;

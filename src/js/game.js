@@ -88,7 +88,7 @@ for (var i = 0; i < 1; i++) {
 let player1 = new Player({
     color: 'yellow',
     shipType: 'tri',
-    controls: 'gamepad',
+    controls: 'arrows',
     context: context,
     game: game
 });

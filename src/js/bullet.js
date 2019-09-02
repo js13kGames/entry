@@ -1,7 +1,7 @@
 import { Sprite } from 'kontra';
 import * as util from './utility';
 
-export function createBullet(parent, sprites) {
+export function createBullet(parent) {
 
     const cos = Math.cos(util.degToRad(parent.rotation));
     const sin = Math.sin(util.degToRad(parent.rotation));
@@ -23,8 +23,6 @@ export function createBullet(parent, sprites) {
         // live 50 frames, just under 1s (1sh)
         ttl: 50,
 
-        width: 24,
-        height: 24,
         color: parent.color,
         hitbox: parent.game.cSystem.createPoint(parent.x, parent.y),
 
@@ -45,5 +43,5 @@ export function createBullet(parent, sprites) {
     bullet.hitbox.owner = bullet;
     bullet.owner = parent;
 
-    sprites.push(bullet);
+    parent.game.sprites.push(bullet);
 }
