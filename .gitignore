@@ -1,1 +1,10 @@
 .DS_Store
+node_modules
+src/views
+src/js/b.js
+src/js/bundle.js
+src/js/bundle-wrap.js
+build
+dist/archive/**
+src/style/c.css
+.env
