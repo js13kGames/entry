@@ -1,25 +1,25 @@
+palette = 0; palletename = "";
 c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
-c[0] = "#223e32"; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; 
-//c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";
-//c[0] = "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff";
+switchPalette(0);
 
 const TAU = Zdog.TAU;
 
 x=game.getContext`2d`;
 state = 0; //0 is title screen, 1 is gameplay
 paused = false; //If the game is paused no step events will trigger.
-level = 500; //How long the stage should be the player is playing in.
-playermovex = 0; playermovey = 1; //Direction the player's going into.
-horborder = 200;
-flipvisual = 1; flipped = 1;
-cameray = 0; //This controls where the camera is currently looking at.
-obstacle = []; visobstacle = []; //Optimalization array that only holds the blocks that are currently visible.
-shakex = 0; shakey = 0; shakeduration = 0; //Control screen shake.
-bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
-const times = []; let fps; //Used to display FPS during debugging.
 canstartgame = false; //Set to true when HTML is fully loaded, and to prevent player to start a new game instantly after getting a game over
+level = 100; //How long the stage should be the player is playing in.
+playermovex = 0; playermovey = 1; //Direction the player's going into.
+flipped = 1; flipvisual = 1;  //flipped controls in which direction gravity is, and also if the player is in the fore- or background. Flipvisual is a smoother version that is used to flip the camera.
+flipy = 9000; fliptop = 0; flipbottom = 0; //If the player reaches flipy, the level becomes flipped. fliptop and flipbottom dictate where flipy should go to next once it's been reached.
+horborder = 200; //How wide the playing field is.
+cameray = 0; //This controls where the camera is currently looking at.
+shakex = 0; shakey = 0; shakeduration = 0; //Control screen shake.
+obstacle = []; visobstacle = []; //Optimalization array that only holds the blocks that are currently visible.
 timeleft = 30; timejackpot = 3; score = 0; hiscore = 0; //timeleft ticks down, but gets refilled with the jackpot upon flipping.
-flipy = 9000; fliptop = 0; flipbottom = 0; //These tell the player
+bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
+
+const times = []; let fps; //Used to display FPS during debugging.
 
 document.addEventListener("DOMContentLoaded", HtmlLoaded);
 
@@ -193,22 +193,48 @@ function generateObstacles(amount,position,direction) {
     var off = 0;
     for (var i = 0; i != amount; i++)
     {
-        var obstaclex = random() * (horborder - -horborder) + -horborder;
-        var thisoff = 40+(random()*100)*direction
-        var obstacley = position+off
-        var front = (random() >= 0.2);
+        var width = 0; var height = 0;
+        var obstaclex = 0; var obstacley = 0;
+        var front = (random() >= 0.2); if (flipped == -1) {front = !front}
 
-        if (random() > 0.75) //Generate one block on the same height
+        switch(Math.round(random()*10))
         {
-            obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), thisoff, front)
-        }
-        else //Generate two long blocks on the same height, one higher than the other QQQ
-        {
-            obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), thisoff, front)
-            obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), thisoff, front)
+            case 0: //Two tall platforms
+                height = 40+(random()*100)*direction;
+                obstaclex = random() * (horborder - -horborder) + -horborder * 0.8;
+                obstacley = position+off;
+
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), height, front)
+                break;
+            case 1: //Two tall platforms, one lower than the other
+                height = 40+(random()*100)*direction;
+                obstaclex = random() * (horborder - -horborder) + -horborder * 0.8;
+                obstacley = position+off;
+
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), height, front)
+                obstacley += 50;
+                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), height, front)
+
+                off += 50;
+                break;
+            case 2: //Funnel
+            default:
+                obstaclex = random() * (horborder - -horborder) + -horborder * 0.8;
+                obstacley = position+off;
+                height = 30;
+
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,64, height, front);
+                obstacley += 50;
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,40, height, front);
+                obstacley += 50;
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16, height, front);
+
+                off += 100;
+                break;
         }
 
-        off += 20+thisoff;
+        off += 20+height;
     }
 
     return(position+off)
@@ -221,7 +247,7 @@ function addObstacle(xx,yy,width,height,front) {
         width: width,
         height: height,
         frontFace: false, backFace: false,
-        depth: 8,
+        depth: 16,
         stroke: 8,
         cornerRadius: 20,
         color: clr,
@@ -229,7 +255,6 @@ function addObstacle(xx,yy,width,height,front) {
         translate: {x: xx, y: yy, z: (front * 50) -25}
     });
 
-    newobstacle.colliding = false;
     newobstacle.zspeed = 0;
     return(newobstacle);
 }
@@ -258,8 +283,17 @@ function step(framestep) {
     document.getElementById("cam-display").innerHTML = illo.rotate.x.toString() + "x  " + illo.rotate.y.toString() + "y  " + illo.rotate.x.toString() + "z  " + TAU.toString() + "tau";
 
     i1.innerHTML = "Time: " +timeleft.toFixed(2).toString();
+    if (timeleft < 10)
+    {
+        i1.style.color = "#F08080";
+    } else {
+        i1.style.color = "white";
+    }
     i2.innerHTML = "+" +timejackpot.toString() + " sec";
-    i3.innerHTML = "Flips: " +score.toString();
+    var ypercent = (player.translate.y - fliptop) / (flipbottom - fliptop) * 9.45; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
+    if (flipped == -1) {ypercent = (9.45-ypercent)}
+    ypercent = Math.max(0,ypercent); //To avoid interface displaying -0
+    i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
 
     if (paused && framestep == false) {return;}
 
@@ -270,6 +304,18 @@ function step(framestep) {
         shakeduration -= 1;
     } else {
         illo.translate = {x: 0, y: cameray}; 
+    }
+
+    if (playermovex >= 3 || playermovex <= -3)
+    {
+        playermovex += 0.25*Math.sign(playermovex)
+    }
+    
+    if (playermovey <= -3 || playermovey >= 3 && state == 1)
+    {
+        playermovey += 0.0025*Math.sign(playermovey)
+    } else if ((flipped == 1 && playermovey < 1) || (flipped == -1 && playermovey > -1) && playermovex == 0) { //If falling against gravity direction
+        playermovey += 0.05*flipped
     }
 
     //Flipping camera after screen swap
@@ -372,33 +418,44 @@ function step(framestep) {
         {
             for (var i = 0; i != visobstacle.length; i++)
             {
-                xx = visobstacle[i].translate.x; 
+                xx = visobstacle[i].translate.x-(flipped*10); //The player is on a different layer compared to the blocks, so we offset the x to closely match the perspective the player is seeing.
                 yy = visobstacle[i].translate.y;
                 zz = visobstacle[i].translate.z;
-                w = visobstacle[i].width-5; h = visobstacle[i].height-20;
+                w = visobstacle[i].width; aw = visobstacle[i].width+25; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
+                h = visobstacle[i].height-10;
 
-                if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - w && player.translate.x < xx + w && player.translate.y > yy - h && player.translate.y < yy + h)
+                if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - aw && player.translate.x < xx + aw && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
-                    if (visobstacle[i].colliding == false)
-                    { //Collision enter
-                        console.log("Collision detected with "+i.toString());
-                        visobstacle[i].colliding = true;
-                        
-                        if (playermovex == 0) //Player fell on top of this block
-                        {
-                            playermovey = 0; shakey = 2; shakeduration = 2;
-                        } else { //Player kicked side of this block
-                            if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
-                            playermovex = 0; playermovey = 1*flipped; shakeduration = 2;
-                        }
+                    console.log("Collision detected with "+i.toString());
+                    var collided = false;
 
-                        sound([0,,0.035,,0.1449+(random()*0.5),0.4918,,-0.5252,,,,,,0.034,,,,,1,,,,,0.15])
+                    if (playermovex == 0) //Player fell on top of this block
+                    {
+                        if (player.translate.x > xx - w && player.translate.x < xx + w)
+                        {
+                            playermovey = 1*flipped; shakey = 2; shakeduration = 2;
+                            console.log("Fell on top of block")
+                            shakex = 0; shakey = 10; shakeduration = 3;
+                            collided = true;
+                        }
+                        else
+                        {
+                            console.log("Fell directly past block")
+                            collided = true;
+                        }
+                    } else if (player.translate.x > xx - w && player.translate.x < xx + w) { //Player kicked side of this block
+                        playermovex = 0; playermovey = 1*flipped;
+                        if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
+                        shakey = 0; shakeduration = 2;
+                        console.log("Kicked against block")
+                        collided = true;
                     }
-                }
-                else if (visobstacle[i].colliding == true)
-                { //Collision leave
-                    collisionEnd(visobstacle[i])
-                    console.log("Collision ended with "+i.toString());
+
+                    if (collided)
+                    {
+                        pushObstacleToFlipside(visobstacle[i])
+                        sound([0,,0.035,,0.15+(random()*0.5),0.49,,-0.53,,,,,,0.03,,,,,1,,,,,0.15])
+                    }
                 }
             }
         }
@@ -407,14 +464,13 @@ function step(framestep) {
     draw();
 }
 
-function collisionEnd(obstacle){
-    obstacle.colliding = false;
+function pushObstacleToFlipside(obstacle){
 
     if (obstacle.translate.z == 25) //In foreground
     {
-        obstacle.zspeed = -10; obstacle.color = c[3];
+        obstacle.zspeed = -10; obstacle.translate.z += obstacle.zspeed; obstacle.color = c[3];
     } else { //In background
-        obstacle.zspeed = 10; obstacle.color = c[2];
+        obstacle.zspeed = 10; obstacle.translate.z += obstacle.zspeed; obstacle.color = c[2];
     }
 
     timejackpot += 1;
@@ -471,7 +527,7 @@ function input(key) {
             i3.style.visibility = "visible"; 
             not.style.visibility = "hidden";
             state = 1;
-            sound([1,,0.0806,,0.4981,0.2637,,0.4277,,,,,,,,0.6758,,,1,,,,,0.15]);
+            sound([1,,0.08,,0.50,0.26,,0.43,,,,,,,,0.68,,,1,,,,,0.15]);
             loadLevel(5)
             setTimeout(function(){
                 l1.style.visibility = "hidden";
@@ -502,40 +558,28 @@ function input(key) {
         if (key == "ArrowLeft" || key == "a" || key == "q") {delta = -1}
         if (key == "ArrowRight" || key == "d") {delta = 1}
         
-        if (delta != 0 && playermovex == 0) //Left or A or Q
+        if (Math.sign(playermovey) == flipped || Math.sign(playermovey) == 0) //Not moving against the fall direction
         {
-            playermovex = 8*delta;
-            playermovey = 0;
-            sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
-            for (var i = 0; i != obstacle.length; i++)
+            if (delta != 0 && playermovex == 0)
             {
-                if (obstacle[i].colliding == true)
-                {
-                    collisionEnd(obstacle[i])
-                }
+                playermovex = 8*delta;
+                playermovey = 0;
+                sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
+            } else if ((key == "ArrowUp" || key == "w" || key == "z"))
+            {
+                playermovex = 0;
+                playermovey = -2.5*flipped;
+                sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
+            } else if ((key == "ArrowDown" || key == "s") && playermovex == 0 && ((playermovey < 3 && flipped == 1) || (playermovey > -3 && flipped == -1)) )
+            {
+                playermovex = 0;
+                playermovey = 3*flipped;
+                sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
             }
         }
-        if ((key == "ArrowUp" || key == "w" || key == "z") && playermovey != 3*flipped)
+        else
         {
-            playermovex = 0;
-            playermovey = 0.5*flipped;
-            sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
-        }
-        if ((key == "ArrowDown" || key == "s") && playermovey != 3*flipped )
-        {
-            playermovex = 0;
-            playermovey = 3*flipped;
-            sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
-            if (playermovex == 0)
-            {
-                for (var i = 0; i != obstacle.length; i++)
-                {
-                    if (obstacle[i].colliding == true)
-                    {
-                        collisionEnd(obstacle[i])
-                    }
-                }
-            }
+            console.log("Moving against fall direction")
         }
         if (key == " ")
         {
@@ -557,7 +601,7 @@ function draw() {
 function gameOver() {
     state = 0;
     player.visible = false;
-    playermovey = 1*flipped;
+    playermovey = 0.5*flipped;
     canstartgame = false;
     l1.style.animation = ""; //Reset animations
     l2.style.animation = "";
@@ -642,3 +686,13 @@ function HtmlLoaded() {
 }
 
 function isOdd(num) { return num % 2;}
+
+function switchPalette(id) {
+    switch(id) {
+        case 0: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";  palletename = "Default Colors";
+        case 1: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; palletename = "Berry Juice (Hiscore 10)"; break;
+        //case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;
+    }
+
+    //QQQ Update color values on all existing objects (assuming no gameplay is happening)
+}
