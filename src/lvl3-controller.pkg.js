@@ -18,6 +18,7 @@ const initLevel3 = (nextLevel) => {
 
   const loop = () => {
     const state = getSnapshot();
+
     render(
       mapData,
       state.kong,

@@ -1,5 +1,5 @@
 const initGameController = () => {
-  let currentLevel = 0;
+  let currentLevel = 4;
 
   const levelInitters = [
     (next) => initIntro('intro', next),

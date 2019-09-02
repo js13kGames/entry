@@ -1,6 +1,7 @@
 const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
+
   const progressWrapper = createElement('div');
   progressWrapper.className = 'progress-wrapper';
   const [kongProgressBar, kongSpan] = createProgressBar('kong-progress', 'Kong Health');
@@ -10,6 +11,26 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   progressWrapper.appendChild(kongProgressBar);
   progressWrapper.appendChild(trexProgressBar);
   root.appendChild(progressWrapper);
+
+  const ape = ctx.createImageData(100, 100);
+  // Iterate through every pixel
+  for (let i = 0; i < ape.data.length; i += 4) {
+    // Modify pixel data
+    ape.data[i + 0] = 0;  // R value
+    ape.data[i + 1] = 0;    // G value
+    ape.data[i + 2] = 0;  // B value
+    ape.data[i + 3] = 255;  // A value
+  }
+
+  const dino = ctx.createImageData(100, 100);
+  // Iterate through every pixel
+  for (let i = 0; i < dino.data.length; i += 4) {
+    // Modify pixel data
+    dino.data[i + 0] = 190;  // R value
+    dino.data[i + 1] = 0;    // G value
+    dino.data[i + 2] = 210;  // B value
+    dino.data[i + 3] = 255;  // A value
+  }
 
   const keydown = addEventListener(
     window,
@@ -42,39 +63,22 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
     }
   }
 
-  function renderMap (canvasHeight, canvasWidth) {
-    // grass
+  function renderMap (canvasHeight, canvasWidth, cellWidth, mapWidth,  kong, trex) {
     ctx.fillStyle = 'green';
-    ctx.fillRect(0, canvasHeight - 20, canvasWidth, 20);
+    ctx.fillRect(kong.location * -cellWidth + 300, canvasHeight - cellWidth, canvasWidth, cellWidth);
+    renderCharacter('kong', kong, cellWidth);
+    renderCharacter('trex', trex, cellWidth, kong.location * -cellWidth + 300);
   }
 
-  function renderCharacter (character, charSize, charColor) {
-    const eyeSize = charSize / 5;
-    const eyeOffset = character.direction === directions.LEFT ? 0 : charSize - eyeSize;
-
-
-    if (character.currentAction === actions.BLOCKING) {
-      ctx.fillStyle = 'red';
-    } else if (character.currentAction === actions.ATTACKING) {
-      ctx.fillStyle = 'purple';
-    } else if (character.currentAction === actions.PREPARING_ATTACK) {
-      ctx.fillStyle = 'pink';
-    } else if (character.currentAction === actions.DISABLED) {
-      ctx.fillStyle = 'orange';
+  function renderCharacter (charName, charState, charSize, mapStart) {
+    if (charName === 'trex') {
+      ctx.putImageData(dino, mapStart + charState.location * charSize, canvas.height - charSize * 2);
     } else {
-      ctx.fillStyle = charColor;
+      ctx.putImageData(ape, 3 * charSize, canvas.height - charSize * 2);
     }
-    ctx.fillRect(charSize * character.location, canvas.height - charSize - 20, charSize, charSize);
-    ctx.fillStyle = 'yellow';
-    ctx.fillRect(
-      charSize * character.location + eyeOffset,
-      canvas.height - 20 - charSize + eyeSize,
-      eyeSize,
-      eyeSize
-    );
   }
 
-  function write(kong, trex) {
+  function showHealth(kong, trex) {
     // the first (actually only) child will be the span that shows progress
     kongSpan.style.width = `${kong.initialHealth - (kong.initialHealth - kong.health)}%`;
     if (kong.health < 60) {
@@ -95,13 +99,13 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   function render (mapData, kong, trex) {
     return new Promise((resolve, reject) => {
       try {
+        // regardless of screen size, show 12 "cells" wide viewport
+        const cellWidth = 100;
         canvas.height = body.clientHeight;
-        canvas.width = body.clientWidth;
+        canvas.width = cellWidth * mapData.width;
 
-        renderMap(canvas.height, canvas.width);
-        write(kong, trex);
-        renderCharacter(kong, canvas.width / mapData.width, 'black');
-        renderCharacter(trex, canvas.width / mapData.width, 'blue');
+        renderMap(canvas.height, canvas.width, cellWidth, mapData.width, kong, trex);
+        showHealth(kong, trex);
 
         resolve();
       } catch (e) {
