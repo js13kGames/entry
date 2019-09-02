@@ -63,26 +63,27 @@ for (var i = 0; i < 1; i++) {
     });
 }
 
-let pickup1 = new AmmoPickup({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    game: game
-});
-game.sprites.push(pickup1);
+// let pickup1 = new AmmoPickup({
+//     x: Math.random() * canvas.width,
+//     y: Math.random() * canvas.height,
+//     game: game
+// });
+// game.sprites.push(pickup1);
+// game.pickups.push(pickup1);
+//
+// let pickup2 = new ShieldPickup({
+//     x: Math.random() * canvas.width,
+//     y: Math.random() * canvas.height,
+//     game: game
+// });
+// game.sprites.push(pickup2);
 
-let pickup2 = new ShieldPickup({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    game: game
-});
-game.sprites.push(pickup2);
-
-let pickup3 = new StarPickup({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    game: game
-});
-game.sprites.push(pickup3);
+// let pickup3 = new StarPickup({
+//     x: Math.random() * canvas.width,
+//     y: Math.random() * canvas.height,
+//     game: game
+// });
+// game.sprites.push(pickup3);
 
 let player1 = new Player({
     color: 'yellow',
@@ -143,6 +144,9 @@ let loop = GameLoop({  // create the main game loop
         // Remove dead sprites from the sprites list
         game.sprites = game.sprites.filter(sprite => sprite.isAlive());
 
+        game.meteors = game.meteors.filter(sprite => sprite.isAlive());
+        game.pickups = game.pickups.filter(sprite => sprite.isAlive());
+
         // Remove exploded ships from the both lists & the player
         game.sprites = game.sprites.filter(sprite => !sprite.exploded);
         game.players.forEach(player => {
@@ -167,6 +171,36 @@ let loop = GameLoop({  // create the main game loop
                 radius: 36,
                 game: game
             });
+        }
+
+        if (game.pickups.length < 1) {
+            let rand = Math.random();
+            let pickup = null;
+            if (0.000 < rand && rand < .001) {
+                pickup = new AmmoPickup({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    game: game
+                });
+            }
+            if (0.001 < rand && rand < .002) {
+                pickup = new ShieldPickup({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    game: game
+                });
+            }
+            if (0.002 < rand && rand < .003) {
+                pickup = new StarPickup({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    game: game
+                });
+            }
+            if (pickup) {
+                game.sprites.push(pickup);
+                game.pickups.push(pickup);
+            }
         }
 
     },
