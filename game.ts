@@ -263,7 +263,7 @@ export class Game {
                 this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
                 this.isSubscriber = true;
                 const restartBtnEl = document.getElementById('restartBtn');
-                restartBtnEl.classList.remove('hidden');
+                restartBtnEl.removeAttribute('disabled');
                 restartBtnEl.addEventListener('click', (event) => this.restartLevel(event));
 
                 document.getElementById('game').classList.add('subscriber');
