@@ -12,8 +12,7 @@
   "dependencies": {
     "audio": "^1.2.0",
     "kontra": "^6.4.0",
-    "parcel": "^1.12.3",
-    "tinymusic": "^1.0.0"
+    "parcel": "^1.12.3"
   },
   "devDependencies": {
     "typescript": "^3.6.2"

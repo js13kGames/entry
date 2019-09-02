@@ -2,15 +2,15 @@ import { init, GameLoop, initPointer, on, Sprite, setStoreItem, getStoreItem, em
 import {Circle} from './circle';
 import { IGameObject } from './gameObject';
 import { GameEvent, GameEventData } from './gameEvent';
-import { Note, Sequence } from 'tinymusic';
 import {Audio} from './audio';
 import { PointerRipple} from './pointerRipple';
 import { DeathScreen } from './deathScreen';
+import { Particle } from './particle';
 export class Game {
     gameObjects: IGameObject[] = [];
     pointerRipples: PointerRipple[] = [];
     deathObjects: DeathScreen[] = [];
-    particles: IGameObject[] = [];
+    particles: Particle[] = [];
     gameCanvas;
     currentLevel = 1;
     currentHeighScore = 1;
@@ -41,7 +41,7 @@ export class Game {
         this.createCanvasSprite();
         this.loop.start();
         this.onGameObjectKill();
-        if (getStoreItem('johnonym-hiscore') && !location.host.match('localhost')) {
+        if (getStoreItem('johnonym-hiscore')) {
             this.currentHeighScore = getStoreItem('johnonym-hiscore');
             const currentHeighScoreText = document.createTextNode('' + this.currentHeighScore);
             this.hiScoreEl.replaceChild(currentHeighScoreText, this.hiScoreEl.childNodes[0]);       
@@ -63,6 +63,9 @@ export class Game {
             if (deathObject) {
                 deathObject.render();
             }
+        });
+        this.particles.forEach(p => {
+            if(p) p.render();
         });
     }
     initCanvasDimensions(){
@@ -112,6 +115,11 @@ export class Game {
                 }
             }
         });
+        this.particles.forEach(p => {
+            if (p) {
+                p.update();
+            }
+        });
     }
     onGameObjectKill() {
         on(GameEvent.KILL, (event: GameEventData) => {
@@ -128,10 +136,14 @@ export class Game {
                 } else {
                     // correct circle killed
                     this.pointerRipples.push(new PointerRipple(event.gameObject.sprite.x, event.gameObject.sprite.y));
+                    for (let i = 0; i < 10; i++) {
+                        this.particles.push(new Particle(event.gameObject.sprite.x, event.gameObject.sprite.y, event.gameObject.sprite.color, this.gameCanvas.height, this.gameCanvas.width));
+                    }
                     let killed: IGameObject = this.gameObjects.splice(index,1)[0];
                     emit(GameEvent.KILL_ANIMATION, { gameObject: event.gameObject});
                     killed = null; // remove from memory
-                    this.audio.playNextPitch(this.audio.killSequence, 10);
+                    this.audio.playNextPitch(this.audio.killSequence, 20);
+                    
                 }
                 if(this.gameObjects.length === 0) {
                     // CREATE NEXT LEVEL
