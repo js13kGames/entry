@@ -22,17 +22,16 @@ const FPS = 60
 const WIDTH = canvas.width
 const HEIGHT = canvas.height
 const FLOOR = HEIGHT * 0.8
-const SKY_COLOR = 'rgba(90, 90, 90, 1)'
+const SKY_COLOR = 'rgba(0, 0, 0, 1)'
 const SKY_COLOR_REAL = 'rgba(180, 180, 180, 1)'
 
 const PLAYER_WIDTH = WIDTH / 16
 const PLAYER_HEIGHT = PLAYER_WIDTH * 2
-const PLAYER_COLOR = 'rgba(255, 255, 255, 1)'
-const PLAYER_COLOR_REAL = 'rgba(230, 230, 230, 1)'
-const PLAYER_SPEED = 120
+const PLAYER_HP = 255
+const PLAYER_SPEED = WIDTH / 100
 const PLAYER_HIT_DURATION = 0.5
 
-const GRENADE_WIDTH = WIDTH / 32
+const GRENADE_WIDTH = WIDTH / 64
 const GRENADE_HEIGHT = GRENADE_WIDTH
 const GRENADE_COLOR = 'rgba(255, 255, 255, 1)'
 const GRENADE_THROW_RANGE = WIDTH / 4
@@ -41,6 +40,7 @@ const GRENADE_BLAST_RANGE = WIDTH / 4
 const GRENADE_BLAST_DURATION = 0.2
 const GRENADE_COOLDOWN = 0.1
 const GRENADE_REGENERATE = 2
+const GRENADE_ATTACK = 100
 
 const MINE_WIDTH = WIDTH / 32
 const MINE_HEIGHT = MINE_WIDTH / 2
@@ -48,17 +48,26 @@ const MINE_COLOR = 'rgba(255, 255, 255, 1)'
 const MINE_BLAST_RANGE = WIDTH / 3
 const MINE_BLAST_DURATION = 0.3
 const MINE_REGENERATE = 5
+const MINE_ATTACK = 200
 
-const ENEMY_WIDTH = PLAYER_WIDTH
-const ENEMY_HEIGHT = PLAYER_HEIGHT
-const ENEMY_COLOR = 'rgba(128, 128, 128, 1)'
-const ENEMY_COLOR_REAL = 'rgba(230, 230, 230, 1)'
+const ENEMY_WIDTH = PLAYER_WIDTH * 0.75
+const ENEMY_HEIGHT = PLAYER_HEIGHT * 0.75
+const ENEMY_COLOR_LIGHT = 'rgba(230, 230, 230, 1)'
+const ENEMY_SPEED = WIDTH / 200
+const ENEMY_ATTACK = 15
+
+const UI_FONT_SIZE = WIDTH / 40
 
 let gameOver = false
+let kills = 0
 let blasting_duration = 0
 let total_blast_duration = 0
 let playerHitTimer = 0
+let enemyMinHp = 110
+let enemyMaxHp = 200
+
 const player = initPlayer()
+
 const enemyPool = Pool({
   create: Sprite
 })
@@ -80,6 +89,13 @@ const blastPool = Pool({
   create: Sprite
 })
 
+const uiParts = {
+  grenadeCount: null,
+  mineCount: null,
+  killCount: null
+}
+initUI()
+
 setInterval(() => {
   makeEnemies(8)
 }, 3000)
@@ -93,6 +109,7 @@ let loop = GameLoop({
     updateGrenades(dt)
     updateMines()
     updateBlast(dt)
+    updateUI()
 
     // blast effect
     if (blasting_duration >= total_blast_duration) {
@@ -138,10 +155,16 @@ let loop = GameLoop({
 
     // collisions
     // blast and enemy
+    // TODO: blast-enemy collision needs a cooldown timer
     blastPool.getAliveObjects().forEach(blast => {
       enemyPool.getAliveObjects().forEach(enemy => {
         if (blast.collidesWith(enemy)) {
-          enemy.ttl = 0
+          let atk = blast.type === 'g' ? GRENADE_ATTACK : MINE_ATTACK
+          enemy.hp -= atk
+          if (enemy.hp <= 0) {
+            enemy.ttl = 0
+            kills++
+          }
         }
       })
     })
@@ -169,10 +192,7 @@ let loop = GameLoop({
         }
       })
       if (hit) {
-        player.hp--
-        if (player.hp <= 0) {
-          gameOver = true
-        }
+        player.hp -= ENEMY_ATTACK
         playerHitTimer += 0.01
       }
     } else if (playerHitTimer >= PLAYER_HIT_DURATION) {
@@ -187,6 +207,7 @@ let loop = GameLoop({
     grenadePool.render()
     minePool.render()
     blastPool.render()
+    renderUI()
   }
 })
 
@@ -208,11 +229,11 @@ function initPlayer() {
     dy: -1,
     width: PLAYER_WIDTH,
     height: PLAYER_HEIGHT,
-    color: PLAYER_COLOR,
+    color: `rgba(PLAYER_HP, PLAYER_HP, PLAYER_HP, 1)`,
     collidesWith: collidesWith,
 
     // custom props
-    hp: 10
+    hp: PLAYER_HP
   }
   const player = Sprite(playerCommonProps)
   return player
@@ -224,16 +245,12 @@ function updatePlayer(player, dt) {
     gameOver = true
     return
   }
-  if (blasting_duration < total_blast_duration) {
-    player.color = PLAYER_COLOR_REAL
-  } else {
-    player.color = PLAYER_COLOR
-  }
   player.rotation = Math.PI / 12
   player.y += player.dy
   if (player.y < FLOOR - 20 || player.y > FLOOR) {
     player.dy = -player.dy
   }
+  player.color = `rgba(${player.hp}, ${player.hp}, ${player.hp}, 1)`
 }
 
 function randomGray(min, max, opacity) {
@@ -243,7 +260,8 @@ function randomGray(min, max, opacity) {
 
 function makeEnemies(count) {
   for (let i = 0; i < count; i++) {
-    const color = randomGray(100, 150, 1)
+    const hp = (enemyMaxHp - enemyMinHp) * Math.random() + enemyMinHp
+    const color = `rgba(${255 - hp}, ${255 - hp}, ${255 - hp}, 1)`
     enemyPool.get({
       anchor: {
         x: 0.5,
@@ -256,9 +274,10 @@ function makeEnemies(count) {
       color: color,
       collidesWith: collidesWith,
 
-      vx: 5,
+      vx: ENEMY_SPEED,
       vy: -1.5,
-      itsColor: color
+      itsColor: color,
+      hp
     })
   }
 }
@@ -266,9 +285,11 @@ function makeEnemies(count) {
 function updateEnemies() {
   enemyPool.getAliveObjects().forEach((enemy) => {
     enemy.rotation = Math.PI / 10
+    let gray = 255 - enemy.hp
     if (blasting_duration < total_blast_duration) {
-      enemy.color = ENEMY_COLOR_REAL
+      enemy.color = ENEMY_COLOR_LIGHT
     } else {
+      enemy.itsColor = `rgba(${gray}, ${gray}, ${gray}, 1)`
       enemy.color = enemy.itsColor
     }
     enemy.y += enemy.vy
@@ -329,7 +350,7 @@ function makeMine() {
     color: MINE_COLOR,
     x: player.x,
     y: FLOOR,
-    dx: -PLAYER_SPEED / FPS,
+    dx: -PLAYER_SPEED,
     collidesWith: collidesWith
   })
   mines -= 1
@@ -353,7 +374,7 @@ function makeBlast(type, x) {
     y: FLOOR,
     color: GRENADE_COLOR,
     ttl: ttl,
-    dx: -PLAYER_SPEED / FPS,
+    dx: -PLAYER_SPEED,
     collidesWith: collidesWith,
 
     type: type
@@ -362,4 +383,57 @@ function makeBlast(type, x) {
 
 function updateBlast(dt) {
   blastPool.update()
+}
+
+function initUI() {
+  uiParts.grenadeCount = Sprite({
+    x: WIDTH * 0.05,
+    y: FLOOR + UI_FONT_SIZE * 2,
+    color: 'rgba(255, 255, 255, 1)',
+
+    render: function() {
+      const ctx = this.context
+      ctx.fillStyle = this.color
+      ctx.font = `${UI_FONT_SIZE}px Helvetica,Arial`
+      ctx.fillText(`FLASH BANGS [G]: ${grenades}`, this.x, this.y)
+    }
+  })
+
+  uiParts.mineCount = Sprite({
+    x: WIDTH * 0.05,
+    y: FLOOR + UI_FONT_SIZE * 4,
+    color: 'rgba(255, 255, 255, 1)',
+
+    render: function() {
+      const ctx = this.context
+      ctx.fillStyle = this.color
+      ctx.font = `${UI_FONT_SIZE}px Helvetica,Arial`
+      ctx.fillText(`FLASH MINES [SPACE]: ${mines}`, this.x, this.y)
+    }
+  })
+
+  uiParts.killCount = Sprite({
+    x: WIDTH * 0.05,
+    y: UI_FONT_SIZE * 2,
+    color: 'rgba(255, 255, 255, 1)',
+
+    render: function() {
+      const ctx = this.context
+      ctx.fillStyle = this.color
+      ctx.font = `${UI_FONT_SIZE}px Helvetica,Arial`
+      ctx.fillText(`KILLS: ${kills}`, this.x, this.y)
+    }
+  })
+}
+
+function updateUI() {
+  uiParts.grenadeCount.update()
+  uiParts.mineCount.update()
+  uiParts.killCount.update()
+}
+
+function renderUI() {
+  uiParts.grenadeCount.render()
+  uiParts.mineCount.render()
+  uiParts.killCount.render()
 }
