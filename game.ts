@@ -70,7 +70,7 @@ export class Game {
     }
     initCanvasDimensions(){
         let width = window.outerWidth;
-        let height = window.outerHeight - this.topGutter - 110; // added extra margin bot
+        let height = window.outerHeight - this.topGutter - 120; // added extra margin bot
         if (navigator.userAgent.match(/Android/i)
             || navigator.userAgent.match(/webOS/i)
             || navigator.userAgent.match(/iPhone/i)
