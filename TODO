@@ -1,3 +1,4 @@
 TODO
 - optimize .zip file with advzip
 - get rid of event-set-component and write your own event listeners
+- make an outlaw shootable (rotate backward by 90deg)
