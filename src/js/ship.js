@@ -17,6 +17,7 @@ export class Ship extends Sprite.class {
 
         // The stats & info for the ship loaded from /ships/*.js
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
+        this.shipData = shipData;
 
         // Default properties for all ships
         this.ammoCurrent = shipData.ammo;
@@ -225,8 +226,10 @@ export class Ship extends Sprite.class {
 
         if (this.rainbow > 0) {
             this.rainbow -= 1 / 60;
-        } else {
-            this.rainbow = 0;
+            if (this.rainbow <= 0) {
+                this.maxSpeed = (this.shipData.maxSpeed + 11) / 6;
+                this.rainbow = 0;
+            }
         }
 
         if (this.rewinding > 0) {
