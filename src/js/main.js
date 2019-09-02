@@ -475,6 +475,7 @@
           this.winLevel = true;
           this.textLevelEndEl.setAttribute('visible', true);
           this.textLevelEndEl.setAttribute('text', 'value', 'NEXT LEVEL');
+          this.player.setAttribute('wasd-controls', 'enabled: false')
           this.nextLevel();
         }
       } else {
