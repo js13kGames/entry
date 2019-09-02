@@ -176,21 +176,21 @@ let loop = GameLoop({  // create the main game loop
         if (game.pickups.length < 1) {
             let rand = Math.random();
             let pickup = null;
-            if (0.000 < rand && rand < .001) {
+            if (.000 < rand && rand < .001) {
                 pickup = new AmmoPickup({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
                     game: game
                 });
             }
-            if (0.001 < rand && rand < .002) {
+            if (.001 < rand && rand < .002) {
                 pickup = new ShieldPickup({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
                     game: game
                 });
             }
-            if (0.002 < rand && rand < .003) {
+            if (.002 < rand && rand < .003) {
                 pickup = new StarPickup({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
