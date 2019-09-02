@@ -16,6 +16,10 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
     width: mapWidth
   }
 
+  const getMapCells = () => {
+    
+  }
+
   const initialHealth = 100;
 
   // init kong

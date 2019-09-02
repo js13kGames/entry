@@ -10,6 +10,13 @@ canvas {
   top: 0;
 }
 
+#root {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+}
+
 .progress-wrapper {
   display: flex;
   justify-content: space-between;
