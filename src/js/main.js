@@ -26,13 +26,13 @@
     // Game map generated on each level
     map: {
       data: [],
-      startHeight: 5, // start map height in tiles.
+      startHeight: 3, // start map height in tiles.
       width: 3, // map width in tiles.
       tileSize: 3, // tile size in meters
 
       // Get the map height in tiles for each level
       getHeight: function(level) {
-        return this.startHeight + (level * 5);
+        return this.startHeight + (level * 3);
       },
 
       // Get a tile given a col and a row
