@@ -28,3 +28,7 @@ const createProgressBar = (barId, label) => {
   wrap.appendChild(p);
   return [wrap, bar];
 }
+const createCanvas = () => {
+  const canvas = createElement('canvas');
+  return [canvas, canvas.getContext('2d')];
+}

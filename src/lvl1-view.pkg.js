@@ -2,7 +2,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   const rAF = window.requestAnimationFrame;
   const cancelAF = window.cancelAnimationFrame;
 
-  const canvas = createElement('canvas');
+  const [canvas] = createCanvas();
   const ctx = canvas.getContext('2d');
   const tileHeight = 100;
   const tileWidth = 100;
@@ -22,7 +22,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     [BLOCKED]: 'transparentx',
     [BUILDING_2X4]: 'brown',
     // [OUT_OF_BOUNDS_CUTOFF]:
-    [STREET]: 'black',
+    [STREET]: '#111327',
     [PIZZA]: 'yellow',
     [EXIT]: 'green'
   };

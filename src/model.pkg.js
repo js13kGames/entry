@@ -11,6 +11,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   const PIZZA = uid();
   const HOTDOG = uid();
   const EXIT = uid();
+  const colorStreet = '#111327';
 
   const map = [];
   // Create cell object
@@ -86,147 +87,98 @@ const initModel = (height, width, foodCoveragePercent) => {
   // Container to hold sliced image cells
   const buildingsImageCells = {};
 
-  // Create full size building image data 200x400
-  const building2x4Img = (() => {
-    const width = 200;
-    const height = 400;
-    const ctx = createElement('canvas').getContext('2d');
-    ctx.canvas.width = width;
-    ctx.canvas.height = height;
-
-    function drawWindow (ctx, x, y) {
-      const lightsOn = Math.random() >= .8;
-      ctx.fillStyle = lightsOn ? 'yellow' : 'cyan';
-      if (lightsOn) {
-        ctx.filter = 'blur(15px)';
-        ctx.fillRect(x, y, windowWidth, windowHeight);
-        ctx.filter = 'none';
-      }
-      ctx.fillRect(x, y, windowWidth, windowHeight);
-      ctx.filter = 'blur(1px)';
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + 16, y + 20);
-      ctx.lineTo(x + 9, y + 20);
-      ctx.lineTo(x + windowWidth, y + windowHeight);
-      ctx.stroke();
-      ctx.filter = 'none';
-    }
-
-    ctx.fillStyle = '#808080';
-    ctx.fillRect(0, 0, 200, 400);
-    ctx.fillStyle = '#4d4d4d';
-    ctx.fillRect(0, 0, 100, 400);
-
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.fillStyle = `#640`;
-    for (var x = 0; x < width; x++) {
-      for (var y = 0; y < height; y++) {
-        if (Math.random() >= .5) ctx.fillRect(x, y, 1, 1)
-      }
-    }
-    ctx.globalCompositeOperation = 'source-over';
-
-    const windowWidth = 24;
-    const windowGap = 24;
-    const windowHeight = 40;
-    const floorGap = 28;
-
-    for (var y = 18; (y + windowHeight) < 380; y += windowHeight + floorGap) {
-      for (var x = 16; x < 200; x += (windowWidth + windowGap)) {
-        drawWindow(ctx, x, y);
-      }
-    }
-
-    ctx.fillStyle = 'cyan';
-    ctx.fillRect(16, 360, 55, 30);
-    ctx.fillRect(129, 360, 55, 30);
-    ctx.fillRect(85, 360, 30, 40);
-
-    return ctx.getImageData(0, 0, 200, 400);
-  })();
-
-  // Create Full size building image data 200x400 (style 2)
-  const building2x4Img2 = (() => {
-    const ctx = createElement('canvas').getContext('2d');
-    ctx.canvas.height = 400;
+  // Create building styles
+  function drawBuilding (color, type) {
+    const [, ctx] = createCanvas('canvas');
     ctx.canvas.width = 200;
-    function drawWindow (ctx, x, y) {
-      ctx.fillStyle = Math.random() < .8 ? 'cyan' : 'yellow';
-      if (ctx.fillStyle === '#ffff00') {
-        ctx.filter = 'blur(15px)';
-        ctx.fillRect(x, y, windowWidth, windowHeight);
-        ctx.filter = 'none';
-      }
-      ctx.fillRect(x, y, windowWidth, windowHeight);
-      ctx.filter = 'blur(1px)';
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + 16, y + 20);
-      ctx.lineTo(x + 9, y + 20);
-      ctx.lineTo(x + windowWidth, y + windowHeight);
-      ctx.stroke();
-      ctx.filter = 'none';
-    }
+    ctx.canvas.height = 400;
 
-    ctx.fillStyle = '#000';
+    const fillStyle = s => { ctx.fillStyle = s; };
+    const moveTo = (...a) => ctx.moveTo(...a);
+    const lineTo = (...a) => ctx.lineTo(...a);
+    const quad = (...a) => ctx.quadraticCurveTo(...a);
+    const fill = () => ctx.fill();
+    const fillRect = (...a) => ctx.fillRect(...a);
+    const begin = () => ctx.beginPath();
+    const close = () => ctx.closePath();
+
+    fillStyle(colorStreet);
     ctx.fillRect(0, 0, 200, 400);
-    ctx.fillStyle = 'brown';
-    ctx.beginPath();
-    ctx.moveTo(0, 30);
-    ctx.bezierCurveTo(50, 30, 25, 0, 100, 0);
-    ctx.bezierCurveTo(175, 0, 150, 30, 200, 30);
-    ctx.lineTo(200, 400);
-    ctx.lineTo(0, 400);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(100, 50);
-    ctx.arc(100, 30, 20, 0, Math.PI * 2);
-    ctx.fillStyle = 'black';
-    ctx.fill();
 
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.fillStyle = '#8c8c8c';
-    ctx.fillRect(0, 0, 100, 400);
-    ctx.fillStyle = `#640`;
-    for (var x = 0; x < ctx.canvas.width; x++) {
-      for (var y = 0; y < ctx.canvas.height; y++) {
-        if (Math.random() >= .5) ctx.fillRect(x, y, 1, 1)
+    // Sidewalk (5px rounded corner)
+    fillStyle('#686868');
+    moveTo(5, 354);
+    lineTo(195, 354);
+    quad(200, 354, 200, 359);
+    lineTo(200, 395);
+    quad(200, 400, 195, 400);
+    lineTo(5, 400);
+    quad(0, 400, 0, 395);
+    lineTo(0, 359);
+    quad(0, 354, 5, 354);
+    fill();
+
+    // streetlamp
+    // glow
+    begin();
+    fillStyle('#DFD8C1');
+    ctx.ellipse(16, 390, 12, 4, 0, 0, 2*Math.PI)
+    fill();
+    // pole
+    begin();
+    fillStyle('#014404');
+    ctx.fillRect(14, 370, 4, 20);
+    // lamp
+    begin();
+    fillStyle('#FE8');
+    ctx.arc(16, 372, 4, 0, 2*Math.PI);
+    fill();
+
+    // Building
+    // base color
+    begin();
+    ctx.fillStyle = color;
+    moveTo(8, 10);
+    lineTo(48, 0);
+    lineTo(192, 0);
+    lineTo(192, 391);
+    lineTo(48, 391);
+    lineTo(8, 358);
+    close();
+    fill();
+    // shadow
+    begin();
+    fillStyle('rgba(0, 0, 0, 0.3)');
+    moveTo(8, 10);
+    lineTo(48, 0);
+    lineTo(48, 391);
+    lineTo(8, 358);
+    close();
+    fill();
+
+    // windows
+    if (type === 1) {
+      // horizontal windows
+      for (let y = 25; y <= 241; y += 27) {
+        fillRect(61, y, 115, 16)
+      }
+    } else if (type === 2) {
+      // vertical windows
+      for (let x = 61; x <= 160; x += 33) {
+        fillRect(x, 25, 20, 321);
       }
     }
-    ctx.globalCompositeOperation = 'source-over';
-
-    const windowWidth = 24;
-    const windowGap = 24;
-    const windowHeight = 40;
-    const floorGap = 28;
-
-    for (var y = 87; (y + windowHeight) < 380; y += windowHeight + floorGap) {
-      for (var x = 16; x < 200; x += (windowWidth + windowGap)) {
-        drawWindow(ctx, x, y);
-      }
-    }
-
-    ctx.fillStyle = 'cyan';
-    ctx.fillRect(16, 360, 55, 30);
-    ctx.fillRect(129, 360, 55, 30);
-    ctx.fillRect(85, 360, 30, 40);
-
     return ctx.getImageData(0, 0, 200, 400);
-  })();
+  }
 
   // Create police car image 100x100
   const policeLeftImg = (() => {
-    const ctx = createElement('canvas').getContext('2d');
+    const [,ctx] = createCanvas();
     const size = 100;
     ctx.canvas.height = size;
     ctx.canvas.width = size;
 
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = colorStreet;
     ctx.fillRect(0, 0, size, size);
 
     // 40 x 27
@@ -286,7 +238,7 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   // slice building in to 100x100 image datas
   const sliceBuilding = (building, imageData) => {
-    const ctx = createElement('canvas').getContext('2d');
+    const [,ctx] = createCanvas();
     return building.map((row, rowIdx) => (
       row.map((_, colIdx) => {
         ctx.putImageData(imageData, colIdx * -100, rowIdx * -100);
@@ -295,8 +247,8 @@ const initModel = (height, width, foodCoveragePercent) => {
     ));
   }
 
-  buildingsImageCells['2x4'] = sliceBuilding(buildings['2x4'], building2x4Img);
-  buildingsImageCells['2x4-2'] = sliceBuilding(buildings['2x4'], building2x4Img2);
+  buildingsImageCells['2x4'] = sliceBuilding(buildings['2x4'], drawBuilding('#01ADC4', 1));
+  buildingsImageCells['2x4-2'] = sliceBuilding(buildings['2x4'], drawBuilding('#700', 2));
 
 
   // Set map height and width

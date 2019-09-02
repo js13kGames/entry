@@ -1,6 +1,5 @@
 const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const [canvas, ctx] = createCanvas();
   const progressWrapper = createElement('div');
   progressWrapper.className = 'progress-wrapper';
   const [kongProgressBar, kongSpan] = createProgressBar('kong-progress', 'Kong Health');

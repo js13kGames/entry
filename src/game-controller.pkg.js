@@ -12,7 +12,7 @@ const initGameController = () => {
   ];
 
   function next () {
-    levelInitters[currentLevel++](next);
+    window.requestAnimationFrame(() => levelInitters[currentLevel++](next));
   }
   next();
 };
