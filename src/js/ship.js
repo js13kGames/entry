@@ -99,7 +99,8 @@ export class Ship extends Sprite.class {
         // Remove the normal hitbox
         this.hitbox.remove();
 
-        this.shield = Math.floor(this.shield + 1) || 1;
+        this.shield = 1;
+        this.shieldDegrading = 0;
         this.hitbox = this.game.cSystem.createCircle(
             this.x,
             this.y,

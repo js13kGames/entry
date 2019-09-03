@@ -12,8 +12,8 @@ export function createBullet(parent) {
 
         // Start at tip of the triangle
         // Todo understand: magic no. Fix to "weapon mount" of some sort
-        x: parent.x + cos * 16,
-        y: parent.y + sin * 16,
+        x: parent.x + cos * parent.radius,
+        y: parent.y + sin * parent.radius,
 
         // Move bullet #x faster than the ship
         dx: parent.dx + cos * 12,
