@@ -15,20 +15,20 @@ export class AmmoPickup extends Pickup {
         ship.ammoCurrent = ship.ammo * 2;
     }
 
-    render() {
+    render(scale) {
         this.context.save();
-        this.context.translate(this.x, this.y);
+        this.context.translate(this.x * scale, this.y * scale);
         this.context.rotate(util.degToRad(this.rotation));
 
         this.context.beginPath();
-        this.context.lineWidth = 2;
+        this.context.lineWidth = scale;
         this.context.strokeStyle = '#fff';
 
         this.context.rect(
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5),
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5),
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
         );
         this.context.stroke();
 
@@ -36,37 +36,37 @@ export class AmmoPickup extends Pickup {
         this.context.strokeStyle = '#0ef';
 
         this.context.rect(
-            this.scale * -1.5,
-            this.scale * -1.5,
-            this.scale * .5,
-            this.scale * .5
+            scale * -1.35,
+            scale * -1.35,
+            scale * .45,
+            scale * .45
         );
 
         this.context.rect(
-            this.scale *  1,
-            this.scale * -1.5,
-            this.scale * .5,
-            this.scale * .5
+            scale * .9,
+            scale * -1.35,
+            scale * .45,
+            scale * .45
         );
 
         this.context.rect(
-            this.scale * -1.5,
-            this.scale *  1,
-            this.scale * .5,
-            this.scale * .5
+            scale * -1.35,
+            scale * .9,
+            scale * .45,
+            scale * .45
         );
 
         this.context.rect(
-            this.scale *  1,
-            this.scale *  1,
-            this.scale * .5,
-            this.scale * .5
+            scale * .9,
+            scale * .9,
+            scale * .45,
+            scale * .45
         );
 
         this.context.stroke();
         this.context.restore();
 
         // Render the circle around the edge
-        super.render();
+        super.render(scale);
     }
 }

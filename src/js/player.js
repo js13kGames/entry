@@ -71,8 +71,8 @@ export class Player {
         // Create a whole new ship for the player
 
         this.ship = new Ship({
-            x: 20 + Math.random() * 400,
-            y: 20 + Math.random() * 200,
+            x: 10 + Math.random() * (this.game.width - 20),
+            y: 10 + Math.random() * (this.game.height - 20),
             width: 6,
             color: this.color,
             shipType: this.shipType,

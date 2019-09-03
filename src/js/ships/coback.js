@@ -5,7 +5,7 @@ export default () => {
         rof: 4,
         ror: 4,
         turnRate: 3,
-        radius: 9,
+        radius: 8,
         mass: 9,
         thrust: 9,
         ammo: 8,
