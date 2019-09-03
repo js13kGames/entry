@@ -21,8 +21,23 @@ initKeys();
 initGamepads();
 
 canvas.style = 'width:100%;background:#000';
-canvas.height = 720;
-canvas.width = 1281; // Fixes scrollbars on my laptop when fullscreen sigh
+//canvas.height = 720;
+//canvas.width = 1281; // Fixes scrollbars on my laptop when fullscreen sigh
+
+var scale = 1;
+
+function setCanvasSize() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    scale = Math.floor(vw / 360);
+    canvas.width = scale * 360;
+    canvas.height = vh * (canvas.width / vw);
+}
+
+
+window.onresize = () => {
+    setCanvasSize();
+};
 
 // Testing making canvas px match display px rather than scaling
 // var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
