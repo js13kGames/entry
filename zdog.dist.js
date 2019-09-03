@@ -473,6 +473,7 @@
   // ----- update ----- //
   
   Anchor.prototype.update = function() {
+    if (this.visible == false) {return;} //Custom hack for big scenes where you do culling yourself: if it isn't visible, don't update it.
     // update self
     this.reset();
     // update children

@@ -106,7 +106,7 @@ html, body {
 .jackpot {
   font-size: 20px;
   transform: translate(50%,100%) rotate(-10deg);
-  width: 100px;
+  width: 120px;
   color: black;
   background-color: white;
   mix-blend-mode: screen; /* This makes the cutout text possible */
@@ -116,6 +116,7 @@ html, body {
   font-size: 20px;
   transform: translate(-110%,50%);
   width: 80px;
+  border: 2px dotted white;
 }
 
 @keyframes gamestart-top {
