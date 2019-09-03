@@ -35,6 +35,7 @@ function PlayScene() {
   this.stateMap = {};
   this.stateMap[PlayScene.states.idle] = this.cycleIdle.bind(this);
   this.stateMap[PlayScene.states.intro] = this.cycleIntro.bind(this);
+  this.stateMap[PlayScene.states.waiting] = this.cycleWaiting.bind(this);
   this.stateMap[PlayScene.states.playing] = this.cyclePlaying.bind(this);
   this.stateMap[PlayScene.states.outro] = this.cycleOutro.bind(this);
   this.stateMap[PlayScene.states.end] = this.cycleEnd.bind(this);
@@ -43,9 +44,10 @@ function PlayScene() {
 PlayScene.states = {
   idle: 0,
   intro: 1,
-  playing: 2,
-  outro: 3,
-  end: 4
+  waiting: 2,
+  playing: 3,
+  outro: 4,
+  end: 5
 };
 
 PlayScene.prototype = extendPrototype(Scene.prototype, {
@@ -81,6 +83,14 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       rollMagnitude: this.roll.magnitude
     });
     this.addChild(this.turtle);
+
+    this.timeText = new DisplayText({
+      x: SETTINGS.width / 2,
+      y: 100,
+      text: '0.000s',
+      textAlign: 'center'
+    });
+    this.addChild(this.timeText);
   
     this.keys = [];
     this.keys.push(KB(
@@ -96,7 +106,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   
     this.addSteppable(this.cycle.bind(this));
     this.addSteppable(this.turtle.step.bind(this.turtle));
-    this.setState(PlayScene.states.playing);
+    this.setState(PlayScene.states.waiting);
   },
   destroy: function () {
     this.keys.forEach(function (key) {
@@ -105,6 +115,11 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   },
   setState: function (state) {
     this.state = state;
+    switch (state) {
+      case PlayScene.states.waiting:
+        this.turtle.angle = Math.PI;
+        break;
+    }
     this.currentCycle = this.stateMap[state];
   },
   maybeEnableDamping: function () {
@@ -125,21 +140,37 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     }
   },
   leftPressed: function () {
+    if (this.state === PlayScene.states.waiting) {
+      this.setState(PlayScene.states.playing);
+    } else if (this.state !== PlayScene.states.playing) {
+      return;
+    }
     this.turtleAccel += -this.turtleAccelMagnitude;
     this.maybeEnableDamping();
     this.updateShiftState();
   },
   leftReleased: function () {
+    if (this.state !== PlayScene.states.playing) {
+      return;
+    }
     this.turtleAccel -= -this.turtleAccelMagnitude;
     this.maybeEnableDamping();
     this.updateShiftState();
   },
   rightPressed: function () {
+    if (this.state === PlayScene.states.waiting) {
+      this.setState(PlayScene.states.playing);
+    } else if (this.state !== PlayScene.states.playing) {
+      return;
+    }
     this.turtleAccel += this.turtleAccelMagnitude;
     this.maybeEnableDamping();
     this.updateShiftState();
   },
   rightReleased: function () {
+    if (this.state !== PlayScene.states.playing) {
+      return;
+    }
     this.turtleAccel -= this.turtleAccelMagnitude;
     this.maybeEnableDamping();
     this.updateShiftState();
@@ -149,6 +180,9 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   },
   cycleIdle: function (dts) {},
   cycleIntro: function (dts) {},
+  cycleWaiting: function (dts) {
+
+  },
   cyclePlaying: function (dts) {
     this.rollBackAccel = this.rollPos / this.roll.magnitude * -400;
 
@@ -165,10 +199,10 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.turtle.setRollPos(this.rollPos);
 
     this.playSeconds += dts;
+    this.timeText.text = this.playSeconds.toFixed(3) + 's';
 
     if (Math.abs(this.rollPos) > this.roll.magnitude) {
       this.setState(PlayScene.states.outro);
-      console.log(this.playSeconds);
     }
   },
   cycleOutro: function (dts) {

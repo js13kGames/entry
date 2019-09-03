@@ -11,6 +11,9 @@ function Main(){
   this.scene = null;
   this.setScene(new PlayScene(this));
   this.time = 0;
+
+  // global font
+  this.context.font = '20px Arial';
   
   this.resize = this.resize.bind(this);
   window.addEventListener('resize', this.onWindowResize.bind(this), false);
