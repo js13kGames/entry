@@ -32,6 +32,7 @@ const initIntroView = (height, width) => {
     root.appendChild(inst);
 
     if (buttonText) {
+      button.id = 'button';
       button.innerHTML = buttonText;
       button.setAttribute('style', 'position: relative;');
       listeners.push(

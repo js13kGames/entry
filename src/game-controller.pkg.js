@@ -1,8 +1,9 @@
 const initGameController = () => {
-  let currentLevel = 1;
+  let currentLevel = 0;
 
   const levelInitters = [
     (next) => initIntro('intro', next),
+    (next) => playMusic() && next(),
     initLevel1,
     (next) => initIntro('pre-lvl-2', next),
     // initLevel2,
