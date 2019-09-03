@@ -12,5 +12,7 @@ var JMath = {
       (Math.abs(ax - bx) * 2 < (aw + bw)) &&
       (Math.abs(ay - by) * 2 < (ah + bh))
     );
-  }
+  },
+  PId2: Math.PI / 2,
+  EPSILON: 0.0001
 };

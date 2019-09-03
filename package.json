@@ -1,14 +1,14 @@
 {
-  "name": "js13k-lost",
+  "name": "js13k-2019-back",
   "version": "0.1.0",
-  "description": "js13k 2017 entry",
+  "description": "js13k 2019 entry",
   "main": "index.js",
   "scripts": {
     "test": "gulp test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jayther/js13k-2017-back.git"
+    "url": "git+https://github.com/jayther/js13k-2019-back.git"
   },
   "keywords": [
     "game",

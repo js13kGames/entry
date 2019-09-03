@@ -1,12 +1,14 @@
 function KB(keyCode, press, release) {
+  var isArr = Array.isArray(keyCode);
   var key = {
-    code: keyCode,
+    code: isArr ? -1 : keyCode,
+    codes: isArr ? keyCode : [], 
     isDown: false,
     press: press,
     release: release
   };
   key.downHandler = function (e) {
-    if (e.keyCode === key.code) {
+    if ((!isArr && e.keyCode === key.code) || (isArr && key.codes.indexOf(e.keyCode) !== -1)) {
       if (!key.isDown && key.press) {
         key.press();
       }
@@ -15,7 +17,7 @@ function KB(keyCode, press, release) {
     e.preventDefault();
   };
   key.upHandler = function (e) {
-    if (e.keyCode === key.code) {
+    if ((!isArr && e.keyCode === key.code) || (isArr && key.codes.indexOf(e.keyCode) !== -1)) {
       if (key.isDown && key.release) {
         key.release();
       }

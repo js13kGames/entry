@@ -8,7 +8,8 @@ function Main(){
   this.canvas = canvas;
   this.context = canvas.getContext('2d');
   this.animManager = new AnimManager();
-  this.scene = new TestScene(this);
+  this.scene = null;
+  this.setScene(new PlayScene(this));
   this.time = 0;
   
   this.resize = this.resize.bind(this);
