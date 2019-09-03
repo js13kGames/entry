@@ -1,7 +1,4 @@
 const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
-  const rAF = window.requestAnimationFrame;
-  const cancelAF = window.cancelAnimationFrame;
-
   const [canvas] = createCanvas();
   const ctx = canvas.getContext('2d');
   const tileHeight = 100;
@@ -28,16 +25,6 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   };
 
   const [progressBar, pizzaSpan] = createProgressBar('pizza-progress', 'Pizzas Eaten');
-
-  const ape = ctx.createImageData(100, 100);
-  // Iterate through every pixel
-  for (let i = 0; i < ape.data.length; i += 4) {
-    // Modify pixel data
-    ape.data[i + 0] = 190;  // R value
-    ape.data[i + 1] = 0;    // G value
-    ape.data[i + 2] = 210;  // B value
-    ape.data[i + 3] = 255;  // A value
-  }
 
   const pizzaImg = new Image();
   pizzaImg.src = 'assets/pizza.svg';
@@ -66,17 +53,37 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
         }
       }
     }
-    ctx.putImageData(ape, canvas.width / 2 - ape.width / 2, canvas.height / 2 - ape.height / 2);
   }
 
   function write (state) {
     pizzaSpan.style.width = `${(numFoods - state.remainingFoods) / numFoods * 100}%`;
   }
 
+  function faceDirection (dir) {
+    let url;
+    switch (dir) {
+      case 'up': url = 'assets/kong-back.svg'; break;
+      case 'right': url = 'assets/kong-right.svg'; break;
+      case 'down': url = 'assets/kong-front.svg'; break;
+      case 'left': url = 'assets/kong-right.svg'; break;
+    }
+    const ape = new Image();
+    ape.src = url;
+    let mult = 1;
+    if (dir === 'left') {
+      ctx.scale(-1, 1);
+      ctx.translate(-100, 0);
+      mult = -1;
+    }
+    ctx.drawImage(ape, mult * (canvas.width / 2 - ape.width / 2), canvas.height / 2 - ape.height / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
   function render (mapView, state) {
     return new Promise((resolve, reject) => {
       try {
         draw(mapView, state);
+        faceDirection(state.facing);
         write(state);
         resolve();
       } catch (e) {
@@ -86,8 +93,8 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   }
 
   // init
-  body.appendChild(canvas);
-  body.appendChild(progressBar);
+  root.appendChild(progressBar);
+  root.appendChild(canvas);
   const removeListeners = [
     addEventListener(
       window,

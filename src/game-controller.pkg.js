@@ -1,5 +1,5 @@
 const initGameController = () => {
-  let currentLevel = 4;
+  let currentLevel = 1;
 
   const levelInitters = [
     (next) => initIntro('intro', next),
@@ -12,7 +12,7 @@ const initGameController = () => {
   ];
 
   function next () {
-    window.requestAnimationFrame(() => levelInitters[currentLevel++](next));
+    rAF(() => levelInitters[currentLevel++](next));
   }
   next();
 };

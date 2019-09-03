@@ -26,6 +26,8 @@ const initLevel1 = (nextLevel) => {
 
   const onWindowResize = (bodyDimensions) => setState(bodyDimensions);
   const onKeyDown = (which) => {
+    console.log('keydown')
+    let facing;
     setState((state) => {
       if (state.gameOver) return;
       let row = 0;
@@ -34,18 +36,22 @@ const initLevel1 = (nextLevel) => {
         case 37: // left
         case 65: // a
           col--;
+          facing = 'left';
           break;
         case 38: // up
         case 87: // w
           row--;
+          facing= 'up';
           break;
         case 39: // right
         case 68: // d
           col++;
+          facing = 'right'
           break;
         case 40: // down
         case 83: // s
           row++;
+          facing = 'down';
           break;
         default:
           return;
@@ -74,7 +80,14 @@ const initLevel1 = (nextLevel) => {
             nextLevel();
           }, 2000);
         }
-        return { position: proposedNewPosition, remainingFoods: pizzaCount, canExit, gameOver };
+        console.log('setting state, facing:', facing)
+        return {
+          position: proposedNewPosition,
+          remainingFoods: pizzaCount,
+          canExit,
+          gameOver,
+          facing
+        };
       }
     });
   }
@@ -89,6 +102,7 @@ const initLevel1 = (nextLevel) => {
   // init
   modelSetState({
     position: {row: 10, col: 10 },
+    facing: 'down',
     remainingFoods: numFoods,
     canExit: false,
     gameOver: false

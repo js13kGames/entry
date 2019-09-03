@@ -49,7 +49,7 @@ function clean () {
 }
 
 function zip () {
-  return src('dist/*')
+  return src('dist/**/*')
     .pipe(gulpZip('backtoskullisland.zip'))
     .pipe(dest('dist'));
 }

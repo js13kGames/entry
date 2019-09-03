@@ -10,6 +10,8 @@ const addEventListener = (target, event, handler) => {
   target.addEventListener(event, handler);
   return () => target.removeEventListener(event, handler);
 }
+const rAF = window.requestAnimationFrame;
+const cancelAF = window.cancelAnimationFrame;
 const noop = () => null;
 const createProgressBar = (barId, label) => {
   const wrap = createElement('div');
