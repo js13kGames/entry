@@ -149,7 +149,9 @@
               "globalAlpha",
               "globalCompositeOperation",
               "save",
-              "restore"
+              "restore",
+              "getComputedStyle",
+              "style"
             ]
           }
         }
