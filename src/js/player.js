@@ -85,6 +85,8 @@ export class Player {
         });
 
         this.game.sprites.push(this.ship);
+
+        this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
     }
 
     respawn() {

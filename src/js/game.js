@@ -79,7 +79,7 @@ game.cResult = game.cSystem.createResult();
 createMeteor({
     x: game.width / 2,
     y: game.height / 2,
-    radius: Math.min(game.width / 4, game.height / 4),
+    radius: Math.min(game.width / 5, game.height / 5),
     mass: 100000,
     dx: 0,
     dy: 0,
@@ -188,7 +188,7 @@ let loop = GameLoop({  // create the main game loop
             }
         });
 
-        if (game.meteors.length < 4 && Math.random() < .005) {
+        if (game.meteors.length < 5 && Math.random() < .005) {
             createMeteor({
                 x: Math.random() * game.width,
                 y: Math.random() * game.height,
