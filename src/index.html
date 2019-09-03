@@ -6,6 +6,7 @@
   <style>
     * {
       box-sizing: border-box;
+      font-family: Coda, Arial, Helvetica, sans-serif
     }
     html, body {
       width: 100%;
@@ -13,10 +14,42 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      position: relative;
+    }
+    .new-game, .game-over {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #FFF;
+      font-size: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .new-game > span, .game-over > span {
+      line-height: 48px;
     }
   </style>
 </head>
 <body>
   <canvas id="game"></canvas>
+  <div class="new-game">
+    <span><strong>HE who wanders in the DARK</strong></span>
+    <span><strong>shall DAWN the sky with his arsenal of LIGHT...</strong></span>
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+    <span>Press [Z] to START</span>
+  </div>
+  <div class="game-over">
+    <span><strong>Hope the next one survives longer...</strong></span>
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+    <span>Press [Z] to RESTART</span>
+  </div>
 </body>
 </html>

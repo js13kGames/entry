@@ -46,25 +46,27 @@ const MINE_WIDTH = WIDTH / 32
 const MINE_HEIGHT = MINE_WIDTH / 2
 const MINE_COLOR = 'rgba(255, 255, 255, 1)'
 const MINE_BLAST_RANGE = WIDTH / 3
-const MINE_BLAST_DURATION = 0.3
+const MINE_BLAST_DURATION = 0.5
 const MINE_REGENERATE = 5
 const MINE_ATTACK = 200
 
-const ENEMY_WIDTH = PLAYER_WIDTH * 0.75
-const ENEMY_HEIGHT = PLAYER_HEIGHT * 0.75
+const ENEMY_WIDTH_MIN = PLAYER_WIDTH * 0.5
+const ENEMY_WIDTH_MAX = PLAYER_WIDTH * 2
+const ENEMY_HEIGHT_MIN = PLAYER_HEIGHT * 0.5
+const ENEMY_HEIGHT_MAX = PLAYER_HEIGHT * 2
 const ENEMY_COLOR_LIGHT = 'rgba(230, 230, 230, 1)'
 const ENEMY_SPEED = WIDTH / 200
 const ENEMY_ATTACK = 15
 
-const UI_FONT_SIZE = WIDTH / 40
+const UI_FONT_SIZE = WIDTH / 60
 
 let gameOver = false
 let kills = 0
 let blasting_duration = 0
 let total_blast_duration = 0
 let playerHitTimer = 0
-let enemyMinHp = 110
-let enemyMaxHp = 200
+let enemyMinHp = 50
+let enemyMaxHp = 100
 
 const player = initPlayer()
 
@@ -133,7 +135,7 @@ let loop = GameLoop({
       }
     }
     grenadeCD += dt
-    if (keyPressed('g')) {
+    if (keyPressed('z')) {
       if (grenadeCD >= GRENADE_COOLDOWN) {
         makeGrenade()
         grenadeCD = 0
@@ -149,18 +151,18 @@ let loop = GameLoop({
         mineReg = 0
       }
     }
-    if (keyPressed('space')) {
+    if (keyPressed('x')) {
       makeMine()
     }
 
     // collisions
     // blast and enemy
-    // TODO: blast-enemy collision needs a cooldown timer
     blastPool.getAliveObjects().forEach(blast => {
       enemyPool.getAliveObjects().forEach(enemy => {
-        if (blast.collidesWith(enemy)) {
+        if (blast.collidesWith(enemy) && enemy.blastId !== blast.id) {
           let atk = blast.type === 'g' ? GRENADE_ATTACK : MINE_ATTACK
           enemy.hp -= atk
+          enemy.blastId = blast.id
           if (enemy.hp <= 0) {
             enemy.ttl = 0
             kills++
@@ -253,11 +255,6 @@ function updatePlayer(player, dt) {
   player.color = `rgba(${player.hp}, ${player.hp}, ${player.hp}, 1)`
 }
 
-function randomGray(min, max, opacity) {
-  let gray = Math.abs(max - min) * Math.random() + min
-  return `rgba(${gray}, ${gray}, ${gray}, ${opacity})`
-}
-
 function makeEnemies(count) {
   for (let i = 0; i < count; i++) {
     const hp = (enemyMaxHp - enemyMinHp) * Math.random() + enemyMinHp
@@ -267,10 +264,10 @@ function makeEnemies(count) {
         x: 0.5,
         y: 1
       },
-      x: -Math.random() * ENEMY_WIDTH * 8,
+      x: -Math.random() * ENEMY_WIDTH_MIN * 8,
       y: FLOOR - Math.random() * 20,
-      width: ENEMY_WIDTH,
-      height: ENEMY_HEIGHT,
+      width: hp / 255 * (ENEMY_WIDTH_MAX - ENEMY_WIDTH_MIN) + ENEMY_WIDTH_MIN,
+      height: hp / 255 * (ENEMY_HEIGHT_MAX - ENEMY_HEIGHT_MIN) + ENEMY_HEIGHT_MIN,
       color: color,
       collidesWith: collidesWith,
 
@@ -377,7 +374,8 @@ function makeBlast(type, x) {
     dx: -PLAYER_SPEED,
     collidesWith: collidesWith,
 
-    type: type
+    type: type,
+    id: Math.random() * 1000000
   })
 }
 
@@ -395,7 +393,7 @@ function initUI() {
       const ctx = this.context
       ctx.fillStyle = this.color
       ctx.font = `${UI_FONT_SIZE}px Helvetica,Arial`
-      ctx.fillText(`FLASH BANGS [G]: ${grenades}`, this.x, this.y)
+      ctx.fillText(`FLASH BANGS [Z]: ${grenades}`, this.x, this.y)
     }
   })
 
@@ -408,7 +406,7 @@ function initUI() {
       const ctx = this.context
       ctx.fillStyle = this.color
       ctx.font = `${UI_FONT_SIZE}px Helvetica,Arial`
-      ctx.fillText(`FLASH MINES [SPACE]: ${mines}`, this.x, this.y)
+      ctx.fillText(`FLASH MINES [X]: ${mines}`, this.x, this.y)
     }
   })
 
