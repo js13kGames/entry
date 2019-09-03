@@ -444,7 +444,7 @@
         const playerTileZ = Math.floor((playerPos.z/this.map.tileSize) + (this.map.getHeight(this.level)/2));
 
         // Die if looking back.
-        if (rotationY > 120 && rotationY < 240) {
+        if (rotationY > 90 && rotationY < 270) {
           this.gameOver('look');
         }
 
