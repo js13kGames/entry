@@ -1,2 +1,1 @@
-# watchmyback B422
-2019 13kjs game entry
+# 13kjs game entry
