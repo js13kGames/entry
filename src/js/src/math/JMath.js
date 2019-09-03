@@ -13,6 +13,7 @@ var JMath = {
       (Math.abs(ay - by) * 2 < (ah + bh))
     );
   },
+  PI2: Math.PI * 2,
   PId2: Math.PI / 2,
   EPSILON: 0.0001
 };

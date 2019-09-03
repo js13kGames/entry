@@ -4,6 +4,9 @@ Random = {
   range: function (min, max) {
     return min + Math.random() * (max - min);
   },
+  rangeTriangle: function (min, max) {
+    return min + (Math.random() * Math.random()) * (max - min);
+  },
   rangeInt: function (min, max) {
     return Math.floor(Random.range(min, max));
   },

@@ -59,6 +59,9 @@
         "src/js/src/graphics/DisplayRect.js",
         "src/js/src/graphics/CachedContainer.js",
 
+        "src/js/src/play/Eye.js",
+        "src/js/src/play/Leg.js",
+        "src/js/src/play/Head.js",
         "src/js/src/play/Shell.js",
         "src/js/src/play/Turtle.js",
         

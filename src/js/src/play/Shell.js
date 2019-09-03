@@ -17,6 +17,7 @@ Shell.prototype = extendPrototype(DisplayItem.prototype, {
     context.moveTo(0, 0);
     context.arc(0, 0, this.radius, Math.PI, Math.PI * 2);
     context.lineTo(0, 0);
+    context.closePath();
     context.fill();
   }
 });
