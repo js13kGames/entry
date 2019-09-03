@@ -24,20 +24,49 @@ canvas.style = 'width:100%;background:#000';
 //canvas.height = 720;
 //canvas.width = 1281; // Fixes scrollbars on my laptop when fullscreen sigh
 
-var scale = 1;
+const game = {
+    meteors: [],
+    pickups: [],
+    players: [],
+    sprites: [],
+    options: {
+        // scale: 1.0,
+        // supersampling: 1.0,
+        // width: 360,
+        // height: 202.5
+    }
+};
 
-function setCanvasSize() {
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    scale = Math.floor(vw / 360);
-    canvas.width = scale * 360;
-    canvas.height = vh * (canvas.width / vw);
+
+/**
+ * Sets the canvas size, and the game options variables for scaling the game.
+ *
+ * All the game's positioning & calculations are done on a 360 x ### grid, but
+ * then scaled up to fit on a variable size canvas. That way if a ship hitbox
+ * is e.g. 10x10, it'll be the correct size for calcs no matter the scale.
+ * Most numbers used in calcs are floats, so we don't lose much precision
+ * by using a small "game board" like this.
+ */
+
+/**
+ * [setSizing description]
+ * @param {[type]} ss supersampling multiplier
+ */
+function setSizing(ss) {
+    game.options.supersample = ss;
+    game.options.width = 360;
+    game.options.scale = (window.innerWidth * ss) / game.options.width;
+    game.options.height = (window.innerHeight * ss) / game.options.scale;
+    canvas.width = window.innerWidth * ss;
+    canvas.height = window.innerHeight * ss;
 }
 
+setSizing(1);
+console.log(game.options);
 
 window.onresize = () => {
-    setCanvasSize();
-};
+    setSizing(game.options.supersample);
+}
 
 // Testing making canvas px match display px rather than scaling
 // var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
@@ -45,13 +74,6 @@ window.onresize = () => {
 // var height = width / 16 * 9;
 // canvas.height = height;
 // canvas.width = width;
-
-const game = {
-    meteors: [],
-    pickups: [],
-    players: [],
-    sprites: []
-};
 
 // Create new collision system & collision result object
 game.cSystem = new Collisions();
