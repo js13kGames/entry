@@ -15,32 +15,37 @@ export class ShieldPickup extends Pickup {
         ship.addShield();
     }
 
-    render() {
+    render(scale) {
         this.context.save();
-        this.context.translate(this.x, this.y);
+        this.context.translate(this.x * scale, this.y * scale);
         this.context.rotate(util.degToRad(this.rotation));
 
         this.context.beginPath();
-        this.context.lineWidth = 2;
+        this.context.lineWidth = 1 * scale;
         this.context.strokeStyle = '#fff';
 
         this.context.rect(
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5),
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5),
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
-            Math.sqrt(Math.pow(this.radius * this.scale, 2) * .5) * -2,
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
+            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
         );
         this.context.stroke();
 
         this.context.beginPath();
 
-        // Scale is 2, otherwise would be ((this.radius * scale) / 2) - 1
-        this.context.arc(0, 0, this.radius - 1, 0, 2 * Math.PI);
+        this.context.arc(
+            0,
+            0,
+            (this.radius * scale) / 2 - scale,
+            0,
+            2 * Math.PI
+        );
 
         this.context.stroke();
         this.context.restore();
 
         // Render the circle around the edge
-        super.render();
+        super.render(scale);
     }
 }

@@ -35,7 +35,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
                 sprite2.ttl = 0;
 
-                if (60 > sprite1.radius && sprite1.radius > 15) {
+                if (60 > sprite1.radius && sprite1.radius > 8) {
 
                     // Split the meteor
                     for (var i = 0; i < 3; i++) {
@@ -156,7 +156,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 }
 
                 if (sprite1.rainbow) {
-                    if (60 > sprite2.radius && sprite2.radius > 15) {
+                    if (60 > sprite2.radius && sprite2.radius > 8) {
 
                         // Split the meteor
                         for (var i = 0; i < 3; i++) {
@@ -180,8 +180,8 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
 
                 // If the ship and the asteroid are both going super slow,
                 // don't explode. Ideally this'd take into account mass etc.
-                if (util.normalise(sprite1.velocity) < .5 &&
-                    util.normalise(sprite2.velocity) < .5) {
+                if (util.normalise(sprite1.velocity) < .3 &&
+                    util.normalise(sprite2.velocity) < .3) {
                     sprite1.x -= cResult.overlap * cResult.overlap_x;
                     sprite1.y -= cResult.overlap * cResult.overlap_y;
                     return;

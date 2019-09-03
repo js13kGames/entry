@@ -21,22 +21,18 @@ initKeys();
 initGamepads();
 
 canvas.style = 'width:100%;background:#000';
-//canvas.height = 720;
-//canvas.width = 1281; // Fixes scrollbars on my laptop when fullscreen sigh
 
 const game = {
     meteors: [],
     pickups: [],
     players: [],
     sprites: [],
-    options: {
-        // scale: 1.0,
-        // supersampling: 1.0,
-        // width: 360,
-        // height: 202.5
-    }
+    // The following get added by setSizing()
+    // scale: 1.0,
+    // supersampling: 1.0,
+    // width: 360,
+    // height: 202.5
 };
-
 
 /**
  * Sets the canvas size, and the game options variables for scaling the game.
@@ -53,19 +49,19 @@ const game = {
  * @param {[type]} ss supersampling multiplier
  */
 function setSizing(ss) {
-    game.options.supersample = ss;
-    game.options.width = 360;
-    game.options.scale = (window.innerWidth * ss) / game.options.width;
-    game.options.height = (window.innerHeight * ss) / game.options.scale;
+    game.supersample = ss;
+    game.width = 720;
+    game.scale = (window.innerWidth * ss) / game.width;
+    //game.scale = Math.round(game.scaleF);
+    game.height = (window.innerHeight * ss) / game.scale;
     canvas.width = window.innerWidth * ss;
     canvas.height = window.innerHeight * ss;
 }
 
 setSizing(1);
-console.log(game.options);
 
 window.onresize = () => {
-    setSizing(game.options.supersample);
+    setSizing(game.supersample);
 }
 
 // Testing making canvas px match display px rather than scaling
@@ -81,24 +77,15 @@ game.cResult = game.cSystem.createResult();
 
 // Big asteroid in the middle (dioretsa)
 createMeteor({
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    radius: Math.min(canvas.width / 4, canvas.height / 4),
+    x: game.width / 2,
+    y: game.height / 2,
+    radius: Math.min(game.width / 4, game.height / 4),
     mass: 100000,
     dx: 0,
     dy: 0,
     dr: .1,
     game: game
 });
-
-for (var i = 0; i < 1; i++) {
-    createMeteor({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: 36,
-        game: game
-    });
-}
 
 // let pickup1 = new AmmoPickup({
 //     x: Math.random() * canvas.width,
@@ -156,15 +143,15 @@ let loop = GameLoop({  // create the main game loop
             sprite.update();
 
             if (sprite.type !== 'bullet') {
-                if (sprite.x > canvas.width) {
+                if (sprite.x > game.width) {
                     sprite.x = 0;
                 } else if (sprite.x < 0) {
-                    sprite.x = canvas.width;
+                    sprite.x = game.width;
                 }
-                if (sprite.y > canvas.height) {
+                if (sprite.y > game.height) {
                     sprite.y = 0;
                 } else if (sprite.y < 0) {
-                    sprite.y = canvas.height;
+                    sprite.y = game.height;
                 }
             }
         });
@@ -201,11 +188,11 @@ let loop = GameLoop({  // create the main game loop
             }
         });
 
-        if (game.meteors.length < 4 && Math.random() < .001) {
+        if (game.meteors.length < 4 && Math.random() < .005) {
             createMeteor({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: 36,
+                x: Math.random() * game.width,
+                y: Math.random() * game.height,
+                radius: 20,
                 game: game
             });
         }
@@ -215,22 +202,22 @@ let loop = GameLoop({  // create the main game loop
             let pickup = null;
             if (.000 < rand && rand < .001) {
                 pickup = new AmmoPickup({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
+                    x: Math.random() * game.width,
+                    y: Math.random() * game.height,
                     game: game
                 });
             }
             if (.001 < rand && rand < .002) {
                 pickup = new ShieldPickup({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
+                    x: Math.random() * game.width,
+                    y: Math.random() * game.height,
                     game: game
                 });
             }
             if (.002 < rand && rand < .003) {
                 pickup = new StarPickup({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
+                    x: Math.random() * game.width,
+                    y: Math.random() * game.height,
                     game: game
                 });
             }
@@ -243,7 +230,7 @@ let loop = GameLoop({  // create the main game loop
     },
     render() {
         // Render all the sprites
-        game.sprites.map(sprite => sprite.render());
+        game.sprites.map(sprite => sprite.render(game.scale));
 
         // Render the player scores
         game.players.map((player, i) => player.renderScore(i));

@@ -25,10 +25,10 @@ export class Ship extends Sprite.class {
         this.lines = {};
         this.lines.random = [];
         this.history = [];
+        this.rainbow = 0;
         this.rewindDt = 0;
         this.rewinding = 0;
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
-        this.scale = 2;
         this.type = 'ship';
 
         // Properties that could be overwritten when calling new Ship()
@@ -38,11 +38,11 @@ export class Ship extends Sprite.class {
         // Modify these values defined in shipData specs to make less crazy
         this.ammo = shipData.ammo;
         this.mass = shipData.mass + 11;
-        this.radius = (shipData.radius + 1) * this.scale;
+        this.radius = shipData.radius;
         this.rof = 1 / this.rof;
-        this.thrust = shipData.thrust + 11;
+        this.thrust = shipData.thrust + 6;
         this.turnRate = (shipData.turnRate + 6) / 2;
-        this.maxSpeed = (shipData.maxSpeed + 11) / 6;
+        this.maxSpeed = (this.shipData.maxSpeed + 6) / 12;
 
         // Useful stuff to have references to
         this.player = props.player;
@@ -57,21 +57,21 @@ export class Ship extends Sprite.class {
         // looping through with Object.keys, but that takes more bytes!
         // Note that this scales the shipData.lines as well!
 
-        this.lines.body.forEach((line, i) => {
-            line.forEach((v, i) => { line[i] *= this.scale });
-        });
-
-        this.lines.detail.forEach((line, i) => {
-            line.forEach((v, i) => { line[i] *= this.scale });
-        });
-
-        this.lines.thrust.forEach((line, i) => {
-            line.forEach((v, i) => { line[i] *= this.scale });
-        });
-
-        this.lines.hitbox.forEach((line, i) => {
-            line.forEach((v, i) => { line[i] *= this.scale });
-        });
+        // this.lines.body.forEach((line, i) => {
+        //     line.forEach((v, i) => { line[i] *= this.scale });
+        // });
+        //
+        // this.lines.detail.forEach((line, i) => {
+        //     line.forEach((v, i) => { line[i] *= this.scale });
+        // });
+        //
+        // this.lines.thrust.forEach((line, i) => {
+        //     line.forEach((v, i) => { line[i] *= this.scale });
+        // });
+        //
+        // this.lines.hitbox.forEach((line, i) => {
+        //     line.forEach((v, i) => { line[i] *= this.scale });
+        // });
 
         // Merge body & detail into 'ship' line array for doing fun effects etc
         this.lines.ship = this.lines.body.concat(this.lines.detail);
@@ -227,7 +227,7 @@ export class Ship extends Sprite.class {
         if (this.rainbow > 0) {
             this.rainbow -= 1 / 60;
             if (this.rainbow <= 0) {
-                this.maxSpeed = (this.shipData.maxSpeed + 11) / 6;
+                this.maxSpeed = (this.shipData.maxSpeed + 6) / 12;
                 this.rainbow = 0;
             }
         }
@@ -292,9 +292,9 @@ export class Ship extends Sprite.class {
         });
     }
 
-    renderUI() {
+    renderUI(scale) {
         this.context.strokeStyle = '#0ef';
-        this.context.lineWidth = 2;
+        this.context.lineWidth = scale;
 
         // Draw ammo
         var ammoAngle = .2 * Math.PI * 1 / this.ammo;
@@ -304,7 +304,7 @@ export class Ship extends Sprite.class {
             this.context.arc(
                 0,
                 0,
-                this.radius + 8,
+                (this.radius + 6) * scale,
                 Math.PI - (.2 * Math.PI * 1) + ammoAngle * i * 2,
                 Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI * 1) + ammoAngle * i * 2
             );
@@ -319,7 +319,7 @@ export class Ship extends Sprite.class {
         this.context.arc(
             0,
             0,
-            this.radius + 8,
+            (this.radius + 6) * scale,
             -.2 * Math.PI * 1 / this.ror * this.rewindDt,
             +.2 * Math.PI * 1 / this.ror * this.rewindDt
         );
@@ -327,25 +327,25 @@ export class Ship extends Sprite.class {
         this.context.stroke();
     }
 
-    render() {
+    render(scale) {
         this.context.save();
 
         // Rotate
-        this.context.translate(this.x, this.y);
+        this.context.translate(this.x * scale, this.y * scale);
 
         // Draw rewinding cooldown bar and ammo
-        this.renderUI();
+        this.renderUI(scale);
 
         this.context.rotate(util.degToRad(this.rotation));
 
         // Draw
         this.context.strokeStyle = this.color;
-        this.context.lineWidth = 2;
+        this.context.lineWidth = 1 * scale;
 
         if (this.invuln) {
             // invuln is 1 / 60, and want to flash every 15 frames...
             if (Math.floor(this.invuln * 4 + .1) % 2) {
-                this.context.lineWidth = 1;
+                this.context.lineWidth = .5 * scale;
             }
         }
 
@@ -381,8 +381,8 @@ export class Ship extends Sprite.class {
             this.rewindFrame = this.rewindFrame < 4 ? this.rewindFrame + 1 : 1;
 
             this.lines.random.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+                this.context.moveTo(line[0] * scale, line[1] * scale);
+                this.context.lineTo(line[2] * scale, line[3] * scale);
             });
 
             this.context.stroke();
@@ -390,20 +390,20 @@ export class Ship extends Sprite.class {
         } else {
 
             this.context.moveTo(
-                this.lines.body[0][0],
-                this.lines.body[0][1]
+                this.lines.body[0][0] * scale,
+                this.lines.body[0][1] * scale
             );
             for (var i = 0; i < this.lines.body.length - 1; i++) {
                 this.context.lineTo(
-                    this.lines.body[i][2],
-                    this.lines.body[i][3]
+                    this.lines.body[i][2] * scale,
+                    this.lines.body[i][3] * scale
                 );
             }
             this.context.closePath();
 
             this.lines.detail.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+                this.context.moveTo(line[0] * scale, line[1] * scale);
+                this.context.lineTo(line[2] * scale, line[3] * scale);
             });
 
             if (this.ddx || this.ddy) {
@@ -413,11 +413,11 @@ export class Ship extends Sprite.class {
                         this.lines.thrust[i - 1][2] === line[0] &&
                         this.lines.thrust[i - 1][3] === line[1]) {
                         // Draw line connected to previous
-                        this.context.lineTo(line[2], line[3]);
+                        this.context.lineTo(line[2] * scale, line[3] * scale);
                     } else {
                         // Draw line NOT connect to previous
-                        this.context.moveTo(line[0], line[1]);
-                        this.context.lineTo(line[2], line[3]);
+                        this.context.moveTo(line[0] * scale, line[1] * scale);
+                        this.context.lineTo(line[2] * scale, line[3] * scale);
                     }
                 });
             }
@@ -429,16 +429,16 @@ export class Ship extends Sprite.class {
                 this.context.arc(
                     0,
                     0,
-                    this.radius + 4 * this.shield,
+                    (this.radius + 4) * scale,
                     0,
                     2 * Math.PI
                 );
 
                 if (this.shieldDegrading) {
                     if (Math.floor(this.shieldDegrading / 15) % 2) {
-                        this.context.lineWidth = 1;
+                        this.context.lineWidth = .5 * scale;
                     } else {
-                        this.context.lineWidth = 2;
+                        this.context.lineWidth = 1 * scale;
                     }
                 }
 

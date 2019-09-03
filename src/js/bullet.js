@@ -31,10 +31,16 @@ export function createBullet(parent) {
             this.hitbox.y = this.y;
         },
 
-        render() {
+        render(scale) {
             this.context.fillStyle = this.color;
             this.context.beginPath();
-            this.context.arc(this.x, this.y, 2, 0, 2 * Math.PI);
+            this.context.arc(
+                this.x * scale,
+                this.y * scale,
+                scale,
+                0,
+                2 * Math.PI
+            );
             this.context.fill();
         }
     });

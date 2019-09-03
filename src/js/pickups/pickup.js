@@ -11,7 +11,6 @@ export class Pickup extends Sprite.class {
         super(props);
         this.color = props.color || '#fff';
         this.type = 'pickup';
-        this.scale = 2;
         this.radius = 5;
         this.mass = 3000;
         this.maxSpeed = 1;
@@ -23,7 +22,7 @@ export class Pickup extends Sprite.class {
         this.hitbox = props.game.cSystem.createCircle(
             props.x,
             props.y,
-            this.radius * this.scale
+            this.radius
         );
         this.hitbox.owner = this;
         this.colorCounter = 0;
@@ -42,18 +41,24 @@ export class Pickup extends Sprite.class {
         this.colorCounter++;
     }
 
-    render() {
+    render(scale) {
         this.context.save();
-        this.context.translate(this.x, this.y);
+        this.context.translate(this.x * scale, this.y * scale);
         this.context.rotate(util.degToRad(this.rotation));
 
         // Draw
         this.context.strokeStyle = this.color;
 
-        this.context.lineWidth = 2;
+        this.context.lineWidth = 1 * scale;
         this.context.beginPath();
 
-        this.context.arc(0, 0, this.radius * this.scale, 0, 2 * Math.PI);
+        this.context.arc(
+            0,
+            0,
+            this.radius * scale,
+            0,
+            2 * Math.PI
+        );
         this.context.stroke();
 
         this.context.restore();
