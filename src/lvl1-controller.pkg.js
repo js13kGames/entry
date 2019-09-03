@@ -1,4 +1,4 @@
-const initLevel1 = (nextLevel) => {
+const initLevel1 = async (nextLevel) => {
   const loop = () => {
     const state = getSnapshot();
     const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
@@ -26,7 +26,6 @@ const initLevel1 = (nextLevel) => {
 
   const onWindowResize = (bodyDimensions) => setState(bodyDimensions);
   const onKeyDown = (which) => {
-    console.log('keydown')
     let facing;
     setState((state) => {
       if (state.gameOver) return;
@@ -80,7 +79,6 @@ const initLevel1 = (nextLevel) => {
             nextLevel();
           }, 2000);
         }
-        console.log('setting state, facing:', facing)
         return {
           position: proposedNewPosition,
           remainingFoods: pizzaCount,
@@ -91,12 +89,25 @@ const initLevel1 = (nextLevel) => {
       }
     });
   }
+  const imagesUrls = [
+    'assets/hot-dog.svg',
+    'assets/kong-back.svg',
+    'assets/kong-front.svg',
+    'assets/kong-right.svg',
+    'assets/pizza.svg'
+  ];
+  const images = await Promise.all(imagesUrls.map(url => new Promise(res => {
+    const image = new Image();
+    image.onload = () => res(image);
+    image.src = url;
+  })));
+
   const {
     render,
     tileHeight,
     tileWidth,
     cleanUp: viewCleanUp
-  } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods);
+  } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods, images);
 
 
   // init
@@ -107,5 +118,6 @@ const initLevel1 = (nextLevel) => {
     canExit: false,
     gameOver: false
   });
+
   loop();
 };

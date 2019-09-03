@@ -1,6 +1,5 @@
-const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods) => {
-  const [canvas] = createCanvas();
-  const ctx = canvas.getContext('2d');
+const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods, images) => {
+  const [canvas, ctx] = createCanvas();
   const tileHeight = 100;
   const tileWidth = 100;
 
@@ -14,6 +13,13 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     HOTDOG,
     EXIT
   } = cellIds;
+  const [
+    hotdogImg,
+    kongBackImg,
+    kongFrontImg,
+    kongRightImg,
+    pizzaImg
+  ] = images
   const cellStyles = {
     [OUT_OF_BOUNDS]: 'lightblue',
     [BLOCKED]: 'transparentx',
@@ -25,11 +31,6 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   };
 
   const [progressBar, pizzaSpan] = createProgressBar('pizza-progress', 'Pizzas Eaten');
-
-  const pizzaImg = new Image();
-  pizzaImg.src = 'assets/pizza.svg';
-  const hotdogImg = new Image();
-  hotdogImg.src = 'assets/hot-dog.svg';
 
   function draw(mapView, state) {
     canvas.width = state.width;
@@ -60,22 +61,20 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
   }
 
   function faceDirection (dir) {
-    let url;
+    let kong;
     switch (dir) {
-      case 'up': url = 'assets/kong-back.svg'; break;
-      case 'right': url = 'assets/kong-right.svg'; break;
-      case 'down': url = 'assets/kong-front.svg'; break;
-      case 'left': url = 'assets/kong-right.svg'; break;
+      case 'up': kong = kongBackImg; break;
+      case 'right': kong = kongRightImg; break;
+      case 'down': kong = kongFrontImg; break;
+      case 'left': kong = kongRightImg; break;
     }
-    const ape = new Image();
-    ape.src = url;
     let mult = 1;
     if (dir === 'left') {
       ctx.scale(-1, 1);
       ctx.translate(-100, 0);
       mult = -1;
     }
-    ctx.drawImage(ape, mult * (canvas.width / 2 - ape.width / 2), canvas.height / 2 - ape.height / 2);
+    ctx.drawImage(kong, mult * (canvas.width / 2 - kong.width / 2), canvas.height / 2 - kong.height / 2);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
@@ -123,8 +122,8 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
     tileHeight,
     tileWidth,
     cleanUp: () => {
-      body.removeChild(canvas);
-      body.removeChild(progressBar);
+      root.removeChild(canvas);
+      root.removeChild(progressBar);
       removeListeners.forEach(remove => remove());
     }
   }
