@@ -15,7 +15,7 @@ function createLines(radius) {
     for (var i = 1; i <= pointNum; i++) {
         // Increase the (end) multiplier here for more wonky asteroids (inwards)
         // Decrease the (start) integer here for more-outside-ey hitboxes
-        var rand = .99 + Math.random() * .1;
+        var rand = 1 + Math.random() * .1;
         var x = Math.cos((2 * Math.PI * i) / pointNum) * radius * rand;
         var y = Math.sin((2 * Math.PI * i) / pointNum) * radius * rand;
 
@@ -89,7 +89,7 @@ export function createMeteor(props) {
         }
     });
 
-    if (meteor.radius > 50) {
+    if (meteor.radius > 12) {
         meteor.hitboxLines = [];
         meteor.lines.forEach((line, i) => {
             meteor.hitboxLines.push([line[0], line[1]]);
