@@ -1,0 +1,13 @@
+#define colBlack vec4(0.0, 0.0, 0.0, 1.0)
+#define colWhite vec4(1.0)
+#define colBlue vec4(0.0, 0.0, 1.0, 1.0)
+#define colYellow vec4(1.0, 1.0, 0.0, 1.0)
+#define colGB vec4(0.0, 1.0, 1.0, 1.0)
+#define colBlack vec4(0.0, 0.0, 0.0, 1.0)
+#define colWhiteG vec4(0.98, 0.98, 0.98, 1.0)
+#define colYellowG vec4(1.0, 1.0, 0.3, 1.0)
+#define colPurpleG vec4(0.2, 0.1, 0.2, 1.0)
+
+#define colWhiteSwan vec4(247, 241, 227,256) / vec4(256)
+#define colCrocTooth vec4(209, 204, 192,256) / vec4(256)
+#define colSummerSky vec4(52, 172, 224,256) / vec4(256)
