@@ -15,37 +15,50 @@
   <a-scene background="color: #141414">
 
     <a-assets>
-      <a-asset-item id="ship" src="/models/cockpit_v2.obj"></a-asset-item>
+      <a-asset-item id="cockpit" src="/models/cockpit_v2.obj"></a-asset-item>
     </a-assets>
 
-    <a-entity position="0 0 0" rotation="0 -90 0" obj-model="obj: #ship" material="color: #3f3f3f" shadow></a-entity>
-
-    <a-entity stars></a-entity>
-
     <a-sphere 
-      position="5 2 -3" 
+      position="5 2 -6"
+      radius=5
       color="#fd8" 
       material="emissive: #f8a300; emissiveIntensity: .7"
       light="type: point; castShadow: true">
     </a-sphere>
+    
+    <!-- Container for ship items -->
+    <a-entity id="ship" ship>
+      <a-entity rotation="0 -90 0" obj-model="obj: #cockpit" material="color: #3f3f3f" shadow></a-entity>
 
-    <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
+      <!-- Fire Extinguisher -->
+      <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
 
-    <!-- Camera -->
-    <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
-      <a-entity cursor="fuse: false" position="0 0 -1"
-        geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
-        raycaster="objects: .clickable"
-        animation__mouseenter__inner="property: geometry.radiusInner; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.0001; to: 0.02"
-        animation__mouseenter__outer="property: geometry.radiusOuter; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.005; to: 0.025"
-        animation__mouseleave__inner="property: geometry.radiusInner; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.02; to: 0.0001"
-        animation__mouseleave__outer="property: geometry.radiusOuter; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.025; to: 0.005">
+      <!-- Map panel -->
+      <a-plane color="#333" height="0.5" width="1.8"></a-plane>
+
+      <!-- Camera -->
+      <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
+        <a-entity cursor="fuse: false" position="0 0 -0.5"
+          geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
+          raycaster="objects: .clickable"
+          animation__mouseenter__inner="property: geometry.radiusInner; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.0001; to: 0.02"
+          animation__mouseenter__outer="property: geometry.radiusOuter; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.005; to: 0.025"
+          animation__mouseleave__inner="property: geometry.radiusInner; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.02; to: 0.0001"
+          animation__mouseleave__outer="property: geometry.radiusOuter; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.025; to: 0.005">
+        </a-entity>
+        <a-sky id="mask" color="#111" opacity="0" radius="0.1" fader
+          animation__out="property: material.opacity; startEvents: fadeOut; from: 1; to: 0; dur: 1000"
+          animation__in="property: material.opacity; startEvents: fadeIn; from: 0; to: 1; dur: 1000">
+        </a-sky>
       </a-entity>
     </a-entity>
+
 
     <!-- Lights -->
     <a-light position="0 1.8 0" intensity=".3" light="castShadow: true"></a-light>
     <a-light type="ambient" color="#d2e3fc" intensity=".5"></a-light>
+
+    <a-entity stars></a-entity>
 
   </a-scene>
 </body>
