@@ -56,8 +56,6 @@ export function createShrapnel(line, parent, sprites) {
             this.context.save();
             this.context.scale(scale, scale);
             this.context.translate(this.x, this.y);
-
-            // Rotate
             this.context.rotate(util.degToRad(this.rotation));
 
             this.context.beginPath();

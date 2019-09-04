@@ -71,8 +71,8 @@ export class Player {
         // Create a whole new ship for the player
 
         this.ship = new Ship({
-            x: 10 + Math.random() * (this.game.width - 20),
-            y: 10 + Math.random() * (this.game.height - 20),
+            x: 20 + Math.random() * (this.game.width - 40),
+            y: 20 + Math.random() * (this.game.height - 40),
             width: 6,
             color: this.color,
             shipType: this.shipType,
@@ -102,21 +102,22 @@ export class Player {
             color: this.color,
             context: this.context,
             text: this.score,
+            scale: this.game.scale
         };
 
         // Render the scores
         if (i === 0) {
-            textProps.x = this.context.canvas.width / 2 - 20;
-            textProps.y = this.context.canvas.height / 2 - 20;
+            textProps.x = this.game.width / 2 - 20;
+            textProps.y = this.game.height / 2 - 20;
         } else if (i === 1) {
-            textProps.x = this.context.canvas.width / 2 + 10;
-            textProps.y = this.context.canvas.height / 2 - 20;
+            textProps.x = this.game.width / 2 + 10;
+            textProps.y = this.game.height / 2 - 20;
         } else if (i === 2) {
-            textProps.x = this.context.canvas.width / 2 - 20;
-            textProps.y = this.context.canvas.height / 2 + 10;
+            textProps.x = this.game.width / 2 - 20;
+            textProps.y = this.game.height / 2 + 10;
         } else if (i === 3) {
-            textProps.x = this.context.canvas.width / 2 + 10;
-            textProps.y = this.context.canvas.height / 2 + 10;
+            textProps.x = this.game.width / 2 + 10;
+            textProps.y = this.game.height / 2 + 10;
         }
 
         renderText(textProps);

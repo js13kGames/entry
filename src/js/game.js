@@ -110,7 +110,7 @@ createMeteor({
 // game.sprites.push(pickup3);
 
 let player1 = new Player({
-    color: 'yellow',
+    color: '#ff0',
     shipType: 'tri',
     controls: 'arrows',
     context: context,
