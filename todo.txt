@@ -16,3 +16,15 @@ Is it legal to use their likeness?... might err on the side of caution and chang
 
 FEEDBACK:
 - improve player responsiveness ("player unresponsive", "it doesnt move very smoothly")
+- game too hard (dad, finn) [maybe increase timer?][increase the timer later]
+- skimmed rules, too boring ( how to make intro more engaging?) ("how do I stab?")
+- many fucks said by players
+- past me not doing what I did (bug)
+- typing noise hurts ears (lower gain?)
+-
+
+CHANGES BASED ON FEEDBACK:
++ lower gain on typing noise
++ reword opening
++ make earlier levels more easy
++ lower input delay

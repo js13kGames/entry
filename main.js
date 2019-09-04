@@ -6,7 +6,7 @@ const canvas = document.getElementById("screen");
 const ctx = canvas.getContext('2d');
 
 /* big thanks to Dan Dascalescu and Herohtar for their epic stackoverflow answer */
-function sleep(ms){
+function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -20,7 +20,7 @@ let tempo = 120;
 // beep sound
 let beepNote = new TinyMusic.Note('F3 0.0125');
 let beepSnd = new TinyMusic.Sequence(ac, tempo);
-beepSnd.gain.gain.value = 0.10;
+beepSnd.gain.gain.value = 0.06;
 beepSnd.push(beepNote);
 beepSnd.loop = false;
 
@@ -33,7 +33,7 @@ walkSnd.loop = false;
 
 // kill sound
 let killNote = new TinyMusic.Note('B2 s');
-let killSnd = new TinyMusic.Sequence(ac, tempo/2);
+let killSnd = new TinyMusic.Sequence(ac, tempo / 2);
 killSnd.waveType = "sine";
 killSnd.gain.gain.value = 0.12;
 killSnd.staccato = 0;
@@ -251,8 +251,8 @@ let shadowPlayer = {
 
 // this changes which level we are current on.
 function gotoNextLevel() {
-    
-    if (secondTry == false){
+
+    if (secondTry == false) {
         secondTry = true;
         this_level = levels[currentLevelIndex].split("\n");
         target = 'i';
@@ -263,7 +263,7 @@ function gotoNextLevel() {
     } else {
         secondTry = false;
         player.key = 'p';
-        if (currentLevelIndex < levels.length-1){
+        if (currentLevelIndex < levels.length - 1) {
             currentLevelIndex++;
             this_level = levels[currentLevelIndex].split("\n");
             target = 'e';
@@ -299,21 +299,21 @@ function levelTransition(timeout) {
     clearTimeout(timerHandler);
     clearTimeout(shadowPlayerMoving)
 
-    if(oldScore == 0){
+    if (oldScore == 0) {
         oldScore = timer;
         score += timer;
     }
     timerRunning = true;
     //add remaining time to the player's score
-    
+
     timer = 13;
 
     ctx.fillStyle = "black";
     let levelHeight = (this_level.length - 2) * gridSize;
     if (animationCounter < levelHeight) {
         animationCounter++;
-        setTimeout(function(){
-            timeout = timeout/4
+        setTimeout(function () {
+            timeout = timeout / 4
             levelTransition(timeout);
         }, timeout);
     } else {
@@ -349,11 +349,11 @@ function levelTransitionEnd(timeout) {
 var slowTextCounter = 0;
 var queueCounter = 0;
 var slowTextHandler;
-async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
+async function drawPixelTextSlow(message, x, y, size, delay, color = "white") {
 
-    if (queueCounter < message.length){
-        if (slowTextCounter < message[queueCounter].length){
-            if (message[queueCounter] === "narrator"){
+    if (queueCounter < message.length) {
+        if (slowTextCounter < message[queueCounter].length) {
+            if (message[queueCounter] === "narrator") {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "magenta");
                 beepSnd.play();//make sound effect
             } else if (message[queueCounter] === '\n') {
@@ -361,45 +361,45 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 slowTextCounter = -1;
                 y += gridSize
                 x = -8;
-            } else if (message[queueCounter] === "stabbing robot 3000"){
+            } else if (message[queueCounter] === "stabbing robot 3000") {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
                 beepSnd.play();//make sound effect
-            } else if (message[queueCounter] === "b"){
+            } else if (message[queueCounter] === "b") {
                 //draw rectangles over previous message
                 ctx.fillStyle = "black";
-                let rectWidth = message[queueCounter-1].length * (size + 10);
-                let rectX = x-(rectWidth+size+10);
+                let rectWidth = message[queueCounter - 1].length * (size + 10);
+                let rectX = x - (rectWidth + size + 10);
                 let rectHeight = size;
-                ctx.fillRect(rectX, y, rectWidth, size*5);
+                ctx.fillRect(rectX, y, rectWidth, size * 5);
                 //now let's draw the next thing
                 x = rectX;
-            } else if (message[queueCounter] === 'c'){
+            } else if (message[queueCounter] === 'c') {
                 await sleep(1000);
                 ctx.fillStyle = "black";
-                ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
-                if(score === 0){
-                    drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
+                ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
+                if (score === 0) {
+                    drawPixelText("press space to skip", 200, (this_level.length - 2) * gridSize, 1.50, false, "orange");
                 }
                 x = -20;
                 y = 48;
             } else if ((message[queueCounter] === "hardware") || (message[queueCounter] === "limitations")) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 152, 240)");
                 beepSnd.play();//make sound effect
-            } else if(message[queueCounter] === "Good."){
+            } else if (message[queueCounter] === "Good.") {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(152, 249, 188)");
                 beepSnd.play();//make sound effect
-            } else if ( (message[queueCounter] === "Just remember WASD to move the robot") || (message[queueCounter] == "and to stab targets just move into them.") ) {
+            } else if ((message[queueCounter] === "Just remember WASD to move the robot") || (message[queueCounter] == "and to stab targets just move into them.")) {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "rgb(249, 96, 19)");
                 beepSnd.play();//make sound effect
-            } else if (message[queueCounter] === "d"){
+            } else if (message[queueCounter] === "d") {
                 await sleep(400);
-            } else if (message[queueCounter] === "            STABBING NOISES"){
+            } else if (message[queueCounter] === "            STABBING NOISES") {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
                 //beepSnd.play();//make sound effect
-            } else if (message[queueCounter] === "x"){
+            } else if (message[queueCounter] === "x") {
                 let i;
                 let sidebarX = (this_level.length + 2)
-                for (i=0; i < 23; i++){
+                for (i = 0; i < 23; i++) {
                     ctx.fillStyle = "black";
                     ctx.fillRect((sidebarX + 1) * gridSize - 20, 160, 180, 20);
                     drawnScore++;
@@ -409,7 +409,7 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 }
                 //queueCounter++;
 
-            } else if (message[queueCounter] === "v") { 
+            } else if (message[queueCounter] === "v") {
                 Mousetrap.unbind('space');
                 main = setInterval(mainLoop, 25);
             } else {
@@ -417,25 +417,25 @@ async function drawPixelTextSlow(message, x, y, size, delay, color="white"){
                 beepSnd.play();//make sound effect
             }
 
-            
+
             slowTextCounter++;
-            slowTextHandler = setTimeout(function(){
-                drawPixelTextSlow(message, x+size+10, y, size, delay, color);
+            slowTextHandler = setTimeout(function () {
+                drawPixelTextSlow(message, x + size + 10, y, size, delay, color);
             }, delay);
 
         } else {
             slowTextCounter = 0;
             queueCounter++;
-            drawPixelTextSlow(message, x+size+10, y, size, delay, color);
+            drawPixelTextSlow(message, x + size + 10, y, size, delay, color);
         }
-    } else{
+    } else {
         slowTextCounter = 0;
         queueCounter = 0;
     }
 }
 
 /* A function for drawing pixel font */
-function drawPixelText(message, x, y, size, italics=false, color="white") {
+function drawPixelText(message, x, y, size, italics = false, color = "white") {
     let i;
     let pixelX = x;
     let pixelY = y;
@@ -445,12 +445,12 @@ function drawPixelText(message, x, y, size, italics=false, color="white") {
     for (i = 0; i < message.length; i++) {
         let j;
         let drawY = pixelY;
-        
+
         let drawX = pixelX;
         if (letters[message[i]] != undefined) {
             for (j = 0; j < letters[message[i]].length; j++) {
                 let k;
-                if(italics) pixelX += 1;        
+                if (italics) pixelX += 1;
                 for (k = 0; k < letters[message[i]][j].length; k++) {
                     if (letters[message[i]][j][k] == 1) {
                         ctx.fillRect(drawX, drawY, size, size);
@@ -483,7 +483,7 @@ function drawLevel(level_array) {
                 case '#':
                     //draw wall
                     ctx.fillStyle = wall.color;
-                    ctx.drawImage(monoSprite, 6*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 6 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case 'p':
                     /* placeholder graphics */
@@ -510,18 +510,18 @@ function drawLevel(level_array) {
 
                 case 'e':
                     ctx.fillStyle = enemy.color;
-                    ctx.drawImage(monoSprite, 2*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 2 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     //draw enemy object
                     break;
                 case "E":
-                    ctx.drawImage(monoSprite, 3*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 3 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case "I":
-                    ctx.drawImage(monoSprite, 5*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 5 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
-                    ctx.drawImage(monoSprite, 4*32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, 4 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 default:
                     break;
@@ -534,7 +534,7 @@ function drawLevel(level_array) {
     let sidebarX = (this_level.length + 2)
     ctx.fillRect(sidebarX * gridSize, 32, 6 * gridSize, (y - 2) * gridSize);
     /* draw score */
-    if(drawnScore < score){ 
+    if (drawnScore < score) {
         drawnScore++;
         goodSnd.play();
     }
@@ -544,11 +544,11 @@ function drawLevel(level_array) {
 
     /* target draw */
     drawPixelText("target ", (sidebarX + 1) * gridSize - 20, 110, 3, true);
-    if (target == 'i'){
-        ctx.drawImage(monoSprite, 4*32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+    if (target == 'i') {
+        ctx.drawImage(monoSprite, 4 * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
         //ctx.drawImage(innocentSprite, (sidebarX + 1) * gridSize + 100, 100, innocent.width, innocent.height);
-    } else if (target == 'e'){
-        ctx.drawImage(monoSprite, 2*32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+    } else if (target == 'e') {
+        ctx.drawImage(monoSprite, 2 * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
         //ctx.drawImage(enemySprite, (sidebarX + 1) * gridSize + 100, 100, enemy.width, enemy.height);
     }
 
@@ -568,7 +568,7 @@ function checkCollision(x, y) {
         case '#':
             return false;
 
-        
+
         case "E":
             return false;
 
@@ -576,7 +576,7 @@ function checkCollision(x, y) {
             return false;
         case 's':
         case 'p':
-            if (secondTry == true){
+            if (secondTry == true) {
                 RFD = 2;
                 gameOver();
                 return false;
@@ -584,7 +584,7 @@ function checkCollision(x, y) {
                 return true;
             }
 
-        
+
         case target:
             // change out the target
             // goodSnd.play();
@@ -600,20 +600,20 @@ function checkCollision(x, y) {
             return false;
 
         case 'i':
-            if ('i' != target){
+            if ('i' != target) {
                 this_level[y] = splice(this_level[y], x, 1, 'I');
                 RFD = 1;
                 gameOver();
             }
             return false;
         case 'e':
-            if ('e' != target){
+            if ('e' != target) {
                 this_level[y] = splice(this_level[y], x, y, "E");
                 RFD = 1;
                 gameOver();
             }
             return false;
-        
+
         default:
             return true;
     }
@@ -636,41 +636,139 @@ function updatePlayerArray(dx, dy, object) {
 
 
 /* GETTING GAME INPUT */
-
-var inputDelay = 75;
+//100 felt good
+var inputDelay = 140;
 var stopInput = false;
+//var stopInputX = false;
+//var stopInputY = false;
 
 function resumeInput() {
-    stopInput = false;
+    if(stopInput) stopInput = false;
+    //if (stopInputX) stopInputX = false;
+    //if (stopInputY) stopInputY = false;
 }
 
-function movePlayer(dx, dy, direction){
-    if ((takeInput) && (!stopInput)){
-        if (checkCollision(player.x+dx, player.y+dy)){
+function movePlayer(dx, dy, direction) {
+    if ((takeInput) && (!stopInput)) {
+        if (checkCollision(player.x + dx, player.y + dy)) {
             updatePlayerArray(dx, dy, player);
             //walkSnd.play();
-            if(secondTry === false) { 
+            if (secondTry === false) {
                 paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
             }
         }
+
+
         stopInput = true;
         setTimeout(resumeInput, inputDelay);
     }
+    /*
+    if (dy === 0) {
+        if ((takeInput) && (!stopInputY)) {
+            if (checkCollision(player.x + dx, player.y + dy)) {
+                updatePlayerArray(dx, dy, player);
+                //walkSnd.play();
+                if (secondTry === false) {
+                    paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
+                }
+            }
+
+
+            stopInputY = true;
+            setTimeout(resumeInput, inputDelay);
+        }
+    } else if (dx === 0){
+        if ((takeInput) && (!stopInputX)) {
+            if (checkCollision(player.x + dx, player.y + dy)) {
+                updatePlayerArray(dx, dy, player);
+                //walkSnd.play();
+                if (secondTry === false) {
+                    paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
+                }
+            }
+
+
+            stopInputX = true;
+            setTimeout(resumeInput, inputDelay);
+        }
+    }*/
 }
 
-Mousetrap.bind('w', function(){movePlayer(0, -1, 'n')}, 'keypress');
-Mousetrap.bind('s', function(){movePlayer(0, 1, 's')}, 'keypress');
-Mousetrap.bind('a', function(){movePlayer(-1, 0, 'w')}, 'keypress');
-Mousetrap.bind('d', function(){movePlayer(1, 0, 'e')}, 'keypress');
-Mousetrap.bind('n', function(){
+/* KEYBOARD INPUT HANDLING */
+//stores the inputs :)
+let keyQueue = [];//yeah it's not a real queue but the name helps me remember what it does
+
+//takes array and returns one without specified value
+function removeValueArray(value, arr){
+    let i;
+    let newArr = [];
+    for(i=0; i < arr.length; i++){
+        if (arr[i] !== value) newArr.push(arr[i]);
+    }
+    return newArr;
+}
+
+Mousetrap.bind('w', function(){
+    if (!keyQueue.includes('w')){
+        keyQueue.push('w');
+    }
+}, "keydown");
+Mousetrap.bind('w', function(){
+    if (keyQueue.includes('w')){
+        keyQueue = removeValueArray('w', keyQueue);
+    }
+}, "keyup");
+
+Mousetrap.bind('s', function(){
+    if (!keyQueue.includes('s')){
+        keyQueue.push('s');
+    }
+}, "keydown");
+Mousetrap.bind('s', function(){
+    if (keyQueue.includes('s')){
+        keyQueue = removeValueArray('s', keyQueue);
+    }
+}, "keyup");
+
+Mousetrap.bind('a', function(){
+    if (!keyQueue.includes('a')){
+        keyQueue.push('a');
+    }
+}, "keydown");
+
+Mousetrap.bind('a', function(){
+    if (keyQueue.includes('a')){
+        keyQueue = removeValueArray('a', keyQueue);
+    }
+}, "keyup");
+
+Mousetrap.bind('d', function(){
+    if (!keyQueue.includes('d')){
+        keyQueue.push('d');
+    }
+}, "keydown");
+Mousetrap.bind('d', function(){
+    if (keyQueue.includes('d')){
+        keyQueue = removeValueArray('d', keyQueue);
+    }
+}, "keyup");
+
+
+
+
+
+/*
+Mousetrap.bind('w', function () { movePlayer(0, -1, 'n') }, inputType);
+Mousetrap.bind('s', function () { movePlayer(0, 1, 's') }, inputType);
+Mousetrap.bind('a', function () {console.log("a"); movePlayer(-1, 0, 'w') }, inputType);
+Mousetrap.bind('d', function () { movePlayer(1, 0, 'e') }, inputType);
+*/
+Mousetrap.bind('n', function () {
     transition = true;
     takeInput = false;
     animationCounter = 0;
     levelTransition(100);
 });
-
-
-/**/
 
 
 /* MOVING SHADOW PLAYER */
@@ -695,19 +793,19 @@ function moveShadowPlayer() {
         }
         moveShadowCounter++;
     }
-    
+
     //console.log(paths[currentLevelIndex][moveShadowCounter]);
 
     /* Kill Target Code */
 
-    if (this_level[shadowPlayer.y-1][shadowPlayer.x] == 'e'){
-        this_level[shadowPlayer.y-1] = splice(this_level[shadowPlayer.y-1], shadowPlayer.x, 1, "E");
-    } else if (this_level[shadowPlayer.y+1][shadowPlayer.x] == 'e'){
-        this_level[shadowPlayer.y+1] = splice(this_level[shadowPlayer.y+1], shadowPlayer.x, 1, "E");
-    } else if (this_level[shadowPlayer.y][shadowPlayer.x+1] == 'e'){
-        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x+1, 1, "E");
-    } else if (this_level[shadowPlayer.y][shadowPlayer.x-1] == 'e') {
-        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x-1, 1, "E");
+    if (this_level[shadowPlayer.y - 1][shadowPlayer.x] == 'e') {
+        this_level[shadowPlayer.y - 1] = splice(this_level[shadowPlayer.y - 1], shadowPlayer.x, 1, "E");
+    } else if (this_level[shadowPlayer.y + 1][shadowPlayer.x] == 'e') {
+        this_level[shadowPlayer.y + 1] = splice(this_level[shadowPlayer.y + 1], shadowPlayer.x, 1, "E");
+    } else if (this_level[shadowPlayer.y][shadowPlayer.x + 1] == 'e') {
+        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x + 1, 1, "E");
+    } else if (this_level[shadowPlayer.y][shadowPlayer.x - 1] == 'e') {
+        this_level[shadowPlayer.y] = splice(this_level[shadowPlayer.y], shadowPlayer.x - 1, 1, "E");
     }
 
     shadowPlayerMoving = setTimeout(moveShadowPlayer, shadowPlayerInterval);
@@ -716,7 +814,7 @@ function moveShadowPlayer() {
 /* GAME OVER CODE */
 
 var gameOverCounter = 0;
-function gameOver(){
+function gameOver() {
     takeInput = false; //stop player from moving
     killSnd.play(); //play sound
 
@@ -724,7 +822,7 @@ function gameOver(){
     clearTimeout(shadowPlayerMoving);
     clearInterval(main);
     //clearTimeout(timerHandler);
- 
+
     //ANIMATION
     gameOverCounter = 0;
     drawGameOver(0.025);
@@ -732,44 +830,44 @@ function gameOver(){
 
 }
 var gameoverHandler;
-function drawGameOver(timeout){
+function drawGameOver(timeout) {
     ctx.fillStyle = "red";
     let levelWidth = (this_level[1].length + 6) * gridSize;
     ctx.fillRect(0, 32, levelWidth, gameOverCounter);
     let levelHeight = (this_level.length - 2) * gridSize;
-    if (gameOverCounter < levelHeight){
+    if (gameOverCounter < levelHeight) {
         gameOverCounter++;
         gameoverHandler = setTimeout(drawGameOver, timeout);
     } else {
         // include score?
-        drawPixelText("G A M E O V E R", levelWidth/4, levelHeight/2, 4);
+        drawPixelText("G A M E O V E R", levelWidth / 4, levelHeight / 2, 4);
 
-        switch(RFD){
+        switch (RFD) {
             case 0:
-                drawPixelText("TIME RAN OUT", levelWidth/4, levelHeight/1.5, 2);
+                drawPixelText("TIME RAN OUT", levelWidth / 4, levelHeight / 1.5, 2);
                 break;
             case 1:
-                drawPixelText("YOU KILLED THE INCORRECT TARGET", levelWidth/4, levelHeight/1.5, 2);
+                drawPixelText("YOU KILLED THE INCORRECT TARGET", levelWidth / 4, levelHeight / 1.5, 2);
                 break;
             case 2:
-                drawPixelText("YOU GOT KILLED BY YOUR PAST SELF", levelWidth/4, levelHeight/1.5, 2);
+                drawPixelText("YOU GOT KILLED BY YOUR PAST SELF", levelWidth / 4, levelHeight / 1.5, 2);
                 break;
         }
 
-        drawPixelText("PRESS R TO RESTART", levelWidth/4, levelHeight/1.2, 2);
-        Mousetrap.bind("r", function(){
+        drawPixelText("PRESS R TO RESTART", levelWidth / 4, levelHeight / 1.2, 2);
+        Mousetrap.bind("r", function () {
             Mousetrap.unbind("r");
             //reset level
 
             clearTimeout(gameoverHandler);
 
             timer = 13;
-            
+
             clearTimeout(shadowPlayerMoving);
             moveShadowCounter = 0;
-            if(secondTry == false){
+            if (secondTry == false) {
                 target = 'e';
-            } else{
+            } else {
                 target = 'i';
                 shadowPlayerMoving = setTimeout(moveShadowPlayer, 200);
             }
@@ -781,11 +879,11 @@ function drawGameOver(timeout){
             goal = 0;
             setupGoal(target);
             takeInput = true;
-            
+
             main = setInterval(mainLoop, 25);
-            
+
         });
-        
+
     }
 }
 
@@ -794,8 +892,8 @@ function drawGameOver(timeout){
 
 var timerRunning = false;
 var timerHandler;
-function updateTimer(){
-    if (timer > 0){
+function updateTimer() {
+    if (timer > 0) {
         timer--;
     } else {
         RFD = 0;
@@ -804,14 +902,75 @@ function updateTimer(){
     timerRunning = false; //set to false so another timeout can start 
 }
 
+let itc = 1;//input test counter
+let testChar = 'a';
 
 function mainLoop() {
     //draw the game
     //console.log('running....');
-    if (timerRunning == false){
+    if (timerRunning == false) {
         timerRunning = true;
         timerHandler = setTimeout(updateTimer, 1000);
     }
+
+    /* test for input! 
+    itc = 1;
+    let v;
+    testInput:
+    for(v=0; v < keyQueue.length; v++){
+    testChar = keyQueue[keyQueue.length-itc];
+    if(testChar === 'w'){
+        if (checkCollision(player.x, player.y-1)){
+            movePlayer(0, -1, 'n');
+            break;
+        } else {
+            itc++;
+            continue testInput;
+        }
+    } else if (testChar === 's'){
+        if (checkCollision(player.x, player.y+1)){
+            movePlayer(0, 1, 's');
+            break;
+        } else {
+            itc++;
+            continue testInput;
+        }
+    } else if (testChar === 'a'){
+        if (checkCollision(player.x-1, player.y)){
+            movePlayer(-1, 0, 'w');
+            break;
+        } else {
+            itc++;
+            continue testInput;
+        }
+    } else if (testChar === 'd'){
+        if (checkCollision(player.x+1, player.y)){
+            movePlayer(1, 0, 'e');
+            break;
+        } else {
+            itc++;
+            continue testInput;
+        }
+    }
+    }
+    */
+   switch(keyQueue[keyQueue.length-1]){
+       case 'w':
+           movePlayer(0, -1, 'n');
+           break;
+        case 's':
+            movePlayer(0, 1, 's');
+            break;
+        case 'd':
+            movePlayer(1, 0, 'e');
+            break;
+        case 'a':
+            movePlayer(-1, 0, 'w');
+            break;
+   }
+
+
+
     drawLevel(this_level);
 
 }
@@ -860,7 +1019,7 @@ let titleContents = [
     "Just remember WASD to move the robot",
     "\n",
     "and to stab targets just move into them.",
-    "d","d","d","d","d",
+    "d", "d", "d", "d", "d",
     "v"
 ];
 
@@ -869,17 +1028,17 @@ let titleContents = [
 
 
 var main;
-function titleScreen(){
+function titleScreen() {
     let gameX = 5;
     let gameY = 48;
     let fontSize = 2;
 
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
     drawPixelTextSlow(titleContents, gameX, gameY, fontSize, 65);
-    
-    drawPixelText("press space to skip", 200, (this_level.length-2) * gridSize, 1.50, false, "orange");
-    Mousetrap.bind('space', function(){
+
+    drawPixelText("press space to skip", 200, (this_level.length - 2) * gridSize, 1.50, false, "orange");
+    Mousetrap.bind('space', function () {
         clearTimeout(slowTextHandler);
         Mousetrap.unbind('space');
         slowTextCounter = 0;
@@ -889,32 +1048,32 @@ function titleScreen(){
 }
 
 //first screen player sees
-function splashScreen(){
+function splashScreen() {
     let alignX = 60;
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
     drawPixelText("BACKSTABBERS", alignX, 48, 7, true, "red");
-    drawPixelText("BACKSTABBERS", alignX+3, 50, 7, true, "lime");
+    drawPixelText("BACKSTABBERS", alignX + 3, 50, 7, true, "lime");
 
-    drawPixelText("A GAME ABOUT STABBING", alignX+20, 90, 3, true, "lime");
+    drawPixelText("A GAME ABOUT STABBING", alignX + 20, 90, 3, true, "lime");
 
     drawPixelText("PRESS ENTER TO START GAME", 90, 180, 2, false, "red");
     drawPixelText("PRESS ENTER TO START GAME", 91, 180, 2, false, "lime");
-    
+
 
     drawPixelText("PRESS S TO BUY SKINS", 90, 240, 2, false, "red");
     drawPixelText("PRESS S TO BUY SKINS", 91, 240, 2, false, "lime");
 
     //drawPixelText("JavaScript ");
 
-    Mousetrap.bind("enter", function(){
+    Mousetrap.bind("enter", function () {
         Mousetrap.unbind("enter");
         titleScreen();
     });
 }
 
 
-function gameWin(){
+function gameWin() {
 
     let endscreenText = [
         "GOOD JOB!",
@@ -950,20 +1109,20 @@ function gameWin(){
         "d",
         "TURN OFF  ROBOT!   STOP!",
         "\n",
-        "d","d",
+        "d", "d",
         "I DEMAND YOU STOP ROBOT",
         "d",
         "\n",
         "ROBOT TURN OF F",
         "\n",
         "            STABBING NOISES",
-        "d","d","d", "d","d","d","d",
+        "d", "d", "d", "d", "d", "d", "d",
         "x",//pointgag
         "\c",
-        "d","d","d","d","d","d","d","d","d",
+        "d", "d", "d", "d", "d", "d", "d", "d", "d",
         "\n",
         "you win.",
-        "d","d","d","d","d","d","d","d","d",
+        "d", "d", "d", "d", "d", "d", "d", "d", "d",
         "\n",
         "\c",
         "Here's some trivia:",
@@ -986,17 +1145,17 @@ function gameWin(){
     let fontSize = 2;
 
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
     drawPixelTextSlow(endscreenText, 5, 54, fontSize, 50);
 
 
 }
 
 
-function endGame(bool){
+function endGame(bool) {
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length-2) * gridSize);
-    if(bool){
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
+    if (bool) {
         //kill narrator
         console.log('z pressed');
     } else {
