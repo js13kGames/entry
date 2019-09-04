@@ -1,6 +1,6 @@
 {
   "name": "Put BACK your toys",
-  "description": "How fast can you put everything BACK?\nDoes this bring BACK memories of your childhood?\nClick a box, Click a toy. Timer stops when you finish.",
+  "description": "How fast can you put everything BACK?\nDoes this bring BACK memories of your childhood?\nClick a box, Click a toy. Timer stops when you finish.\nTested with the Oculus Quest and Oculus Go.",
   "images" : {
     "image_large": "image-big.jpg",
     "image_thumbnail": "image-small.jpg"
