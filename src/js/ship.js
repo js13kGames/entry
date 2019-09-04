@@ -295,7 +295,7 @@ export class Ship extends Sprite.class {
 
     renderUI(scale) {
         this.context.strokeStyle = '#0ef';
-        this.context.lineWidth = scale;
+        this.context.lineWidth = 1;
 
         // Draw ammo
         var ammoAngle = .2 * Math.PI * 1 / this.ammo;
@@ -305,7 +305,7 @@ export class Ship extends Sprite.class {
             this.context.arc(
                 0,
                 0,
-                (this.radius + 6) * scale,
+                this.radius + 6,
                 Math.PI - (.2 * Math.PI * 1) + ammoAngle * i * 2,
                 Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI * 1) + ammoAngle * i * 2
             );
@@ -320,7 +320,7 @@ export class Ship extends Sprite.class {
         this.context.arc(
             0,
             0,
-            (this.radius + 6) * scale,
+            this.radius + 6,
             -.2 * Math.PI * 1 / this.ror * this.rewindDt,
             +.2 * Math.PI * 1 / this.ror * this.rewindDt
         );
@@ -330,9 +330,8 @@ export class Ship extends Sprite.class {
 
     render(scale) {
         this.context.save();
-
-        // Rotate
-        this.context.translate(this.x * scale, this.y * scale);
+        this.context.scale(scale, scale);
+        this.context.translate(this.x, this.y);
 
         // Draw rewinding cooldown bar and ammo
         this.renderUI(scale);
@@ -341,12 +340,12 @@ export class Ship extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
-        this.context.lineWidth = scale;
+        this.context.lineWidth = 1;
 
         if (this.invuln) {
             // invuln is 1 / 60, and want to flash every 15 frames...
             if (Math.floor(this.invuln * 4 + .1) % 2) {
-                this.context.lineWidth = .5 * scale;
+                this.context.lineWidth = .5;
             }
         }
 
@@ -382,8 +381,8 @@ export class Ship extends Sprite.class {
             this.rewindFrame = this.rewindFrame < 4 ? this.rewindFrame + 1 : 1;
 
             this.lines.random.forEach(line => {
-                this.context.moveTo(line[0] * scale, line[1] * scale);
-                this.context.lineTo(line[2] * scale, line[3] * scale);
+                this.context.moveTo(line[0], line[1]);
+                this.context.lineTo(line[2], line[3]);
             });
 
             this.context.stroke();
@@ -391,20 +390,20 @@ export class Ship extends Sprite.class {
         } else {
 
             this.context.moveTo(
-                this.lines.body[0][0] * scale,
-                this.lines.body[0][1] * scale
+                this.lines.body[0][0],
+                this.lines.body[0][1]
             );
             for (var i = 0; i < this.lines.body.length - 1; i++) {
                 this.context.lineTo(
-                    this.lines.body[i][2] * scale,
-                    this.lines.body[i][3] * scale
+                    this.lines.body[i][2],
+                    this.lines.body[i][3]
                 );
             }
             this.context.closePath();
 
             this.lines.detail.forEach(line => {
-                this.context.moveTo(line[0] * scale, line[1] * scale);
-                this.context.lineTo(line[2] * scale, line[3] * scale);
+                this.context.moveTo(line[0], line[1]);
+                this.context.lineTo(line[2], line[3]);
             });
 
             if (this.ddx || this.ddy) {
@@ -414,11 +413,11 @@ export class Ship extends Sprite.class {
                         this.lines.thrust[i - 1][2] === line[0] &&
                         this.lines.thrust[i - 1][3] === line[1]) {
                         // Draw line connected to previous
-                        this.context.lineTo(line[2] * scale, line[3] * scale);
+                        this.context.lineTo(line[2], line[3]);
                     } else {
                         // Draw line NOT connect to previous
-                        this.context.moveTo(line[0] * scale, line[1] * scale);
-                        this.context.lineTo(line[2] * scale, line[3] * scale);
+                        this.context.moveTo(line[0], line[1]);
+                        this.context.lineTo(line[2], line[3]);
                     }
                 });
             }

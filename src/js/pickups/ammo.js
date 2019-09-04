@@ -17,18 +17,19 @@ export class AmmoPickup extends Pickup {
 
     render(scale) {
         this.context.save();
-        this.context.translate(this.x * scale, this.y * scale);
+        this.context.scale(scale, scale);
+        this.context.translate(this.x, this.y);
         this.context.rotate(util.degToRad(this.rotation));
 
         this.context.beginPath();
-        this.context.lineWidth = scale;
+        this.context.lineWidth = 1;
         this.context.strokeStyle = '#fff';
 
         this.context.rect(
-            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
-            Math.sqrt(Math.pow(this.radius * scale, 2) * .4),
-            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
-            Math.sqrt(Math.pow(this.radius * scale, 2) * .4) * -2,
+            Math.sqrt(Math.pow(this.radius, 2) * .4),
+            Math.sqrt(Math.pow(this.radius, 2) * .4),
+            Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
+            Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
         );
         this.context.stroke();
 
@@ -36,31 +37,31 @@ export class AmmoPickup extends Pickup {
         this.context.strokeStyle = '#0ef';
 
         this.context.rect(
-            scale * -1.35,
-            scale * -1.35,
-            scale * .45,
-            scale * .45
+            -1.35,
+            -1.35,
+            .45,
+            .45
         );
 
         this.context.rect(
-            scale * .9,
-            scale * -1.35,
-            scale * .45,
-            scale * .45
+            .9,
+            -1.35,
+            .45,
+            .45
         );
 
         this.context.rect(
-            scale * -1.35,
-            scale * .9,
-            scale * .45,
-            scale * .45
+            -1.35,
+            .9,
+            .45,
+            .45
         );
 
         this.context.rect(
-            scale * .9,
-            scale * .9,
-            scale * .45,
-            scale * .45
+            .9,
+            .9,
+            .45,
+            .45
         );
 
         this.context.stroke();

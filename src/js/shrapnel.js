@@ -54,17 +54,19 @@ export function createShrapnel(line, parent, sprites) {
 
         render(scale) {
             this.context.save();
-            this.context.beginPath();
+            this.context.scale(scale, scale);
+            this.context.translate(this.x, this.y);
 
             // Rotate
-            this.context.translate(this.x * scale, this.y * scale);
             this.context.rotate(util.degToRad(this.rotation));
+
+            this.context.beginPath();
 
             // Draw
             this.context.strokeStyle = this.color;
-            this.context.lineWidth = 2;
-            this.context.moveTo(this.p1.x * scale, this.p1.y * scale);
-            this.context.lineTo(this.p2.x * scale, this.p2.y * scale);
+            this.context.lineWidth = 1;
+            this.context.moveTo(this.p1.x, this.p1.y);
+            this.context.lineTo(this.p2.x, this.p2.y);
 
             this.context.stroke();
             this.context.restore();
