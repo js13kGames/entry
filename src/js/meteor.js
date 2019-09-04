@@ -52,18 +52,19 @@ export function createMeteor(props) {
 
         render(scale) {
             this.context.save();
-            this.context.translate(this.x * scale, this.y * scale);
+            this.context.scale(scale, scale);
+            this.context.translate(this.x, this.y);
             this.context.rotate(util.degToRad(this.rotation));
             this.context.strokeStyle = '#fff';
-            this.context.lineWidth = scale;
+            this.context.lineWidth = 1;
             this.context.beginPath();
             this.lines.forEach((line, i) => {
                 if (!i) {
                     // For the first line, start at it's start x,y
-                    this.context.moveTo(line[0] * scale, line[1] * scale);
+                    this.context.moveTo(line[0], line[1]);
                 }
                 // For every line, draw a line to it's end x,y
-                this.context.lineTo(line[2] * scale, line[3] * scale);
+                this.context.lineTo(line[2], line[3]);
             });
             this.context.closePath();
             this.context.stroke();

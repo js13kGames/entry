@@ -32,16 +32,21 @@ export function createBullet(parent) {
         },
 
         render(scale) {
+            this.context.save();
+            this.context.scale(scale, scale);
+            this.context.translate(this.x, this.y);
+
             this.context.fillStyle = this.color;
             this.context.beginPath();
             this.context.arc(
-                this.x * scale,
-                this.y * scale,
-                scale,
+                0,
+                0,
+                1,
                 0,
                 2 * Math.PI
             );
             this.context.fill();
+            this.context.restore();
         }
     });
 
