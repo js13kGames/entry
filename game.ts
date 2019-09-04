@@ -23,6 +23,7 @@ export class Game {
     audio: Audio;
     topGutter = 50; 
     creatingLevel = false;
+    sessionBalance = 0;
     constructor() {
         this.audio = new Audio();
         const { canvas, context } = init('game');
@@ -273,9 +274,13 @@ export class Game {
         const monetization: any = document.monetization;
         setTimeout(()=> {
             monetization.addEventListener('monetizationstart', (event) => this.onMonetizationStart(event));
+            monetization.addEventListener('monetizationprogress', (event) => this.monetizationprogress(event));
         });
     }
-    onMonetizationStart(event) {
+    monetizationprogress(event: { detail: { amount: string, assetCode: string, assetScale: number}}) {
+        this.sessionBalance += (event.detail.assetScale/parseFloat(event.detail.amount));
+    }
+    onMonetizationStart(event: {detail: {paymentPointer: string; requestId: string}}) {
         this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
         this.isSubscriber = true;
         const restartBtnEl = document.getElementById('restartBtn');
