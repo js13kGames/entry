@@ -272,16 +272,17 @@ export class Game {
     checkForSubscriber(){
         const monetization: any = document.monetization;
         setTimeout(()=> {
-            if (monetization && monetization.state === 'started') { 
-                this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
-                this.isSubscriber = true;
-                const restartBtnEl = document.getElementById('restartBtn');
-                restartBtnEl.removeAttribute('disabled');
-                restartBtnEl.addEventListener('click', (event) => this.restartLevel(event));
-
-                document.getElementById('game').classList.add('subscriber');
-            }
+            monetization.addEventListener('monetizationstart', (event) => this.onMonetizationStart(event));
         });
+    }
+    onMonetizationStart(event) {
+        this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
+        this.isSubscriber = true;
+        const restartBtnEl = document.getElementById('restartBtn');
+        restartBtnEl.removeAttribute('disabled');
+        restartBtnEl.addEventListener('click', (event) => this.restartLevel(event));
+
+        document.getElementById('game').classList.add('subscriber');
     }
     getRandomDogeQuote(): string{
         const quotes = [
