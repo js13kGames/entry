@@ -10,11 +10,11 @@
       <!-- game title -->
       <a-entity
         id="title"
-        animation="property: rotation; from: -2 -5 -1; to: 2 5 1; dur: 2000; loop: true; dir: alternate; easing: easeInOutQuad"
         position="0 2.5 -6"
       >
         <a-text
           align="center"
+          animation="property: rotation; from: -2 -5 -1; to: 2 5 1; dur: 2000; loop: true; dir: alternate; easing: easeInOutQuad"
           color="black"
           font="mozillavr"
           position="0 0 0"
@@ -36,12 +36,10 @@
         id="start"
         align="center"
         color="black"
-        event-set__hide-title="_event: mouseenter; _target: #title; visible: false"
-        event-set__show-outlaws="_event: mouseenter; _target: .outlaw; visible: true"
         font="mozillavr"
         position="0 2 5"
         rotation="0 180 0"
-        value="Oh boy, you looked back!\nThe outlaws are after you now.\nSure hope you're a fast trigger, cowboy!"
+        value="Oh boy, you looked back!\nNow the outlaws are after you.\nI sure hope you're a fast trigger, cowboy!"
       ></a-text>
 
       <!-- cowboy player -->
@@ -53,12 +51,12 @@
       </a-camera>
 
       <a-entity
-        id="test_shoot_animation"
         class="outlaw"
         position="1.5 0.1 -4.5"
         animation__die="property: rotation; from: 0 0 0; to: -90 0 0; startEvents: mouseenter; dur: 1000; easing: easeOutQuad"
         animation__respawn="property: rotation; from: -90 0 0; to: 00 0 0; startEvents: mouseleave; dur: 1000; easing: easeOutQuad"
-        >
+        visible="false"
+      >
         <a-ring
           color="red"
           position="0 0.6 0"
