@@ -333,7 +333,7 @@ export class Ship extends Sprite.class {
         this.context.scale(scale, scale);
         this.context.translate(this.x, this.y);
 
-        // Draw rewinding cooldown bar and ammo
+        // Draw rewinding cooldown bar and ammo without rotation
         this.renderUI(scale);
 
         this.context.rotate(util.degToRad(this.rotation));
@@ -429,16 +429,14 @@ export class Ship extends Sprite.class {
                 this.context.arc(
                     0,
                     0,
-                    (this.radius + 4) * scale,
+                    this.radius + 4,
                     0,
                     2 * Math.PI
                 );
 
                 if (this.shieldDegrading) {
                     if (Math.floor(this.shieldDegrading / 15) % 2) {
-                        this.context.lineWidth = .5 * scale;
-                    } else {
-                        this.context.lineWidth = scale;
+                        this.context.lineWidth = .5;
                     }
                 }
 
