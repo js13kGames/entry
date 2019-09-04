@@ -23,7 +23,6 @@ export class StarPickup extends Pickup {
         this.context.rotate(util.degToRad(this.rotation));
 
         this.context.beginPath();
-        this.context.lineWidth = 1;
         this.context.strokeStyle = '#fff';
 
         // this.context.rect(

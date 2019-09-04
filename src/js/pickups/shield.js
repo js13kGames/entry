@@ -22,7 +22,6 @@ export class ShieldPickup extends Pickup {
         this.context.rotate(util.degToRad(this.rotation));
 
         this.context.beginPath();
-        this.context.lineWidth = 1;
         this.context.strokeStyle = '#fff';
 
         this.context.rect(
