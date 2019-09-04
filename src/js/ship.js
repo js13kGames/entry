@@ -295,7 +295,6 @@ export class Ship extends Sprite.class {
 
     renderUI(scale) {
         this.context.strokeStyle = '#0ef';
-        this.context.lineWidth = 1;
 
         // Draw ammo
         var ammoAngle = .2 * Math.PI * 1 / this.ammo;
@@ -340,7 +339,6 @@ export class Ship extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
-        this.context.lineWidth = 1;
 
         if (this.invuln) {
             // invuln is 1 / 60, and want to flash every 15 frames...

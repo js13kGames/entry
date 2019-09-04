@@ -62,7 +62,6 @@ export function createShrapnel(line, parent, sprites) {
 
             // Draw
             this.context.strokeStyle = this.color;
-            this.context.lineWidth = 1;
             this.context.moveTo(this.p1.x, this.p1.y);
             this.context.lineTo(this.p2.x, this.p2.y);
 
