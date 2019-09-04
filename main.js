@@ -85,13 +85,13 @@ s = player second location
 
 var level_1 = `
 #############
-#..s........#
-#...........#
-#.......i...#
-#.p.........#
-#.......e...#
-#############
-#############
+####.....####
+###...s...###
+##.........##
+#..e..#..i..#
+##.........##
+###...p...###
+####.....####
 #############
 `;
 var level_2 = `
@@ -113,8 +113,8 @@ var level_3 = `
 ######..##.##
 #e......#...#
 #i.e.#..#i.e#
-######..#####
-#p.........s#
+######..##.##
+###p......s##
 #############
 `;
 
@@ -123,7 +123,7 @@ var level_4 = `
 ##...#...#.e#
 ##ei...#...i#
 ######.######
-#s........e.#
+#s........e##
 ###.##.######
 ###e##p######
 ######i######
@@ -144,18 +144,20 @@ var level_5 = `
 
 var level_6 = `
 #############
-#############
-#############
-#############
-#############
-#############
-#############
-#############
+####e.e.i####
+###i..s..e###
+##.........##
+#e.i..#..i.e#
+##.........##
+###e..p..i###
+####e.i.i####
 #############
 `;
 
-var levels = [level_1, level_2, level_3, level_4, level_5];
-var paths = ["", "", "", "", ""];//These strings record the movement of the player so the shadowPlayer can follow their movements later
+var levels = [level_1, level_2, level_3, level_4, level_5, level_6];
+var paths = [];//These strings record the movement of the player so the shadowPlayer can follow their movements later
+let h;
+for (h=0; h < levels.length; h++) paths.push("");
 var secondTry = false;//signals if the player is on the second attempt of a level. 
 var currentLevelIndex = 0;
 
@@ -639,13 +641,10 @@ function updatePlayerArray(dx, dy, object) {
 //100 felt good
 var inputDelay = 140;
 var stopInput = false;
-//var stopInputX = false;
-//var stopInputY = false;
+
 
 function resumeInput() {
     if(stopInput) stopInput = false;
-    //if (stopInputX) stopInputX = false;
-    //if (stopInputY) stopInputY = false;
 }
 
 function movePlayer(dx, dy, direction) {
@@ -662,36 +661,6 @@ function movePlayer(dx, dy, direction) {
         stopInput = true;
         setTimeout(resumeInput, inputDelay);
     }
-    /*
-    if (dy === 0) {
-        if ((takeInput) && (!stopInputY)) {
-            if (checkCollision(player.x + dx, player.y + dy)) {
-                updatePlayerArray(dx, dy, player);
-                //walkSnd.play();
-                if (secondTry === false) {
-                    paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
-                }
-            }
-
-
-            stopInputY = true;
-            setTimeout(resumeInput, inputDelay);
-        }
-    } else if (dx === 0){
-        if ((takeInput) && (!stopInputX)) {
-            if (checkCollision(player.x + dx, player.y + dy)) {
-                updatePlayerArray(dx, dy, player);
-                //walkSnd.play();
-                if (secondTry === false) {
-                    paths[currentLevelIndex] = paths[currentLevelIndex] + direction;
-                }
-            }
-
-
-            stopInputX = true;
-            setTimeout(resumeInput, inputDelay);
-        }
-    }*/
 }
 
 /* KEYBOARD INPUT HANDLING */
@@ -754,15 +723,6 @@ Mousetrap.bind('d', function(){
 }, "keyup");
 
 
-
-
-
-/*
-Mousetrap.bind('w', function () { movePlayer(0, -1, 'n') }, inputType);
-Mousetrap.bind('s', function () { movePlayer(0, 1, 's') }, inputType);
-Mousetrap.bind('a', function () {console.log("a"); movePlayer(-1, 0, 'w') }, inputType);
-Mousetrap.bind('d', function () { movePlayer(1, 0, 'e') }, inputType);
-*/
 Mousetrap.bind('n', function () {
     transition = true;
     takeInput = false;
@@ -907,53 +867,10 @@ let testChar = 'a';
 
 function mainLoop() {
     //draw the game
-    //console.log('running....');
     if (timerRunning == false) {
         timerRunning = true;
         timerHandler = setTimeout(updateTimer, 1000);
     }
-
-    /* test for input! 
-    itc = 1;
-    let v;
-    testInput:
-    for(v=0; v < keyQueue.length; v++){
-    testChar = keyQueue[keyQueue.length-itc];
-    if(testChar === 'w'){
-        if (checkCollision(player.x, player.y-1)){
-            movePlayer(0, -1, 'n');
-            break;
-        } else {
-            itc++;
-            continue testInput;
-        }
-    } else if (testChar === 's'){
-        if (checkCollision(player.x, player.y+1)){
-            movePlayer(0, 1, 's');
-            break;
-        } else {
-            itc++;
-            continue testInput;
-        }
-    } else if (testChar === 'a'){
-        if (checkCollision(player.x-1, player.y)){
-            movePlayer(-1, 0, 'w');
-            break;
-        } else {
-            itc++;
-            continue testInput;
-        }
-    } else if (testChar === 'd'){
-        if (checkCollision(player.x+1, player.y)){
-            movePlayer(1, 0, 'e');
-            break;
-        } else {
-            itc++;
-            continue testInput;
-        }
-    }
-    }
-    */
    switch(keyQueue[keyQueue.length-1]){
        case 'w':
            movePlayer(0, -1, 'n');
