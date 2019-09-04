@@ -55,7 +55,7 @@ export function createMeteor(props) {
             this.context.translate(this.x * scale, this.y * scale);
             this.context.rotate(util.degToRad(this.rotation));
             this.context.strokeStyle = '#fff';
-            this.context.lineWidth = 1 * scale;
+            this.context.lineWidth = scale;
             this.context.beginPath();
             this.lines.forEach((line, i) => {
                 if (!i) {

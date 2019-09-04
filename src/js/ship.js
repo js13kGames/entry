@@ -341,7 +341,7 @@ export class Ship extends Sprite.class {
 
         // Draw
         this.context.strokeStyle = this.color;
-        this.context.lineWidth = 1 * scale;
+        this.context.lineWidth = scale;
 
         if (this.invuln) {
             // invuln is 1 / 60, and want to flash every 15 frames...
@@ -439,7 +439,7 @@ export class Ship extends Sprite.class {
                     if (Math.floor(this.shieldDegrading / 15) % 2) {
                         this.context.lineWidth = .5 * scale;
                     } else {
-                        this.context.lineWidth = 1 * scale;
+                        this.context.lineWidth = scale;
                     }
                 }
 

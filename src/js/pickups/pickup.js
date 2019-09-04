@@ -49,7 +49,7 @@ export class Pickup extends Sprite.class {
         // Draw
         this.context.strokeStyle = this.color;
 
-        this.context.lineWidth = 1 * scale;
+        this.context.lineWidth = scale;
         this.context.beginPath();
 
         this.context.arc(
