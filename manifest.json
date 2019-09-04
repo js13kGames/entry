@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "firedrone",
+  "description": "mushroom picking with a drone are you serious lets do this manage a small mushroom garden. your task is to harvest mushrooms growing from the ground once fully grown collect the mushrooms the points awarded depends on the radius of the mushrooms. for 50 pts you can use 2X to enlarge the mushrooms. the rain drop to boost germination rate. the bomb to speed up harvesting processes use the joystick for flying around. I used tinymusic , and zzsfx for sound effects.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+	"image_thumbnail": "image-small.jpg",
+    "image_large": "image-big.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "John Swana",
+    "website": "https://github.com/swashvirus",
+    "twitter": "swashjunior"
   }
 }
