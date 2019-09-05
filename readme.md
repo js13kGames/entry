@@ -5,4 +5,4 @@ Oh no, Turtle is on its back! Help it get it right-side up!
 
 WIP
 
-Playable at [games.jayther.com/js13k2019/](http://games.jayther.com/js13k2019/).
+Playable at [games.jayther.com/js13k2019/](https://games.jayther.com/js13k2019/).
