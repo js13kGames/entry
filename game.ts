@@ -277,8 +277,10 @@ export class Game {
     checkForSubscriber(){
         const monetization: any = document.monetization;
         setTimeout(()=> {
-            monetization.addEventListener('monetizationstart', (event) => this.onMonetizationStart(event));
-            monetization.addEventListener('monetizationprogress', (event) => this.monetizationprogress(event));
+            if (monetization) {
+                monetization.addEventListener('monetizationstart', (event) => this.onMonetizationStart(event));
+                monetization.addEventListener('monetizationprogress', (event) => this.monetizationprogress(event));
+            }
         });
     }
     monetizationprogress(event: { detail: { amount: string, assetCode: string, assetScale: number}}) {
