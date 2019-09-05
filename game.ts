@@ -8,6 +8,7 @@ import { DeathScreen } from './deathScreen';
 import { Particle } from './particle';
 export class Game {
     gameObjects: IGameObject[] = [];
+    killedObjects: IGameObject[] = []; // store the killed objects in case we want to restart the level
     pointerRipples: PointerRipple[] = [];
     deathObjects: DeathScreen[] = [];
     particles: Particle[] = [];
@@ -129,6 +130,7 @@ export class Game {
                     // GAME OVER
                     this.currentLevel = 0;
                     this.gameObjects = [];
+                    this.killedObjects = [];
                     this.createMessage('GAME OVER. NEW GAME STARTED');
                     this.audio.resetSequence(this.audio.killSequence);
                     this.audio.playNextPitch(this.audio.gameOverSequence);
@@ -140,8 +142,8 @@ export class Game {
                         this.particles.push(new Particle(event.gameObject.sprite.x, event.gameObject.sprite.y, event.gameObject.sprite.color, this.gameCanvas.height, this.gameCanvas.width));
                     }
                     let killed: IGameObject = this.gameObjects.splice(index,1)[0];
+                    this.killedObjects.push(killed);
                     emit(GameEvent.KILL_ANIMATION, { gameObject: event.gameObject});
-                    killed = null; // remove from memory
                     this.audio.playNextPitch(this.audio.killSequence, 20);
                     
                 }
@@ -165,6 +167,7 @@ export class Game {
         }
     }
     createLevel(level: number){
+        this.killedObjects = [];
         this.createGameObject(level);
         if (this.gameObjects.length < level) {
             this.creatingGameInterval = setInterval( () => {
@@ -256,7 +259,9 @@ export class Game {
             this.createMessage('Cannot reaply a level that is being created. Please wait until screen goes white');
         } else {
             this.gameObjects.forEach( go => go.untrackObject());
-            const tmpGameObjects = [...this.gameObjects];
+            this.killedObjects.forEach( go => go.untrackObject());
+            const tmpGameObjects = [...this.gameObjects].concat(this.killedObjects.reverse());
+            this.killedObjects = [];
             this.gameObjects = [];
             let counter = 0;
             this.creatingGameInterval = setInterval(() => {
