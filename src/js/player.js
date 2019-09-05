@@ -8,7 +8,7 @@ let gamepadIndex = 0;
 export class Player {
     constructor(props) {
         this.color = props.color || '#fff';
-        this.shipType = props.shipType || 'tri';
+        //this.shipType = props.shipType || 'tri';
         this.controls = props.controls;
         this.game = props.game;
         this.ready = false;
@@ -53,6 +53,12 @@ export class Player {
     update() {
         if (this.keys && this.keys !== 'AI') {
             this.handleKeyPresses();
+        }
+    }
+
+    menuUpdate() {
+        if (this.keys.down()) {
+            menu.down();
         }
     }
 

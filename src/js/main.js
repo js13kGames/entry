@@ -5,7 +5,8 @@
 import { init, GameLoop, initKeys, keyPressed } from 'kontra';
 import { initGamepads, pollGamepads, buttonPressed, axisValue } from './gamepad';
 import { Player } from './player';
-import { renderText } from './text';
+import { renderText, drawText } from './text';
+import startGame from './game';
 
 // Setup canvas stuff (probably w/Kontra)
 
@@ -31,6 +32,18 @@ const game = {
     // width: 360,
     // height: 202.5
 };
+
+
+/**
+ * Sets the canvas size, and the game options variables for scaling the game.
+ *
+ * All the game's positioning & calculations are done on a 360 x ### grid, but
+ * then scaled up to fit on a variable size canvas. That way if a ship hitbox
+ * is e.g. 10x10, it'll be the correct size for calcs no matter the scale.
+ * Most numbers used in calcs are floats, so we don't lose much precision
+ * by using a small "game board" like this.
+ */
+
 
 /**
  * [setSizing description]
@@ -81,6 +94,13 @@ let player1 = new Player({
 });
 game.players.push(player1);
 
+function changeScene(scene) {
+    menuLoop.stop()
+    if (scene === 'play') {
+        startGame(game, canvas, context);
+    }
+}
+
 
 let menuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
@@ -108,38 +128,28 @@ let menuLoop = GameLoop({  // create the main game loop
                     menu.focus = menu.buttons.length - 1;
                 }
             }
+
+            if (player.keys.accept()) {
+                // Do whatever da button says
+                changeScene(menu.buttons[menu.focus]);
+            }
         });
-
-        // If on the main menu
-
-            // Any player pressed down or accept or whatever, do the thing
-
-            // just up, down, select the thing you're on
-
-        // If on ship selection menu
-
-            // Move each players selected stuff individually
-
-            // up, down, left, right, 'ready'
     },
 
     render() {
-        context.save();
-        context.scale(game.scale, game.scale);
-
-        // TODO: Custom drawing of custom font
-        context.font = '30px Arial';
-        context.textAlign = 'center';
-
         menu.buttons.forEach((button, i) => {
+            context.save();
+            context.scale(game.scale, game.scale);
+            context.translate(30, 30 + 30 * i);
             if (menu.focus === i) {
-                context.fillStyle = '#fff';
+                context.strokeStyle = '#fff';
             } else {
-                context.fillStyle = '#aaa';
+                context.strokeStyle = '#aaa';
             }
-            context.fillText(button, game.width / 2, game.height / 2 + i * 30);
+            drawText({text: button.toUpperCase(), context: context});
+            context.restore();
         });
-        context.restore();
+
     }
 });
 

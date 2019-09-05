@@ -11,128 +11,7 @@ import { createMeteor } from './meteor';
 import { renderText } from './text';
 
 
-// Kontra init canvas
-let { canvas, context } = init();
-
-// Kontra init keyboard stuff
-initKeys();
-
-// Init gamepad event listeners n stuff
-initGamepads();
-
-canvas.style = 'width:100%;background:#000';
-
-const game = {
-    meteors: [],
-    pickups: [],
-    players: [],
-    sprites: [],
-    // The following get added by setSizing()
-    // scale: 1.0,
-    // supersampling: 1.0,
-    // width: 360,
-    // height: 202.5
-};
-
-/**
- * Sets the canvas size, and the game options variables for scaling the game.
- *
- * All the game's positioning & calculations are done on a 360 x ### grid, but
- * then scaled up to fit on a variable size canvas. That way if a ship hitbox
- * is e.g. 10x10, it'll be the correct size for calcs no matter the scale.
- * Most numbers used in calcs are floats, so we don't lose much precision
- * by using a small "game board" like this.
- */
-
-/**
- * [setSizing description]
- * @param {[type]} ss supersampling multiplier
- */
-function setSizing(ss) {
-    game.supersample = ss;
-    game.width = 720;
-    game.scale = (window.innerWidth * ss) / game.width;
-    //game.scale = Math.round(game.scaleF);
-    game.height = (window.innerHeight * ss) / game.scale;
-    canvas.width = window.innerWidth * ss;
-    canvas.height = window.innerHeight * ss;
-    // TODO: Rescale the game map like the big asteroid
-}
-
-setSizing(1);
-
-window.onresize = () => {
-    setSizing(game.supersample);
-}
-
-// Testing making canvas px match display px rather than scaling
-// var width = window.getComputedStyle(canvas).getPropertyValue('width').replace('px', '');
-// console.log(width);
-// var height = width / 16 * 9;
-// canvas.height = height;
-// canvas.width = width;
-
-// Create new collision system & collision result object
-game.cSystem = new Collisions();
-game.cResult = game.cSystem.createResult();
-
-// Big asteroid in the middle (dioretsa)
-createMeteor({
-    x: game.width / 2,
-    y: game.height / 2,
-    radius: Math.min(game.width / 5, game.height / 5),
-    mass: 100000,
-    dx: 0,
-    dy: 0,
-    dr: .1,
-    game: game
-});
-
-// let pickup1 = new AmmoPickup({
-//     x: Math.random() * canvas.width,
-//     y: Math.random() * canvas.height,
-//     game: game
-// });
-// game.sprites.push(pickup1);
-// game.pickups.push(pickup1);
-//
-// let pickup2 = new ShieldPickup({
-//     x: Math.random() * canvas.width,
-//     y: Math.random() * canvas.height,
-//     game: game
-// });
-// game.sprites.push(pickup2);
-
-// let pickup3 = new StarPickup({
-//     x: Math.random() * canvas.width,
-//     y: Math.random() * canvas.height,
-//     game: game
-// });
-// game.sprites.push(pickup3);
-
-let player1 = new Player({
-    color: '#ff0',
-    shipType: 'tri',
-    controls: 'arrows',
-    context: context,
-    game: game
-});
-game.players.push(player1);
-
-let player2 = new Player({
-    color: '#f11',
-    shipType: 'coback',
-    controls: 'gamepad',
-    context: context,
-    game: game
-});
-game.players.push(player2);
-
-game.players.forEach(player => {
-    player.spawn();
-});
-
-let loop = GameLoop({  // create the main game loop
+const gameLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads();
 
@@ -247,4 +126,57 @@ let loop = GameLoop({  // create the main game loop
     }
 });
 
-loop.start();    // start the game
+var game;
+
+export default function startGame(newGame, canvas, context) {
+
+    game = newGame;
+
+    console.log("beep");
+
+    game.meteors = [];
+    game.pickups = [];
+    game.sprites = [];
+
+    // Create new collision system & collision result object
+    game.cSystem = new Collisions();
+    game.cResult = game.cSystem.createResult();
+
+    // Big asteroid in the middle (dioretsa)
+    createMeteor({
+        x: game.width / 2,
+        y: game.height / 2,
+        radius: Math.min(game.width / 5, game.height / 5),
+        mass: 100000,
+        dx: 0,
+        dy: 0,
+        dr: .1,
+        game: game
+    });
+
+    game.players[0].shipType = 'tri';
+
+    // let player1 = new Player({
+    //     color: '#ff0',
+    //     shipType: 'tri',
+    //     controls: 'arrows',
+    //     context: context,
+    //     game: game
+    // });
+    // game.players.push(player1);
+    //
+    // let player2 = new Player({
+    //     color: '#f11',
+    //     shipType: 'coback',
+    //     controls: 'gamepad',
+    //     context: context,
+    //     game: game
+    // });
+    // game.players.push(player2);
+
+    game.players.forEach(player => {
+        player.spawn();
+    });
+
+    gameLoop.start();
+}
