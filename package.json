@@ -1,16 +1,10 @@
 {
-  "name": "coiner",
+  "name": "luon",
   "version": "1.0.0",
-  "main": "./dist/index.html",
+  "main": "src/index.html",
+  "repository": "https://github.com/phongduong/luon",
+  "author": "Phong Duong <phongduong1710@gmail.com>",
   "license": "MIT",
-  "author": {
-    "name": "Phong Duong",
-    "email": "phongduong1710@gmail.com",
-    "url": "https://phongduong.netlify.com"
-  },
-  "repository": {
-    "url": "https://github.com/phongduong/coiner"
-  },
   "scripts": {
     "start": "gulp",
     "build": "gulp build"

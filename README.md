@@ -1,3 +1,3 @@
-# coiner
+# luon
 
-Coiner game for js13k
+Luon game entry for js13k

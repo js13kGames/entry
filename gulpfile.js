@@ -55,11 +55,9 @@ function jsDev() {
 }
 
 function copyJS() {
-  return src("src/*.js").pipe(dest("dist"));
-}
-
-function copyImage() {
-  return src("src/assets/sprites/*.png").pipe(dest("dist/assets/sprites"));
+  return src("src/*.js")
+    .pipe(uglify())
+    .pipe(dest("dist"));
 }
 
 function initBrowserSync() {
@@ -76,12 +74,8 @@ function initBrowserSync() {
   });
 }
 
-exports.default = series(
-  parallel(htmlDev, copyJS, copyImage),
-  jsDev,
-  initBrowserSync
-);
-exports.build = series(parallel(html, copyJS, copyImage), js);
+exports.default = series(parallel(htmlDev, copyJS), jsDev, initBrowserSync);
+exports.build = series(parallel(html, copyJS), js);
 
 watchedBrowserify.on("update", jsDev);
 watchedBrowserify.on("log", fancyLog);
