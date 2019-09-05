@@ -14,6 +14,7 @@ function Head(options) {
 
   this.shiftSpeed = 20;
   this.shiftMax = 5;
+  this.hideRatio = 0;
 
   this.eye = new Eye({
     x: 7,
@@ -24,7 +25,27 @@ function Head(options) {
 
 Head.prototype = extendPrototype(DisplayContainer.prototype, {
   setHideRatio: function (ratio) {
-    this.offsetX = ratio * -this.radius * 2.2;
+    this.hideRatio = ratio;
+  },
+  animateHide: function () {
+    Main.globalAnimManager.add(new Anim({
+      object: this,
+      property: 'hideRatio',
+      from: this.hideRatio,
+      to: 1,
+      duration: 0.25,
+      timeFunction: Anim.easingFunctions.easeInOutCubic
+    }));
+  },
+  animateShow: function () {
+    Main.globalAnimManager.add(new Anim({
+      object: this,
+      property: 'hideRatio',
+      from: this.hideRatio,
+      to: 0,
+      duration: 0.25,
+      timeFunction: Anim.easingFunctions.easeInOutCubic
+    }));
   },
   setShiftState: function (shiftState) {
     this.shiftState = shiftState;
@@ -40,6 +61,8 @@ Head.prototype = extendPrototype(DisplayContainer.prototype, {
   },
   step: function (dts) {
     this.eye.step(dts);
+
+    this.offsetX = this.hideRatio * -this.radius * 2.2;
 
     switch (this.shiftState) {
       case Turtle.shiftStates.idle:

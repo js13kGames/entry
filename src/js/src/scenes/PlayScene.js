@@ -71,6 +71,8 @@ function PlayScene() {
 
   this.outro = null;
 
+  this.endHappyDelay = 0.5;
+
   this.currentCycle = null;
   this.state = null;
   this.stateMap = {};
@@ -174,6 +176,11 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
             this.rollVel = 1;
           }
         }
+        this.turtle.animateHide();
+        this.turtle.setShiftState(Turtle.shiftStates.idle);
+        break;
+      case PlayScene.states.end:
+        this.turtle.animateShow();
         break;
     }
     this.currentCycle = this.stateMap[state];
@@ -270,6 +277,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
 
     var ratio = (this.rollPos - this.outro.pos.min) / (this.outro.pos.max - this.outro.pos.min);
     if (ratio >= 1) {
+      // reflect
       ratio -= ratio - 1;
       this.rollPos = JMath.lerp(this.outro.pos.min, this.outro.pos.max, ratio);
       this.rollVel *= -this.outro.restitution;
@@ -279,6 +287,17 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.turtle.angle = angle;
     this.turtle.x = this.outro.pivot.x + Math.cos(inverseAngle) * this.shellRadius * this.outro.corner;
     this.turtle.y = this.outro.pivot.y + Math.sin(inverseAngle) * this.shellRadius * this.outro.corner;
+
+    if (Math.abs(1 - ratio) < JMath.EPSILON && Math.abs(this.rollVel) - Math.abs(this.rollAccel * dts) < JMath.EPSILON) {
+      this.setState(PlayScene.states.end);
+    }
   },
-  cycleEnd: function (dts) {}
+  cycleEnd: function (dts) {
+    if (this.endHappyDelay > 0) {
+      this.endHappyDelay -= dts;
+      if (this.endHappyDelay <= 0) {
+        this.turtle.head.eye.state = Eye.states.happy;
+      }
+    }
+  }
 });

@@ -8,6 +8,7 @@ function Main(){
   this.canvas = canvas;
   this.context = canvas.getContext('2d');
   this.animManager = new AnimManager();
+  Main.globalAnimManager = this.animManager;
   this.scene = null;
   this.setScene(new PlayScene(this));
   this.time = 0;
@@ -21,6 +22,7 @@ function Main(){
   
   this.step(0);
 }
+Main.globalAnimManager = null;
 Main.prototype = {
   onWindowResize: function () {
     this.resize();

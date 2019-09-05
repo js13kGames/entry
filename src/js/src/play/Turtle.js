@@ -58,6 +58,12 @@ Turtle.prototype = extendPrototype(DisplayContainer.prototype, {
     this.rightLeg.setShiftState(shiftState);
     this.head.setShiftState(shiftState);
   },
+  animateShow: function () {
+    this.head.animateShow();
+  },
+  animateHide: function () {
+    this.head.animateHide();
+  },
   step: function (dts) {
     this.leftLeg.step(dts);
     this.rightLeg.step(dts);
