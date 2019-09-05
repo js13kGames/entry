@@ -113,7 +113,7 @@ var level_3 = `
 ######..##.##
 #e......#...#
 #i.e.#..#i.e#
-######..##.##
+######..#####
 ###p......s##
 #############
 `;
@@ -144,13 +144,13 @@ var level_5 = `
 
 var level_6 = `
 #############
-####e.e.i####
-###i..s..e###
-##.........##
-#e.i..#..i.e#
-##.........##
-###e..p..i###
-####e.i.i####
+#ie###e....i#
+#....##.#####
+####.......e#
+##...########
+##..#e.....s#
+#i.....######
+###e##.....p#
 #############
 `;
 
@@ -177,6 +177,10 @@ var timer = 13; // Timer which when decrements every second and if time runs out
 var target = "e"; //which object to decrement the goal
 var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
+/* WEB MONETIZATION SKIN CODE */
+var enableSkins = false;
+var playerSpriteIndex = 0;
+
 var score = 0; //The Player's score!
 var animationCounter = 0; //counter used for the level transition animation.
 var transition = false; //tells the game if a level transition is happening
@@ -189,6 +193,22 @@ var RFD;//0=time 1=wrong target 2=shadowPlayer
 // init generator function for the shadow player movement
 var moveShadowCounter = 0;
 var shadowPlayerInterval = 290;
+
+/* Web Monetization Code */
+if(document.monetization){
+    
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* the spritesheet */
@@ -494,7 +514,7 @@ function drawLevel(level_array) {
                     if (secondTry == false) {
                         player.x = x;
                         player.y = y;
-                        ctx.drawImage(monoSprite, 0, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                        ctx.drawImage(monoSprite, playerSpriteIndex * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     } else {
                         shadowPlayer.x = x;
                         shadowPlayer.y = y;
@@ -506,7 +526,7 @@ function drawLevel(level_array) {
                     if (secondTry == true) {
                         player.x = x;
                         player.y = y;
-                        ctx.drawImage(monoSprite, 0, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                        ctx.drawImage(monoSprite, playerSpriteIndex * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     }
                     break;
 
@@ -886,6 +906,12 @@ function mainLoop() {
             break;
    }
 
+   // just checks to see if a user has sent any payment information
+   if(document.monetization){
+        if((document.monetization.state === 'started') && (enableSkins != true)){
+            enableSkins = true;
+        }
+    }
 
 
     drawLevel(this_level);
@@ -983,8 +1009,13 @@ function splashScreen() {
 
     //drawPixelText("JavaScript ");
 
+    Mousetrap.bind("s", function(){
+        //run the info dialogue for paying for skins
+    });
+
     Mousetrap.bind("enter", function () {
         Mousetrap.unbind("enter");
+        Mousetrap.unbind("s");
         titleScreen();
     });
 }
@@ -1069,42 +1100,9 @@ function gameWin() {
 }
 
 
-function endGame(bool) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
-    if (bool) {
-        //kill narrator
-        console.log('z pressed');
-    } else {
-        // end game credit
-        let endingText = [
-            "\c",
-            "SHUTTING DOWN PROCESSES",
-            "d",
-            "d",
-            "d",
-            "COMPLETE.",
-        ];
-        drawPixelTextSlow(endingText, 0, 32, 2, 50);
-    }
-    let endingText = [
-        "\c",
-        "Wait,",
-        "stabbing robot 3000",
-        "what are yo-",
-        "\n",
-        "d",
-        "STABBING SOUNDS",
-        "d",
-        "d",
-        "d",
-        "d",
-        "d",
-        "scorejoke"
-    ];
-    drawPixelTextSlow(endingText, 0, 32, 2, 50);
 
-}
+
+
 
 
 splashScreen();
