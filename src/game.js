@@ -40,6 +40,7 @@ export default class Game {
     this.GRENADE_COOLDOWN = 0.1
     this.GRENADE_REGENERATE = 2
     this.GRENADE_ATTACK = 100
+    this.GRENADE_PROGRESS = 1
 
     this.MINE_WIDTH = this.WIDTH / 32
     this.MINE_HEIGHT = this.MINE_WIDTH / 2
@@ -48,6 +49,7 @@ export default class Game {
     this.MINE_BLAST_DURATION = 0.5
     this.MINE_REGENERATE = 5
     this.MINE_ATTACK = 200
+    this.MINE_PROGRESS = 2
 
     this.ENEMY_WIDTH_MIN = this.PLAYER_WIDTH * 0.5
     this.ENEMY_WIDTH_MAX = this.PLAYER_WIDTH * 2
@@ -58,9 +60,13 @@ export default class Game {
     this.ENEMY_ATTACK = 15
 
     this.UI_FONT_SIZE = this.WIDTH / 60
+    this.TREE_MIN_WIDTH = this.WIDTH / 10
+    this.TREE_MIN_HEIGHT = this.FLOOR / 3
+    this.TREE_MAX_WIDTH = this.WIDTH / 4
+    this.TREE_MAX_HEIGHT = this.FLOOR * 0.9
 
     // globals
-    this.gameOver = false
+    this.gameProgress = 50
     this.kills = 0
     this.blasting_duration = 0
     this.total_blast_duration = 0
@@ -91,23 +97,30 @@ export default class Game {
       create: Sprite
     })
 
-    this.uiParts = {
-      grenadeCount: null,
-      mineCount: null,
-      killCount: null
-    }
-    this.initUI()
+    this.treePool = Pool({
+      create: Sprite
+    })
+
+    this.ui = this.initUI()
 
     this.loop = GameLoop({
       update: (dt) => {
+        // game beaten logic
+        if (this.gameProgress >= 255) {
+          this.loop.stop()
+          this.onGameBeaten()
+          return
+        }
+
         // game over logic
-        if (this.gameOver) {
+        if (this.player.hp <= 0) {
           this.loop.stop()
           this.onGameOver()
           return
         }
 
         // update
+        this.updateTrees()
         this.updatePlayer(dt)
         this.updateEnemies()
         this.updateGrenades(dt)
@@ -124,7 +137,7 @@ export default class Game {
         if (this.blasting_duration < this.total_blast_duration) {
           this.canvas.style.background = this.SKY_COLOR_REAL
         } else {
-          this.canvas.style.background = this.SKY_COLOR
+          this.canvas.style.background = `rgba(${this.gameProgress}, ${this.gameProgress}, ${this.gameProgress}, 1)`
         }
 
         // grenades
@@ -206,12 +219,13 @@ export default class Game {
         }
       },
       render: () => {
+        this.treePool.render()
+        this.ui.render()
         this.player.render()
         this.enemyPool.render()
         this.grenadePool.render()
         this.minePool.render()
         this.blastPool.render()
-        this.renderUI()
       }
     })
   } 
@@ -219,6 +233,7 @@ export default class Game {
   start() {
     this.enemyInterval = setInterval(() => {
       this.makeEnemies(8)
+      this.makeTree()
     }, 3000)
     this.loop.start()
   }
@@ -253,7 +268,6 @@ export default class Game {
     const player = this.player
     if (player.hp <= 0) {
       player.rotation = Math.PI / 2
-      this.gameOver = true
       return
     }
     player.rotation = Math.PI / 12
@@ -386,6 +400,7 @@ export default class Game {
       type: type,
       id: Math.random() * 1000000 // used to prevent colliding with the same enemy multiple times
     })
+    this.gameProgress += type === 'g' ? this.GRENADE_PROGRESS : this.MINE_PROGRESS
   }
 
   updateBlast(dt) {
@@ -395,57 +410,67 @@ export default class Game {
   initUI() {
     const self = this
 
-    this.uiParts.grenadeCount = Sprite({
-      x: this.WIDTH * 0.05,
-      y: this.FLOOR + this.UI_FONT_SIZE * 2,
-      color: 'rgba(255, 255, 255, 1)',
-
+    const ui = Sprite({
       render: function() {
         const ctx = this.context
-        ctx.fillStyle = this.color
+        const textColor = self.gameProgress > 130 ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'
+        const floorGray = self.gameProgress - 40
+        const floorColor = `rgba(${floorGray}, ${floorGray}, ${floorGray}, 1)`
+
+        // floor
+        ctx.fillStyle = floorColor
+        ctx.fillRect(0, self.FLOOR, self.WIDTH, self.HEIGHT - self.FLOOR)
+        // flash bangs
+        ctx.fillStyle = textColor
         ctx.font = `${self.UI_FONT_SIZE}px Helvetica,Arial`
-        ctx.fillText(`FLASH BANGS [Z]: ${self.grenades}`, this.x, this.y)
+        ctx.fillText(`FLASH BANGS [Z]: ${self.grenades}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 2)
+        // flash mines
+        ctx.fillText(`FLASH MINES [X]: ${self.mines}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 4)
+        // kills
+        ctx.fillText(`KILLS: ${self.kills}`, self.WIDTH * 0.05, self.UI_FONT_SIZE * 2)
       }
     })
 
-    this.uiParts.mineCount = Sprite({
-      x: this.WIDTH * 0.05,
-      y: this.FLOOR + this.UI_FONT_SIZE * 4,
-      color: 'rgba(255, 255, 255, 1)',
-
-      render: function() {
-        const ctx = this.context
-        ctx.fillStyle = this.color
-        ctx.font = `${self.UI_FONT_SIZE}px Helvetica,Arial`
-        ctx.fillText(`FLASH MINES [X]: ${self.mines}`, this.x, this.y)
-      }
-    })
-
-    this.uiParts.killCount = Sprite({
-      x: this.WIDTH * 0.05,
-      y: this.UI_FONT_SIZE * 2,
-      color: 'rgba(255, 255, 255, 1)',
-
-      render: function() {
-        const ctx = this.context
-        ctx.fillStyle = this.color
-        ctx.font = `${self.UI_FONT_SIZE}px Helvetica,Arial`
-        ctx.fillText(`KILLS: ${self.kills}`, this.x, this.y)
-      }
-    })
+    return ui
   }
 
   updateUI() {
-    this.uiParts.grenadeCount.update()
-    this.uiParts.mineCount.update()
-    this.uiParts.killCount.update()
+    this.ui.update()
   }
 
-  renderUI() {
-    this.uiParts.grenadeCount.render()
-    this.uiParts.mineCount.render()
-    this.uiParts.killCount.render()
+  makeTree() {
+    const width = Math.random() * (this.TREE_MAX_WIDTH - this.TREE_MIN_WIDTH) + this.TREE_MIN_WIDTH
+    const height = Math.random() * (this.TREE_MAX_HEIGHT - this.TREE_MIN_HEIGHT) + this.TREE_MIN_HEIGHT
+    this.treePool.get({
+      anchor: {
+        x: 0.5, 
+        y: 1
+      },
+      width: width,
+      height: height,
+      x: this.WIDTH + width,
+      y: this.FLOOR,
+      dx: -this.PLAYER_SPEED,
+
+      crownRatio: Math.random() * 0.3 + 0.5,
+      crownGray: Math.random() * 125,
+      trunkGray: Math.random() * 125,
+
+      render: function() {
+        const ctx = this.context
+        ctx.fillStyle = `rgba(${this.crownGray}, ${this.crownGray}, ${this.crownGray}, 1)`
+        ctx.fillRect(this.x - this.width / 2, this.y - this.height, this.width, this.height * this.crownRatio)
+        ctx.fillStyle = `rgba(${this.trunkGray}, ${this.trunkGray}, ${this.trunkGray}, 1)`
+        ctx.fillRect(this.x - this.width * 0.4 / 2, this.y - (1 - this.crownRatio + 0.15) * this.height, this.width * 0.4, this.height * (1 - this.crownRatio + 0.15))
+      }
+    })
+  }
+
+  updateTrees() {
+    this.treePool.update()
   }
 
   onGameOver() { }
+
+  onGameBeaten() { }
 }
