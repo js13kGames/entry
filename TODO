@@ -1,11 +1,9 @@
 TODO
 - optimize .zip file with advzip
-- IN PROGRESS get rid of event-set-component and write your own event listeners
-- IN PROGRESS make an outlaw shootable (rotate backward by 90deg)
 - HUD for amno?(nest <a-text> under camera)
 
-Wed: figure out events and code structure for game logic
-Thu: make targets shootable
+Wed: make targets shootable
+Thu: game system for hiding/showing main game elements
 Fri: pixelart assets (cowboy + chicken)
 Sat: music (compose + integrate)
 Sun: 3D scene (target + background)

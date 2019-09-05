@@ -2,7 +2,6 @@
   <head>
     <title>JS13KGames - Jerome Lecomte</title>
     <script src="aframe-v0.9.2.min.js"></script>
-    <script src="aframe-event-set-component.js"></script>
     <script src="game.js"></script>
   </head>
   <body>
@@ -50,29 +49,22 @@
         <a-cursor></a-cursor>
       </a-camera>
 
-      <a-entity
-        class="outlaw"
-        position="1.5 0.1 -4.5"
-        animation__die="property: rotation; from: 0 0 0; to: -90 0 0; startEvents: mouseenter; dur: 1000; easing: easeOutQuad"
-        animation__respawn="property: rotation; from: -90 0 0; to: 00 0 0; startEvents: mouseleave; dur: 1000; easing: easeOutQuad"
-        visible="false"
-      >
-        <a-ring
-          color="red"
-          position="0 0.6 0"
-          radius-inner="0.1"
-          radius-outer="0.6"
-        ></a-ring>
-      </a-entity>
       <!-- enemy outlaws -->
-      <a-ring
+      <a-entity
+        id="outlaw_1"
         class="outlaw"
-        color="red"
-        position="-1.5 1 -4.5"
-        radius-inner="0.1"
-        radius-outer="0.6"
-        visible="false"
-      ></a-ring>
+        position="-1.5 0.5 -4.5"
+        target="revive: #outlaw_2"
+        visible="true"
+      >
+      </a-entity>
+      <a-entity
+        id="outlaw_2"
+        class="outlaw"
+        target="revive: #outlaw_1"
+        position="1.5 0.5 -4.5"
+        visible="true"
+      ></a-entity>
 
       <!-- scenery -->
       <a-plane
