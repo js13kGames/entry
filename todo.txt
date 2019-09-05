@@ -1,30 +1,17 @@
-1. finish introduction sequence
-2. add game win sequence
-3. refine level design
-4. add checkpoints?
-5. add coil monetization for skins :D
-
-Theoretical Pricing:
-$0.25	-	starship skin (galaga parody)
-$0.25	-	puck-pal skin (pacman parody)
-$0.25	-	build-boy (minecraft steve parody)
-$0.25	-	sasuge-man (super meatboy parody)
-$0.25	-	baby sad (isaac parody)
-
-Is it legal to use their likeness?... might err on the side of caution and change that up.
+TODO:
+* add coil monetization for skins :D
 
 
 FEEDBACK:
 - improve player responsiveness ("player unresponsive", "it doesnt move very smoothly")
 - game too hard (dad, finn) [maybe increase timer?][increase the timer later]
 - skimmed rules, too boring ( how to make intro more engaging?) ("how do I stab?")
-- many fucks said by players
+- many bad words said by players
 - past me not doing what I did (bug)
 - typing noise hurts ears (lower gain?)
--
 
 CHANGES BASED ON FEEDBACK:
 + lower gain on typing noise
-+ reword opening
-+ make earlier levels more easy
-+ lower input delay
++ reword opening - haven't done yet
++ make earlier levels more easy - stream lined them
++ Revamped input via an array based movement system. 
