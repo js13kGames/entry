@@ -30,9 +30,7 @@ export default {
           unsafe_math: true,
           unsafe_methods: true,
         },
-        mangle: {
-          properties: true,
-        },
+        mangle: true
       }),
   ],
 }
