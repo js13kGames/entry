@@ -9,7 +9,7 @@ import { createShrapnel } from './shrapnel';
 
 function createLines(radius) {
 
-    var pointNum =  Math.round(3 + Math.random() * 3 + Math.sqrt(radius));
+    var pointNum =  Math.round(4 + Math.random() * 2 + Math.sqrt(radius));
     var lines = [];
 
     for (var i = 1; i <= pointNum; i++) {
@@ -49,6 +49,7 @@ export function createMeteor(props) {
         game: props.game,
         color: '#fff',
         dr: props.dr || 0,
+        rotation: Math.random() * 360,
 
         render(scale) {
             this.context.save();
@@ -107,6 +108,7 @@ export function createMeteor(props) {
         );
     }
 
+    console.log(meteor.rotation);
     meteor.hitbox.owner = meteor;
 
     props.game.sprites.push(meteor);

@@ -56,6 +56,7 @@ function setSizing(ss) {
     game.height = (window.innerHeight * ss) / game.scale;
     canvas.width = window.innerWidth * ss;
     canvas.height = window.innerHeight * ss;
+    // TODO: Rescale the game map like the big asteroid
 }
 
 setSizing(1);
