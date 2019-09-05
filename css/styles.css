@@ -1,0 +1,373 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+}
+
+canvas {
+  background: #5ebfff;
+}
+
+/* Ground BG */
+#g-bg {
+  position: absolute;
+  width: 960px;
+  top: 270px;
+  height: 270px;
+  left: 0;
+  background: #936c3e;
+}
+
+/* Ground */
+#g {
+  position: absolute;
+  width: 960px;
+  height: 54px;
+  top: 0;
+  left: 0;
+  background: url(../images/g.png) repeat-x;
+}
+
+/* Distance */
+#d-d {
+  display: none;
+  position: absolute;
+  color: #fff;
+  top: 24px;
+  left: 30px;
+  font-size: 18px;
+  text-shadow: 1px 1px 1px #936c3e;
+}
+
+/* Energy */
+#d-e {
+  display: none;
+  position: absolute;
+  color: #fff;
+  top: 24px;
+  left: 720px;
+  font-size: 18px;
+}
+
+#d-e span {
+  display: inline-block;
+  height: 20px;
+  vertical-align: middle;
+  text-shadow: 1px 1px 1px #936c3e;
+}
+
+/* Energy Frame */
+#ef {
+  display: inline-block;
+  border: 1px solid #fff;
+  width: 120px;
+  height: 20px;
+  vertical-align: middle;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Energy Bar */
+.eb {
+  position: absolute;
+  height: 20px;
+  background: linear-gradient(90deg, rgba(151,226,30,0.8) 0%, rgba(227,202,41,1) 47%, rgba(255,134,0,1) 100%);
+}
+
+/* e - effects */
+.eb.e {
+  transition: all 1s ease-in;
+}
+
+/* d - dropped */
+.eb.e.d {
+  height: 20px;
+  animation: drop 1s ease-in;
+}
+
+/* Text Area */
+#d-t {
+  display: none;
+  position: absolute;
+  margin: 10px 30px;
+  padding: 15px 30px;
+  top: 340px;
+  left: 0;
+  width: 900px;
+  height: 130px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+/* Text */
+#t {
+  font-size: 32px;
+  color: #fff;
+}
+
+/* Sub Text */
+#st {
+  font-size: 32px;
+  color: #888c90;
+  margin-top: 10px;
+}
+
+.correct {
+  color: lightgreen;
+}
+
+.cursor {
+  color: yellow;
+  text-decoration: underline;
+  white-space: pre;
+}
+
+.cursor.w {
+  animation: blink-once 0.5s;
+}
+
+/* Label */
+#d-l {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 960px;
+  height: 270px;
+}
+
+div.name {
+  display: none;
+  position: absolute;
+  color: #fff;
+  text-shadow: 1px 1px 1px #936c3e;
+  z-index: 1;
+  font-size: 22px;
+  top: 112px;
+}
+
+div.name.bot {
+  text-indent: -10px;
+  font-size: 18px;
+}
+
+div.arrow {
+  display: none;
+  position: absolute;
+  width: 15px;
+  height: 9px;
+  background: url(../images/a.png);
+  background-size: cover;
+  transform-origin: 50% -20px;
+  top: 144px;
+}
+
+/* Title */
+#d-tt {
+  display: none;
+  position: absolute;
+  top: 150px;
+  left: 470px;
+}
+
+.title {
+  width: 400px;
+}
+
+/* Credits */
+#d-c {
+  display: none;
+  position: absolute;
+  top: 420px;
+  left: 50px;
+  width: 860px;
+  color: #fff;
+}
+
+.dev {
+  position: absolute;
+  left: 0;
+}
+
+.art {
+  position: absolute;
+  right: 0;
+}
+
+.dev div, .art div {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.dev li, .art li {
+  list-style: none;
+  font-size: 20px;
+  text-align: right;
+}
+
+/* Message */
+#d-m {
+  display: none;
+  position: absolute;
+  top: 340px;
+  left: 50px;
+  width: 860px;
+  font-size: 30px;
+  text-align: center;
+  color: #fff;
+}
+
+/* Story Picker */
+#d-sp {
+  position: absolute;
+  display: none;
+  top: 50px;
+  left: 50px;
+  width: 860px;
+  height: 440px;
+  background: #808080;
+  border-radius: 14px;
+  color: #fff;
+  padding: 15px 20px;
+  box-sizing: border-box;
+}
+
+#d-sp div {
+  font-size: 24px;
+}
+
+#d-sp div.desc {
+  text-align: center;
+}
+
+/* Story List */
+#sl {
+  background: #525252;
+  height: 330px;
+  overflow-y: auto;
+  margin: 10px 0;
+  padding: 0;
+  border-radius: 14px;
+}
+
+#sl li {
+  white-space: nowrap;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  font-size: 24px;
+  list-style: none;
+  padding: 13px 20px 8px;
+  margin: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #656565;
+}
+
+#sl li.s {
+  background: #04b440;
+}
+
+/* Player Message */
+#d-pm {
+  display: none;
+  position: absolute;
+  top: 130px;
+  left: 270px;
+  font-size: 20px;
+  color: #fff;
+}
+
+.e.p {
+  position: absolute;
+  color: #fff;
+  font-size: 16px;
+  top: 3px;
+  letter-spacing: -1px;
+  animation: fadeUp 1s ease-in;
+}
+
+/* Result */
+#d-r {
+  display: none;
+  position: absolute;
+  top: 150px;
+  left: 470px;
+  font-size: 40px;
+  color: #fff;
+}
+
+/* Game Menu */
+#d-gm {
+  display: none;
+  position: absolute;
+  top: 500px;
+  left: 690px;
+  font-size: 22px;
+  color: #fff;
+}
+
+/* Wind */
+.wind {
+  position: absolute;
+  width: 500px;
+  height: 6px;
+  background: #fff;
+  top: -100px;
+  transition: 1s ease-in;
+}
+
+.wind.m {
+  transform: translateX(-1500px);
+}
+
+.blink {
+  animation: blinker 1s step-start infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink-once {
+  0% {
+    background-color: transparent;
+  }
+
+  10% {
+    background-color: indianred;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes drop {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+
+  5% {
+    transform: translateY(2px) rotate(0);
+    opacity: 1;
+  }
+
+  10% {
+    transform: translateY(1px) rotate(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(20px) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeUp {
+  100% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+}
