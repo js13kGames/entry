@@ -1,11 +1,14 @@
 {
-  "name": "Coiner",
-  "description": "Help coiner collect the coin above him and bring it back to his chest. Click to play.",
+  "name": "Luon",
+  "description": "Luon is a creature from planet Noul. It is trying to find a way to its home planet. Help it avoid dark blocks. Click to play",
   "images": {
-    "image_large": "src/assets/images/coiner400.png",
-    "image_thumbnail": "src/assets/images/coiner160.png"
+    "image_large": "src/images/luon400.png",
+    "image_thumbnail": "src/images/luon100.png"
   },
-  "categories": ["Desktop", "Mobile"],
+  "categories": [
+    "Desktop",
+    "Mobile"
+  ],
   "user": {
     "name": "Phong Duong",
     "website": "https://phongduong.netlify.com",
