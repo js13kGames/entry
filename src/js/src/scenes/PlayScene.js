@@ -9,10 +9,49 @@ function PlayScene() {
       y: SETTINGS.height / 2
     },
     magnitude: 100,
-    damping: Math.pow(0.5, 1/60) // damp by this amount so it reaches this fraction by 1 second
+    damping: Math.pow(0.5, 1/60), // damp by this amount so it reaches this fraction by 1 second
+    backMaxAccel: 400
   };
 
-  console.log(this.roll.damping);
+  this.shellRadius = 2 * this.roll.magnitude / Math.PI; // to get the right arc length that will cover the roll length (2 * magnitude)
+
+  // outro settings
+  this.outroSettings = {
+    left: {
+      pivot: {
+        x: this.roll.center.x - this.roll.magnitude,
+        y: this.roll.center.y + this.shellRadius
+      },
+      pos: {
+        min: -this.roll.magnitude,
+        max: -this.roll.magnitude - this.shellRadius * JMath.PId2
+      },
+      angle: {
+        min: JMath.PId2,
+        max: 0
+      },
+      accel: -400,
+      restitution: 0.5,
+      corner: 1
+    },
+    right: {
+      pivot: {
+        x: this.roll.center.x + this.roll.magnitude,
+        y: this.roll.center.y + this.shellRadius
+      },
+      pos: {
+        min: this.roll.magnitude,
+        max: this.roll.magnitude + this.shellRadius * JMath.PId2
+      },
+      angle: {
+        min: 3 * Math.PI / 2,
+        max: JMath.PI2
+      },
+      accel: 400,
+      restitution: 0.5,
+      corner: -1
+    }
+  };
 
   // rolling vars
   this.rollPos = 0;
@@ -29,6 +68,8 @@ function PlayScene() {
 
   // stopwatch
   this.playSeconds = 0;
+
+  this.outro = null;
 
   this.currentCycle = null;
   this.state = null;
@@ -64,7 +105,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       y: this.roll.center.y,
       angle: 0,
       shell: {
-        radius: 2 * this.roll.magnitude / Math.PI // to get the right circumference that will cover the roll magnitude
+        radius: this.shellRadius
       },
       head: {
         x: 78,
@@ -118,6 +159,21 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     switch (state) {
       case PlayScene.states.waiting:
         this.turtle.angle = Math.PI;
+        break;
+      case PlayScene.states.outro:
+        if (this.turtle.x < this.roll.center.x) {
+          this.outro = this.outroSettings.left;
+          // ensure rollVel isn't too slow
+          if (this.rollVel > -1) {
+            this.rollVel = -1;
+          }
+        } else {
+          this.outro = this.outroSettings.right;
+          // ensure rollVel isn't too slow
+          if (this.rollVel < 1) {
+            this.rollVel = 1;
+          }
+        }
         break;
     }
     this.currentCycle = this.stateMap[state];
@@ -184,7 +240,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
 
   },
   cyclePlaying: function (dts) {
-    this.rollBackAccel = this.rollPos / this.roll.magnitude * -400;
+    this.rollBackAccel = this.rollPos / this.roll.magnitude * -this.roll.backMaxAccel;
 
     this.rollAccel = this.rollBackAccel + this.turtleAccel;
 
@@ -206,7 +262,23 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     }
   },
   cycleOutro: function (dts) {
+    // rollPos will always be more than the roll.magnitude in outro
+    this.rollAccel = this.outro.accel * ((Math.abs(this.rollPos) / this.roll.magnitude) - 1);
+    //this.rollAccel = this.outro.accel;
+    this.rollVel += this.rollAccel * dts;
+    this.rollPos += this.rollVel * dts;
 
+    var ratio = (this.rollPos - this.outro.pos.min) / (this.outro.pos.max - this.outro.pos.min);
+    if (ratio >= 1) {
+      ratio -= ratio - 1;
+      this.rollPos = JMath.lerp(this.outro.pos.min, this.outro.pos.max, ratio);
+      this.rollVel *= -this.outro.restitution;
+    }
+    var angle = JMath.lerp(this.outro.angle.min, this.outro.angle.max, ratio);
+    var inverseAngle = angle - Math.PI;
+    this.turtle.angle = angle;
+    this.turtle.x = this.outro.pivot.x + Math.cos(inverseAngle) * this.shellRadius * this.outro.corner;
+    this.turtle.y = this.outro.pivot.y + Math.sin(inverseAngle) * this.shellRadius * this.outro.corner;
   },
   cycleEnd: function (dts) {}
 });
