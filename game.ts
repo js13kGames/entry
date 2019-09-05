@@ -80,7 +80,9 @@ export class Game {
             || navigator.userAgent.match(/BlackBerry/i)
             || navigator.userAgent.match(/Windows Phone/i)
         ){
-            height -= - 112; // added extra margin bot
+            // use outer-width/height for mobile
+            width = window.outerWidth;
+            height = window.outerHeight - this.topGutter - 112;
         }
         this.gameCanvas.width = width - 4; //minus border width
         this.gameCanvas.height = height - 4;
