@@ -1,6 +1,6 @@
 {
   "name": "Backside Ball",
-  "description": "A funny arcade style paddle game. Make the gremlin drop his coins. Collect coins to slow ball. Control the paddles seperately using A/D and Left/Right keys or together with mouse/tap. ",
+  "description": "A funny arcade style paddle game. Make the gremlin drop his coins. Collect coins to slow ball. Control the paddles seperately using A/D and Left/Right keys or together with mouse/tap.\n ",
   "images" : {
     "image_large": "images/backsideBall-Large.jpg",
     "image_thumbnail": "images/backsideBall-thumbnail.jpg"
