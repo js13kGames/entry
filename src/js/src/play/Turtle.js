@@ -48,6 +48,8 @@ Turtle.prototype = extendPrototype(DisplayContainer.prototype, {
         hideRatio = 1;
       }
       this.head.setHideRatio(hideRatio);
+    } else {
+      this.head.setHideRatio(0);
     }
   },
   setShiftState: function (shiftState) {
