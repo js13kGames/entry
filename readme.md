@@ -1,7 +1,7 @@
 JS13k 2019 - Back
 =================
 
-Oh no, Turtle is on its back! Help it get it right-side up!
+Oh no, Turtle is on its back! Help it get right-side up!
 
 WIP
 
