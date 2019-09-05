@@ -306,7 +306,7 @@ export class Ship extends Sprite.class {
                 0,
                 this.radius + 6,
                 Math.PI - (.2 * Math.PI * 1) + ammoAngle * i * 2,
-                Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI * 1) + ammoAngle * i * 2
+                Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI) + ammoAngle * i * 2
             );
             this.context.stroke();
         }
