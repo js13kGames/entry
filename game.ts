@@ -278,7 +278,7 @@ export class Game {
         });
     }
     monetizationprogress(event: { detail: { amount: string, assetCode: string, assetScale: number}}) {
-        this.sessionBalance += (event.detail.assetScale/parseFloat(event.detail.amount));
+        // this.sessionBalance += (parseFloat(event.detail.amount) / (Math.pow(10,event.detail.assetScale)));
     }
     onMonetizationStart(event: {detail: {paymentPointer: string; requestId: string}}) {
         this.createMessage('Hello Subscriber! You can restart levels, and get a golden border');
@@ -291,13 +291,14 @@ export class Game {
     }
     getRandomDogeQuote(): string{
         const quotes = [
-            'Many memory 🐕',
-            'Amaze new Record 🐕',
-            'Wow very hiscore 🐕',
-            'Much hiscore wow 🐕',
-            'Very points 🐕',
-            'Such memory 🐕',
-            'Amaze new hiscore 🐕',
+            'Many memory',
+            'Amaze new record',
+            'Wow very hiscore',
+            'Wow new hiscore',
+            'Much hiscore wow',
+            'Very points',
+            'Such memory',
+            'Amaze new hiscore',
         ];
         return quotes[Math.floor(Math.random() * quotes.length)];
     }
