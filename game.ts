@@ -70,8 +70,8 @@ export class Game {
         });
     }
     initCanvasDimensions(){
-        let width = window.outerWidth;
-        let height = window.outerHeight - this.topGutter - 112; // added extra margin bot
+        let width = window.innerWidth;
+        let height = window.innerHeight - this.topGutter;
         if (navigator.userAgent.match(/Android/i)
             || navigator.userAgent.match(/webOS/i)
             || navigator.userAgent.match(/iPhone/i)
@@ -80,10 +80,7 @@ export class Game {
             || navigator.userAgent.match(/BlackBerry/i)
             || navigator.userAgent.match(/Windows Phone/i)
         ){
-            // use outer-width/height for mobile
-        } else{
-            width = window.innerWidth;
-            height = window.innerHeight - this.topGutter;
+            height -= - 112; // added extra margin bot
         }
         this.gameCanvas.width = width - 4; //minus border width
         this.gameCanvas.height = height - 4;
