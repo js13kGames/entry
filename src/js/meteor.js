@@ -108,7 +108,6 @@ export function createMeteor(props) {
         );
     }
 
-    console.log(meteor.rotation);
     meteor.hitbox.owner = meteor;
 
     props.game.sprites.push(meteor);

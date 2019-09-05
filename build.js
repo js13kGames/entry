@@ -60,9 +60,9 @@ function printRollupError(error) {
 
 const compile = async () => {
     const config = {
-        input: 'src/js/game.js',
+        input: 'src/js/main.js',
         output: {
-            file: 'dist/game.js',
+            file: 'dist/main.js',
             format: 'iife',
             sourcemap: DEVMODE
         }
@@ -132,14 +132,14 @@ function minify() {
         toplevel: true,
         module: true,
         sourceMap: DEVMODE ? {
-            content: fs.readFileSync('dist/game.js.map', 'utf8'),
-            url: 'game.min.js.map'
+            content: fs.readFileSync('dist/main.js.map', 'utf8'),
+            url: 'main.min.js.map'
         } : false
     };
 
     console.log('Minifying JS...');
 
-    let code = fs.readFileSync('dist/game.js', 'utf8');
+    let code = fs.readFileSync('dist/main.js', 'utf8');
     code = pp.preprocess(code, { DEBUG, VISUAL_DEBUG }, { type: 'js' });
     const result = terser.minify(code, options);
 
@@ -148,12 +148,12 @@ function minify() {
         return false;
     }
 
-    fs.writeFileSync('dist/game.min.js', result.code);
+    fs.writeFileSync('dist/main.min.js', result.code);
     if (result.map) {
-        fs.writeFileSync('dist/game.min.js.map', result.map);
+        fs.writeFileSync('dist/main.min.js.map', result.map);
     }
 
-    logOutput(Date.now() - startTime, 'dist/game.min.js');
+    logOutput(Date.now() - startTime, 'dist/main.min.js');
 
     return result.code;
 }
@@ -206,7 +206,7 @@ function zip() {
 
     var zip = new JSZip();
     var data = fs.readFileSync('dist/index.html', 'utf8')
-                 .replace('//# sourceMappingURL=game.min.js.map', '')
+                 .replace('//# sourceMappingURL=main.min.js.map', '')
                  .replace('<body>', '');
 
     zip.file(
@@ -221,10 +221,10 @@ function zip() {
     );
 
     zip.generateNodeStream({type: 'nodebuffer', streamFiles: true})
-       .pipe(fs.createWriteStream('dist/game.zip'))
+       .pipe(fs.createWriteStream('dist/main.zip'))
        .on('finish', function() {
-           logOutput(Date.now() - startTime, 'dist/game.zip');
-           drawSize(fs.statSync('dist/game.zip').size);
+           logOutput(Date.now() - startTime, 'dist/main.zip');
+           drawSize(fs.statSync('dist/main.zip').size);
            return true;
        });
 }
