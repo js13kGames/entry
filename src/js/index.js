@@ -41,8 +41,7 @@ AFRAME.registerComponent('target', {
   },
   init: function() {
     // state variables
-    this.isUp = true;
-    this.isAnimating = false;
+    this.el.addState('up');
 
     // add target entity within
     this.targetEl = document.createElement('a-ring');
@@ -59,14 +58,24 @@ AFRAME.registerComponent('target', {
     this.el.addEventListener('mouseenter', this.onShot);
   },
   onShot: function() {
-    if (this.isUp && !this.isAnimating) {
-      this.isAnimating = true;
+    if (this.el.is('up')) {
+      this.el.removeState('up');
+
+      const animationConfig = {
+        from: 0,
+        dur: 800,
+      }
+      // check if current animation
+      if (this.el.components.animation) {
+        const currentAnimation = this.el.components.animation.animation;
+        animationConfig.dur -= currentAnimation.currentTime;
+        animationConfig.from = currentAnimation.animations[0].currentValue;
+      }
 
       this.el.setAttribute('animation', {
+        ...animationConfig,
         property: 'object3D.rotation.x',
-        from: 0,
         to: -90,
-        dur: 800,
         easing: 'easeOutElastic',
         elasticity: 800,
       });
@@ -78,20 +87,28 @@ AFRAME.registerComponent('target', {
     }
   },
   onDeadOrAlive: function() {
-    this.isAnimating = false;
-    this.isUp = !this.isUp;
     this.el.removeAttribute('animation');
     this.el.removeEventListener('animationcomplete', this.onDeadOrAlive);
   },
   onRevive: function() {
-    if (!this.isUp && !this.isAnimating) {
-      this.isAnimating = true;
+    if (!this.el.is('up')) {
+      this.el.addState('up');
+
+      const animationConfig = {
+        from: -90,
+        dur: 800,
+      }
+      // check if current animation
+      if (this.el.components.animation) {
+        const currentAnimation = this.el.components.animation.animation;
+        animationConfig.dur -= currentAnimation.currentTime;
+        animationConfig.from = currentAnimation.animations[0].currentValue;
+      }
 
       this.el.setAttribute('animation', {
+        ...animationConfig,
         property: 'object3D.rotation.x',
-        from: -90,
         to: 0,
-        dur: 800,
         easing: 'easeOutElastic',
         elasticity: 800,
       });
