@@ -30,7 +30,9 @@ Head.prototype = extendPrototype(DisplayContainer.prototype, {
   animateHide: function () {
     Main.globalAnimManager.add(new Anim({
       object: this,
-      property: 'hideRatio',
+      onStep: function (adjusted, ratio, timeRatio, obj) {
+        obj.hideRatio = adjusted;
+      },
       from: this.hideRatio,
       to: 1,
       duration: 0.25,
@@ -40,7 +42,9 @@ Head.prototype = extendPrototype(DisplayContainer.prototype, {
   animateShow: function () {
     Main.globalAnimManager.add(new Anim({
       object: this,
-      property: 'hideRatio',
+      onStep: function (adjusted, ratio, timeRatio, obj) {
+        obj.hideRatio = adjusted;
+      },
       from: this.hideRatio,
       to: 0,
       duration: 0.25,

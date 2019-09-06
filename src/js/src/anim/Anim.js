@@ -6,11 +6,15 @@ function Anim(settings) {
     to: 1,
     duration: 1,
     timeFunction: Anim.easingFunctions.linear,
+    onStep: null,
     onEnd: null
   }, settings || {});
   this.startTime = -1;
   this.endTime = -1;
   this.cancelled = false;
+  if (!this.settings.onStep) {
+    this.settings.onStep = this.updateProperty.bind(this);
+  }
 }
 Anim.easingFunctions = {
   linear: function (t) { return t; },
@@ -33,17 +37,20 @@ Anim.prototype = {
     this.endTime = startTime + this.settings.duration;
   },
   step: function (time) {
-    if (this.settings.object && this.settings.property) {
+    if (this.settings.object) {
       var timeRatio = (time - this.startTime) / this.settings.duration;
       if (timeRatio > 1) {
         timeRatio = 1;
       }
       var ratio = this.settings.timeFunction(timeRatio);
       var adjusted = this.settings.from + (this.settings.to - this.settings.from) * ratio;
-      this.settings.object[this.settings.property] = adjusted;
+      this.settings.onStep(adjusted, ratio, timeRatio, this.settings.object);
     }
   },
   cancel: function () {
     this.cancelled = true;
+  },
+  updateProperty: function (adjusted, ratio, timeRatio, obj) {
+    obj[this.settings.property] = adjusted;
   }
 };
