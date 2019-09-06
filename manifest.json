@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Xycore",
+  "description": "Xycore is a 'throwback' to some old favorites, taking inspiration from Hero Core and Metroid to bring you a simple adventure on an unknown planet - take on the four bosses and destroy the reactor core!\n**Controls:**\nArrow Keys - Movement\nSpace - Shoot\nGamepad Supported!\n\n**Hints:**\nYou can reload to your last checkpoint by refreshing the page at any point\nThere are several upgrades hidden throughout the world - find them to make the game a bit easier\n\n*Thank you for playing!\n",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "screenshot-large.png",
+    "image_thumbnail": "screenshot-small.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Daniel '64Mega' Lawrence",
+    "website": "64mega.itch.io",
+    "twitter": "twitter.com/64Mega"
   }
 }
