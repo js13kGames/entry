@@ -1,12 +1,15 @@
 TODO
-- HUD for amno?(nest <a-text> under camera)
 
 Wed: make targets shootable
 Thu: game system for hiding/showing main game elements
 Fri: pixelart assets (cowboy + chicken)
 Sat: music (compose + integrate)
 Sun: 3D scene (target + background)
-Mon: bugs
+Mon: track time/shots fired
 Tue: bugs
 Wed: screenshots + desc
 Thu: submit
+Fri Sep13: unmovable deadline
+
+BUGS:
+- when shooting the 2nd chicken too fast on startup, the first one doesn't respawn (isUp isn't false yet, plus it is animating, so the revive animation isn't added)

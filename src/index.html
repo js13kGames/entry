@@ -49,22 +49,28 @@
         <a-cursor></a-cursor>
       </a-camera>
 
-      <!-- enemy outlaws -->
+      <!-- chicken practice targets -->
       <a-entity
-        id="outlaw_1"
-        class="outlaw"
-        position="-1.5 0.5 -4.5"
-        target="revive: #outlaw_2"
+        class="chicken one"
+        position="-3 0.5 -4.5"
+        target="revive: .chicken.two"
         visible="true"
       >
       </a-entity>
       <a-entity
-        id="outlaw_2"
-        class="outlaw"
-        target="revive: #outlaw_1"
-        position="1.5 0.5 -4.5"
+        class="chicken two"
+        position="0 0.5 -4.5"
+        target
+        visible="true"
+      >
+      </a-entity>
+      <a-entity
+        class="chicken three"
+        target="revive: .chicken.one, .chicken.two"
+        position="3.5 0.5 -4.5"
         visible="true"
       ></a-entity>
+
 
       <!-- scenery -->
       <a-plane

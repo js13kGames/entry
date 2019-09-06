@@ -1,7 +1,11 @@
 
 AFRAME.registerComponent('target', {
   schema: {
-    revive: { type: 'selectorAll' },
+    revive: {
+      // hack: a selector that has very little chance to match anything, so selectorAll returns an empty array
+      default: '#null.null',
+      type: 'selectorAll',
+    },
   },
   init: function() {
     // state variables
