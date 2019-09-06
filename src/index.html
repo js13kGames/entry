@@ -8,19 +8,32 @@
 
             canvas {
                 width: 800px;
-                height: 600px;
+                height: 500px;
                 position: relative;
                 /* background: #528258; */
                 margin: 20px 0;
+            }
+
+            #score-panel {
+                font-size: 24px;
+                color: #d1c4af;
             }
         </style>
     </head>
 
     <body>
+        <div id="info">
+            <div id="score-panel">
+                Score: <span id="score">0</span>,
+                Heart: <span id="heart">3</span>
+            </div>
+        </div>
+
         <canvas id="main"></canvas>
 
         <script src="util.js"></script>
         <script src="snake.js"></script>
+        <script src="ui.js"></script>
         <!-- <script src="audio.js"></script> -->
         <script src="index.js"></script>
     </body>

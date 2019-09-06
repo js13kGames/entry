@@ -12,24 +12,21 @@ window.game = {
     historySnakes: [],
     roundScore: 0,
     gameScore: 0,
+    heartScore: 3,
+    maxHeartScore: 9,
 
     ctx: null,
     width: 800,
-    height: 600,
+    height: 500,
     gridSize: 20,
-    marginGrids: 2,
+    marginGrids: 0,
 
     roundFrames: 0,
 
     colorGrass: '#d1c4af',
     colorSnake: '#786f69',
     colorSnakeDead: '#b2a699',
-    colorFood: '#504a4b',
-    deadSnakeOpacity: 0.4,
-
-    imgGrass: null,
-    imgFood: null,
-    patternGrass: null
+    colorFood: '#504a4b'
 };
 game.gridWidth = game.width / game.gridSize;
 game.gridHeight = game.height / game.gridSize;
@@ -49,18 +46,21 @@ function init() {
     document.addEventListener('keydown', onKeydown);
 
     newGame();
-    newRound();
+    // renderHeart(game.ctx, getRandomPos());
 }
 
 function newGame() {
     game.gameScore = 0;
     game.status = 1;
+    newRound();
 }
 
 function newRound() {
     ++game.round;
     game.roundScore = 0;
     game.roundFrames = 0;
+
+    updateScore();
 
     var pos = getRandomPos(4);
     game.snake = new Snake(pos[0], pos[1], 3, 1 / 16, game);
@@ -69,6 +69,10 @@ function newRound() {
     game.status = 1;
 
     tick();
+}
+
+function gameOver() {
+    console.log('game over');
 }
 
 function tick() {
@@ -81,6 +85,15 @@ function tick() {
     if (game.snake.checkCollision()) {
         game.status = 2;
         console.log('collision');
+        game.gameScore += game.roundScore;
+        game.roundScore = 0;
+        --game.heartScore;
+        updateScore();
+
+        if (game.heartScore === 0) {
+            gameOver();
+            return;
+        }
 
         game.historySnakes.push(game.snake.getHistory());
 
@@ -91,15 +104,20 @@ function tick() {
         return;
     }
 
-    if (game.snake.checkEat()) {
-        ++game.gameScore;
-        ++game.roundScore;
+    if (game.snake.checkScore(game.snake.food)) {
+        game.roundScore = game.roundScore > 0 ? game.roundScore * 2 : 1;
         console.log('eat!', game.gameScore);
+        updateScore();
 
         if (game.roundScore % 2 === 0) {
             game.snake.speedUp();
         }
         setFood();
+    }
+    else if (game.snake.checkScore(game.snake.heart)) {
+        game.heartScore = Math.min(game.heartScore + 1, game.maxHeartScore);
+        game.snake.heart = null;
+        updateScore();
     }
 
     render();
@@ -168,7 +186,15 @@ function onKeydown(event) {
 }
 
 function setFood() {
-    game.snake.food = [getRandomPos()];
+    game.snake.food = getRandomPos();
+
+    if (game.roundScore > 1 && Math.random() > 0.05) {
+        game.snake.heart = getRandomPos();
+        console.log('heart', game.snake.heart)
+    }
+    else {
+        game.snake.heart = null;
+    }
 }
 
 function getRandomPos(margin) {

@@ -1,10 +1,5 @@
 /**
  * Snake
- *
- * length: length of body
- * body: positions of each grid
- * direction: 0: left, 1: top, 2: right, 3: bottom
- * food: positions of each food
  */
 function Snake(x, y, length, speed) {
     this.body = [];
@@ -14,12 +9,15 @@ function Snake(x, y, length, speed) {
         y]);
     }
 
+    // direction: 0: left, 1: top, 2: right, 3: bottom
     this.direction = x > game.insideGridWidth / 2 ? 0 : 2;
 
     this._growNextTick = false;
     this._skippedFrames = 0;
     this._skipFramePeriod = 1 / speed;
     this.totalFrames = 0;
+    this.food = null;
+    this.heart = null;
 
     this.history = {};
 }
@@ -48,9 +46,11 @@ Snake.prototype.tick = function () {
     }
 
     this.body.splice(0, 0, newPos);
+    console.log(this.body[0]);
 
     if (!this._growNextTick) {
         this.body.splice(this.body.length - 1, 1);
+        console.log(this.body[0]);
     }
     this._growNextTick = false;
 
@@ -67,31 +67,33 @@ Snake.prototype.render = function (ctx) {
     // render food
     ctx.fillStyle = game.colorFood;
     var size = 3;
-    for (var i = 0; i < this.food.length; ++i) {
-        var pos = [
-            (this.food[i][0] + 0.5 + game.marginGrids) * game.gridSize,
-            (this.food[i][1] + 0.5 + game.marginGrids) * game.gridSize
-        ];
+    var pos = [
+        (this.food[0] + 0.5 + game.marginGrids) * game.gridSize,
+        (this.food[1] + 0.5 + game.marginGrids) * game.gridSize
+    ];
 
-        ctx.fillRect(pos[0] - size, pos[1] - size * 3, size * 2, size * 2);
-        ctx.fillRect(pos[0] - size, pos[1] + size, size * 2, size * 2);
-        ctx.fillRect(pos[0] - size * 3, pos[1] - size, size * 2, size * 2);
-        ctx.fillRect(pos[0] + size, pos[1] - size, size * 2, size * 2);
+    ctx.fillRect(pos[0] - size, pos[1] - size * 3, size * 2, size * 2);
+    ctx.fillRect(pos[0] - size, pos[1] + size, size * 2, size * 2);
+    ctx.fillRect(pos[0] - size * 3, pos[1] - size, size * 2, size * 2);
+    ctx.fillRect(pos[0] + size, pos[1] - size, size * 2, size * 2);
 
-        // ctx.fillRect(pos[0], pos[1], game.gridSize, game.gridSize);
+    // render heart
+    if (this.heart) {
+        renderHeart(ctx, this.heart);
     }
 };
 
-Snake.prototype.checkEat = function () {
+Snake.prototype.checkScore = function (pos) {
+    if (!pos) {
+        return false;
+    }
+
     var head = this.body[0];
-    for (var i = 0; i < this.food.length; ++i) {
-        var pos = this.food[i];
-        var isEat = head[0] === pos[0] && head[1] == pos[1];
-        if (isEat) {
-            console.log(head, pos)
-            this._growNextTick = true;
-            return true;
-        }
+    var isEat = head[0] === pos[0] && head[1] == pos[1];
+    if (isEat) {
+        console.log(head, pos)
+        this._growNextTick = true;
+        return true;
     }
     return false;
 };
