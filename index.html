@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <style>
+            body {
+                text-align: center;
+                background-color: #504a4b;
+            }
+
+            canvas {
+                width: 800px;
+                height: 500px;
+                position: relative;
+                /* background: #528258; */
+                margin: 20px 0;
+            }
+
+            #score-panel {
+                font-size: 24px;
+                color: #d1c4af;
+            }
+
+            #count-down {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 220px;
+                height: 80px;
+                font-size: 120px;
+                z-index: 100;
+                text-align: center;
+                color: #585356;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="info">
+            <div id="score-panel">
+                Score: <span id="score">0</span>,
+                Heart: <span id="heart">3</span>
+            </div>
+        </div>
+        <div id="count-down"></div>
+
+        <canvas id="main"></canvas>
+
+        <script src="minified.js"></script>
+    </body>
+</html>
