@@ -129,10 +129,7 @@ const gameLoop = GameLoop({  // create the main game loop
 var game;
 
 export default function startGame(newGame, canvas, context) {
-
     game = newGame;
-
-    console.log("beep");
 
     game.meteors = [];
     game.pickups = [];

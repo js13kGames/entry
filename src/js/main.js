@@ -5,7 +5,7 @@
 import { init, GameLoop, initKeys, keyPressed } from 'kontra';
 import { initGamepads, pollGamepads, buttonPressed, axisValue } from './gamepad';
 import { Player } from './player';
-import { renderText, drawText } from './text';
+import { Menu } from './menu';
 import startGame from './game';
 
 // Setup canvas stuff (probably w/Kontra)
@@ -33,7 +33,6 @@ const game = {
     // height: 202.5
 };
 
-
 /**
  * Sets the canvas size, and the game options variables for scaling the game.
  *
@@ -42,11 +41,6 @@ const game = {
  * is e.g. 10x10, it'll be the correct size for calcs no matter the scale.
  * Most numbers used in calcs are floats, so we don't lose much precision
  * by using a small "game board" like this.
- */
-
-
-/**
- * [setSizing description]
  * @param {[type]} ss supersampling multiplier
  */
 function setSizing(ss) {
@@ -65,34 +59,30 @@ window.onresize = () => {
     setSizing(game.supersample);
 }
 
-// menu "game" loop
-
-// UI debounce so buttons don't get spammed
-// this needs to be per input method hmm
-var debounce = 0;
-
 var inputs = [
     // keyboard
     // 0+ controllers
 ];
 
-var menu = {
-    focus: 0, // Currently focused button
-    buttons: [
-        'play',
-        'settings',
-        'credits'
+var mainMenu = new Menu ({
+    context: context,
+    x: 30,
+    y: 30,
+    color: '#fff',
+    items: [
+        { text: 'play' },
+        { text: 'settings' },
+        { text: 'credits' }
     ]
-}
+});
 
-let player1 = new Player({
+game.players.push(new Player({
     color: '#ff0',
     //shipType: 'tri',
     controls: 'arrows',
     context: context,
     game: game
-});
-game.players.push(player1);
+}));
 
 function changeScene(scene) {
     menuLoop.stop()
@@ -101,32 +91,20 @@ function changeScene(scene) {
     }
 }
 
-
 let menuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads();
 
-        debounce--;
-        if (debounce > 0) {
-            return;
-        }
+        mainMenu.update();
 
         game.players.forEach(player => {
-            // Go up/down/left/right etc. in menus?
+
             if (player.keys.down()) {
-                debounce = 10;
-                menu.focus++;
-                if (menu.focus > menu.buttons.length - 1) {
-                    menu.focus = 0;
-                }
+                mainMenu.next();
             }
 
             if (player.keys.up()) {
-                debounce = 10;
-                menu.focus--;
-                if (menu.focus < 0) {
-                    menu.focus = menu.buttons.length - 1;
-                }
+                mainMenu.prev();
             }
 
             if (player.keys.accept()) {
@@ -137,33 +115,8 @@ let menuLoop = GameLoop({  // create the main game loop
     },
 
     render() {
-        menu.buttons.forEach((button, i) => {
-            context.save();
-            context.scale(game.scale, game.scale);
-            context.translate(30, 30 + 30 * i);
-            if (menu.focus === i) {
-                context.strokeStyle = '#fff';
-            } else {
-                context.strokeStyle = '#aaa';
-            }
-            drawText({text: button.toUpperCase(), context: context});
-            context.restore();
-        });
-
+        mainMenu.render(game.scale);
     }
 });
 
 menuLoop.start();
-
-// have some sort of render loop which can rotate the logo or something cool
-
-// canvas.draw menu stuff:
-// big logo/splash message
-
-// menu buttons <ul> (but with canvas so not an <ul> I think)
-
-// when keyPressed 'down' or 'up' highlight menu item with diff color or somethin
-
-// when enter pressed, go to options scene, or ship-picking scene
-
-// have some way of getting back to the main menu scene!

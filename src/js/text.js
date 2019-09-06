@@ -1,6 +1,6 @@
 
 const glyphs = [
-    ...new Array(48),                             // misc
+    ...new Array(48),                             // misc (incl. space)
     new Path2D('M6 1 12 8 6 15 0 8Z'),            // 0
     new Path2D('M2 4 6 1 6 16'),                  // 1
     new Path2D('M0 4 6 0 10 4 1 15 11 15'),       // 2
@@ -48,10 +48,17 @@ const glyphs = [
 
 export function drawText(props) {
     [...props.text.toString()].forEach((c, i) => {
+        var glyph = glyphs[c.charCodeAt(0)];
+
+        // If not the 1st character, translate to be positioned after the 1st
         if (i) {
             props.context.translate(13, 0);
         }
-        props.context.stroke(glyphs[c.charCodeAt(0)]);
+
+        // If glyph found in font, print it
+        if (glyph) {
+            props.context.stroke(glyph);
+        }
     });
 }
 
