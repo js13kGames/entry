@@ -6,8 +6,7 @@
  * direction: 0: left, 1: top, 2: right, 3: bottom
  * food: positions of each food
  */
-function Snake(x, y, length, speed, game) {
-    this.game = game;
+function Snake(x, y, length, speed) {
     this.body = [];
     for (var i = 0; i < length; ++i) {
         this.body.push([
@@ -61,12 +60,26 @@ Snake.prototype.tick = function () {
     return true;
 };
 
-Snake.prototype.render = function (ctx, gridSize) {
-    ctx.fillStyle = 'red';
-    renderList(ctx, this.body, gridSize, this.game.marginGrids);
+Snake.prototype.render = function (ctx) {
+    // render snake
+    renderSnake(ctx, this.body, false);
 
-    ctx.fillStyle = 'blue';
-    renderList(ctx, this.food, gridSize, this.game.marginGrids);
+    // render food
+    ctx.fillStyle = game.colorFood;
+    var size = 3;
+    for (var i = 0; i < this.food.length; ++i) {
+        var pos = [
+            (this.food[i][0] + 0.5 + game.marginGrids) * game.gridSize,
+            (this.food[i][1] + 0.5 + game.marginGrids) * game.gridSize
+        ];
+
+        ctx.fillRect(pos[0] - size, pos[1] - size * 3, size * 2, size * 2);
+        ctx.fillRect(pos[0] - size, pos[1] + size, size * 2, size * 2);
+        ctx.fillRect(pos[0] - size * 3, pos[1] - size, size * 2, size * 2);
+        ctx.fillRect(pos[0] + size, pos[1] - size, size * 2, size * 2);
+
+        // ctx.fillRect(pos[0], pos[1], game.gridSize, game.gridSize);
+    }
 };
 
 Snake.prototype.checkEat = function () {
@@ -87,7 +100,7 @@ Snake.prototype.checkCollision = function () {
     var head = this.body[0];
 
     // wall collision
-    if (head[0] < 0 || head[0] >= this.game.insideGridWidth || head[1] < 0 || head[1] >= this.game.insideGridHeight) {
+    if (head[0] < 0 || head[0] >= game.insideGridWidth || head[1] < 0 || head[1] >= game.insideGridHeight) {
         return true;
     }
 
@@ -99,8 +112,8 @@ Snake.prototype.checkCollision = function () {
     }
 
     // history snake collision
-    for (var h = 0; h < this.game.historySnakes.length; ++h) {
-        var history = this.game.historySnakes[h].items;
+    for (var h = 0; h < game.historySnakes.length; ++h) {
+        var history = game.historySnakes[h].items;
         var frame = history[this.totalFrames];
         if (frame) {
             for (var i = 0; i < frame.length; ++i) {

@@ -1,4 +1,4 @@
-var game = {
+window.game = {
     /*
      * 0: waiting for new game start
      * 1: in game
@@ -21,8 +21,15 @@ var game = {
 
     roundFrames: 0,
 
-    colorGrass: '#528258'
+    colorGrass: '#d1c4af',
+    colorSnake: '#786f69',
+    colorSnakeDead: '#b2a699',
+    colorFood: '#504a4b',
+    deadSnakeOpacity: 0.4,
 
+    imgGrass: null,
+    imgFood: null,
+    patternGrass: null
 };
 game.gridWidth = game.width / game.gridSize;
 game.gridHeight = game.height / game.gridSize;
@@ -55,7 +62,7 @@ function newRound() {
     game.roundScore = 0;
     game.roundFrames = 0;
 
-    var pos = getRandomPos(3);
+    var pos = getRandomPos(4);
     game.snake = new Snake(pos[0], pos[1], 3, 1 / 16, game);
     setFood();
 
@@ -101,10 +108,11 @@ function tick() {
 }
 
 function render() {
-    game.ctx.clearRect(0, 0, game.width, game.height);
+    var ctx = game.ctx;
+    ctx.clearRect(0, 0, game.width, game.height);
 
-    game.ctx.fillStyle = game.colorGrass;
-    game.ctx.fillRect(
+    ctx.fillStyle = game.colorGrass;
+    ctx.fillRect(
         game.marginGrids * game.gridSize,
         game.marginGrids * game.gridSize,
         game.insideWidth,
@@ -112,12 +120,11 @@ function render() {
     );
 
     renderHistorySnakes();
-    game.snake.render(game.ctx, game.gridSize);
+    game.snake.render(ctx);
 }
 
 function renderHistorySnakes() {
     var ctx = game.ctx;
-    ctx.fillStyle = '#fff';
 
     var frame = game.snake.totalFrames;
     for (var h = 0; h < game.historySnakes.length; ++h) {
@@ -131,9 +138,10 @@ function renderHistorySnakes() {
             }
         }
         if (lastFrame) {
-            renderList(game.ctx, lastFrame, game.gridSize, game.marginGrids);
+            renderSnake(game.ctx, lastFrame, true);
         }
     }
+    ctx.globalAlpha = 1;
 }
 
 function onKeydown(event) {
