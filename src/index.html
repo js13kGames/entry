@@ -5,7 +5,7 @@
     <script src="game.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene screen-manager>
       <!-- game title -->
       <a-entity
         id="title"
@@ -32,7 +32,7 @@
 
       <!-- start button -->
       <a-text
-        id="start"
+        id="start-button"
         align="center"
         color="black"
         font="mozillavr"
@@ -71,6 +71,20 @@
         visible="true"
       ></a-entity>
 
+      <!-- enemy outlaws -->
+      <a-entity
+        class="outlaw one"
+        position="-2.5 0.5 -6.5"
+        target="revive: .outlaw.two"
+        visible="false"
+      >
+      </a-entity>
+      <a-entity
+        class="outlaw two"
+        position="2.5 0.5 -6.5"
+        target="revive: .outlaw.one"
+        visible="false"
+      ></a-entity>
 
       <!-- scenery -->
       <a-plane

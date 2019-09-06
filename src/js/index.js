@@ -1,3 +1,32 @@
+AFRAME.registerComponent('screen-manager', {
+  schema: {},
+  init: function() {
+    this.el.addState('title-screen');
+
+    this.startButtonEl = this.el.querySelector('#start-button');
+    this.chickenEls = this.el.querySelectorAll('.chicken');
+    this.outlawEls = this.el.querySelectorAll('.outlaw');
+
+    this.onGameStart = AFRAME.utils.bind(this.onGameStart, this);
+
+    this.startButtonEl.addEventListener('mouseenter', this.onGameStart);
+  },
+  onGameStart: function() {
+    this.startButtonEl.removeEventListener('mouseenter', this.onGameStart);
+
+    this.el.addState('game-screen');
+    this.el.removeState('title-screen');
+  
+    this.el.querySelector('#title').setAttribute('visible', false);
+    this.chickenEls.forEach(function(chickenEl) {
+      chickenEl.setAttribute('visible', false);
+    });
+    this.outlawEls.forEach(function(outlawEl) {
+      outlawEl.setAttribute('visible', true);
+    });
+  }
+});
+
 
 AFRAME.registerComponent('target', {
   schema: {
@@ -34,7 +63,7 @@ AFRAME.registerComponent('target', {
         property: 'object3D.rotation.x',
         from: 0,
         to: -90,
-        dur: 1000,
+        dur: 800,
         easing: 'easeOutElastic',
         elasticity: 800,
       });
@@ -59,7 +88,7 @@ AFRAME.registerComponent('target', {
         property: 'object3D.rotation.x',
         from: -90,
         to: 0,
-        dur: 1000,
+        dur: 800,
         easing: 'easeOutElastic',
         elasticity: 800,
       });
