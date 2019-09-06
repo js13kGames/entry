@@ -1,5 +1,5 @@
 {
-  "collapseBooleanAttributes": true,
+  "collapseBooleanAttributes": false,
   "collapseInlineTagWhitespace": true,
   "collapseWhitespace": true,
   "removeAttributeQuotes": true,
