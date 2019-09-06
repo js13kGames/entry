@@ -13,4 +13,3 @@ Fri Sep13: unmovable deadline
 
 BUGS:
 - when shooting the 2nd chicken too fast on startup, the first one doesn't respawn (isUp isn't false yet, plus it is animating, so the revive animation isn't added)
-- when practicing on chickens, outlaws also get shot (can there be 2 scenes?)

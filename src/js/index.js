@@ -23,6 +23,9 @@ AFRAME.registerComponent('screen-manager', {
     });
     this.outlawEls.forEach(function(outlawEl) {
       outlawEl.setAttribute('visible', true);
+      // hack: to prevent outlaws from being shot (though hidden) while practicing on the chicken
+      // they are placed below the ground plane
+      outlawEl.object3D.position.y += 100.6;
     });
   }
 });
