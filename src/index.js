@@ -5,6 +5,12 @@ const canvas = document.getElementById('game')
 canvas.width = canvas.parentElement.clientWidth
 canvas.height = canvas.parentElement.clientHeight
 
+const fontSize = canvas.width / 50
+const spans = document.getElementsByTagName('span')
+for (let i = 0; i < spans.length; i++) {
+  spans[i].style.fontSize = fontSize + 'px'
+}
+
 // show splash
 const newGameSplash = document.getElementById('new-game')
 const gameOverSplash = document.getElementById('game-over')

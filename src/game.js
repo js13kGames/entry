@@ -27,7 +27,7 @@ export default class Game {
     this.PLAYER_WIDTH = this.WIDTH / 16
     this.PLAYER_HEIGHT = this.PLAYER_WIDTH * 2
     this.PLAYER_HP = 255
-    this.PLAYER_SPEED = this.WIDTH / 100
+    this.PLAYER_SPEED = this.WIDTH / 200
     this.PLAYER_HIT_DURATION = 0.5
 
     this.GRENADE_WIDTH = this.WIDTH / 64
@@ -40,7 +40,7 @@ export default class Game {
     this.GRENADE_COOLDOWN = 0.1
     this.GRENADE_REGENERATE = 2
     this.GRENADE_ATTACK = 100
-    this.GRENADE_PROGRESS = 1
+    this.GRENADE_PROGRESS = 2
 
     this.MINE_WIDTH = this.WIDTH / 32
     this.MINE_HEIGHT = this.MINE_WIDTH / 2
@@ -49,14 +49,14 @@ export default class Game {
     this.MINE_BLAST_DURATION = 0.5
     this.MINE_REGENERATE = 5
     this.MINE_ATTACK = 200
-    this.MINE_PROGRESS = 2
+    this.MINE_PROGRESS = 4
 
     this.ENEMY_WIDTH_MIN = this.PLAYER_WIDTH * 0.5
     this.ENEMY_WIDTH_MAX = this.PLAYER_WIDTH * 2
     this.ENEMY_HEIGHT_MIN = this.PLAYER_HEIGHT * 0.5
     this.ENEMY_HEIGHT_MAX = this.PLAYER_HEIGHT * 2
     this.ENEMY_COLOR_LIGHT = 'rgba(230, 230, 230, 1)'
-    this.ENEMY_SPEED = this.WIDTH / 200
+    this.ENEMY_SPEED = this.WIDTH / 400
     this.ENEMY_ATTACK = 15
 
     this.UI_FONT_SIZE = this.WIDTH / 60
@@ -64,15 +64,18 @@ export default class Game {
     this.TREE_MIN_HEIGHT = this.FLOOR / 3
     this.TREE_MAX_WIDTH = this.WIDTH / 4
     this.TREE_MAX_HEIGHT = this.FLOOR * 0.9
+    this.TREE_MIN_INTERVAL = 0.2
+    this.TREE_MAX_INTERVAL = 1.5
 
     // globals
-    this.gameProgress = 50
+    this.gameProgress = 0
     this.kills = 0
     this.blasting_duration = 0
     this.total_blast_duration = 0
     this.playerHitTimer = 0
     this.enemyMinHp = 50
     this.enemyMaxHp = 100
+    this.treeInterval = Math.random() * (this.TREE_MAX_INTERVAL - this.TREE_MIN_INTERVAL) + this.TREE_MIN_INTERVAL
 
     this.player = this.initPlayer()
 
@@ -138,6 +141,14 @@ export default class Game {
           this.canvas.style.background = this.SKY_COLOR_REAL
         } else {
           this.canvas.style.background = `rgba(${this.gameProgress}, ${this.gameProgress}, ${this.gameProgress}, 1)`
+        }
+
+        // tree
+        if (this.treeInterval <= 0) {
+          this.makeTree()
+          this.treeInterval = Math.random() * (this.TREE_MAX_INTERVAL - this.TREE_MIN_INTERVAL) + this.TREE_MIN_INTERVAL
+        } else {
+          this.treeInterval -= dt
         }
 
         // grenades
@@ -233,7 +244,6 @@ export default class Game {
   start() {
     this.enemyInterval = setInterval(() => {
       this.makeEnemies(8)
-      this.makeTree()
     }, 3000)
     this.loop.start()
   }
@@ -287,7 +297,7 @@ export default class Game {
           x: 0.5,
           y: 1
         },
-        x: -Math.random() * this.ENEMY_WIDTH_MIN * 8,
+        x: -Math.random() * this.ENEMY_WIDTH_MIN * 16,
         y: this.FLOOR - Math.random() * 20,
         width: hp / 255 * (this.ENEMY_WIDTH_MAX - this.ENEMY_WIDTH_MIN) + this.ENEMY_WIDTH_MIN,
         height: hp / 255 * (this.ENEMY_HEIGHT_MAX - this.ENEMY_HEIGHT_MIN) + this.ENEMY_HEIGHT_MIN,
@@ -400,7 +410,11 @@ export default class Game {
       type: type,
       id: Math.random() * 1000000 // used to prevent colliding with the same enemy multiple times
     })
-    this.gameProgress += type === 'g' ? this.GRENADE_PROGRESS : this.MINE_PROGRESS
+    const dp = type === 'g' ? this.GRENADE_PROGRESS : this.MINE_PROGRESS
+    this.gameProgress += dp
+    if (this.enemyMaxHp < 300) {
+      this.enemyMaxHp += dp
+    }
   }
 
   updateBlast(dt) {
@@ -441,6 +455,8 @@ export default class Game {
   makeTree() {
     const width = Math.random() * (this.TREE_MAX_WIDTH - this.TREE_MIN_WIDTH) + this.TREE_MIN_WIDTH
     const height = Math.random() * (this.TREE_MAX_HEIGHT - this.TREE_MIN_HEIGHT) + this.TREE_MIN_HEIGHT
+    const crownGray = Math.random() * 100 + 25
+    const trunkGray = crownGray - 10
     this.treePool.get({
       anchor: {
         x: 0.5, 
@@ -452,16 +468,16 @@ export default class Game {
       y: this.FLOOR,
       dx: -this.PLAYER_SPEED,
 
-      crownRatio: Math.random() * 0.3 + 0.5,
-      crownGray: Math.random() * 125,
-      trunkGray: Math.random() * 125,
+      crownRatio: Math.random() * 0.2 + 0.6,
+      crownGray: crownGray,
+      trunkGray: trunkGray,
 
       render: function() {
         const ctx = this.context
-        ctx.fillStyle = `rgba(${this.crownGray}, ${this.crownGray}, ${this.crownGray}, 1)`
-        ctx.fillRect(this.x - this.width / 2, this.y - this.height, this.width, this.height * this.crownRatio)
         ctx.fillStyle = `rgba(${this.trunkGray}, ${this.trunkGray}, ${this.trunkGray}, 1)`
         ctx.fillRect(this.x - this.width * 0.4 / 2, this.y - (1 - this.crownRatio + 0.15) * this.height, this.width * 0.4, this.height * (1 - this.crownRatio + 0.15))
+        ctx.fillStyle = `rgba(${this.crownGray}, ${this.crownGray}, ${this.crownGray}, 1)`
+        ctx.fillRect(this.x - this.width / 2, this.y - this.height, this.width, this.height * this.crownRatio)
       }
     })
   }
