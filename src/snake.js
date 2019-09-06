@@ -62,7 +62,11 @@ Snake.prototype.tick = function () {
 
 Snake.prototype.render = function (ctx) {
     // render snake
-    renderSnake(ctx, this.body, false);
+    if (game.status === 1
+        || game.status === 2 && Math.floor(this.totalFrames / 10) % 2 === 0
+    ) {
+        renderSnake(ctx, this.body, false);
+    }
 
     // render food
     ctx.fillStyle = game.colorFood;
@@ -71,14 +75,19 @@ Snake.prototype.render = function (ctx) {
         (this.food[0] + 0.5 + game.marginGrids) * game.gridSize,
         (this.food[1] + 0.5 + game.marginGrids) * game.gridSize
     ];
-
     ctx.fillRect(pos[0] - size, pos[1] - size * 3, size * 2, size * 2);
     ctx.fillRect(pos[0] - size, pos[1] + size, size * 2, size * 2);
     ctx.fillRect(pos[0] - size * 3, pos[1] - size, size * 2, size * 2);
     ctx.fillRect(pos[0] + size, pos[1] - size, size * 2, size * 2);
+    ctx.fillStyle = game.colorGrass;
+    var lineWidth = 1;
+    ctx.fillRect(pos[0] - size * 3, pos[1] - lineWidth / 2, size * 6, lineWidth);
+    ctx.fillRect(pos[0] - lineWidth / 2, pos[1] - size * 3, lineWidth, size * 6);
 
     // render heart
-    if (this.heart) {
+    if (this.heart && (this.heartTimeout > 60 * 5
+        || Math.floor(this.totalFrames / 10) % 2 === 0)
+    ) {
         renderHeart(ctx, this.heart);
     }
 };
@@ -129,7 +138,7 @@ Snake.prototype.checkCollision = function () {
 };
 
 Snake.prototype.speedUp = function (speed) {
-    this._skipFramePeriod /= 2;
+    this._skipFramePeriod *= 0.8;
 };
 
 Snake.prototype._recordHistory = function () {

@@ -37,7 +37,7 @@ function renderGraphic(ctx, list, pos, scale, dx, dy) {
 }
 
 function renderHeart(ctx, pos) {
-    // ctx.fillStyle = game.colorFood;
+    ctx.fillStyle = game.colorFood;
     var list = [
         [2, 0], [3, 0], [4, 0], [8, 0], [9, 0], [10, 0],
         [1, 1], [5, 1], [7, 1], [11, 1],

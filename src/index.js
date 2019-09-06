@@ -42,11 +42,16 @@ function init() {
     canvas.width = game.width;
     canvas.height = game.height;
     game.ctx = canvas.getContext('2d');
+    game.ctx.fillStyle = game.colorGrass;
+    game.ctx.fillRect(game.marginGrids * game.gridSize, game.marginGrids * game.gridSize,
+        game.insideWidth, game.insideHeight);
 
     document.addEventListener('keydown', onKeydown);
 
-    newGame();
-    // renderHeart(game.ctx, getRandomPos());
+    countDown();
+    setTimeout(function () {
+        newGame();
+    }, 3000);
 }
 
 function newGame() {
@@ -63,8 +68,8 @@ function newRound() {
     updateScore();
 
     var pos = getRandomPos(4);
-    game.snake = new Snake(pos[0], pos[1], 3, 1 / 16, game);
-    setFood();
+    game.snake = new Snake(pos[0], pos[1], 3, 0.05, game);
+    setFood(true);
 
     game.status = 1;
 
@@ -78,6 +83,14 @@ function gameOver() {
 function tick() {
     if (game.status !== 1) {
         return;
+    }
+
+    if (game.snake.heartTimeout !== null) {
+        --game.snake.heartTimeout;
+        if (game.snake.heartTimeout === 0) {
+            game.snake.heart = null;
+            game.snake.heartTimeout = null;
+        }
     }
 
     game.snake.tick();
@@ -94,6 +107,9 @@ function tick() {
             gameOver();
             return;
         }
+        else {
+            countDown();
+        }
 
         game.historySnakes.push(game.snake.getHistory());
 
@@ -109,10 +125,8 @@ function tick() {
         console.log('eat!', game.gameScore);
         updateScore();
 
-        if (game.roundScore % 2 === 0) {
-            game.snake.speedUp();
-        }
-        setFood();
+        game.snake.speedUp();
+        setFood(false);
     }
     else if (game.snake.checkScore(game.snake.heart)) {
         game.heartScore = Math.min(game.heartScore + 1, game.maxHeartScore);
@@ -180,20 +194,23 @@ function onKeydown(event) {
     else if (event.keyCode === 88) { // s
         direction = 3;
     }
-    if (direction !== null && Math.abs(direction - game.snake.direction) !== 2) {
+    if (direction != null && Math.abs(direction - game.snake.direction) !== 2) {
         game.snake.direction = direction;
     }
 }
 
-function setFood() {
+function setFood(clearHeart) {
     game.snake.food = getRandomPos();
 
-    if (game.roundScore > 1 && Math.random() > 0.05) {
+    if (game.roundScore > 16 && Math.random() > 0.9
+        && (clearHeart || !game.snake.heart)
+    ) {
         game.snake.heart = getRandomPos();
-        console.log('heart', game.snake.heart)
+        game.snake.heartTimeout = 60 * (game.roundScore > 16 ? 8 : 20);
     }
-    else {
+    else if (clearHeart) {
         game.snake.heart = null;
+        game.snake.heartTimeout = null;
     }
 }
 
