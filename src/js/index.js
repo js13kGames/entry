@@ -4,10 +4,11 @@ AFRAME.registerComponent('screen-manager', {
     this.el.addState('title-screen');
 
     this.startButtonEl = this.el.querySelector('#start-button');
-    this.chickenEls = this.el.querySelectorAll('.chicken');
-    this.outlawEls = this.el.querySelectorAll('.outlaw');
+    this.chickenEls = Array.from(this.el.querySelectorAll('.chicken'));
+    this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
 
     this.onGameStart = AFRAME.utils.bind(this.onGameStart, this);
+    this.onStateRemoved = AFRAME.utils.bind(this.onStateRemoved, this);
 
     this.startButtonEl.addEventListener('mouseenter', this.onGameStart);
   },
@@ -27,6 +28,13 @@ AFRAME.registerComponent('screen-manager', {
       // they are placed below the ground plane
       outlawEl.object3D.position.y += 100.6;
     });
+  },
+  tick: function() {
+    if (this.el.is('game-screen') && !this.outlawEls.find(function(outlawEl) { return outlawEl.is('up') })) {
+      this.el.removeState('game-screen');
+      this.el.addState('end-screen');
+      this.el.querySelector('#end').setAttribute('visible', true);
+    }
   }
 });
 

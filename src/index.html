@@ -38,7 +38,7 @@
         font="mozillavr"
         position="0 2 5"
         rotation="0 180 0"
-        value="Oh boy, you looked back!\nNow the outlaws are after you.\nI sure hope you're a fast trigger, cowboy!"
+        value="Oh boy, you looked back!\nNow the outlaws are after you.\nI sure hope you're a fast gun, cowboy!"
       ></a-text>
 
       <!-- cowboy player -->
@@ -46,6 +46,15 @@
         look-controls
         position="0 2 0"
       >
+        <a-text
+          id="end"
+          align="center"
+          color="black"
+          font="mozillavr"
+          position="0 1 -4"
+          value="Giddy up cowboy, you survived!\nYou really are the fastest gun in the all wild West!"
+          visible="false"
+        ></a-text>
         <a-cursor></a-cursor>
       </a-camera>
 
@@ -82,7 +91,7 @@
       <a-entity
         class="outlaw two"
         position="2.5 -100.5 -6.5"
-        target="revive: .outlaw.one"
+        target
         visible="false"
       ></a-entity>
 
