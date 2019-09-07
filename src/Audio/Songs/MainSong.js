@@ -4,6 +4,7 @@ import { Song, createBuffer } from '../SongGeneration'
 import { createLeadTrack } from './MainSong/Lead'
 
 import { decibelsToAmplitude } from '../Utility'
+import { createBassTrack } from './MainSong/Bass'
 
 export default async function createSong () {
   const bpm = 132
@@ -12,13 +13,16 @@ export default async function createSong () {
 
   const [
     bufferLead,
+    bufferBass,
   ] = await Promise.all([
     createLeadTrack,
+    createBassTrack,
   ].map(func => createBuffer(func, sampleCount, bpm)))
 
   return new Song(
     [
       { buffer: bufferLead, volume: decibelsToAmplitude(-20), sendToReverb: 1 },
+      { buffer: bufferBass, volume: decibelsToAmplitude(-14) },
     ]
   )
 }

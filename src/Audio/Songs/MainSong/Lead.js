@@ -1,47 +1,13 @@
-import { addNotes, getOffsetForBeat } from '../../SongGeneration';
-import createLeadSound from '../../MusicSamples/Lead';
-import { highPassFilter, EnvelopeSampler } from '../../SoundGeneration';
+import { addNotes, applyRepeatingEnvelope } from '../../SongGeneration'
+import createLeadSound from '../../MusicSamples/Lead'
+import { notes as bassNotes } from './Bass'
 
 export function createLeadTrack (output, bpm) {
-  function pattern1 (offset, note) {
-    return [
-      [offset * 4, note],
-      [offset * 4 + 1.5, note],
-      [offset * 4 + 3, note]
-    ]
-  }
-  function pattern2 (offset, note1, note2) {
-    return [
-      [offset * 4, note1],
-      [offset * 4 + 1.5, note1],
-      [offset * 4 + 2, note2],
-      [offset * 4 + 3, note2]
-    ]
-  }
-  const bassLine = [
-    ...pattern1(0, -26),
-    ...pattern1(1, -30),
-    ...pattern2(2, -28, -31),
-    ...pattern1(3, -26),
-    ...pattern1(4, -33),
-    ...pattern1(5, -23),
-    ...pattern2(6, -21, -24),
-    [7 * 4, -31],
-    [7 * 4 + 1, -31],
-    [7 * 4 + 2, -31],
-    ...pattern1(8, -30),
-    ...pattern1(9, -28),
-    ...pattern2(10, -27, -31),
-    [11 * 4, -26],
-    [11 * 4 + 1, -31],
-    [11 * 4 + 2, -38],
-  ]
-
   const leadLine = [
     [0, 5],
-    [1, 0],
-    [1.5, 1],
-    [2, 3],
+    [1, 1],
+    [1.5, 0],
+    [2, -2],
     [3, 1],
     [3.5, 0],
     [4, -2],
@@ -50,12 +16,16 @@ export function createLeadTrack (output, bpm) {
     [7, 3],
     [7.5, 1],
     [8, 0],
-    [9.5, 1],
+    [8.5, -2],
+    [9, -4],
+    [9.5, -7],
     [10, 3],
     [11, 5],
     [12, 1],
     [13, -2],
-    [14, -2],
+    [14, -4],
+    [15, -7],
+    [16, -6],
     [16.5, 3],
     [17.5, 6],
     [18, 10],
@@ -64,15 +34,18 @@ export function createLeadTrack (output, bpm) {
     [20, 5],
     [21.5, 1],
     [22, 5],
-    [23, 3],
-    [23.5, 1],
-    [24, 0],
-    [25.5, 1],
-    [26, 3],
+    [23, 1],
+    [23.5, 0],
+    [24, -2],
+    [25.5, -7],
+    [26, -2],
+    [26.5, 1],
     [27, 5],
+    [27.5, 3],
     [28, 1],
     [29, -2],
-    [30, 0],
+    [30 - 0.05, -3],
+    [30 + 0.05, 0],
     [32.5, -2],
     [33.5, 1],
     [34, 5],
@@ -96,24 +69,14 @@ export function createLeadTrack (output, bpm) {
   ]
 
   addNotes([
-    ...bassLine,
+    ...bassNotes,
     ...leadLine
   ], output, createLeadSound, bpm)
 
-  highPassFilter(output, 20)
-
-  const sidechainEnvelope = new EnvelopeSampler([
-    [0, 0.15, 5],
+  applyRepeatingEnvelope(output, [
+    [0, 0.15, 2],
     [0.5, 0.9],
     [0.999, 1],
     [1, 0],
-  ])
-
-  const beatLength = getOffsetForBeat(1, bpm)
-  for (let i = 0; i < output.length; i++) {
-    if (i % beatLength === 0) {
-      sidechainEnvelope.reset()
-    }
-    output[i] *= sidechainEnvelope.sample((i % beatLength) / beatLength)
-  }
+  ], bpm)
 }

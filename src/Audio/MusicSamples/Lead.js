@@ -3,6 +3,8 @@ import {
   applyEnvelope,
   getFrequencyDelta,
   EnvelopeSampler,
+  sampleSawtooth,
+  sampleSine,
 } from '../SoundGeneration'
 
 // Quick 'n dirty deterministic noise generation
@@ -28,24 +30,16 @@ const volumeEnvelope = [
   [1, 0]
 ]
 
-const shapeEnvelope = [
-  [0, -1, 2],
-  [0.5, 0, 1 / 2],
-  [1, 1]
-]
-
 export default function createLeadSound (frequency) {
   let p = 0
-  const shapeSampler = new EnvelopeSampler(shapeEnvelope)
+  let p2 = 0
   const pitchSampler = new EnvelopeSampler(pitchEnvelope)
+
   function getSample (t) {
     const offset = pitchSampler.sample(t)
     p += getFrequencyDelta(2 ** (offset / 12) * frequency)
-    if (p > 1) {
-      p -= 1
-      shapeSampler.reset()
-    }
-    return shapeSampler.sample(p)
+    p2 += getFrequencyDelta(frequency * 4)
+    return sampleSine(p2) + sampleSawtooth(p)
   }
 
   return applyEnvelope(generateSound(2, getSample), volumeEnvelope)
