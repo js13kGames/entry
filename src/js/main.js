@@ -84,22 +84,22 @@ game.players.push(new Player({
     game: game
 }));
 
-// game.players.push(new Player({
-//     color: colors.red,
-//     shipType: 'coback',
-//     controls: 'wasd',
-//     context: context,
-//     game: game
-// }));
-//
-// game.players.push(new Player({
-//     color: colors.blue,
-//     shipType: 'striker',
-//     controls: 'gamepad',
-//     gamepadIndex: 0,
-//     context: context,
-//     game: game
-// }));
+game.players.push(new Player({
+    color: colors.red,
+    shipType: 'coback',
+    controls: 'wasd',
+    context: context,
+    game: game
+}));
+
+game.players.push(new Player({
+    color: colors.blue,
+    shipType: 'striker',
+    controls: 'gamepad',
+    gamepadIndex: 0,
+    context: context,
+    game: game
+}));
 
 function changeScene(scene) {
 
@@ -156,14 +156,36 @@ let shipMenuLoop = GameLoop({  // create the main game loop
         game.players.forEach((player, i) => {
             player.menuUpdate();
 
+
+            if (player.keys.accept() && player.debounce.accept <= 0) {
+                player.ready = !player.ready;
+                player.debounce.accept = 10;
+            }
+
+            if (player.ready) {
+                return;
+            }
+
+            player.ship.rotation += player.ship.dr;
+
             if (player.keys.up() && player.debounce.up <= 0) {
                 game.players[i].color = util.objValPrev(colors, player.color);
+
+                while (util.otherPlayerHasSameColor(game.players, player)) {
+                    game.players[i].color = util.objValPrev(colors, player.color);
+                }
+
                 game.players[i].ship.color = player.color;
                 player.debounce.up = 10;
             }
 
             if (player.keys.down() && player.debounce.down <= 0) {
                 game.players[i].color = util.objValNext(colors, player.color);
+
+                while (util.otherPlayerHasSameColor(game.players, player)) {
+                    game.players[i].color = util.objValNext(colors, player.color);
+                }
+
                 game.players[i].ship.color = player.color;
                 player.debounce.down = 10;
             }
@@ -180,15 +202,6 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 player.pseudoSpawn();
             }
 
-            if (player.keys.accept() && player.debounce.accept <= 0) {
-                console.log("beep");
-                player.ready = true;
-                player.debounce.accept = 10;
-            }
-
-            if (!player.ready) {
-                player.ship.rotation += player.ship.dr;
-            }
         });
 
         if (game.players.every(player => player.ready)) {
@@ -233,8 +246,20 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 text: 'player ' + (i + 1),
                 color: player.color,
                 size: .8,
-                x: x + 16,
-                y: y + 16,
+                x: x + 12,
+                y: y + 12,
+                scale: game.scale,
+                context: context
+            });
+
+            renderText({
+                alignRight: true,
+                alignBottom: true,
+                text: player.ready ? 'ready!' : 'selecting',
+                color: player.color,
+                size: .8,
+                x: x + game.width / 2 - 20,
+                y: y + game.height / 2 - 20,
                 scale: game.scale,
                 context: context
             });
