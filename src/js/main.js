@@ -9,6 +9,8 @@ import { colors, colorNames } from './colors';
 import ships from './ships/import';
 import { Player } from './player';
 import { Menu } from './menu';
+import { renderText } from './text';
+import * as util from './utility';
 import startGame from './game';
 
 // Setup canvas stuff (probably w/Kontra)
@@ -76,7 +78,7 @@ var mainMenu = new Menu({
 
 game.players.push(new Player({
     color: colors.yellow,
-    //shipType: 'tri',
+    shipType: 'tri',
     controls: 'arrows',
     context: context,
     game: game
@@ -84,7 +86,7 @@ game.players.push(new Player({
 
 game.players.push(new Player({
     color: colors.red,
-    //shipType: 'tri',
+    shipType: 'tri',
     controls: 'wasd',
     context: context,
     game: game
@@ -179,26 +181,54 @@ let shipMenuLoop = GameLoop({  // create the main game loop
         pollGamepads();
 
         game.players.forEach((player, i) => {
+            player.menuUpdate();
 
-            playerMenus[i].update();
-
-            if (player.keys.down()) {
-                playerMenus[i].next();
+            if (player.keys.up() && player.debounce.up <= 0) {
+                game.players[i].color = util.objectPrev(colors, player.color);
+                player.debounce.up = 10;
             }
 
-            if (player.keys.up()) {
-                playerMenus[i].prev();
+            if (player.keys.down() && player.debounce.down <= 0) {
+                game.players[i].color = util.objectNext(colors, player.color);
+                player.debounce.down = 10;
             }
 
-            if (player.keys.accept()) {
-                // Do whatever da button says
+            if (player.keys.left() && player.debounce.left <= 0) {
+                player.shipType = util.objectNext(ships, player.shipType);
+                player.debounce.left = 10;
+            }
+
+            if (player.keys.right() && player.debounce.right <= 0) {
+                player.shipType = util.objectPrev(ships, player.shipType);
+                player.debounce.right = 10;
+            }
+
+            if (player.keys.accept() && player.debounce.accept <= 0) {
                 player.ready = true;
-                changeScene(mainMenu.items[mainMenu.focus].text);
+                player.debounce.accept = 10;
             }
         });
     },
 
     render() {
-        playerMenus.forEach(menu => menu.render(game.scale));
+        game.players.forEach((player, i) => {
+            var x = y = 0;
+
+            if (i === 1 || i == 3) {
+                x = game.width / 2;
+            }
+            if (i === 2 || i === 3) {
+                y = game.height / 2;
+            }
+            renderText({
+                text: 'player ' + (i + 1),
+                color: player.color,
+                size: .8,
+                x: 20 + x,
+                y: 20 + y,
+                scale: game.scale,
+                context: context
+            })
+        });
     }
 });
