@@ -440,8 +440,6 @@
       // If player got the keys.
       if (this.gotKeys) {
         const rotationY = normalizeDegs(THREE.Math.radToDeg(this.player.object3D.rotation._y));
-        const playerTileX = Math.floor((playerPos.x/this.map.tileSize) + (this.map.width/2));
-        const playerTileZ = Math.floor((playerPos.z/this.map.tileSize) + (this.map.getHeight(this.level)/2));
 
         // Die if looking back.
         if (rotationY > 90 && rotationY < 270) {
