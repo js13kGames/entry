@@ -1,0 +1,51 @@
+{
+    "nodejs": true,
+    "main": "Early Build\\index.html",
+    "webkit": {
+        "page-cache": false,
+        "plugin": false,
+        "java": false
+    },
+    "additional_trust_anchors": [],
+    "version": "1.0.0",
+    "name": "backflipped",
+    "window": {
+        "visible": true,
+        "title": "js13k-2019",
+        "show_in_taskbar": true,
+        "show": true,
+        "resizable": true,
+        "always_on_top": false,
+        "fullscreen": false,
+        "transparent": false,
+        "min_width": 200,
+        "frame": true,
+        "kiosk": false,
+        "as_desktop": false,
+        "kiosk_emulation": false,
+        "width": 640,
+        "exe_icon": "Early Build\\favicon64.png",
+        "icon": "Early Build\\favicon64.png",
+        "toolbar": false,
+        "height": 480,
+        "min_height": 300
+    },
+    "single-instance": true,
+    "webexe_settings": {
+        "uncompressed_folder": true,
+        "nw_compression_level": 0,
+        "mac-x64": true,
+        "custom_script": "",
+        "export_dir": "output",
+        "sdk_build": false,
+        "linux-x64": false,
+        "linux-x32": false,
+        "download_dir": "D:\\Downloads\\DEVTOOLS\\Web2ExeWin-v0.4.8b\\Web2ExeWin\\downloads",
+        "mac-x32": false,
+        "windows-x32": true,
+        "windows-x64": true,
+        "force_download": false,
+        "nw_version": "0.14.7"
+    },
+    "app_name": "Backflipped"
+}

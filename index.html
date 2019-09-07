@@ -11,12 +11,8 @@
   <body>
 
         <script src="zdog.dist.js"></script>
-        <script src="jsfxr.min.js"></script>
+        <script src="jsfxr.js"></script>
         <script src="game.js"></script>
-
-        <!-- Color pallete: https://www.aremycolorsaccessible.com/palette?colors=%23223e32&colors=%239db800&colors=%23b3dd52&colors=%2304bf00&colors=%23015d00 -->
-
-        <!--<script src="code.min.js"></script>-->
 
         <p class="title top" id="l1">Back</p>
         <p class="title bottom" id="l2">Flipped</p>
@@ -26,39 +22,31 @@
         <p class="int score" id="i3">Flips: ?</p>
 
         <p class = "debug">
-            To do:<br>
-            <b>Sollicitation:<br>
-            - Tweak level generation<br>
-            - Can drop again during falls<br>
-            - Test on mobile<br>
-            - Clean up code<br>
-            - Optimize (loads of garbage collection calls at the moment)<br>
-            - Make PC & Mac builds<br></b>
-            <br>
-            Jam Deadline:<br>
-            - Remove unused shapes from Zdog<br>
-            - Web Monetization<br>
-            - Cram in 13kb<br>
-            - Rotating (moving?) coins that jump to a random position each flip, worth time?<br>
-            - (You have to pick up five coins in sequence, and they instantly give time)<br>
-            - Improve color pallete?<br>
-            - Screenshots (160x & 400x250)<br>
+          To do:<br>
+          - Level-based gameplay<br>
+          - Web Monetization<br>
+          - Cram in 13kb<br>
+          - Rotating (moving?) coins that jump to a random position each flip, worth time?<br>
+          - (You have to pick up five coins in sequence, and they instantly give time)<br>
+          - Improve color pallete?<br>
+          - Screenshots (160x & 400x250)<br>
 
-            <b>Deadline 13 September!</b>
-          </p>
+          <b>Deadline 13 September!</b>
+        </p>
           <div class="notification" id="not">
             Game by <b>Tom Hermans (@Auroriax)</b><br>
             <br>
-            <b>How to play:</b><br>
-            🡸 🡺: Flying kick<br>
-            🡹 🡻: Slow/fasten fall<br><br>
+            <b>How to play (Keyboard/Swipe):</b><br>
+            🡸 Left 🡺 Right: Kick<br>
+            🡹 Up: Jump<br>
+            🡻 Down: Rush <br>
             Touched platforms move to<br>
             background and increase jackpot.<br>
             Reach bottom of level to claim<br
             >jackpot and <b>flip to the backside!</b><br>
             You lose when time runs out...
           </div>
-        <div class="stats">
+          <div class="stats">
             <div id="fps-display">N/A FPS</div> 
         </div>
   </body>
