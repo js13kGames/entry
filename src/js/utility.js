@@ -110,3 +110,7 @@ export function objKeyNext(obj, current) {
         return keys[i];
     }
 }
+
+export function otherPlayerHasSameColor(players, player) {
+    return players.some(p => p !== player && p.color === player.color);
+}

@@ -1,6 +1,8 @@
 
 const glyphs = [
-    ...new Array(48),                             // misc (incl. space)
+    ...new Array(33),                             // ctr chars
+    new Path2D('M5 0 5 10 M5 13 5 15'),           // !
+    ...new Array(14),                             // specials
     new Path2D('M6 1 12 8 6 15 0 8Z'),            // 0
     new Path2D('M2 4 6 1 6 16'),                  // 1
     new Path2D('M0 4 6 0 10 4 1 15 11 15'),       // 2
@@ -37,7 +39,7 @@ const glyphs = [
     new Path2D('M6 1 12 8 6 15 0 8Z M11 15 6 9'), // Q
     new Path2D('M3 16 3 1 10 1 9 8 4 8 10 15'),   // R
     new Path2D('M10 1 3 1 1 8 10 8 8 15 0 15'),   // S
-    new Path2D('M6 15 6 1 M2 1 10 1'),            // T
+    new Path2D('M6 16 6 1 M2 1 10 1'),            // T
     new Path2D('M3 1 3 13 6 15 9 13 9 1'),        // U
     new Path2D('M3 1 6 14 9 1'),                  // V
     new Path2D('M0 1 2 14 5 4 8 14 10 1'),        // W
@@ -66,7 +68,19 @@ export function renderText(props) {
     let size = props.size || 1;
     props.context.save();
     props.context.scale(props.scale, props.scale);
-    props.context.translate(props.x, props.y);
+
+    var xAlign = yAlign = 0;
+
+    if (props.alignBottom) {
+        yAlign = -17 * size; // Approx height of text
+    }
+
+    if (props.alignRight) {
+        xAlign = -props.text.length * 13 * size; // Approx width of text
+    }
+
+    props.context.translate(props.x + xAlign, props.y + yAlign);
+
     props.context.scale(size, size);
     props.context.strokeStyle = props.color;
     props.context.lineWidth = 1.5;
