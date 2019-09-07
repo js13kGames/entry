@@ -63,9 +63,9 @@ export function slow(velocity, mass = 10, maxSpeed = 3) {
     [ velocity.x, velocity.y ] = [ dx, dy ];
 }
 
-export function objectPrev(obj, current) {
-    let values = Object.values(obj);
+export function objValPrev(obj, current) {
     let keys = Object.keys(obj);
+    let values = Object.values(obj);
     let i = values.indexOf(current);
 
     if (--i < 0) {
@@ -75,14 +75,38 @@ export function objectPrev(obj, current) {
     }
 }
 
-export function objectNext(obj, current) {
-    let values = Object.values(obj);
+export function objValNext(obj, current) {
     let keys = Object.keys(obj);
+    let values = Object.values(obj);
     let i = values.indexOf(current);
 
     if (i++ === keys.length - 1) {
         return obj[keys[0]];
     } else {
         return obj[keys[i]];
+    }
+}
+
+export function objKeyPrev(obj, current) {
+    let values = Object.values(obj);
+    let keys = Object.keys(obj);
+    let i = keys.indexOf(current);
+
+    if (--i < 0) {
+        return keys[keys.length - 1];
+    } else {
+        return keys[i];
+    }
+}
+
+export function objKeyNext(obj, current) {
+    let values = Object.values(obj);
+    let keys = Object.keys(obj);
+    let i = keys.indexOf(current);
+
+    if (i++ === keys.length - 1) {
+        return keys[0];
+    } else {
+        return keys[i];
     }
 }

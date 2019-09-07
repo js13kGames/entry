@@ -14,7 +14,6 @@ export class Ship extends Sprite.class {
         super(props);
 
         this.game = props.game;
-
         // The stats & info for the ship loaded from /ships/*.js
         var shipData = JSON.parse(JSON.stringify(ships[props.shipType]));
         this.shipData = shipData;
@@ -30,12 +29,14 @@ export class Ship extends Sprite.class {
         this.rewinding = 0;
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.type = 'ship';
+        this.dr = props.dr || 0;
 
-        // Properties that could be overwritten when calling new Ship()
-        this.rof = props.rof || shipData.rof;
-        this.ror = props.ror || shipData.ror;
+        // Used to draw the big extra big or small (multiplied w/game.scale)
+        this.scale = props.pseudo ? 4 : 1;
 
         // Modify these values defined in shipData specs to make less crazy
+        this.rof = shipData.rof;
+        this.ror = shipData.ror;
         this.ammo = shipData.ammo;
         this.mass = shipData.mass + 11;
         this.radius = shipData.radius;
@@ -75,6 +76,11 @@ export class Ship extends Sprite.class {
 
         // Merge body & detail into 'ship' line array for doing fun effects etc
         this.lines.ship = this.lines.body.concat(this.lines.detail);
+
+        // If it's not a "real" ship, return now before hitboxy stuff
+        if (props.pseudo) {
+            return;
+        }
 
         // Hitbox related properties
         // If the ship doesn't have a collision box defined, use it's body
@@ -333,7 +339,9 @@ export class Ship extends Sprite.class {
         this.context.translate(this.x, this.y);
 
         // Draw rewinding cooldown bar and ammo without rotation
-        this.renderUI(scale);
+        if (!this.pseudo) {
+            this.renderUI(scale);
+        }
 
         this.context.rotate(util.degToRad(this.rotation));
 
@@ -387,21 +395,29 @@ export class Ship extends Sprite.class {
 
         } else {
 
+            this.context.lineWidth = this.scale;
+
             this.context.moveTo(
-                this.lines.body[0][0],
-                this.lines.body[0][1]
+                this.lines.body[0][0] * this.scale,
+                this.lines.body[0][1] * this.scale
             );
             for (var i = 0; i < this.lines.body.length - 1; i++) {
                 this.context.lineTo(
-                    this.lines.body[i][2],
-                    this.lines.body[i][3]
+                    this.lines.body[i][2] * this.scale,
+                    this.lines.body[i][3] * this.scale
                 );
             }
             this.context.closePath();
 
             this.lines.detail.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+                this.context.moveTo(
+                    line[0] * this.scale,
+                    line[1] * this.scale
+                );
+                this.context.lineTo(
+                    line[2] * this.scale,
+                    line[3] * this.scale
+                );
             });
 
             if (this.ddx || this.ddy) {
