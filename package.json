@@ -1,0 +1,22 @@
+{
+  "name": "js13k-2019",
+  "version": "1.0.0",
+  "description": "Repo for js13k 2019 entry",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liruenth/js13k-2019.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liruenth/js13k-2019/issues"
+  },
+  "homepage": "https://github.com/liruenth/js13k-2019#readme",
+  "dependencies": {
+    "tinymusic": "^1.0.0"
+  }
+}
