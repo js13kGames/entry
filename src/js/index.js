@@ -4,6 +4,7 @@ AFRAME.registerComponent('screen-manager', {
     this.el.addState('title-screen');
 
     this.startButtonEl = this.el.querySelector('#start-button');
+    this.timerEl = this.el.querySelector('#timer');
     this.chickenEls = Array.from(this.el.querySelectorAll('.chicken'));
     this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
 
@@ -17,8 +18,11 @@ AFRAME.registerComponent('screen-manager', {
 
     this.el.addState('game-screen');
     this.el.removeState('title-screen');
+
+    this.elapsedTime = 0;
   
     this.el.querySelector('#title').setAttribute('visible', false);
+    this.timerEl.setAttribute('visible', true);
     this.chickenEls.forEach(function(chickenEl) {
       chickenEl.setAttribute('visible', false);
     });
@@ -29,11 +33,18 @@ AFRAME.registerComponent('screen-manager', {
       outlawEl.object3D.position.y += 100.6;
     });
   },
-  tick: function() {
-    if (this.el.is('game-screen') && !this.outlawEls.find(function(outlawEl) { return outlawEl.is('up') })) {
-      this.el.removeState('game-screen');
-      this.el.addState('end-screen');
-      this.el.querySelector('#end').setAttribute('visible', true);
+  tick: function(currentTime, elapsed) {
+    if (this.el.is('game-screen')) {
+      this.elapsedTime += elapsed / 1000;
+      const minutes = Math.floor(this.elapsedTime / 60)
+      const seconds = Math.floor(this.elapsedTime - minutes);
+      this.timerEl.setAttribute('value', `time\n${minutes}:${seconds < 10 ? '0': ''}${seconds}`);
+
+      if (!this.outlawEls.find(function(outlawEl) { return outlawEl.is('up') })) {
+        this.el.removeState('game-screen');
+        this.el.addState('end-screen');
+        this.el.querySelector('#end').setAttribute('visible', true);
+      }
     }
   }
 });
