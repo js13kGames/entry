@@ -119,6 +119,31 @@ html, body {
   border: 2px dotted white;
 }
 
+.levelselect, .colorselect {
+  color: black;
+  position: absolute;
+  pointer-events: none;
+  text-align: center;
+  font-weight: 800;
+  top: 50%;
+  left: 50%;
+  visibility: hidden;
+  font-size: 20px;
+  background-color: #ffffff66;
+  width: 180px;
+  padding: 5px;
+}
+
+.levelselect {
+  transform: translate(-50%,-140%);
+  height: 50px;
+}
+
+.colorselect {
+  transform: translate(-50%,0%);
+  height: 150px;
+}
+
 /*Animations*/
 
 @keyframes gamestart-top {

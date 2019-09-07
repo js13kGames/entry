@@ -1,9 +1,4 @@
-palette = 0; palletename = "";
-c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
-switchPalette(0);
-
 x=game.getContext`2d`;
-
 
 //Global variables
 const TAU = Zdog.TAU;
@@ -22,7 +17,7 @@ const c_yflipmargin = 60 //How much space is added between the lowest added bloc
 
 inputbuffer = ""; inputtime = 0; //Input buffer saves the last pressed key if an input does not result in a handled interaction. It's saved for the amount of frames in inputtime.
 
-state = 0; //0 is title screen, 1 is gameplay
+state = 0; //0 is title screen, 1 is gameplay, 2 is level select
 paused = false; //If the game is paused no step events will trigger.
 canstartgame = false; //Set to true when HTML is fully loaded, and to prevent player to start a new game instantly after getting a game over
 playermovex = 0; playermovey = 1; //Direction the player's going into.
@@ -33,16 +28,24 @@ shakex = 0; shakey = 0; shakeduration = 0; //Control screen shake.
 obstacle = []; //All obstacle blocks that the player can collide with 
 visobstacle = []; //Optimalization array that only holds the blocks that are currently visible.
 timeleft = c_starttime; timejackpot = c_startjackpot; score = 0; hiscore = 0; //timeleft ticks down, but gets refilled with the jackpot upon flipping.
-bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
+activated = 0; activategoal = 0; //For the normal levels.
+level = 5;
 
 const times = []; let fps; //Used to display FPS during debugging.
 
 seed = 200; //Randomness seed for level generation.
 lasttimestamp = performance.now();
 
+palette = 0; palletename = "";
+c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
+c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; palettename = "Default Colors"
+bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
+
 document.addEventListener("DOMContentLoaded", HtmlLoaded);
 
 initGame();
+
+switchPalette(palette)
 
 setInterval(e=>{ step(false) },(1/60)*1000);
 
@@ -91,7 +94,7 @@ function initGame() {
         transform: {z: 25}
     });
 
-    new Zdog.Shape({ //body
+    head = new Zdog.Shape({ //body
         addTo: player,
         stroke: 24,
         color: c[4],
@@ -110,7 +113,7 @@ function initGame() {
         ],
     });
 
-    new Zdog.Shape({ // legs
+    legs = new Zdog.Shape({ // legs
         addTo: player,
         stroke: 5,
         color: c[4],
@@ -187,20 +190,49 @@ function loadLevel() {
         }
     }
 
-    if (state == 0) {player.visible = false;} //Demo mode for title screen
-    else {player.visible = true;}
+    if (state == 0 || state == 2) 
+    {
+        player.visible = false;
+    } //Demo mode for title screen
+    else 
+    {
+        player.visible = true;
+        i1.style.visibility = "visible"; 
+        i2.style.visibility = "visible"; 
+        i3.style.visibility = "visible"; 
+    }
 
-    border.color = c[1];
+    border.color = c[1]; flipline.color = c[1];
 
-    seed = Math.random() * 1000
+    if (level == 11)
+    {
+        seed = (Math.random() * 1000000) + 10000;
+    } else {
+        seed = level*1000;
+    }
 
-    obstacle = []
+    obstacle.length = 0; visobstacle.length = 0;
     flipped = 1; flipvisual = 1; bgcolor = c[0]; 
     player.translate.x = 0; player.translate.y = 0; playermovex = 0; playermovey = c_fallspeed;
-    timeleft = c_starttime; timejackpot = c_startjackpot; score = 0;
+
+    var obstaclestogenerate = 0;
+    if (level == 11)
+    {
+        timeleft = c_starttime; timejackpot = c_startjackpot; score = 0;
+        obstaclestogenerate = 10
+    } else {
+        obstaclestogenerate = 1 + (3 * level)
+        timeleft = 15 + (5*level)
+    }
+
     illo.rotate = {x: -(TAU/16), y: TAU/16};
 
-    flipy = generateObstacles(10,100,flipped) + c_yflipmargin
+    flipy = generateObstacles(obstaclestogenerate,100,flipped) + c_yflipmargin
+
+    if (level != 11) {
+        activated = 0;
+        activategoal = Math.round( obstacle.length * (1.8 + (level * 0.2)))
+    }
 
     flipline.translate.y = flipy;
     fliptop = 0; flipbottom = flipy;
@@ -216,6 +248,8 @@ function generateObstacles(amount,position,direction) {
         var obstaclex = 0; var obstacley = 0;
         var front = (random() >= 0.1); if (flipped == -1) {front = !front}
 
+        console.log(i.toString() + " "+ rand.toString())
+
         switch(rand)
         {
             case 0: //Two tall platforms at same height
@@ -223,8 +257,8 @@ function generateObstacles(amount,position,direction) {
                 obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), height, front)
-                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(random()*32), height, front)
                 break;
             case 1: //Two tall platforms, one lower than the other
                 height = 40+(random()*100);
@@ -295,7 +329,7 @@ function generateObstacles(amount,position,direction) {
                 obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,c_horborder *1.5, height , front);
 
                 off += 50*direction;
-                break
+                break;
             default: //Other chances, just generate one long platform
                 height = 40+(random()*100);
                 obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
@@ -366,11 +400,18 @@ function step(framestep) {
     } else {
         i1.style.color = "white";
     }
-    i2.innerHTML = "+" +timejackpot.toString() + " sec";
-    var ypercent = (player.translate.y - (fliptop-c_yflipmargin)) / ((flipbottom + c_yflipmargin) - (fliptop - c_yflipmargin)) * 9.25; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
-    if (flipped == -1) {ypercent = (9.45-ypercent)}
-    ypercent = Math.max(0,ypercent); //To avoid interface displaying -0 in some cases
-    i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
+
+    if (level == 11)
+    {
+        i2.innerHTML = "+" +timejackpot.toString() + " sec";
+        var ypercent = (player.translate.y - (fliptop-c_yflipmargin)) / ((flipbottom + c_yflipmargin) - (fliptop - c_yflipmargin)) * 9.25; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
+        if (flipped == -1) {ypercent = (9.45-ypercent)}
+        ypercent = Math.max(0,ypercent); //To avoid interface displaying -0 in some cases
+        i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
+    } else {
+        i2.innerHTML = activated.toString() + " of "+activategoal.toString();
+        i3.innerHTML = "Level:\n" +level.toString();
+    }
 
     if (paused && framestep == false) {return;}
 
@@ -417,23 +458,37 @@ function step(framestep) {
         flipped = -flipped;
         playermovey = flipped*c_fallspeed;
 
-        if (flipped == 1)
+        if (level == 11)
         {
-            flipbottom = generateObstacles(1,flipbottom-50,flipped)
-            flipy = flipbottom+c_yflipmargin;
+            timeleft += timejackpot;
+            i2.style.animation = ""; //Reset
+            i2.style.animation = "jackpot-claim 1s ease-in-out";
+            timejackpot = c_startjackpot;
+            score += 1;
+
+            if (flipped == 1)
+            {
+                flipbottom = generateObstacles(1,flipbottom-50,flipped)
+                flipy = flipbottom+c_yflipmargin;
+            }
+            else
+            {
+                fliptop = generateObstacles(1,fliptop+50,flipped)
+                flipy = fliptop-c_yflipmargin;
+            }
         }
         else
         {
-            fliptop = generateObstacles(1,fliptop+50,flipped)
-            flipy = fliptop-c_yflipmargin;
+            if (flipped == 1)
+            {
+                flipy = flipbottom;
+            }
+            else
+            {
+                flipy = fliptop;
+            }
         }
         flipline.translate.y = flipy;
-
-        timeleft += timejackpot;
-        i2.style.animation = ""; //Reset
-        i2.style.animation = "jackpot-claim 1s ease-in-out";
-        timejackpot = c_startjackpot;
-        score += 1;
 
         if (state == 1) //Otherwise we don't have audio permission yet
             {sound([0,,,,0.39,0.39,,0.13,,,,,,0.57,,0.44,,,1,,,,,0.15])}
@@ -452,30 +507,30 @@ function step(framestep) {
         }
     }
 
-    visobstacle = []; var obstaclelen = obstacle.length;
-    for (var i = 0; i != obstaclelen; i++)
+    visobstacle.length = 0;
+    for (var i = 0; i != obstacle.length; i++)
     {
+        //Check if obstacle needs to be shifted to the back or frontside
+        if (obstacle[i].zspeed != 0)
+        {
+            if (obstacle[i].translate.z >= 35) {
+                obstacle[i].translate.z = 25;
+                obstacle[i].zspeed = 0;
+            } else if (obstacle[i].translate.z <= -35) {
+                obstacle[i].translate.z = -25;
+                obstacle[i].zspeed = 0;
+            } else {
+                obstacle[i].translate.z += 5*Math.sign(obstacle[i].zspeed)
+            }
+        }
+
         //Optimization, don't render squares that are not in view
         if (obstacle[i].translate.y > player.translate.y - 700 && obstacle[i].translate.y < player.translate.y + 1000)
         {
             obstacle[i].visible = true;
             visobstacle[visobstacle.length] = obstacle[i];
-
-            //Check if obstacle needs to be shifted to the back or frontside
-            if (obstacle[i].zspeed != 0)
-            {
-                if (obstacle[i].translate.z >= 35) {
-                    obstacle[i].translate.z = 25;
-                    obstacle[i].zspeed = 0;
-                } else if (obstacle[i].translate.z <= -35) {
-                    obstacle[i].translate.z = -25;
-                    obstacle[i].zspeed = 0;
-                } else {
-                    obstacle[i].translate.z += 5*Math.sign(obstacle[i].zspeed)
-                }
-            }
         }
-        else
+        else if (obstacle[i].visible == true)
         {
             obstacle[i].visible = false
         }
@@ -550,6 +605,16 @@ function pushObstacleToFlipside(obstacle){
     {
         timejackpot += c_timegainperblock;
     }
+
+    if (level != 11)
+    {
+        activated += 1
+        if (activated >= activategoal)
+        {
+            gameWin();
+        }
+    }
+
     i2.style.animation = ""; //Reset
 
     if (isOdd(timejackpot/c_timegainperblock)) //Swap between identical animations so the animation restarts properly. See https://css-tricks.com/restart-css-animation/
@@ -594,19 +659,53 @@ function input(key) {
         if (key == " " && canstartgame) {
             l1.style.animation = "gamestart-top 1s ease-in";
             l2.style.animation = "gamestart-bottom 1s ease-in";
-            l3.style.visibility = "hidden"; 
-            i1.style.visibility = "visible"; 
-            i2.style.visibility = "visible"; 
-            i3.style.visibility = "visible"; 
             not.style.visibility = "hidden";
-            state = 1;
             sound([1,,0.08,,0.50,0.26,,0.43,,,,,,,,0.68,,,1,,,,,0.15]);
-            loadLevel(5)
             setTimeout(function(){
                 l1.style.visibility = "hidden";
                 l2.style.visibility = "hidden";
             }, 975);
+            if (hiscore == 0) {state = 1; level = 1; loadLevel(level); l3.style.visibility = "hidden"; }
+            else {state = 2; level == Math.min(hiscore,11); updateLevelSelect();}
             return;
+        }
+    }
+    else if (state == 2) //Level Select 
+    {
+        if (key == "ArrowLeft" || key == "a" || key == "q") {
+            level -= 1; if (level == 0) {level = 1}; updateLevelSelect();
+            console.log("Decreased level")
+        }
+        else if (key == "ArrowRight" || key == "d") {
+            level += 1; 
+            if (level == hiscore+2) {level = hiscore}; 
+            if (level > 11) {level = 11}; 
+            updateLevelSelect();
+            console.log("Increased level")
+        }
+        else if (key == "ArrowUp" || key == "w" || key == "z") {
+            palette -= 1; 
+            if (palette == -1) {palette = 4}; 
+            switchPalette(palette)
+            updateLevelSelect();
+            console.log("Prev palette")
+        }
+        else if (key == "ArrowDown" || key == "s") {
+            palette += 1; 
+            if (palette == 5) {palette = 0}; 
+            switchPalette(palette)
+            updateLevelSelect();
+            console.log("Next palette")
+        }
+        else if (key == " ") {
+            state = 1;
+            loadLevel(level);
+            d.style.visibility = "hidden";
+            d3.style.visibility = "hidden";
+            d4.style.visibility = "hidden";
+            k.style.visibility = "hidden";
+            l3.style.visibility = "hidden"; 
+            console.log("Confirmed")
         }
     }
     else if (state == 1) //Gameplay
@@ -676,20 +775,38 @@ function draw() {
     illo.updateRenderGraph();
 }
 
+function gameWin() {
+    if (state == 0 || state == 2) {return;}
+    l1.innerHTML = "Goal!";
+    l2.innerHTML = "You win";
+    l3.innerHTML = "Space/Tap for next level";
+    if (level-1 == hiscore && level != 11) {hiscore = level; level = hiscore+1;}
+    gameEnd();
+}
+
 function gameOver() {
+    if (state == 0 || state == 2) {return;}
+    l1.innerHTML = "Time up";
+    l2.innerHTML = "Game Over!";
+    l3.innerHTML = "Space or Tap to try again";
+    gameEnd();
+}
+
+function gameEnd() {
     state = 0;
     player.visible = false;
     playermovey = 0.5*flipped;
     canstartgame = false;
+
+    i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
+
     l1.style.animation = ""; //Reset animations
     l2.style.animation = "";
     l1.style.visibility = "visible";
     l2.style.visibility = "visible";
-    l1.innerHTML = "Time up";
-    l2.innerHTML = "Game Over!";
-    l3.innerHTML = "Space or Tap to try again";
-    i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
+
     sound([0,,0.021,,0.28,0.38,,-0.40,,,,,,0.12,,,,,1,,,,,0.16])
+
     setTimeout(function(){
         canstartgame = true;
         l3.style.visibility = "visible"; 
@@ -705,6 +822,22 @@ function gameOver() {
 }
 
 //Utility functions and features
+
+function updateLevelSelect() {
+    d.style.visibility="visible";
+    k.style.visibility="visible";
+
+    if (level <= 10) {d2.innerHTML = level.toString() + "/10";}
+    else { d2.innerHTML = "∞ Endless"; }
+    if (level == 1) {d3.style.visibility="hidden"}
+    else { d3.style.visibility="visible" }
+    if (level == hiscore+1 || level == 11) {d4.style.visibility="hidden"}
+    else { d4.style.visibility="visible" }
+
+    k1.innerHTML = "Colors ("+(palette+1).toString()+"/5)"
+    k2.innerHTML = palettename;
+}
+
 //Taken from https://stackoverflow.com/a/19303725
 
 function random() {
@@ -739,7 +872,7 @@ document.addEventListener("visibilitychange", function() {
     });
 
 function pause(toggle) {
-    if (state == 0) {return;}
+    if (state == 0 || state == 2)  {return;}
     if (toggle == -1) {paused = !paused;}
     else if (paused != toggle) {paused = toggle} else {return;}
 
@@ -761,6 +894,16 @@ function HtmlLoaded() {
     i1 = document.getElementById("i1");
     i2 = document.getElementById("i2");
     i3 = document.getElementById("i3");
+    d = document.getElementById("d");
+    d1 = document.getElementById("d1");
+    d2 = document.getElementById("d2");
+    d3 = document.getElementById("d3");
+    d4 = document.getElementById("d4");
+    k = document.getElementById("k");
+    k1 = document.getElementById("k1");
+    k2 = document.getElementById("k2");
+    k3 = document.getElementById("k3");
+    k4 = document.getElementById("k4");
     n = document.getElementById("not");
     canstartgame = true;
 
@@ -770,9 +913,54 @@ function HtmlLoaded() {
 function isOdd(num) { return num % 2;}
 
 function switchPalette(id) {
-    switch(id) {
-        case 0: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF";  palletename = "Default Colors";
-        case 1: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; palletename = "Berry Juice (Hiscore 10)"; break;
+
+    /*if (id == 1 && hiscore < 5) {palettename = "⚿ Reach level 5 to unlock"; return;}
+    else if (id == 2 && hiscore < 20) {palettename = "⚿ Reach 20 flips in endless mode"; return;}
+    else if (id == 3 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ Exclusive for Coil subscribers"; return;}
+    else if (id == 4 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ Exclusive for Coil subscribers"; return;}*/
+
+    switch(palette) {
+        case 0: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00";  palettename = "Default Colors"; break;
+        case 1: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; palettename = "Blueberry Juice"; break;
+        case 2: c[0] = "#fff" ; c[1] = "#000"; c[2] = "#222" ; c[3] = "#ddd"; c[4] = "#888"; palettename = "Stylish Monochrome"; break;
+        case 3: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; palettename = "Coil Exclusive: Golden Glory"; break;
+        case 4: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; palettename = "Coil Exclusive: Dawnbreak"; break;
         //case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;
     }
+
+    console.log(palettename)
+
+    if (flipped == 1) {
+        bgcolor = c[0]; border.color = c[1]; flipline.color = c[1];
+    } else {
+        bgcolor = c[1]; border.color = c[0]; flipline.color = c[0];
+    }
+    for (var i = 0; i != obstacle.length; i++)
+    {
+        if (obstacle[i].translate.z == 25) {obstacle[i].color = c[2]} else {obstacle[i].color = c[3]}
+    }
+    head.color = c[4]; legs.color = c[4];
+
 }
+
+function setCookie(cname, cvalue) {
+    localStorage.setItem(cname, cvalue);
+  }
+
+  function getCookie(cname) {
+    var data = localStorage.getItem(cname);
+    if (data == null) {
+      return "noone";
+    } else return parseInt(data);
+  }
+
+  function checkCookie() {
+    var savedlvl = getCookie("backflipped_level");
+    if (savedlvl != "noone") {
+      levelnr = savedlvl //Set level id, and load it
+      console.log('Backflipped: Loaded save, starting on level ' + savedlvl)
+    } else {
+      setCookie('backflipped_level', 1)
+      console.log('BackFlipped: New save')
+    }
+  }
