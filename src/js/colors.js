@@ -1,11 +1,12 @@
-
-
+/**
+ * These are (very) loosely based on Nintendo Neon Joy Con colors
+ * https://switchbrew.org/wiki/Joy-Con
+ * @type {Object}
+ */
 export const colors = {
-    red: '#f55',
-    yellow: '#ff2',
-    blue: '#57f'
-}
-
-export function colorNames() {
-    return Object.keys(colors);
+    red: '#f43',
+    yellow: '#ff0',
+    blue: '#0bf',
+    green: '#2e1',
+    pink: '#f3b'
 }

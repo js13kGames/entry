@@ -14,6 +14,7 @@ export class Player {
         this.ready = false;
         this.score = 0;
         this.context = props.context;
+        this.shipType = props.shipType;
 
         // Set control scheme
         if (this.controls === 'gamepad') {
@@ -83,13 +84,44 @@ export class Player {
         }
     }
 
+    /**
+     * Used to draw a "pretend" player ship for the menu
+     * @return {[type]} [description]
+     */
+    pseudoSpawn(x, y) {
+
+        // Remove the old ship from the game sprites if it's there
+        if (this.game.sprites) {
+            var oldShipIndex = this.game.sprites.indexOf(this.ship);
+
+            if (oldShipIndex > -1) {
+                this.game.sprites.splice(oldShipIndex, 1);
+            }
+        }
+
+        this.ship = new Ship({
+            pseudo: true,
+            x: x,
+            y: y,
+            color: this.color,
+            shipType: this.shipType,
+            game: this.game,
+            player: this,
+            dr: 1,
+            scale: 2,
+
+            update() {
+                this.rotation += this.dr
+            }
+        });
+    }
+
     spawn() {
         // Create a whole new ship for the player
 
         this.ship = new Ship({
             x: 20 + Math.random() * (this.game.width - 40),
             y: 20 + Math.random() * (this.game.height - 40),
-            width: 6,
             color: this.color,
             shipType: this.shipType,
             game: this.game,
