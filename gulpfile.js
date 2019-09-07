@@ -13,7 +13,7 @@ const paths = {
   src: {
     css: "css/*.css",
     html: "*.html",
-    js: "js/*.js",
+    js: "components/*.js",
     models: "models/*.obj"
   },
   dist: {

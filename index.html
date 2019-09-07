@@ -6,16 +6,17 @@
   <script src="https://js13kgames.com/webxr-src/aframe.js"></script>
   
   <!-- build:js -->
-  <script src="js/clicker.js"></script>
-  <script src="js/star.js"></script>
+  <script src="components/clicker.js"></script>
+  <script src="components/scene.js"></script>
+  <script src="components/star.js"></script>
   <!-- endbuild -->
 </head>
 
 <body>
-  <a-scene background="color: #141414">
+  <a-scene background="color: #141414" scene>
 
     <a-assets>
-      <a-asset-item id="cockpit" src="/models/cockpit_v2.obj"></a-asset-item>
+      <a-asset-item id="cockpit" src="models/cockpit_v2.obj"></a-asset-item>
     </a-assets>
 
     <a-sphere 
