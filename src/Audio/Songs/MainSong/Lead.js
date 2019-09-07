@@ -100,7 +100,7 @@ export function createLeadTrack (output, bpm) {
     ...leadLine
   ], output, createLeadSound, bpm)
 
-  highPassFilter(output, 300)
+  highPassFilter(output, 20)
 
   const sidechainEnvelope = new EnvelopeSampler([
     [0, 0.15, 5],

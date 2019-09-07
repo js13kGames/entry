@@ -15,7 +15,8 @@ import { createHardDropSound } from './Audio/Samples/HardDrop'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
 import createHoldSound from './Audio/Samples/Hold'
 import { createTSpinSound } from './Audio/Samples/TSpin'
-import createSong from './Audio/Songs/Song1'
+import createMainSong from './Audio/Songs/MainSong'
+import createVictorySong from './Audio/Songs/VictorySong'
 import FontAsset from './Sprites/Font'
 import TextsAsset from './Sprites/Texts'
 import EyesAsset from './Sprites/Eyes'
@@ -49,7 +50,8 @@ export let EyesSprite
 export let GamepadSprite
 export let LogoSprite
 
-export let Song1
+export let MainSong
+export let VictorySong
 
 export let RotateSound = createAudioSampleAsset(createRotateSound)
 export let LandSound = createAudioSampleAsset(createLandSound)
@@ -111,8 +113,13 @@ export async function loadAssets () {
 
   await createReverb()
 
-  Song1 = await createSong()
-  Song1.play()
+  ;[
+    MainSong,
+    VictorySong,
+  ] = await Promise.all([
+    createMainSong(),
+    createVictorySong(),
+  ])
 
   document.body.classList.remove('loading')
 }

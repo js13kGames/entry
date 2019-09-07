@@ -7,7 +7,7 @@ import { Input } from './Input'
 import { Board } from './Board'
 import { EndAnimation } from './Animations/EndAnimation'
 import { playSample } from './Audio'
-import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, Song1, TextsSprite, EyesSprite } from './Assets'
+import { LineClearSounds, HoldSound, TSpinSound, AllClearSound, MainSong, TextsSprite, EyesSprite, VictorySong } from './Assets'
 import { resetScore, addToScore, currentScore, resetLineClears, addLineClears, currentLevel, lineClears, setScene } from './globals'
 import { zeroPad } from './utils'
 import { drawText, drawBoldText } from './fontUtils'
@@ -54,9 +54,16 @@ export class Level {
     this.heldTetromino = null
     this.nextTetrominoes = Array.from(Array(6), () => this.tetrominoSource.getNext())
     this.nextTetromino()
+
+    this.started = false
   }
 
   step () {
+    if (!this.started) {
+      this.started = true
+      MainSong.play()
+    }
+
     if (Input.getKeyDown(PAUSE)) {
       setScene(new PauseScreen(this))
       return
@@ -417,11 +424,13 @@ export class Level {
 
   endGame () {
     this.endAnimation = new EndAnimation(this)
+    MainSong.fadeOut()
+    setTimeout(() => VictorySong.play(), 700)
   }
 
   setGameOver () {
     this.endAnimation = new EndAnimation(this, true)
-    Song1.stop()
+    MainSong.tapeStop()
   }
 
   setBack2Back () {

@@ -2,7 +2,7 @@ import { Input } from './Input'
 import { Overlay } from './Overlay'
 import { setScene } from './globals'
 import { drawSprite, Graphics, Canvas } from './Graphics'
-import { LogoSprite } from './Assets'
+import { LogoSprite, VictorySong } from './Assets'
 import { drawTextCentered } from './fontUtils'
 import { PauseScreen } from './PauseScreen'
 

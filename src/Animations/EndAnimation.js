@@ -7,7 +7,7 @@ import { TextsSprite } from '../Assets';
 
 export class EndAnimation extends AnimationBase {
   constructor (level, isGameOver) {
-    super(70)
+    super(isGameOver ? 120 : 200)
 
     this.isGameOver = isGameOver
 
@@ -61,8 +61,8 @@ export class EndAnimation extends AnimationBase {
         drawSprite(TextsSprite, center, 112, 8, scale, scale)
       }
 
-      if (this.t > 90 && this.t % 60 < 30) {
-        drawTextCentered('HOLD ANY BUTTON', center, 160)
+      if (this.t >= this.duration && (this.t - this.duration) % 60 < 30) {
+        drawTextCentered('PRESS ANY BUTTON', center, 160)
         drawTextCentered('TO START A NEW GAME', center, 167)
       }
     }

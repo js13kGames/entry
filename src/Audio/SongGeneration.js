@@ -73,62 +73,84 @@ export function offsetNotes (notes, amount) {
   return notes
 }
 
-export async function createChannel (trackFunction, sampleCount, bpm) {
-  const channel = TheAudioContext.createBufferSource()
-  channel.loop = true
-
+export async function createBuffer (trackFunction, sampleCount, bpm) {
   const buffer = TheAudioContext.createBuffer(1, sampleCount, TheAudioContext.sampleRate)
   trackFunction(buffer.getChannelData(0), bpm)
 
-  channel.buffer = buffer
-
   await waitForNextFrame()
 
-  return channel
+  return buffer
 }
 
 export class Song {
-  constructor (channels) {
+  constructor (channelConfigs, loop = true) {
+    this.channelConfigs = channelConfigs
+
     let master = TheAudioContext.createGain()
 
-    this.channels = channels.map(channel => {
-      let sourceNode = channel.source
+    this.channels = channelConfigs.map(config => {
       let gainNode = TheAudioContext.createGain()
-      gainNode.gain.value = channel.volume
+      gainNode.gain.value = config.volume
 
-      sourceNode.connect(gainNode)
       gainNode.connect(master)
 
-      if (channel.sendToReverb) {
+      if (config.sendToReverb) {
         let gain = TheAudioContext.createGain()
-        gain.gain.value = channel.sendToReverb
+        gain.gain.value = config.sendToReverb
         gainNode.connect(gain)
         gain.connect(TheReverbDestination)
       }
 
       return {
-        source: sourceNode,
+        buffer: config.buffer,
+        sourceTarget: gainNode,
+        volume: config.volume,
         volumeParam: gainNode.gain
       }
     })
 
-    master.connect(TheAudioDestination)
-  }
+    this.loop = loop
 
-  setVolume (channel, volume, time = 1) {
-    this.channels[channel].volumeParam.linearRampToValueAtTime(volume, TheAudioContext.currentTime + time)
+    master.connect(TheAudioDestination)
   }
 
   stop () {
     this.channels.forEach(channel => {
-      channel.source.playbackRate.setValueAtTime(1, TheAudioContext.currentTime)
-      channel.source.playbackRate.linearRampToValueAtTime(0.0001, TheAudioContext.currentTime + 1)
+      channel.source.disconnect()
+      channel.source = null
     })
+  }
+
+  fadeOut (time = 1) {
+    this.channels.forEach(channel => {
+      channel.volumeParam.linearRampToValueAtTime(0, TheAudioContext.currentTime + time)
+    })
+
+    setTimeout(() => this.stop(), time * 1000)
+  }
+
+  tapeStop (time = 1) {
+    this.channels.forEach(channel => {
+      channel.source.playbackRate.setValueAtTime(1, TheAudioContext.currentTime)
+      channel.source.playbackRate.linearRampToValueAtTime(0.0001, TheAudioContext.currentTime + time)
+    })
+
+    setTimeout(() => this.stop(), time * 1000)
   }
 
   play () {
     this.channels.forEach(channel => {
-      channel.source.start()
+      if (channel.source) {
+        channel.source.disconnect()
+      }
+
+      const sourceNode = TheAudioContext.createBufferSource()
+      sourceNode.loop = this.loop
+      sourceNode.buffer = channel.buffer
+      sourceNode.connect(channel.sourceTarget)
+      sourceNode.start()
+      channel.source = sourceNode
+      channel.volumeParam.setValueAtTime(channel.volume, TheAudioContext.currentTime)
     })
   }
 }
