@@ -1,11 +1,12 @@
-### Playback Slimes
+### Encoded Maze
+A dungeon crawler to help you learn morse code or visual braille.
 
-A melody game about musical slime creatures. It's like ear
-training but _slightly_ more game-like.
+Some kids have gotten lost in a maze and, by going in after them, so have you.
+Follow the instructions to collect all the treasure, save the kids, and make it back.
 
 #### Credits
 
-Synthesizer code adapted from: https://github.com/keithwhor/audiosynth
+Morse Sound was created using TinyMusic.js
 
 Built on the [Ga](https://github.com/kittykatattack/ga) game engine.
 
