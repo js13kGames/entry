@@ -86,6 +86,9 @@ export class Level {
       if (this.clearAnimation.done) {
         this.board.clearRows(this.clearAnimation.rows)
         this.clearAnimation = null
+
+        this.scaredTetrominoControllers = this.getScaredTetrominoControllers(this.fleeingTetrominoesCandidates)
+
         for (let controller of this.scaredTetrominoControllers) {
           this.board.removeTetromino(controller.tetromino)
         }
@@ -119,12 +122,9 @@ export class Level {
       this.back2BackAnimation.step()
     }
 
-    let clearAnimationRunning = this.clearAnimation && !this.clearAnimation.done
-
-    this.background.paused = clearAnimationRunning
     this.background.step()
 
-    if (clearAnimationRunning) {
+    if (this.clearAnimation && !this.clearAnimation.done) {
       this.clearAnimation.step()
       return
     }
@@ -334,7 +334,7 @@ export class Level {
   }
 
   isAllClearConfig (rowsToClear) {
-    for (let y = rowsToClear.length; y < rowsToClear.length + 2; y++) {
+    for (let y = rowsToClear.length; y < this.tileCountY; y++) {
       if (!this.board.isEmptyRow(y)) {
         return false
       }
@@ -364,7 +364,7 @@ export class Level {
       tetromino.lookDown()
     }
 
-    this.scaredTetrominoControllers = this.getScaredTetrominoControllers(alreadyScared)
+    this.fleeingTetrominoesCandidates = alreadyScared
   }
 
   updateScore (tSpinType, clearedRowsCount, allClear) {

@@ -15,7 +15,6 @@ export class Background {
     this.y = 0
     this.direction = this.targetDirection = Math.PI / 3
     this.speed = 1
-    this.paused = false
 
     this.image = document.createElement('canvas')
     this.image.width = Canvas.width + 80
@@ -35,16 +34,12 @@ export class Background {
   }
 
   step () {
-    if (this.paused) {
-      this.speed = approach(this.speed, 0, 0.1)
-    } else {
-      const targetSpeed = 1.08 ** currentLevel
-      this.speed = approach(this.speed, targetSpeed, targetSpeed / 30)
-      let dist = shortAngleDist(this.direction, this.targetDirection)
-      this.direction += dist / 500
-      if (Math.abs(dist) < 0.1) {
-        this.targetDirection = Math.random() * Math.PI * 2
-      }
+    const targetSpeed = 1.08 ** currentLevel
+    this.speed = approach(this.speed, targetSpeed, targetSpeed / 30)
+    let dist = shortAngleDist(this.direction, this.targetDirection)
+    this.direction += dist / 500
+    if (Math.abs(dist) < 0.1) {
+      this.targetDirection = Math.random() * Math.PI * 2
     }
 
     this.x += Math.cos(this.direction) * this.speed
