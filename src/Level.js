@@ -278,13 +278,6 @@ export class Level {
       this.board.isSolidAt(x - 1, y - 1)
     ]
 
-    let betweens = [
-      this.board.isSolidAt(x - 1, y),
-      this.board.isSolidAt(x, y + 1),
-      this.board.isSolidAt(x + 1, y),
-      this.board.isSolidAt(x, y - 1)
-    ]
-
     let emptyCorners =
       !corners[0] +
       !corners[1] +
@@ -294,6 +287,14 @@ export class Level {
     if (emptyCorners > 1) {
       return false
     }
+
+    let betweens = [
+      this.board.getItemAt(x - 1, y) === this.currentTetromino,
+      this.board.getItemAt(x, y + 1) === this.currentTetromino,
+      this.board.getItemAt(x + 1, y) === this.currentTetromino,
+      this.board.getItemAt(x, y - 1) === this.currentTetromino
+    ]
+
 
     const filled = [
       corners[0] + betweens[1] + corners[1],
@@ -631,7 +632,10 @@ export class Level {
     let x1 = (px + 0.25) * TILE_SIZE
     let x2 = (px + 0.75) * TILE_SIZE
 
-    if (tetromino.scared) {
+    if (tetromino.fleeing) {
+      tetromino.eyesIndex = 0
+      tetromino.eyeDirection = [0, -2]
+    } else if (tetromino.scared) {
       tetromino.eyesIndex = 0
       let offsetX = Math.random() * 2 - 1
       x1 += offsetX

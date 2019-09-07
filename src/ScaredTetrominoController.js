@@ -29,8 +29,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
       return
     }
 
-    this.tetromino.eyeDirection = [0, -2]
-    this.tetromino.scared = false
+    this.tetromino.fleeing = true
 
     this.timer++
     if (this.timer === this.timerDuration) {
@@ -69,8 +68,10 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     } else {
       if (!this.move(0, 1)) {
         if (this.manouvered > 10) {
+          this.tetromino.fleeing = false
           this.board.putTetromino(this.tetromino)
           this.done = true
+          return
         }
 
         this.manouvered++
