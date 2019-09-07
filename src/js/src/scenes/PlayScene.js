@@ -95,10 +95,16 @@ PlayScene.states = {
 
 PlayScene.prototype = extendPrototype(Scene.prototype, {
   create: function () {
-    this.bg = new DisplayRect({
+    this.sky = new DisplayRect({
       w: SETTINGS.width,
       h: SETTINGS.height,
       color: 'white'
+    });
+    this.addChild(this.sky);
+
+    this.bg = new BG({
+      scaleX: 0.25,
+      scaleY: 0.25
     });
     this.addChild(this.bg);
   
@@ -149,7 +155,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   
     this.addSteppable(this.cycle.bind(this));
     this.addSteppable(this.turtle.step.bind(this.turtle));
-    this.setState(PlayScene.states.waiting);
+
+    this.setState(PlayScene.states.idle);
   },
   destroy: function () {
     this.keys.forEach(function (key) {

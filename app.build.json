@@ -57,6 +57,7 @@
         "src/js/src/graphics/DisplayItem.js",
         "src/js/src/graphics/DisplayContainer.js",
         "src/js/src/graphics/DisplayRect.js",
+        "src/js/src/graphics/DisplayCirc.js",
         "src/js/src/graphics/DisplayText.js",
         "src/js/src/graphics/CachedContainer.js",
 
@@ -65,10 +66,12 @@
         "src/js/src/play/Head.js",
         "src/js/src/play/Shell.js",
         "src/js/src/play/Turtle.js",
+        "src/js/src/play/BG.js",
         
         "src/js/src/scenes/Scene.js",
         "src/js/src/scenes/PlayScene.js",
         "src/js/src/scenes/TestScene.js",
+        "src/js/src/scenes/BGEditor.js",
         
         "src/js/src/main.js"
       ],
