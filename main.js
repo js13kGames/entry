@@ -178,7 +178,7 @@ var target = "e"; //which object to decrement the goal
 var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
 /* WEB MONETIZATION SKIN CODE */
-var enableSkins = false;
+var enableSkins = true;
 var playerSpriteIndex = 0;
 
 var score = 0; //The Player's score!
@@ -194,26 +194,27 @@ var RFD;//0=time 1=wrong target 2=shadowPlayer
 var moveShadowCounter = 0;
 var shadowPlayerInterval = 290;
 
-/* Web Monetization Code */
-if(document.monetization){
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* the spritesheet */
 var monoSprite = new Image();
-monoSprite.src = "sprites.png";
+monoSprite.src = "spritesExtended.png";
+
+// the enemy sprite indexs
+let spriteIndex = 0;
+let enemySprites = [2, 7, 9, 11, 13];
+let innocentSprites = [4, 8, 10, 12, 14];
+
+Mousetrap.bind('shift', function(){
+    if (enableSkins){
+        if (spriteIndex < innocentSprites.length-1){
+            spriteIndex +=1;
+        } else {
+            spriteIndex = 0;
+        }
+    }
+}, "keypress");
+
+
 
 /* game object definitions */
 
@@ -391,7 +392,7 @@ async function drawPixelTextSlow(message, x, y, size, delay, color = "white") {
                 ctx.fillStyle = "black";
                 let rectWidth = message[queueCounter - 1].length * (size + 10);
                 let rectX = x - (rectWidth + size + 10);
-                let rectHeight = size;
+                // let rectHeight = size;
                 ctx.fillRect(rectX, y, rectWidth, size * 5);
                 //now let's draw the next thing
                 x = rectX;
@@ -415,6 +416,9 @@ async function drawPixelTextSlow(message, x, y, size, delay, color = "white") {
                 beepSnd.play();//make sound effect
             } else if (message[queueCounter] === "d") {
                 await sleep(400);
+                if (!spaceBind){
+                    return 1;//exit function
+                }
             } else if (message[queueCounter] === "            STABBING NOISES") {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "red");
                 //beepSnd.play();//make sound effect
@@ -496,7 +500,6 @@ function drawLevel(level_array) {
 
     //first clear canvas screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.lineWidth = 1;
     let y, x;
     for (y = 0; y < level_array.length; y++) {
@@ -532,7 +535,7 @@ function drawLevel(level_array) {
 
                 case 'e':
                     ctx.fillStyle = enemy.color;
-                    ctx.drawImage(monoSprite, 2 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, enemySprites[spriteIndex] * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     //draw enemy object
                     break;
                 case "E":
@@ -543,7 +546,7 @@ function drawLevel(level_array) {
                     break;
                 case 'i':
                     ctx.fillStyle = innocent.color;
-                    ctx.drawImage(monoSprite, 4 * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
+                    ctx.drawImage(monoSprite, innocentSprites[spriteIndex] * 32, 0, 32, 32, x * gridSize, y * gridSize, wall.width, wall.height);
                     break;
                 default:
                     break;
@@ -567,10 +570,10 @@ function drawLevel(level_array) {
     /* target draw */
     drawPixelText("target ", (sidebarX + 1) * gridSize - 20, 110, 3, true);
     if (target == 'i') {
-        ctx.drawImage(monoSprite, 4 * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+        ctx.drawImage(monoSprite, innocentSprites[spriteIndex] * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
         //ctx.drawImage(innocentSprite, (sidebarX + 1) * gridSize + 100, 100, innocent.width, innocent.height);
     } else if (target == 'e') {
-        ctx.drawImage(monoSprite, 2 * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
+        ctx.drawImage(monoSprite, enemySprites[spriteIndex] * 32, 0, 32, 32, (sidebarX + 1) * gridSize + 100, 100, wall.width, wall.height);
         //ctx.drawImage(enemySprite, (sidebarX + 1) * gridSize + 100, 100, enemy.width, enemy.height);
     }
 
@@ -696,6 +699,7 @@ function removeValueArray(value, arr){
     }
     return newArr;
 }
+
 
 Mousetrap.bind('w', function(){
     if (!keyQueue.includes('w')){
@@ -971,6 +975,7 @@ let titleContents = [
 
 
 var main;
+var spaceBind = true;
 function titleScreen() {
     let gameX = 5;
     let gameY = 48;
@@ -984,6 +989,7 @@ function titleScreen() {
     Mousetrap.bind('space', function () {
         clearTimeout(slowTextHandler);
         Mousetrap.unbind('space');
+        spaceBind = false;
         slowTextCounter = 0;
         queueCounter = 0;
         main = setInterval(mainLoop, 25);
@@ -992,20 +998,25 @@ function titleScreen() {
 
 //first screen player sees
 function splashScreen() {
-    let alignX = 60;
+    let alignX = 13;
     ctx.fillStyle = "black";
+
+
     ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
-    drawPixelText("BACKSTABBERS", alignX, 48, 7, true, "red");
-    drawPixelText("BACKSTABBERS", alignX + 3, 50, 7, true, "lime");
+    drawPixelText("BACKSTABBERS", alignX, 98, 9, true, "red");
+    drawPixelText("BACKSTABBERS", alignX + 3, 100, 9, true, "lime");
 
-    drawPixelText("A GAME ABOUT STABBING", alignX + 20, 90, 3, true, "lime");
+    drawPixelText("A GAME ABOUT STABBING", alignX + 90, 150, 3, true, "aqua");
 
-    drawPixelText("PRESS ENTER TO START GAME", 90, 180, 2, false, "red");
-    drawPixelText("PRESS ENTER TO START GAME", 91, 180, 2, false, "lime");
+    drawPixelText("PRESS ENTER TO START GAME", 30, 220, 2, false, "red");
+    drawPixelText("PRESS ENTER TO START GAME", 31, 220, 2, false, "lime");
 
 
-    drawPixelText("PRESS S TO BUY SKINS", 90, 240, 2, false, "red");
-    drawPixelText("PRESS S TO BUY SKINS", 91, 240, 2, false, "lime");
+    drawPixelText("PRESS S TO BUY SKINS", 30, 240, 2, false, "red");
+    drawPixelText("PRESS S TO BUY SKINS", 31, 240, 2, false, "lime");
+
+
+    //drawPixelText("2019 13KJSGAMES")
 
     //drawPixelText("JavaScript ");
 
