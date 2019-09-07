@@ -84,33 +84,29 @@ game.players.push(new Player({
     game: game
 }));
 
-game.players.push(new Player({
-    color: colors.red,
-    shipType: 'coback',
-    controls: 'wasd',
-    context: context,
-    game: game
-}));
-
-game.players.push(new Player({
-    color: colors.blue,
-    shipType: 'striker',
-    controls: 'gamepad',
-    gamepadIndex: 0,
-    context: context,
-    game: game
-}));
+// game.players.push(new Player({
+//     color: colors.red,
+//     shipType: 'coback',
+//     controls: 'wasd',
+//     context: context,
+//     game: game
+// }));
+//
+// game.players.push(new Player({
+//     color: colors.blue,
+//     shipType: 'striker',
+//     controls: 'gamepad',
+//     gamepadIndex: 0,
+//     context: context,
+//     game: game
+// }));
 
 function changeScene(scene) {
-    console.log(scene);
+
     mainMenuLoop.stop()
     if (scene === 'PLAY') {
         game.players.forEach((player, i) => {
-            player.pseudoSpawn(
-                80,
-                80,
-                2
-            );
+            player.pseudoSpawn();
         });
         shipMenuLoop.start();
         //startGame(game, canvas, context);
@@ -138,6 +134,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
             if (player.keys.accept()) {
                 // Do whatever da button says
+                player.debounce.accept = 10;
                 changeScene(mainMenu.items[mainMenu.focus].text);
             }
         });
@@ -174,22 +171,30 @@ let shipMenuLoop = GameLoop({  // create the main game loop
             if (player.keys.left() && player.debounce.left <= 0) {
                 player.shipType = util.objKeyNext(ships, player.shipType);
                 player.debounce.left = 10;
-                player.pseudoSpawn(80, 80);
+                player.pseudoSpawn();
             }
 
             if (player.keys.right() && player.debounce.right <= 0) {
                 player.shipType = util.objKeyPrev(ships, player.shipType);
                 player.debounce.right = 10;
-                player.pseudoSpawn(80, 80);
+                player.pseudoSpawn();
             }
 
             if (player.keys.accept() && player.debounce.accept <= 0) {
+                console.log("beep");
                 player.ready = true;
                 player.debounce.accept = 10;
             }
 
-            player.ship.rotation += player.ship.dr;
+            if (!player.ready) {
+                player.ship.rotation += player.ship.dr;
+            }
         });
+
+        if (game.players.every(player => player.ready)) {
+            shipMenuLoop.stop();
+            startGame(game, canvas, context);
+        }
     },
 
     render() {
@@ -197,24 +202,28 @@ let shipMenuLoop = GameLoop({  // create the main game loop
             var x = y = 0;
 
             if (i === 1 || i == 3) {
-                x = game.width / 2;
+                x = 4 + game.width / 2;
+            } else {
+                x = 8;
             }
             if (i === 2 || i === 3) {
-                y = game.height / 2;
+                y = 4 + game.height / 2;
+            } else {
+                y = 8;
             }
 
             context.save();
             context.scale(game.scale, game.scale);
             context.clearRect(
-                x > 0 ? x + 4 : x + 8,
-                y > 0 ? y + 4 : y + 8,
+                x,
+                y,
                 game.width / 2 - 12,
                 game.height / 2 - 12,
             );
             context.strokeStyle = player.color;
             context.strokeRect(
-                x > 0 ? x + 4 : x + 8,
-                y > 0 ? y + 4 : y + 8,
+                x,
+                y,
                 game.width / 2 - 12,
                 game.height / 2 - 12,
             )
@@ -224,13 +233,17 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 text: 'player ' + (i + 1),
                 color: player.color,
                 size: .8,
-                x: 20 + x,
-                y: 20 + y,
+                x: x + 16,
+                y: y + 16,
                 scale: game.scale,
                 context: context
-            })
+            });
 
-            player.ship.render();
+            player.ship.pseudoRender(
+                game.scale,
+                x + game.width / 2 - 80,
+                y + (game.height / 2 - 12) / 2
+            );
         });
     }
 });

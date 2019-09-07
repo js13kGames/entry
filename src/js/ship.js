@@ -31,9 +31,6 @@ export class Ship extends Sprite.class {
         this.type = 'ship';
         this.dr = props.dr || 0;
 
-        // Used to draw the big extra big or small (multiplied w/game.scale)
-        this.scale = props.pseudo ? 4 : 1;
-
         // Modify these values defined in shipData specs to make less crazy
         this.rof = shipData.rof;
         this.ror = shipData.ror;
@@ -299,6 +296,33 @@ export class Ship extends Sprite.class {
         });
     }
 
+    pseudoRender(scale, x, y) {
+        this.context.save();
+        this.context.scale(scale, scale);
+        this.context.translate(x, y);
+        this.context.rotate(util.degToRad(this.rotation));
+        this.context.strokeStyle = this.color;
+        this.context.scale(3, 3);
+        this.context.beginPath();
+
+        this.context.lineWidth = .8;
+
+        this.context.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
+        for (var i = 0; i < this.lines.body.length - 1; i++) {
+            this.context.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
+        }
+        this.context.closePath();
+
+        this.lines.detail.forEach(line => {
+            this.context.moveTo(line[0], line[1]);
+            this.context.lineTo(line[2], line[3]);
+        });
+
+        this.context.stroke();
+
+        this.context.restore();
+    }
+
     renderUI(scale) {
         this.context.strokeStyle = '#0ef';
 
@@ -339,9 +363,7 @@ export class Ship extends Sprite.class {
         this.context.translate(this.x, this.y);
 
         // Draw rewinding cooldown bar and ammo without rotation
-        if (!this.pseudo) {
-            this.renderUI(scale);
-        }
+        this.renderUI(scale);
 
         this.context.rotate(util.degToRad(this.rotation));
 
@@ -395,29 +417,15 @@ export class Ship extends Sprite.class {
 
         } else {
 
-            this.context.lineWidth = this.scale;
-
-            this.context.moveTo(
-                this.lines.body[0][0] * this.scale,
-                this.lines.body[0][1] * this.scale
-            );
+            this.context.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
             for (var i = 0; i < this.lines.body.length - 1; i++) {
-                this.context.lineTo(
-                    this.lines.body[i][2] * this.scale,
-                    this.lines.body[i][3] * this.scale
-                );
+                this.context.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
             }
             this.context.closePath();
 
             this.lines.detail.forEach(line => {
-                this.context.moveTo(
-                    line[0] * this.scale,
-                    line[1] * this.scale
-                );
-                this.context.lineTo(
-                    line[2] * this.scale,
-                    line[3] * this.scale
-                );
+                this.context.moveTo(line[0], line[1]);
+                this.context.lineTo(line[2], line[3]);
             });
 
             if (this.ddx || this.ddy) {

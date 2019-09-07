@@ -25,10 +25,11 @@ export class Player {
 
         // For menu item / key debouncing so doesn't spam
         this.debounce = {
-            up: 0,
-            down: 0,
-            left: 0,
-            right: 0
+            up: 10,
+            down: 10,
+            left: 10,
+            right: 10,
+            accept: 10
         };
     }
 
