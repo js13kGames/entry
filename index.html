@@ -33,12 +33,31 @@
       <!-- Fire Extinguisher -->
       <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
 
+      <!-- Front panel -->
+      <a-box position="0 .79 -1.76" rotation="-52 0 0" height=".3" width=".3" depth=".1" shadow>
+        <a-cylinder color="red" height=".1" radius=".1" position="0 0 .05" rotation="90 0 0" shadow></a-cylinder>
+      </a-box>
+
       <!-- Map panel -->
-      <a-plane color="#333" height="0.5" width="1.8"></a-plane>
+      <a-plane color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8">
+        <!-- <a-entity text="value: Fuel:; anchor: left; baseline: top; transparent: false; width: 2" position="-.7 .35 0"></a-entity>
+        <a-plane position=".12 .32 .001" color="green" height=".07" width="1.18"></a-plane> -->
+
+        <a-circle position="0 0 0.001" color="yellow" radius="0.05"></a-circle>
+        <a-circle position="0.1 0 0.001" color="brown" radius="0.02"></a-circle>
+      </a-plane>
+
+      <!-- Left panel -->
+      <a-box position="-1.26 .79 .25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
+        <a-cylinder color="blue" height=".1" radius=".1" position="0 0 .05" rotation="90 0 0" shadow></a-cylinder>
+      </a-box>
+      <a-box position="-1.26 .79 -.25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
+        <a-cylinder color="yellow" height=".1" radius=".1" position="0 0 .05" rotation="90 0 0" shadow></a-cylinder>
+      </a-box>
 
       <!-- Camera -->
       <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
-        <a-entity cursor="fuse: false" position="0 0 -0.5"
+        <a-entity cursor="fuse: false" position="0 0 -1"
           geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
           raycaster="objects: .clickable"
           animation__mouseenter__inner="property: geometry.radiusInner; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.0001; to: 0.02"
