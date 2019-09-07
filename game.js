@@ -2,10 +2,10 @@ x=game.getContext`2d`;
 
 //Global variables
 const TAU = Zdog.TAU;
-const c_startverticalspeed = 2; //Vertical speed when starting kick
-const c_addverticalspeed = 0.5; //Vertical speed added each step of kick
-const c_fallspeed = 1.5; //Default falling speed
-const c_dropspeed = 3; //Starting falling speed when dropping down
+const c_startverticalspeed = 1; //Vertical speed when starting kick
+const c_addverticalspeed = 1; //Vertical speed added each step of kick
+const c_fallspeed = 3; //Default falling speed
+const c_dropspeed = 5; //Starting falling speed when dropping down
 const c_adddropspeed = 0.025; //Drop speed that gets added each frame while the player is dropping and not touching anything
 const c_jumpspeed = 5; //Force for jumping upwards
 const c_addjumpspeed = 0.1; //Force pulling you back after jumping
@@ -100,7 +100,7 @@ function initGame() {
         color: c[4],
     });
 
-    new Zdog.Shape({ //eyes
+    eyes = new Zdog.Shape({ //eyes
         addTo: player,
         stroke: 5,
         color: '#fff',
@@ -213,7 +213,9 @@ function loadLevel() {
 
     obstacle.length = 0; visobstacle.length = 0;
     flipped = 1; flipvisual = 1; bgcolor = c[0]; 
-    player.translate.x = 0; player.translate.y = 0; playermovex = 0; playermovey = c_fallspeed;
+    player.translate.x = 0; player.translate.y = 0; playermovex = 0; 
+    if (state == 1) {playermovey = c_fallspeed;}
+    else {playermovey = c_fallspeed/2;}
 
     var obstaclestogenerate = 0;
     if (level == 11)
@@ -254,7 +256,7 @@ function generateObstacles(amount,position,direction) {
         {
             case 0: //Two tall platforms at same height
                 height = 40+(random()*100);
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
+                obstaclex = (Math.round(random()/10)*10 * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(random()*32), height, front)
@@ -457,13 +459,13 @@ function step(framestep) {
         player.translate.y = flipy;
         flipped = -flipped;
         playermovey = flipped*c_fallspeed;
+        if (state == 0 || state == 2) {playermovey = flipped*c_fallspeed*0.5;}
 
         if (level == 11)
         {
             timeleft += timejackpot;
             i2.style.animation = ""; //Reset
             i2.style.animation = "jackpot-claim 1s ease-in-out";
-            timejackpot = c_startjackpot;
             score += 1;
 
             if (flipped == 1)
@@ -489,6 +491,7 @@ function step(framestep) {
             }
         }
         flipline.translate.y = flipy;
+        timejackpot = c_startjackpot; //We empty the jackpot in both modes because the jackpot value is used to trigger some animations
 
         if (state == 1) //Otherwise we don't have audio permission yet
             {sound([0,,,,0.39,0.39,,0.13,,,,,,0.57,,0.44,,,1,,,,,0.15])}
@@ -552,8 +555,8 @@ function step(framestep) {
                 xx = visobstacle[i].translate.x-(flipped*10); //The player is on a different layer compared to the blocks, so we offset the x to closely match the perspective the player is seeing.
                 yy = visobstacle[i].translate.y;
                 zz = visobstacle[i].translate.z;
-                w = visobstacle[i].width; aw = visobstacle[i].width+25; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
-                h = visobstacle[i].height-10;
+                w = visobstacle[i].width; aw = visobstacle[i].width*1.2; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
+                h = visobstacle[i].height*0.9;
 
                 if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - aw && player.translate.x < xx + aw && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
@@ -678,7 +681,7 @@ function input(key) {
         }
         else if (key == "ArrowRight" || key == "d") {
             level += 1; 
-            if (level == hiscore+2) {level = hiscore}; 
+            if (level == hiscore+2) {level = hiscore+1}; 
             if (level > 11) {level = 11}; 
             updateLevelSelect();
             console.log("Increased level")
@@ -700,6 +703,7 @@ function input(key) {
         else if (key == " ") {
             state = 1;
             loadLevel(level);
+            sound([3,,0.22,0.49,0.40,0.15,,-0.39,,,,-0.68,0.69,,,,,,1,,,,,0.25])
             d.style.visibility = "hidden";
             d3.style.visibility = "hidden";
             d4.style.visibility = "hidden";
@@ -780,15 +784,43 @@ function gameWin() {
     l1.innerHTML = "Goal!";
     l2.innerHTML = "You win";
     l3.innerHTML = "Space/Tap for next level";
-    if (level-1 == hiscore && level != 11) {hiscore = level; level = hiscore+1;}
+    if (level-1 == hiscore && level != 11) 
+    {
+        hiscore = level; level = hiscore+1;
+        not.style.visibility = "visible";
+        if (hiscore != 11)
+        {
+             not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!";
+        }
+        else
+        {
+            not.innerHTML = "You unlocked Endless mode!";
+        }
+    }
+
+    sound([0,,0.3,,0.5,0.3,,0.1,,0.23,0.4,,,0.1,,,,,1,,,,,0.26])
+
     gameEnd();
 }
 
 function gameOver() {
     if (state == 0 || state == 2) {return;}
     l1.innerHTML = "Time up";
-    l2.innerHTML = "Game Over!";
+    l2.innerHTML = "You lose";
     l3.innerHTML = "Space or Tap to try again";
+
+    if (level == 11) {
+        if (score > hiscore)
+        {
+            if (hiscore > 0)
+            {
+                not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke your old highscore of<br>"+hiscore.toString()+" with a new score of "+score.toString()+"!";
+            }
+            hiscore = score;
+        }
+    } 
+
+    sound([3,,0.18,0.23,0.18,0.15,,-0.23,,,,,,,,0.58,,,1,,,,,0.26])
     gameEnd();
 }
 
@@ -811,14 +843,6 @@ function gameEnd() {
         canstartgame = true;
         l3.style.visibility = "visible"; 
     }, 1000);
-    if (score > hiscore)
-    {
-        if (hiscore > 0)
-        {
-            not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke your old highscore of<br>"+hiscore.toString()+" with a new score of "+score.toString()+"!";
-        }
-        hiscore = score;
-    }
 }
 
 //Utility functions and features
@@ -920,11 +944,11 @@ function switchPalette(id) {
     else if (id == 4 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ Exclusive for Coil subscribers"; return;}*/
 
     switch(palette) {
-        case 0: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00";  palettename = "Default Colors"; break;
-        case 1: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; palettename = "Blueberry Juice"; break;
-        case 2: c[0] = "#fff" ; c[1] = "#000"; c[2] = "#222" ; c[3] = "#ddd"; c[4] = "#888"; palettename = "Stylish Monochrome"; break;
-        case 3: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; palettename = "Coil Exclusive: Golden Glory"; break;
-        case 4: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; palettename = "Coil Exclusive: Dawnbreak"; break;
+        case 0: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; eyes.color = "#fff"; palettename = "Default Colors"; break;
+        case 1: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; eyes.color = "#fff"; palettename = "Blueberry Juice"; break;
+        case 2: c[0] = "#ddd" ; c[1] = "#222"; c[2] = "#444" ; c[3] = "#bbb"; c[4] = "#888"; eyes.color = "#fff"; palettename = "Stylish Monochrome"; break;
+        case 3: c[0] = "#0F5FA4" ; c[1] = "#9CC6EC"; c[2] = "#BBD6E7" ; c[3] = "#4087C9"; c[4] = "#fff"; eyes.color = "#000"; palettename = "Coil Exclusive: Dyed Blueprint"; break;
+        case 4: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; eyes.color = "#444"; palettename = "Coil Exclusive: Dawnbreak"; break;
         //case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;
     }
 

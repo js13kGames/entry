@@ -57,7 +57,7 @@ html, body {
 
 .start {
   font-size: 30px; width: 250px;
-  -webkit-text-fill-color: #04BF00;
+  -webkit-text-fill-color: #ffffff;
   -webkit-text-stroke-width: 0px;
   text-shadow: 3px -3px #223e32;
   transform: translate(-50%,300%);
@@ -129,7 +129,7 @@ html, body {
   left: 50%;
   visibility: hidden;
   font-size: 20px;
-  background-color: #ffffff66;
+  background-color: #ffffff88;
   width: 180px;
   padding: 5px;
 }
