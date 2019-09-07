@@ -4,6 +4,9 @@
 
 import { init, GameLoop, initKeys, keyPressed } from 'kontra';
 import { initGamepads, pollGamepads, buttonPressed, axisValue } from './gamepad';
+import { schemeNames } from './controls';
+import { colors, colorNames } from './colors';
+import ships from './ships/import';
 import { Player } from './player';
 import { Menu } from './menu';
 import startGame from './game';
@@ -59,12 +62,7 @@ window.onresize = () => {
     setSizing(game.supersample);
 }
 
-var inputs = [
-    // keyboard
-    // 0+ controllers
-];
-
-var mainMenu = new Menu ({
+var mainMenu = new Menu({
     context: context,
     x: 30,
     y: 30,
@@ -77,21 +75,31 @@ var mainMenu = new Menu ({
 });
 
 game.players.push(new Player({
-    color: '#ff0',
+    color: colors.yellow,
     //shipType: 'tri',
     controls: 'arrows',
     context: context,
     game: game
 }));
 
+game.players.push(new Player({
+    color: colors.red,
+    //shipType: 'tri',
+    controls: 'wasd',
+    context: context,
+    game: game
+}));
+
 function changeScene(scene) {
-    menuLoop.stop()
-    if (scene === 'play') {
-        startGame(game, canvas, context);
+    console.log(scene);
+    mainMenuLoop.stop()
+    if (scene === 'PLAY') {
+        shipMenuLoop.start();
+        //startGame(game, canvas, context);
     }
 }
 
-let menuLoop = GameLoop({  // create the main game loop
+let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads();
 
@@ -109,7 +117,7 @@ let menuLoop = GameLoop({  // create the main game loop
 
             if (player.keys.accept()) {
                 // Do whatever da button says
-                changeScene(menu.buttons[menu.focus]);
+                changeScene(mainMenu.items[mainMenu.focus].text);
             }
         });
     },
@@ -119,4 +127,78 @@ let menuLoop = GameLoop({  // create the main game loop
     }
 });
 
-menuLoop.start();
+mainMenuLoop.start();
+
+playerMenus = [];
+
+playerMenus.push(new Menu({
+    context: context,
+    x: 30,
+    y: 30,
+    color: game.players[0].color,
+    items: [
+        {
+            text: 'controls',
+            options: schemeNames()
+        },
+        {
+            text: 'color',
+            options: colorNames(),
+            default: game.players[0].color
+        },
+        {
+            text: 'ship',
+            options: Object.keys(ships)
+        }
+    ]
+}));
+
+playerMenus.push(new Menu({
+    context: context,
+    x: 30 + game.width / 2,
+    y: 30,
+    color: game.players[1].color,
+    items: [
+        {
+            text: 'controls',
+            options: schemeNames()
+        },
+        {
+            text: 'color',
+            options: colorNames()
+        },
+        {
+            text: 'ship',
+            options: Object.keys(ships)
+        }
+    ]
+}));
+
+let shipMenuLoop = GameLoop({  // create the main game loop
+    update() { // update the game state
+        pollGamepads();
+
+        game.players.forEach((player, i) => {
+
+            playerMenus[i].update();
+
+            if (player.keys.down()) {
+                playerMenus[i].next();
+            }
+
+            if (player.keys.up()) {
+                playerMenus[i].prev();
+            }
+
+            if (player.keys.accept()) {
+                // Do whatever da button says
+                player.ready = true;
+                changeScene(mainMenu.items[mainMenu.focus].text);
+            }
+        });
+    },
+
+    render() {
+        playerMenus.forEach(menu => menu.render(game.scale));
+    }
+});

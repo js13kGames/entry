@@ -67,7 +67,7 @@ export function renderText(props) {
     props.context.scale(props.scale, props.scale);
     props.context.translate(props.x, props.y);
     props.context.strokeStyle = props.color;
-    props.context.lineWidth = 1.5;
+    props.context.lineWidth = 1;
     drawText(props);
     props.context.restore();
 }
