@@ -48,11 +48,9 @@ export class Board {
       return true
     }
 
-    nextTetromino.x = this.width / 2 - 1
-    nextTetromino.y = this.height
     const positions = nextTetromino.getBlockPositions()
     for (let [x, y] of positions) {
-      if (this.grid[y][x]) {
+      if (this.grid[y + this.height][x + this.width / 2 - 1]) {
         return true
       }
     }

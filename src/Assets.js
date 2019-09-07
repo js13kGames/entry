@@ -11,15 +11,16 @@ import {
   createTripleLineSound,
   createAllClearSound
 } from './Audio/Samples/Tetris'
-import { createHardDropSound } from './Audio/Samples/HardDrop';
-import { createReverbIR } from './Audio/Samples/ReverbIR';
-import createHoldSound from './Audio/Samples/Hold';
-import { createTSpinSound } from './Audio/Samples/TSpin';
-import createSong from './Audio/Songs/Song1';
+import { createHardDropSound } from './Audio/Samples/HardDrop'
+import { createReverbIR } from './Audio/Samples/ReverbIR'
+import createHoldSound from './Audio/Samples/Hold'
+import { createTSpinSound } from './Audio/Samples/TSpin'
+import createSong from './Audio/Songs/Song1'
 import FontAsset from './Sprites/Font'
 import TextsAsset from './Sprites/Texts'
 import EyesAsset from './Sprites/Eyes'
 import GamepadAsset from './Sprites/Gamepad'
+import LogoAsset from './Sprites/Logo'
 
 async function createAudioSampleAsset (createSampleFunction) {
   const array = createSampleFunction()
@@ -46,6 +47,7 @@ export let Font
 export let TextsSprite
 export let EyesSprite
 export let GamepadSprite
+export let LogoSprite
 
 export let Song1
 
@@ -97,12 +99,14 @@ export async function loadAssets () {
     Font,
     TextsSprite,
     EyesSprite,
-    GamepadSprite
+    GamepadSprite,
+    LogoSprite,
   ] = await Promise.all([
     createSpriteAsset(FontAsset),
     createSpriteAsset(TextsAsset),
     createSpriteAsset(EyesAsset),
     createSpriteAsset(GamepadAsset),
+    createSpriteAsset(LogoAsset),
   ])
 
   await createReverb()

@@ -21,7 +21,7 @@ import {
   ShiftSound,
   HardDropSound
 } from './Assets';
-import { addToScore, lineClears } from './globals';
+import { addToScore, lineClears, currentLevel } from './globals';
 import { TetrominoControllerBase } from './TetrominoControllerBase';
 
 export class TetrominoController extends TetrominoControllerBase {
@@ -52,7 +52,7 @@ export class TetrominoController extends TetrominoControllerBase {
   }
 
   updateGravity () {
-    this.gravity = 60 * (0.8 - ((lineClears / 10) * 0.007)) ** (lineClears / 10)
+    this.gravity = 60 * (0.8 - ((currentLevel - 1) * 0.007)) ** (currentLevel - 1)
   }
 
   step () {

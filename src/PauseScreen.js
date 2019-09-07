@@ -1,62 +1,75 @@
-import { drawBoldText, drawText } from './fontUtils';
-import { drawSprite, Graphics, Canvas } from './Graphics';
+import { Input } from './Input'
+import { PAUSE } from './constants'
+import { setScene } from './globals'
+import { Overlay } from './Overlay';
+import { GLYPH_WIDTH, drawBoldTextCentered, drawText } from './fontUtils';
+import { Graphics, Canvas, drawSprite } from './Graphics';
 import { GamepadSprite } from './Assets';
-import { setScene } from './globals';
-import { Input } from './Input';
 
-export class PauseScreen {
-  constructor (scene) {
-    this.scene = scene
+export class PauseScreen extends Overlay {
+  constructor (scene, firstTime = false) {
+    super(scene)
+    this.firstTime = firstTime
+
+    Input.reset()
   }
 
   step () {
-    if (Input.getAnyKey()) {
-      Input.reset()
+    if (Input.getKeyDown(PAUSE) || this.firstTime && Input.getAnyKey()) {
       setScene(this.scene)
     }
   }
 
   render () {
-    this.scene.paused = true
-    this.scene.render()
-    this.scene.paused = false
+    super.render()
 
     Graphics.setTransform(1, 0, 0, 1, Canvas.width / 2, 0)
 
-    for (let i = 0; i < 8; i++) {
-      Graphics.fillStyle = 'rgba(0,0,0,0.2)'
-      Graphics.fillRect(-160 + i * 4, 0, 320 - i * 8, Canvas.height)
-    }
+    Graphics.scale(2, 2)
+    drawBoldTextCentered('PAUSED', 0, 30)
+    Graphics.scale(0.5, 0.5)
 
-    drawBoldText('TETRIS BUT WITH A TWIST', -59, 80)
+    drawBoldTextCentered('INSTRUCTIONS', 0, 100)
+
+    let descriptionMaxCharCount = 50
     drawText(
-      'FILL LINES TO CLEAR THEM. THIS TIME\n' +
-      'THE TETROMINOES HAVE A WILL OF THEIR\n' +
-      'OWN. SO TRY TO DESTROY THEM BEFORE\n' +
-      'THEY FLEE BACK TO WHENCE THEY CAME.',
-      -100, 100
+      'MAKE FULL HORIZONTAL LINES WITH THE TETROMINOES.\n' +
+      'THIS WILL DISINTEGRATE THE TETROMINOES AND PROVIDE\n' +
+      'YOU POINTS.\n\n' +
+      'TRY TO AIM FOR AS MANY LINES AT THE SAME TIME, AND\n' +
+      'TRY OUT SOME TRICKS SUCH AS T-SPINS AS WELL!\n\n' +
+      'DO NOTE THAT TETROMINOES WILL FLEE BACK UP IF THEY\n' +
+      'CAN WHEN THEY HAVE SEEN FELLOW NEIGHBOURING TETRO-\n' +
+      'MINOES DIE AT LEAST TWICE. FLEEING TETROMINOES WILL\n' +
+      'REDUCE YOUR SCORE, SO TRY TO MURDER AS MUCH AS\n' +
+      'YOU CAN.\n\n' +
+      'GOOD LUCK!',
+      -descriptionMaxCharCount * GLYPH_WIDTH / 2, 118
     )
 
-    Graphics.setTransform(1, 0, 0, 1, Canvas.width / 2, 120)
+    Graphics.setTransform(1, 0, 0, 1, Canvas.width / 2 - 100, 248)
 
-    drawBoldText('KEYBOARD CONTROLS', -59, 50)
+    drawBoldTextCentered('KEYBOARD CONTROLS', 0, 0)
     drawText(
-      '     PAUSE GAME - ESC\n' +
-      '      HARD DROP - SPACE\n' +
-      '      SOFT DROP - ARROW DOWN\n' +
-      '  ROTATE CLOCKW - ARROW UP/X\n' +
+      'UN/PAUSE GAME   - ESC\n' +
+      'HARD DROP       - SPACE\n' +
+      'SOFT DROP       - ARROW DOWN\n' +
+      'ROTATE CLOCKW   - ARROW UP/X\n' +
       'ROTATE C CLOCKW - CTRL/Z\n' +
-      '           HOLD - SHIFT/C\n',
-      -96,
-      62
+      'HOLD            - SHIFT/C\n',
+      -83,
+      18
     )
-    drawBoldText('GAMEPAD CONTROLS', 62-117, 128)
-    drawSprite(GamepadSprite, 0, 150)
 
-    drawText('HOLD', 106-118, 143)
-    drawText('HARD\nDROP', 54-118, 161)
-    drawText('SOFT\nDROP', 86-118, 194)
-    drawText('ROTATE\nC.CLOCKW', 125-118, 194)
-    drawText('ROTATE\nCLOCKW', 160-118, 164)
+    Graphics.setTransform(1, 0, 0, 1, Canvas.width / 2 + 100, 248)
+
+    drawBoldTextCentered('GAMEPAD CONTROLS', 0, 0)
+    drawSprite(GamepadSprite, 0, 150-128)
+
+    drawText('HOLD', 106-118, 143-128)
+    drawText('HARD\nDROP', 54-118, 161-128)
+    drawText('SOFT\nDROP', 86-118, 194-128)
+    drawText('ROTATE\nC.CLOCKW', 125-118, 194-128)
+    drawText('ROTATE\nCLOCKW', 160-118, 164-128)
   }
 }

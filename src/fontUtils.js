@@ -8,11 +8,17 @@ export function getTextWidth(text) {
   return text.length * GLYPH_WIDTH
 }
 
+export function getBoldTextWidth(text) {
+  return text.length * (GLYPH_WIDTH + 1)
+}
+
 export const specialGlyphs = {
   '.': [0, 2],
   ':': [2, 2],
-  '+': [4, 6],
-  '-': [10, 6]
+  '!': [4, 2],
+  '+': [6, 6],
+  '-': [12, 6],
+  ',': [18, 3],
 }
 
 export function drawText (text, x, y, scale = 1, extraPadding = 0) {
@@ -34,9 +40,9 @@ export function drawText (text, x, y, scale = 1, extraPadding = 0) {
         offset = custom[0]
         width = custom[1]
       } else if (text[i] < 'A') {
-        offset = 23 + (text.charCodeAt(i) - 48) * GLYPH_WIDTH
+        offset = 25 + (text.charCodeAt(i) - 48) * GLYPH_WIDTH
       } else {
-        offset = 83 + (text.charCodeAt(i) - 65) * GLYPH_WIDTH
+        offset = 85 + (text.charCodeAt(i) - 65) * GLYPH_WIDTH
       }
       Graphics.drawImage(
         Font.renderable,
@@ -56,4 +62,12 @@ export function drawText (text, x, y, scale = 1, extraPadding = 0) {
 export function drawBoldText (text, x, y, scale = 1) {
   drawText(text, x, y, scale, 1)
   drawText(text, x + scale, y, scale, 1)
+}
+
+export function drawTextCentered (text, x, y, scale = 1) {
+  drawText(text, x - getTextWidth(text) / 2, y, scale)
+}
+
+export function drawBoldTextCentered (text, x, y, scale = 1) {
+  drawBoldText(text, x - getBoldTextWidth(text) / 2, y, scale)
 }

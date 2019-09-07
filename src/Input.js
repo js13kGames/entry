@@ -6,7 +6,8 @@ import {
   ROTATE_CCW,
   ROTATE_CW,
   HOLD,
-  INPUT_MAPPING
+  INPUT_MAPPING,
+  PAUSE
 } from './constants'
 
 export let Input = {
@@ -25,6 +26,10 @@ export let Input = {
 
   getAnyKey () {
     return Object.values(Input.current).some(val => val)
+  },
+
+  getNoKeyPress () {
+    return Object.values(Input.current).every(val => !val)
   },
 
   getKey (input) {
@@ -63,21 +68,15 @@ export let Input = {
   },
 
   postUpdate () {
-    [
-      MOVE_LEFT,
-      MOVE_RIGHT,
-      HARD_DROP,
-      SOFT_DROP,
-      ROTATE_CCW,
-      ROTATE_CW,
-      HOLD,
-    ].forEach(key => {
-      Input.previous[key] = Input.current[key]
-    })
+    Object.entries(Input.current).forEach(([key, value]) => { Input.previous[key] = value })
   }
 }
 
-document.addEventListener('keydown', ({ keyCode }) => {
+document.addEventListener('keydown', ({ repeat, keyCode }) => {
+  if (repeat) {
+    return
+  }
+
   let target = INPUT_MAPPING[keyCode] || keyCode
   Input.previous[target] = Input.current[target]
   Input.current[target] = true

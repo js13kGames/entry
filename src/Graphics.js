@@ -3,13 +3,13 @@ export let Graphics = Canvas.getContext('2d')
 
 Graphics.imageSmoothingEnabled = false
 
-export function drawRectangle(x, y, width, height, color) {
-  Graphics.fillStyle = color
-  Graphics.fillRect(x, y, width, height)
+export function resetTransform () {
+  // So that closure compiler recognizes it as an extern
+  Graphics['resetTransform']()
 }
 
-export function drawRectangleOutline(x, y, width, height, color) {
-  Graphics.strokeStyle = color
+export function fillAndStrokeRectangle(x, y, width, height) {
+  Graphics.fillRect(x, y, width, height)
   Graphics.strokeRect(x, y, width, height)
 }
 

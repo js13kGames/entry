@@ -1,10 +1,10 @@
-export let nextScene
+export let currentScene
 export let currentScore = 0
 export let lineClears = 0
 export let currentLevel = 1
 
 export function setScene (scene) {
-  nextScene = scene
+  currentScene = scene
 }
 
 export function resetScore () {
