@@ -45,7 +45,7 @@ export const createAllClearSound = createLineClearSoundFactory(
   0.5
 )
 
-export const createTetrisSound = createLineClearSoundFactory(
+export const createFourLinesSound = createLineClearSoundFactory(
   [ -2, 5, -2, 10, 5, 10, 15, 10, 15, 17, 15, 17, 22 ],
   0.6
 )

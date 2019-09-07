@@ -5,12 +5,12 @@ import { createLandSound } from './Audio/Samples/Land'
 import { createLockSound } from './Audio/Samples/Lock'
 import { createShiftSound } from './Audio/Samples/Shift'
 import {
-  createTetrisSound,
+  createFourLinesSound,
   createSingleLineSound,
   createDoubleLineSound,
   createTripleLineSound,
   createAllClearSound
-} from './Audio/Samples/Tetris'
+} from './Audio/Samples/LineClears'
 import { createHardDropSound } from './Audio/Samples/HardDrop'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
 import createHoldSound from './Audio/Samples/Hold'
@@ -61,7 +61,7 @@ export let LineClearSounds = [
   createAudioSampleAsset(createSingleLineSound),
   createAudioSampleAsset(createDoubleLineSound),
   createAudioSampleAsset(createTripleLineSound),
-  createAudioSampleAsset(createTetrisSound),
+  createAudioSampleAsset(createFourLinesSound),
 ]
 export let HardDropSound = createAudioSampleAsset(createHardDropSound)
 export let HoldSound = createAudioSampleAsset(createHoldSound)
