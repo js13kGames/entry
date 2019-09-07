@@ -21,6 +21,14 @@ export class Player {
         } else if (this.controls) {
             this.keys = getKeys(this.controls);
         }
+
+        // For menu item / key debouncing so doesn't spam
+        this.debounce = {
+            up: 0,
+            down: 0,
+            left: 0,
+            right: 0
+        };
     }
 
     handleKeyPresses() {
@@ -57,9 +65,11 @@ export class Player {
     }
 
     menuUpdate() {
-        if (this.keys.down()) {
-            menu.down();
-        }
+        this.debounce.up--;
+        this.debounce.down--;
+        this.debounce.left--;
+        this.debounce.right--;
+        this.debounce.accept--;
     }
 
     scoreInc() {

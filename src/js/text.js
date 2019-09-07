@@ -47,7 +47,7 @@ const glyphs = [
 ];
 
 export function drawText(props) {
-    [...props.text.toString()].forEach((c, i) => {
+    [...props.text.toString().toUpperCase()].forEach((c, i) => {
         var glyph = glyphs[c.charCodeAt(0)];
 
         // If not the 1st character, translate to be positioned after the 1st
@@ -63,11 +63,13 @@ export function drawText(props) {
 }
 
 export function renderText(props) {
+    let size = props.size || 1;
     props.context.save();
     props.context.scale(props.scale, props.scale);
     props.context.translate(props.x, props.y);
+    props.context.scale(size, size);
     props.context.strokeStyle = props.color;
-    props.context.lineWidth = 1;
+    props.context.lineWidth = 1.5;
     drawText(props);
     props.context.restore();
 }
