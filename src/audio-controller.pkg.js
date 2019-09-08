@@ -1,4 +1,4 @@
-function playMusic () {
+function initMusic () {
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const masterGain = audioCtx.createGain();
   masterGain.gain.value = 0.5;
@@ -8,7 +8,7 @@ function playMusic () {
     synth: 1
   }
 
-  function makeNote(startTime, freq, sweepLength, wave) {
+  function makeSound(startTime, wave, sweepLength, freq, endFreq) {
     var oscillator = audioCtx.createOscillator();
     oscillator.type = wave;
 
@@ -18,25 +18,26 @@ function playMusic () {
     // set our attack
     sweepEnv.gain.linearRampToValueAtTime(0.5, startTime + 0.01);
     // set our release
-    sweepEnv.gain.linearRampToValueAtTime(0, startTime + sweepLength - 0.5);
+    sweepEnv.gain.linearRampToValueAtTime(0, startTime + sweepLength);
 
     oscillator.frequency.setValueAtTime(freq, startTime); // value in hertz
+    if (endFreq) oscillator.frequency.exponentialRampToValueAtTime(endFreq, startTime + sweepLength);
     oscillator.connect(sweepEnv).connect(masterGain).connect(audioCtx.destination);
     oscillator.start(startTime);
     oscillator.stop(startTime + sweepLength);
   }
 
   function makeDrumNote(startTime) {
-    makeNote(startTime, 200, 1, 'sine');
+    makeSound(startTime, 'sine', 1, 200);
   }
 
   function makeSynthNote(startTime) {
     const frequencies = [200, 236, 284, 300];
-    makeNote(
+    makeSound(
       startTime,
-      frequencies[floor(random() * frequencies.length)],
+      'triangle',
       random() * 10 + 1,
-      'triangle'
+      frequencies[floor(random() * frequencies.length)]
     );
   }
 
@@ -66,7 +67,19 @@ function playMusic () {
     );
   }
 
-  setInterval(scheduleInstruments, 100);
+  function playMusic () {
+    setInterval(scheduleInstruments, 100);
+    return true;
+  }
 
-  return true;
+  function pizzaSound () {
+    makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
+  }
+
+  function punchSound () {
+    console.log('punch');
+    makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
+  }
+
+  return {playMusic, pizzaSound, punchSound};
 }
