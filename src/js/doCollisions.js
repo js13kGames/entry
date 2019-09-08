@@ -129,7 +129,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 }
 
                 if (sprite1.shield) {
-                    ship.shieldDegrading = ship.shieldDegrading || 60;
+                    sprite1.shieldDegrading = sprite1.shieldDegrading || 60;
                     return;
                 }
 
@@ -201,7 +201,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
         }
 
         if (sprite2.type === 'ship') {
-            if (sprite2.rewinding) {
+            if (sprite2.rewinding || sprite1.shield || sprite2.shield) {
                 return;
             }
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
