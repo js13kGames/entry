@@ -60,9 +60,13 @@ Turtle.prototype = extendPrototype(DisplayContainer.prototype, {
   },
   animateShow: function () {
     this.head.animateShow();
+    this.leftLeg.setState(Leg.states.idle);
+    this.rightLeg.setState(Leg.states.idle);
   },
   animateHide: function () {
     this.head.animateHide();
+    this.leftLeg.setState(Leg.states.hiding);
+    this.rightLeg.setState(Leg.states.hiding);
   },
   step: function (dts) {
     this.leftLeg.step(dts);

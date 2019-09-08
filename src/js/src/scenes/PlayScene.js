@@ -72,6 +72,11 @@ function PlayScene() {
   // stopwatch
   this.playSeconds = 0;
 
+  this.cameraPos = {
+    x: 0,
+    y: 0
+  };
+
   this.outro = null;
 
   this.endHappyDelay = 0.5;
@@ -167,8 +172,6 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       onEnd: function () {
         this.turtle.animateHide();
         this.turtle.head.eye.state = Eye.states.struggle;
-        this.turtle.leftLeg.setState(Leg.states.hiding);
-        this.turtle.rightLeg.setState(Leg.states.hiding);
       }.bind(this)
     }).then({ // tripping
       from: 1000, // x
@@ -334,8 +337,6 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       onStep: setAngle,
       timeFunction: Anim.easingFunctions.easeInOutQuad
     }).build();
-
-    // y: 600 - this.shellRadius + 5,
   
     this.keys = [];
     this.keys.push(KB(
@@ -372,8 +373,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         this.turtle.angle = Math.PI;
         this.turtle.animateShow();
         this.turtle.head.eye.state = Eye.states.normal;
-        this.turtle.leftLeg.setState(Leg.states.idle);
-        this.turtle.rightLeg.setState(Leg.states.idle);
+        // TODO show instruction
         break;
       case PlayScene.states.outro:
         if (this.turtle.x < this.roll.center.x) {
@@ -394,6 +394,18 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         break;
       case PlayScene.states.end:
         this.turtle.animateShow();
+        this.main.animManager.add(
+          new Anim({
+            object: this.turtle,
+            from: this.turtle.y,
+            to: this.turtle.y - 10,
+            duration: 0.25,
+            onStep: function (adjusted, ratio, timeRatio, obj) {
+              obj.y = adjusted;
+            },
+            timeFunction: Anim.easingFunctions.easeOutCubic
+          })
+        );
         break;
     }
     this.currentCycle = this.stateMap[state];
@@ -452,6 +464,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.updateShiftState();
   },
   setCamera: function (x, y) {
+    this.cameraPos.x = x;
+    this.cameraPos.y = y;
     this.scrollLayer.x = Math.floor(-x + SETTINGS.width / 2);
     this.scrollLayer.y = Math.floor(-y + SETTINGS.height / 2);
   },
@@ -516,6 +530,18 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       this.endHappyDelay -= dts;
       if (this.endHappyDelay <= 0) {
         this.turtle.head.eye.state = Eye.states.happy;
+        this.main.animManager.add(
+          new Anim({
+            object: this,
+            from: this.cameraPos.x,
+            to: this.turtle.x,
+            duration: 0.5,
+            onStep: function (adjusted) {
+              this.setCamera(adjusted, this.cameraPos.y);
+            }.bind(this),
+            timeFunction: Anim.easingFunctions.easeOutCubic
+          })
+        );
       }
     }
   }
