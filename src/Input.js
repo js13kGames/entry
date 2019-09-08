@@ -47,6 +47,8 @@ export let Input = {
 
   preUpdate () {
     if (Input.gamepad) {
+      Input.gamepad = navigator.getGamepads()[Input.gamepad.index]
+
       function update(key, state) {
         if (state && !Input.gamepadState[key]) {
           Input.set(key)
