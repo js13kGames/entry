@@ -183,5 +183,10 @@ const menuLoop = GameLoop({  // create the main game loop
 export function startShipSelect(newGame, otherScenes) {
     game = newGame;
     scenes = otherScenes;
+
+    game.players.forEach(player => {
+        player.ship = null;
+    });
+
     menuLoop.start();
 }
