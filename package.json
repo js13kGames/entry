@@ -27,7 +27,7 @@
     "gulp-if": "^3.0.0",
     "gulp-inject-string": "^1.1.2",
     "gulp-sourcemaps": "^2.6.5",
-    "gulp-svgo": "^2.1.1",
+    "gulp-svgmin": "^2.2.0",
     "gulp-uglify-es": "^1.0.4",
     "gulp-zip": "^5.0.0"
   },

@@ -7,6 +7,7 @@ const uglify = require('gulp-uglify-es').default;
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
 const svgo = require('gulp-svgo');
+const svgmin = require('gulp-svgmin');
 const inject = require('gulp-inject-string');
 const gulpZip = require('gulp-zip');
 
@@ -39,7 +40,15 @@ function js () {
 
 function svg () {
   return src('src/assets/*.svg')
-    .pipe(svgo())
+    .pipe(svgmin({
+      plugins: [
+        { cleanupNumericValues: { floatPrecision: 0, leadingZero: false } },
+        { cleanupIDs: true },
+        { cleanupAttrs: true },
+        { convertPathData: true },
+        { convertShapeToPath: true }
+      ]
+    }))
     .pipe(dest('dist/assets'));
 }
 
