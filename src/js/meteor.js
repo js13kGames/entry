@@ -3,7 +3,6 @@
  * 20461 Dioretsa, and the smaller space rocks are meteoroids!
  */
 
-//import { Sprite } from 'kontra';
 import { Sprite } from './sprite';
 import * as util from './utility';
 import { createShrapnel } from './shrapnel';
@@ -48,7 +47,6 @@ export function createMeteor(props) {
         mass: props.mass || (Math.PI * props.radius * props.radius),
         lines: createLines(props.radius),
         game: props.game,
-        color: '#fff',
         dr: props.dr || 0,
         rotation: Math.random() * 360,
 
@@ -76,6 +74,9 @@ export function createMeteor(props) {
             this.rotation += this.dr;
             this.velocity = this.velocity.add(this.acceleration, dt);
             this.position = this.position.add(this.velocity, dt);
+            if (!this.hitbox) {
+                return;
+            }
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
             this.hitbox.angle = util.degToRad(this.rotation);
@@ -91,25 +92,27 @@ export function createMeteor(props) {
         }
     });
 
-    if (meteor.radius > 12) {
-        meteor.hitboxLines = [];
-        meteor.lines.forEach((line, i) => {
-            meteor.hitboxLines.push([line[0], line[1]]);
-        });
-        meteor.hitbox = meteor.game.cSystem.createPolygon(
-            meteor.x,
-            meteor.y,
-            meteor.hitboxLines
-        );
-    } else {
-        meteor.hitbox = meteor.game.cSystem.createCircle(
-            meteor.x,
-            meteor.y,
-            meteor.radius
-        );
-    }
+    if (!props.noCollision) {
+        if (meteor.radius > 12) {
+            meteor.hitboxLines = [];
+            meteor.lines.forEach((line, i) => {
+                meteor.hitboxLines.push([line[0], line[1]]);
+            });
+            meteor.hitbox = meteor.game.cSystem.createPolygon(
+                meteor.x,
+                meteor.y,
+                meteor.hitboxLines
+            );
+        } else {
+            meteor.hitbox = meteor.game.cSystem.createCircle(
+                meteor.x,
+                meteor.y,
+                meteor.radius
+            );
+        }
 
-    meteor.hitbox.owner = meteor;
+        meteor.hitbox.owner = meteor;
+    }
 
     props.game.sprites.push(meteor);
     props.game.meteors.push(meteor);

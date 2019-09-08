@@ -1,6 +1,8 @@
 import { initKeys, GameLoop } from 'kontra';
 import { pollGamepads } from '../gamepad';
+import { renderText } from '../text';
 import { Menu } from '../menu';
+import { createMeteor } from '../meteor';
 import { Player } from '../player';
 import { colors } from '../colors';
 import { detectNewInput } from '../detectInput';
@@ -12,6 +14,8 @@ var scenes;
 let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads(game);
+
+        game.sprites[0].rotation += game.sprites[0].dr;
 
         game.players.forEach(player => {
 
@@ -27,11 +31,12 @@ let mainMenuLoop = GameLoop({  // create the main game loop
             }
 
             if (player.keys.down()) {
-                player.debounce.down--;
-                if (player.debounce.down <= 0) {
-                    mainMenu.next();
-                    player.debounce.down = 15;
+                if (player.debounce.down > 0) {
+                    player.debounce.down--;
+                    return;
                 }
+                mainMenu.next();
+                player.debounce.down = 15;
             } else {
                 player.debounce.down = 0;
             }
@@ -56,10 +61,20 @@ let mainMenuLoop = GameLoop({  // create the main game loop
     },
 
     render() {
+        game.sprites[0].render(game.scale * 2);
         mainMenu.render(game.scale);
+        renderText({
+            alignRight: true,
+            text: '20461 Dioretsa',
+            color: '#fff',
+            size: 2,
+            x: game.width - 30,
+            y: 30,
+            scale: game.scale,
+            context: game.context
+        });
     }
 });
-
 
 export function startMainMenu(newGame, otherScenes) {
 
@@ -67,6 +82,10 @@ export function startMainMenu(newGame, otherScenes) {
     scenes = otherScenes;
 
     detectNewInput();
+
+    game.meteors = [];
+    game.pickups = [];
+    game.sprites = [];
 
     mainMenu = new Menu({
         context: game.context,
@@ -78,6 +97,19 @@ export function startMainMenu(newGame, otherScenes) {
             { text: 'settings' },
             { text: 'credits' }
         ]
+    });
+
+    // Big asteroid in the middle (dioretsa)
+    createMeteor({
+        x: game.width * .4,
+        y: game.height * .8,
+        radius: Math.min(game.width / 2, game.height / 2),
+        mass: 100000,
+        dx: 0,
+        dy: 0,
+        dr: .05,
+        noCollision: true,
+        game: game
     });
 
     mainMenuLoop.start(game, scenes);
