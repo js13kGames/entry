@@ -55,12 +55,30 @@
       </a-box>
 
       <!-- Map panel -->
-      <a-plane color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8" map>
+      <a-plane id="map" color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8" map shadow>
         <!-- <a-entity text="value: Fuel:; anchor: left; baseline: top; transparent: false; width: 2" position="-.7 .35 0"></a-entity>
         <a-plane position=".12 .32 .001" color="green" height=".07" width="1.18"></a-plane> -->
 
         <!-- <a-circle position="0 0 0.001" color="yellow" radius="0.05"></a-circle>
         <a-circle position="0.1 0 0.001" color="brown" radius="0.02"></a-circle> -->
+        <a-entity obj-model="obj: #l-mark" material="color: #fff"></a-entity>
+        <a-entity>
+          <!-- Top right -->
+          <a-plane position=".075 .085 .003" width=".03" height=".01"></a-plane>
+          <a-plane position=".085 .075 .003" width=".01" height=".03"></a-plane>
+          
+          <!-- Bottom right -->
+          <a-plane position=".075 -.085 .003" width=".03" height=".01"></a-plane>
+          <a-plane position=".085 -.075 .003" width=".01" height=".03"></a-plane>
+
+          <!-- Bottom left -->
+          <a-plane position="-.075 -.085 .003" width=".03" height=".01"></a-plane>
+          <a-plane position="-.085 -.075 .003" width=".01" height=".03"></a-plane>
+
+          <!-- Top left -->
+          <a-plane position="-.075 .085 .003" width=".03" height=".01"></a-plane>
+          <a-plane position="-.085 .075 .003" width=".01" height=".03"></a-plane>
+        </a-entity>
       </a-plane>
 
       <!-- Left panel -->
@@ -72,19 +90,21 @@
       </a-box>
 
       <!-- Camera -->
-      <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
-        <a-entity cursor="fuse: false" position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
-          raycaster="objects: .clickable"
-          animation__mouseenter__inner="property: geometry.radiusInner; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.0001; to: 0.02"
-          animation__mouseenter__outer="property: geometry.radiusOuter; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.005; to: 0.025"
-          animation__mouseleave__inner="property: geometry.radiusInner; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.02; to: 0.0001"
-          animation__mouseleave__outer="property: geometry.radiusOuter; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.025; to: 0.005">
+      <a-entity rotation="0 -90 0">
+        <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
+          <a-entity cursor="fuse: false" position="0 0 -1"
+            geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
+            raycaster="objects: .clickable"
+            animation__mouseenter__inner="property: geometry.radiusInner; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.0001; to: 0.02"
+            animation__mouseenter__outer="property: geometry.radiusOuter; startEvents: mouseenter; easing: easeInCubic; dur: 150; from: 0.005; to: 0.025"
+            animation__mouseleave__inner="property: geometry.radiusInner; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.02; to: 0.0001"
+            animation__mouseleave__outer="property: geometry.radiusOuter; startEvents: mouseleave; easing: easeInCubic; dur: 300; from: 0.025; to: 0.005">
+          </a-entity>
+          <a-sky id="mask" color="#111" opacity="0" radius="0.1" fader
+            animation__out="property: material.opacity; startEvents: fadeOut; from: 1; to: 0; dur: 1000"
+            animation__in="property: material.opacity; startEvents: fadeIn; from: 0; to: 1; dur: 1000">
+          </a-sky>
         </a-entity>
-        <a-sky id="mask" color="#111" opacity="0" radius="0.1" fader
-          animation__out="property: material.opacity; startEvents: fadeOut; from: 1; to: 0; dur: 1000"
-          animation__in="property: material.opacity; startEvents: fadeIn; from: 0; to: 1; dur: 1000">
-        </a-sky>
       </a-entity>
     </a-entity>
 
