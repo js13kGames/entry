@@ -4,7 +4,8 @@ const tempfile = require('tempfile')
 const ClosureCompiler = require('google-closure-compiler').compiler
 const rollupPluginJson = require('rollup-plugin-json')
 const rollupPluginUrl = require('rollup-plugin-url')
-const childProcess = require('child_process')
+const { execFile } = require('child_process')
+const advzip = require('advzip-bin')
 const minifyHtml = require('html-minifier').minify
 
 function asyncCompile (compiler) {
@@ -88,28 +89,11 @@ const outputOptions = {
   format: 'es'
 }
 
-function advZipWindows () {
+function advZip () {
   return new Promise((resolve, reject) => {
-    const command = `.\\bin\\advzip.exe -4 -a ./dist/dist.zip ./dist/index.html`
-
-    childProcess.exec(command, { cwd: __dirname }, (error, stdout, stderr) => {
-      if (error) {
-        return reject(stderr)
-      }
-      resolve(stdout)
-    })
-  })
-}
-
-function advZipFallback () {
-  return new Promise((resolve, reject) => {
-    const command = `advzip -4 -a ./dist/dist.zip ./dist/index.html`
-
-    childProcess.exec(command, { cwd: __dirname }, (error, stdout, stderr) => {
-      if (error) {
-        return reject(stderr)
-      }
-      resolve(stdout)
+    execFile(advzip, ['-4', '-a', './dist/dist.zip', './dist/index.html'], err => {
+      if (err) { return reject(err) }
+      resolve()
     })
   })
 }
@@ -132,16 +116,7 @@ async function build() {
 
   fs.writeFileSync('dist/index.html', minifiedHtml, { encoding: 'utf-8' })
 
-  try {
-    await advZipWindows()
-  } catch (e) {
-    try {
-      await advZipFallback()
-    } catch (e) {
-      console.log('Could not zip index.html using advzip. Does the advzip binary even exist?')
-      return
-    }
-  }
+  await advZip()
 
   const finalFileSize = fs.readFileSync('./dist/dist.zip').byteLength
 
