@@ -10,6 +10,11 @@ const MOVE_RIGHT = '3'
 const ROTATE_CW = '4'
 const ROTATE_CCW = '5'
 
+const dirMapping = {
+  '-1': MOVE_LEFT,
+  '1': MOVE_RIGHT
+}
+
 export class ScaredTetrominoController extends TetrominoControllerBase {
   constructor (tetromino, board) {
     super(tetromino, board)
@@ -22,6 +27,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     this.timerDuration = currentLevel > 5 ? 1 : 2
 
     this.manouvered = 0
+    this.lastDirection = 1
   }
 
   step () {
@@ -123,12 +129,12 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
 
     reset()
 
-    if (this.move(0, 1)) {
+    if (this.tetromino.fleeing && this.move(0, 1)) {
       return instructionHistory + MOVE_UP
     }
 
-    if (this.move(-1, 0)) {
-      let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + MOVE_LEFT)
+    if (this.move(this.lastDirection, 0)) {
+      let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + dirMapping[this.lastDirection])
       if (result) {
         return result
       }
@@ -136,8 +142,9 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
 
     reset()
 
-    if (this.move(1, 0)) {
-      let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + MOVE_RIGHT)
+    if (this.move(-this.lastDirection, 0)) {
+      this.lastDirection = -this.lastDirection
+      let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + dirMapping[this.lastDirection])
       if (result) {
         return result
       }
