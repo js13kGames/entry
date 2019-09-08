@@ -6,10 +6,10 @@ const concat = require('gulp-concat');
 const uglify = require('gulp-uglify-es').default;
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
-const svgo = require('gulp-svgo');
 const svgmin = require('gulp-svgmin');
 const inject = require('gulp-inject-string');
 const gulpZip = require('gulp-zip');
+const advzip = require('gulp-advzip');
 
 const env = process.env.NODE_ENV;
 const isProd = env === 'production';
@@ -105,6 +105,7 @@ function deleteInjected () {
 function zip () {
   return src('dist/**/*')
     .pipe(gulpZip('backtoskullisland.zip'))
+    .pipe(advzip({ optimizationLevel: 4, iterations: 100 }))
     .pipe(dest('dist'));
 }
 
