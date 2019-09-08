@@ -3,13 +3,13 @@ TODO
 Wed: make targets shootable
 Thu: game system for hiding/showing main game elements
 Fri: pixelart assets (cowboy + chicken)
-Sat: music (compose + integrate)
-Sun: 3D scene (target + background)
-Mon: track time/shots fired
+Sat: track time/shots fired
+Sun: music (compose + integrate)
+Mon: 3D scene (target + background)
 Tue: bugs / check Oculus Go
 Wed: screenshots + desc
 Thu: submit
 Fri Sep13: unmovable deadline
 
 BUGS:
-- optimized version makes you win immediately... say what?
+- can't listen for stateremoved events of the outlaws' entities from the a-scene (remove hack when solved)
