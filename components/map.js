@@ -1,12 +1,16 @@
 AFRAME.registerComponent("map", {
   init: function () {
+    console.log("map init");
+
     const el = this.el;
     const sceneEl = el.sceneEl;
 
-    // Only run once the scene has initialised
-    sceneEl.addEventListener("loaded", function() {
-      const logic = sceneEl.components.logic;
-      const world = logic.world;
+    const shipEl = sceneEl.querySelector("#ship");
+    let ship;
+    shipEl.addEventListener("loaded", e => ship = shipEl.components.ship);
+
+    sceneEl.addEventListener("worldReady", e => {
+      const world = e.detail;
       console.log(world);
 
       for (let node of world.nodes) {
@@ -14,6 +18,12 @@ AFRAME.registerComponent("map", {
         nodeEl.setAttribute("color", node.color);
         nodeEl.setAttribute("geometry", {radius: node.size});
         nodeEl.setAttribute("position", {x: node.x, y: node.y, z: 0.002});
+        nodeEl.className = "clickable";
+        nodeEl.addEventListener("click", e => {
+          if (ship.location != node) {
+            nodeEl.emit("changeTarget", node);
+          }
+        });
         el.appendChild(nodeEl);
       }
 

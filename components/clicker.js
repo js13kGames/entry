@@ -1,7 +1,7 @@
 AFRAME.registerComponent('clicker', {
-  schema: {},
-
   init: function () {
+    console.log("clicker init");
+
     this.el.addEventListener("click", e => {
       // console.log(e);
       this.el.setAttribute("color", "orange");

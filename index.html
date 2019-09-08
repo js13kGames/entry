@@ -6,9 +6,12 @@
   <script src="https://js13kgames.com/webxr-src/aframe.js"></script>
   
   <!-- build:js -->
+  <script src="components/button.js"></script>
   <script src="components/clicker.js"></script>
   <script src="components/logic.js"></script>
+  <script src="components/go-button.js"></script>
   <script src="components/map.js"></script>
+  <script src="components/ship.js"></script>
   <script src="components/star.js"></script>
   <!-- endbuild -->
 </head>
@@ -37,7 +40,18 @@
 
       <!-- Front panel -->
       <a-box position="0 .79 -1.76" rotation="-52 0 0" height=".3" width=".3" depth=".1" shadow>
-        <a-cylinder color="red" height=".1" radius=".1" position="0 0 .05" rotation="90 0 0" shadow></a-cylinder>
+        <a-cylinder 
+          class="clickable" 
+          color="red" 
+          height=".1"
+          radius=".1" 
+          position="0 0 .05" 
+          rotation="90 0 0" 
+          shadow 
+          button="pressed: true"
+          go-button
+          animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
+          animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
       </a-box>
 
       <!-- Map panel -->
