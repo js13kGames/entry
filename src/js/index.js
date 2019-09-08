@@ -3,15 +3,22 @@ AFRAME.registerComponent('screen-manager', {
   init: function() {
     this.el.addState('title-screen');
 
+    this.titleEl = this.el.querySelector('#title');
     this.startButtonEl = this.el.querySelector('#start-button');
+    this.endEl = this.el.querySelector('#end');
     this.timerEl = this.el.querySelector('#timer');
+    this.shotsEl = this.el.querySelector('#shots');
     this.chickenEls = Array.from(this.el.querySelectorAll('.chicken'));
     this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
 
     this.onGameStart = AFRAME.utils.bind(this.onGameStart, this);
     this.onStateRemoved = AFRAME.utils.bind(this.onStateRemoved, this);
+    this.onShotFired = AFRAME.utils.bind(this.onShotFired, this);
 
     this.startButtonEl.addEventListener('mouseenter', this.onGameStart);
+    this.outlawEls.forEach(function(outlawEl) {
+      outlawEl.addEventListener('stateremoved', this.onShotFired);
+    });
   },
   onGameStart: function() {
     this.startButtonEl.removeEventListener('mouseenter', this.onGameStart);
@@ -20,16 +27,17 @@ AFRAME.registerComponent('screen-manager', {
     this.el.removeState('title-screen');
 
     this.elapsedTime = 0;
-  
-    this.el.querySelector('#title').setAttribute('visible', false);
-    this.timerEl.setAttribute('visible', true);
-    this.chickenEls.forEach(function(chickenEl) {
-      chickenEl.setAttribute('visible', false);
+    this.shotsFired = 0;
+
+    [this.titleEl, ...this.chickenEls].forEach(function(elToHide) {
+      elToHide.setAttribute('visible', false);
     });
+    [this.timerEl, this.shotsEl, ...this.outlawEls].forEach(function(elToShow) {
+      elToShow.setAttribute('visible', true);
+    });
+    // hack: to prevent outlaws from being shot (though hidden) while practicing on the chicken
+    // they are placed below the ground plane
     this.outlawEls.forEach(function(outlawEl) {
-      outlawEl.setAttribute('visible', true);
-      // hack: to prevent outlaws from being shot (though hidden) while practicing on the chicken
-      // they are placed below the ground plane
       outlawEl.object3D.position.y += 100.6;
     });
   },
@@ -43,9 +51,13 @@ AFRAME.registerComponent('screen-manager', {
       if (!this.outlawEls.find(function(outlawEl) { return outlawEl.is('up') })) {
         this.el.removeState('game-screen');
         this.el.addState('end-screen');
-        this.el.querySelector('#end').setAttribute('visible', true);
+        this.endEl.setAttribute('visible', true);
       }
     }
+  },
+  onShotFired: function(evt) {
+    this.shotsFired += 1;
+    this.shotsEl.setAttribute('value', `shots\n${this.shotsFired}`);
   }
 });
 
@@ -59,6 +71,8 @@ AFRAME.registerComponent('target', {
     },
   },
   init: function() {
+    // hack related to stateremoved
+    this.isOutlaw = this.el.getDOMAttribute('class').includes('outlaw');
     // state variables
     this.el.addState('up');
 
@@ -103,6 +117,12 @@ AFRAME.registerComponent('target', {
       this.data.revive.forEach(function(targetEl) {
         targetEl.components.target.onRevive();
       });
+
+      // hack: the listener registed by screen-manager on this target component's stateremoved event
+      // never fires, so call the listener directly, introducing an ugly coupling
+      if (this.isOutlaw) {
+        this.el.sceneEl.components['screen-manager'].onShotFired();
+      }
     }
   },
   onDeadOrAlive: function() {
