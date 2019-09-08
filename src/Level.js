@@ -165,7 +165,9 @@ export class Level {
         }
       }
       if (this.scaredTetrominoControllers.size === 0) {
+        this.scaredTetrominoCheck = true
         this.checkState(this.allRows)
+        this.scaredTetrominoCheck = false
       }
     }
 
@@ -420,11 +422,13 @@ export class Level {
       this.setMoveType(T_SPIN_MINI + clearedRowsCount)
     }
 
-    if (clearedRowsCount > 0) {
-      this.clearStreak++
-      this.lastClearWasSpecial = tSpinType || clearedRowsCount === 4
-    } else {
-      this.clearStreak = 0
+    if (!this.scaredTetrominoCheck) {
+      if (clearedRowsCount > 0) {
+        this.clearStreak++
+        this.lastClearWasSpecial = tSpinType || clearedRowsCount === 4
+      } else {
+        this.clearStreak = 0
+      }
     }
   }
 
