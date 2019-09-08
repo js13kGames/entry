@@ -20,11 +20,15 @@ let StatueRoom = function(g, mode, loadNextRoom) {
     this.cancelKey = g.keyboard(68);
     this.actionKey.press = () => {
         if (this.canUseStatue && !this.statue.active) {
+            this.scene.alpha = 0.1;
+            this.player.sprite.alpha = 0.1;
             this.statue.activate();
         }
     };
     this.cancelKey.press = () => {
         if (this.statue.active) {
+            this.scene.alpha = 1;
+            this.player.sprite.alpha = 1;
             this.statue.deactivate();
         }
     };

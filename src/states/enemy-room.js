@@ -115,7 +115,10 @@ EnemyRoom.prototype.loop = function() {
         this.player.sword.swing();
     }
 
-    if (this.enemies.length === 0) {
+    if (this.enemies.length === 0 && !this.exitPit.visible) {
+        if (this.g.hitTestRectangle(this.exitPit, this.player.sprite)) {
+            this.exitPit.y = 50;
+        }
         this.exitPit.visible = true;
         if (this.hasTreasure) {
             this.treasure.sprite.visible = true;

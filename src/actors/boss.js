@@ -4,7 +4,7 @@ import {getRand, toRadians} from './../utils.js';
 let Boss = function(g, playerSprite) {
     this.playerSprite = playerSprite;
     this.sprite = g.rectangle(64, 64, 'red');
-    Actor.call(this, g, 1, 400, 10);
+    Actor.call(this, g, 20, 400, 10);
     this.sprite.visible = false;
     this.healthSprite.visible = false;
     this.damage = 1.3;
@@ -26,17 +26,21 @@ Boss.prototype.takeDamage = function(amount, direction) {
         this.healthSprite.width = 0;
         return;
     }
-    this.sprite.visible = false;
-    this.healthSprite.visible = false;
     this.invincible = true;
     this.healthSprite.width -= this.healthWidth * amount;
+    this.speed = 0;
+    this.sprite.alpha = 0.5;
+    this.g.wait(this.invinceTime, () => this.delayWarp());
+};
+
+Boss.prototype.delayWarp = function() {
+    this.sprite.visible = false;
+    this.healthSprite.visible = false;
     this.g.wait(this.invinceTime, () => this.warp());
 };
 
 Boss.prototype.warp = function() {
     let angle;
-    // let x = this.g.canvas.width / 2;
-    // let y = this.g.canvas.height / 2;
     let x = this.playerSprite.x;
     let y = this.playerSprite.y;
     let distance = this.g.canvas.width / 2;
@@ -50,6 +54,8 @@ Boss.prototype.warp = function() {
     this.sprite.x = point.x + 32;
     this.sprite.y = point.y + 32;
     this.invincible = false;
+    this.speed = 3;
+    this.sprite.alpha = 1;
     this.show();
 };
 

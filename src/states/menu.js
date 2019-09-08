@@ -13,6 +13,12 @@ let Menu = function(g) {
     this.actions[0].select();
     this.actionKey = g.keyboard(70);
     this.cancelKey = g.keyboard(68);
+    g.key.upArrow.press = () => {
+        this.select(-1);
+    }
+    g.key.downArrow.press = () => {
+        this.select(1);
+    }
     this.actionKey.press = () => {
         this.actions.forEach(e => {
             this.g.remove(e.scene);
@@ -28,6 +34,15 @@ let Menu = function(g) {
     };
 
     return () => {};
+};
+
+Menu.prototype.select = function(dir) {
+    this.actions[this.selected].deselect();
+    this.selected = (this.selected += dir) % this.actions.length;
+    if (this.selected < 0) {
+        this.selected = this.actions.length - 1;
+    }
+    this.actions[this.selected].select();
 };
 
 let Button = function(g, text, x, y, w, h) {

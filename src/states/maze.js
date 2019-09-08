@@ -11,7 +11,7 @@ let Maze = function(g, mode) {
     this.g = g;
     this.player = g.globals.player;
     this.level = 0;
-    this.endLevel = 4;
+    this.endLevel = 10;
     this.goodDir = '';
     this.treasureDir = '';
     this.mode = mode;
@@ -19,19 +19,19 @@ let Maze = function(g, mode) {
     this.enemyRoom = {};
     this.treasureRoom = {};
     this.explored = [];
-    this.shownChar = 'o';
+    this.showingChar = false;
     this.shownSprite = null;
     this.treasures = [
-        new Treasure(this.g, 'A Health Potion', () => this.g.globals.player.heal(5)),
-        new Treasure(this.g, 'A Sharp Sword', () => this.g.globals.player.sword.damage += 1),
+        new Treasure(this.g, 'Health Potion', 'HP increased by 5', () => this.g.globals.player.heal(5)),
+        new Treasure(this.g, 'Sharp Sword', 'Damage increased by 1', () => this.g.globals.player.sword.damage += 1),
     ];
     switch(mode) {
         case modes[0]:
         case modes[1]:
-            this.treasures.push(new Treasure(this.g, 'Dictionary', function(){this.showChar();}.bind(this)));
+            this.treasures.push(new Treasure(this.g, 'Dictionary', 'A character is revealed', function(){this.showingChar = true; console.log(this);}.bind(this)));
             break;
         case modes[2]:
-            this.treasures.push(new Treasure(this.g, "Monochrome", function(){this.g.globals.GAME_TEMPO -= 60;}))
+            this.treasures.push(new Treasure(this.g, "Monochrome", 'Morse speed down', function(){this.g.globals.GAME_TEMPO -= 60;}.bind(this)))
     }
     this.dirs = directions.ALL;
     this.currentRoom = this.statueRoom;
@@ -83,9 +83,9 @@ Maze.prototype.enterNextLevel = function() {
     this.level++;
     this.enemyRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNextRoom(dir, fromDir);}.bind(this));
     this.treasureRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNextRoom(dir, fromDir);}.bind(this));
-    this.levelText.content = `${this.level}`;
+    this.levelText.content = `lv ${this.level}`;
     let goodInd = getRand(this.dirs.length);
-    goodInd = 0;
+    // goodInd = 0;
     this.goodDir = this.dirs[goodInd];
     if (this.level === this.endLevel) {
         if (this.treasures.length === 0) {
@@ -102,12 +102,12 @@ Maze.prototype.enterNextLevel = function() {
             do {
                 treasureInd = getRand(this.dirs.length);
             } while (treasureInd === goodInd);
-            treasureInd = 1;
+            // treasureInd = 1;
             this.treasureDir = this.dirs[treasureInd];
         }  else {
             this.treasureDir = '';
         }
-        this.statueRoom.load(getSentence(this.goodDir, hasTreasure, this.treasureDir), this.shownChar);
+        this.statueRoom.load(getSentence(this.goodDir, hasTreasure, this.treasureDir), this.showingChar);
         this.explored = [];
         this.currentRoom = this.statueRoom;
     }
@@ -122,14 +122,10 @@ Maze.prototype.endGame = function() {
         ['You made it back,', 'but the kids were', 'never seen again.']);
 };
 
-Maze.prototype.showChar = function() {
-    let alphabet = 'abcdefghijklmnopqrstuvwxyz.,!12369';
-    this.shownChar = alphabet[getRand(alphabet.length)];
-};
 
 Maze.prototype.loop = function() {
     this.currentRoom.loop();
-    this.g.stage.putTop(this.levelText, this.g.canvas.width / 2 - 30, 20);
+    this.g.stage.putTop(this.levelText, this.g.canvas.width / 2 - 50, 20);
     this.g.stage.putTop(this.player.healthSprite, -this.g.canvas.width / 2 + this.player.healthSprite.halfWidth + 10, 40);
 };
 

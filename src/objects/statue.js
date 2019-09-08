@@ -1,7 +1,9 @@
 import modes from './../modes.js';
 import Interactable from './interactable.js';
 import MorseActions from './../actions/morse.js';
+import MusicActions from './../actions/music.js';
 import sentenceToBraille from './../actions/braille.js';
+
 let noteList = [];
 
 let Statue = function(g, mode) {
@@ -16,10 +18,8 @@ let Statue = function(g, mode) {
 Statue.prototype = Object.create(Interactable.prototype);
 
 Statue.prototype.initialize = function(sentence, shownChar) {
-    console.log(shownChar);
-    console.log('shownChar');
     if (this.mode === modes[0]) {
-        this.action = () => this.showBraille(sentenceToBraille(sentence), this.scene, shownChar);
+        this.action = () => this.showBraille(sentenceToBraille(sentence.toLowerCase()), this.scene, shownChar);
         this.stop = this.closeModal;
     } else if (this.mode === modes[1]) {
         this.action = () => this.showMorse(MorseActions.sentenceToMorse(sentence.toLowerCase()), this.scene, shownChar);
@@ -59,7 +59,7 @@ Statue.prototype.playMorse = function(morse) {
     MusicActions.playMusic(nl, this.g.globals.GAME_TEMPO);
 };
 
-Statue.prototype.showMorse = function(morse, scene, shownChar = '') {
+Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
     let circleSize = 10;
     let rectSize = circleSize * 3;
     let padding = circleSize / 2;
@@ -70,6 +70,10 @@ Statue.prototype.showMorse = function(morse, scene, shownChar = '') {
     let rows = 2;
     let width = this.g.canvas.width - rectSize;
     console.log(morse);
+    let shownChar = '';
+    if (showingChar) {
+        shownChar = morse[0].character;
+    }
     morse.map(char => {
         if (char.code.length * rectSize + xPos >= width) {
             xPos = rectSize;
@@ -104,7 +108,7 @@ Statue.prototype.showMorse = function(morse, scene, shownChar = '') {
     scene.add(sprites);
 };
 
-Statue.prototype.showBraille = function(braille, scene, shownChar) {
+Statue.prototype.showBraille = function(braille, scene, showingChar = false) {
     let circleSize = 10;
     let padding = circleSize * 1.5;
     let xPos = padding;
@@ -113,6 +117,13 @@ Statue.prototype.showBraille = function(braille, scene, shownChar) {
     let sprites = [];
     let rows = 2;
     let width = this.g.canvas.width - padding;
+    let shownChar = '';
+    // showingChar = true;
+    console.log('showingChar');
+    console.log(showingChar);
+    if (showingChar) {
+        shownChar = braille[0].character;
+    }
     braille.map(char => {
         if (circleSize * 3 + xPos >= width) {
             xPos = padding;
