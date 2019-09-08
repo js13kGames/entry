@@ -90,18 +90,13 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
       }
     });
   }
-  const imagesUrls = [
+  const images = await loadSVGs([
     'assets/hot-dog.svg',
     'assets/kong-back.svg',
     'assets/kong-front.svg',
     'assets/kong-right.svg',
     'assets/pizza.svg'
-  ];
-  const images = await Promise.all(imagesUrls.map(url => new Promise(res => {
-    const image = new Image();
-    image.onload = () => res(image);
-    image.src = url;
-  })));
+  ]);
 
   const {
     render,

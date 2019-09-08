@@ -34,3 +34,11 @@ const createCanvas = () => {
   const canvas = createElement('canvas');
   return [canvas, canvas.getContext('2d')];
 }
+const loadSVGs = (url) => Promise.all(url.map(url => new Promise(res => {
+  const image = new Image();
+  image.onload = () => res(image);
+  image.src = url;
+})));
+
+// Only used in data transformation in gulp
+window.svgDataURL = svgMarkup => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);

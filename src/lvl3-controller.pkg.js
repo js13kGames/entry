@@ -281,7 +281,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     nextLevel();
   }
 
-  const imagesUrls = [
+  const images = await loadSVGs([
     'assets/kong-attack.svg',
     'assets/kong-block.svg',
     'assets/kong-disabled.svg',
@@ -290,12 +290,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     'assets/rex-block.svg',
     'assets/rex-disabled.svg',
     'assets/rex-right.svg',
-  ];
-  const images = await Promise.all(imagesUrls.map(url => new Promise(res => {
-    const image = new Image();
-    image.onload = () => res(image);
-    image.src = url;
-  })));
+  ]);
 
   const {
     cleanUp,

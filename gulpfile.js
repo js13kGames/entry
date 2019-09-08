@@ -55,7 +55,7 @@ function clean () {
 }
 
 function injectStrings () {
-  return src('src/index.html')
+  let piped = src('src/index.html')
     .pipe(inject.replace(
       '<link rel="stylesheet" href="styles.css">',
       `<style>${fs.readFileSync('dist/styles.css', 'utf8')}</style>`
@@ -63,12 +63,34 @@ function injectStrings () {
     .pipe(inject.replace(
       '<script type="text/javascript" src="game.min.js"></script>',
       `<script>${fs.readFileSync('dist/game.min.js', 'utf8')}</script>`
-    ))
-    .pipe(dest('dist'));
+    ));
+
+    [
+      'assets/hot-dog.svg',
+      'assets/kong-back.svg',
+      'assets/kong-front.svg',
+      'assets/kong-right.svg',
+      'assets/pizza.svg',
+      'assets/kong-attack.svg',
+      'assets/kong-block.svg',
+      'assets/kong-disabled.svg',
+      'assets/rex-attack.svg',
+      'assets/rex-block.svg',
+      'assets/rex-disabled.svg',
+      'assets/rex-right.svg',
+    ].forEach(path => {
+      piped = piped.pipe(inject.replace(
+        `"${path}"`, // double quotes because the uglifier makes them that way
+        `svgDataURL(\`${fs.readFileSync('dist/' + path)}\`)` // ticks to avoid double quotes in SVG markup
+      ));
+    });
+
+    piped.pipe(dest('dist'));
+    return piped;
 }
 
 function deleteInjected () {
-  return del(['./dist/*.css', './dist/*.js'])
+  return del(['./dist/*.css', './dist/*.js', './dist/assets'])
 }
 
 function zip () {
