@@ -5,6 +5,7 @@ export function render(game) {
     var margin = 7; // Padding in game units between each card
     var contWidth = game.width - pad * 2; // Card container width
     var cardWidth = contWidth / 4 - margin * 2;
+    var cardHeight = game.height - (pad + margin) * 2
     var y = pad + margin;
 
     game.players.forEach((player, i) => {
@@ -16,14 +17,14 @@ export function render(game) {
             x,
             y,
             cardWidth,
-            game.height - (pad + margin) * 2,
+            cardHeight,
         );
         game.context.strokeStyle = player.color;
         game.context.strokeRect(
             x,
             y,
             cardWidth,
-            game.height - (pad + margin) * 2
+            cardHeight
         )
         game.context.restore();
 
@@ -44,13 +45,13 @@ export function render(game) {
                 x - 6,
                 y - 6,
                 cardWidth + 12,
-                game.height - (pad + margin) * 2 + 12
+                cardHeight + 12
             )
             game.context.strokeRect(
                 x - 3,
                 y - 3,
                 cardWidth + 6,
-                game.height - (pad + margin) * 2 + 6
+                cardHeight + 6
             )
             game.context.restore();
         } else {
@@ -145,5 +146,17 @@ export function render(game) {
             scale: game.scale,
             context: game.context
         });
+
+        renderText({
+            text: player.ready ? 'reviewing' : 'done',
+            color: player.color,
+            alignRight: true,
+            alignBottom: true,
+            x: x + cardWidth - margin,
+            y: y + cardHeight - margin,
+            scale: game.scale,
+            context: game.context
+        });
+
     });
 }
