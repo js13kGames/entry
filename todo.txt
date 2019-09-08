@@ -1,0 +1,17 @@
+TODO:
+* add coil monetization for skins :D
+
+
+FEEDBACK:
+- improve player responsiveness ("player unresponsive", "it doesnt move very smoothly")
+- game too hard (dad, finn) [maybe increase timer?][increase the timer later]
+- skimmed rules, too boring ( how to make intro more engaging?) ("how do I stab?")
+- many bad words said by players
+- past me not doing what I did (bug)
+- typing noise hurts ears (lower gain?)
+
+CHANGES BASED ON FEEDBACK:
++ lower gain on typing noise
++ reword opening - haven't done yet
++ make earlier levels more easy - stream lined them
++ Revamped input via an array based movement system. 

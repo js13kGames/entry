@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Backstabbers",
+  "description": "Backstabbers is a game where you play as a robot who kills assigned targets while avoiding their past self and wrong targets.  You control the robot with WASD and stab targets by moving into them.  Coil subscribers unlock access to special skins for the target characters which they can cycle through using the shift key.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "bigImage.png",
+    "image_thumbnail": "thumbnail.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Milan Donhowe",
+    "website": "https://milandonhowe.github.io/",
+    "twitter": "MyyLawn"
   }
 }
