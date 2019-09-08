@@ -64,7 +64,7 @@ export class MenuItem {
     constructor(props) {
         this.color = props.color || '#fff';
         this.focus = false;
-        this.text = props.text.toUpperCase();
+        this.text = props.text;
         this.x = props.x;
         this.y = props.y;
         this.parent = props.parent;

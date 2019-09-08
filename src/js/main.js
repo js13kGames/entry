@@ -23,9 +23,9 @@ initKeys();
 // Init gamepad event listeners n stuff
 initGamepads();
 
-window.addEventListener('gamepadconnected', function(e) {
-    console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
-})
+// window.addEventListener('gamepadconnected', function(e) {
+//     console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+// })
 
 canvas.style = 'width:100%;background:#000';
 
@@ -88,34 +88,22 @@ game.players.push(new Player({
     game: game
 }));
 
-game.players.push(new Player({
-    color: colors.red,
-    shipType: 'coback',
-    controls: 'wasd',
-    context: context,
-    game: game
-}));
-
-game.players.push(new Player({
-    color: colors.blue,
-    shipType: 'striker',
-    controls: 'gamepad',
-    gamepadIndex: 0,
-    context: context,
-    game: game
-}));
-
-function changeScene(scene) {
-
-    mainMenuLoop.stop()
-    if (scene === 'PLAY') {
-        game.players.forEach((player, i) => {
-            player.pseudoSpawn();
-        });
-        shipMenuLoop.start();
-        //startGame(game, canvas, context);
-    }
-}
+// game.players.push(new Player({
+//     color: colors.red,
+//     shipType: 'coback',
+//     controls: 'wasd',
+//     context: context,
+//     game: game
+// }));
+//
+// game.players.push(new Player({
+//     color: colors.blue,
+//     shipType: 'striker',
+//     controls: 'gamepad',
+//     gamepadIndex: 0,
+//     context: context,
+//     game: game
+// }));
 
 let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
@@ -124,22 +112,33 @@ let mainMenuLoop = GameLoop({  // create the main game loop
         mainMenu.update();
 
         game.players.forEach(player => {
-            player.menuUpdate();
+            player.debounce.up--;
+            player.debounce.down--;
+            player.debounce.left--;
+            player.debounce.right--;
+            player.debounce.accept--;
 
             if (player.keys.up() && player.debounce.up <= 0) {
                 mainMenu.prev();
-                player.debounce.up = 10;
+                player.debounce.up = 15;
             }
 
             if (player.keys.down() && player.debounce.down <= 0) {
                 mainMenu.next();
-                player.debounce.down = 10;
+                player.debounce.down = 15;
             }
 
             if (player.keys.accept()) {
                 // Do whatever da button says
-                player.debounce.accept = 10;
-                changeScene(mainMenu.items[mainMenu.focus].text);
+                player.debounce.accept = 15;
+                mainMenuLoop.stop()
+                if (mainMenu.items[mainMenu.focus].text === 'play') {
+                    game.players.forEach(player => {
+                        player.pseudoSpawn();
+                    });
+                    shipMenuLoop.start();
+                    //startGame(game, canvas, context);
+                }
             }
         });
     },
@@ -158,12 +157,15 @@ let shipMenuLoop = GameLoop({  // create the main game loop
         pollGamepads();
 
         game.players.forEach((player, i) => {
-            player.menuUpdate();
-
+            player.debounce.up--;
+            player.debounce.down--;
+            player.debounce.left--;
+            player.debounce.right--;
+            player.debounce.accept--;
 
             if (player.keys.accept() && player.debounce.accept <= 0) {
                 player.ready = !player.ready;
-                player.debounce.accept = 10;
+                player.debounce.accept = 15;
             }
 
             if (player.ready) {
@@ -180,7 +182,7 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 }
 
                 game.players[i].ship.color = player.color;
-                player.debounce.up = 10;
+                player.debounce.up = 15;
             }
 
             if (player.keys.down() && player.debounce.down <= 0) {
@@ -191,18 +193,18 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 }
 
                 game.players[i].ship.color = player.color;
-                player.debounce.down = 10;
+                player.debounce.down = 15;
             }
 
             if (player.keys.left() && player.debounce.left <= 0) {
                 player.shipType = util.objKeyNext(ships, player.shipType);
-                player.debounce.left = 10;
+                player.debounce.left = 15;
                 player.pseudoSpawn();
             }
 
             if (player.keys.right() && player.debounce.right <= 0) {
                 player.shipType = util.objKeyPrev(ships, player.shipType);
-                player.debounce.right = 10;
+                player.debounce.right = 15;
                 player.pseudoSpawn();
             }
 

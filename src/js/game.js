@@ -151,26 +151,6 @@ export default function startGame(newGame, canvas, context) {
         game: game
     });
 
-    game.players[0].shipType = 'tri';
-
-    // let player1 = new Player({
-    //     color: '#ff0',
-    //     shipType: 'tri',
-    //     controls: 'arrows',
-    //     context: context,
-    //     game: game
-    // });
-    // game.players.push(player1);
-    //
-    // let player2 = new Player({
-    //     color: '#f11',
-    //     shipType: 'coback',
-    //     controls: 'gamepad',
-    //     context: context,
-    //     game: game
-    // });
-    // game.players.push(player2);
-
     game.players.forEach(player => {
         player.spawn();
     });

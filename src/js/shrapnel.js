@@ -15,7 +15,7 @@ export function createShrapnel(line, parent, sprites) {
         type: 'shrapnel',
         x: parent.x + (center.x * cos - center.y * sin),
         y: parent.y + (center.y * cos + center.x * sin),
-        rotation: parent.rotation || 0,
+        rotation: parent.rotation,
         color: parent.color,
         p1: {
             x: line[0] - center.x,
@@ -36,8 +36,8 @@ export function createShrapnel(line, parent, sprites) {
         ),
 
         // Modify these for more crazy "explosions"
-        dx: parent.dx + Math.random() * 2 - 1,
-        dy: parent.dy + Math.random() * 2 - 1,
+        dx: parent.dx + Math.random() - .5,
+        dy: parent.dy + Math.random() - .5,
         ttl: parent.type === 'ship' ? 120 + Math.random() * 60 // 2-3s
                                     : Math.random() * 60,
         dr: Math.random() * 20 - 10,

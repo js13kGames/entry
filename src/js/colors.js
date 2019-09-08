@@ -5,7 +5,7 @@
  */
 export const colors = {
     red: '#f43',
-    orange: '#f70',
+    orange: '#f72',
     yellow: '#ff0',
     blue: '#0bf',
     green: '#2e1',
