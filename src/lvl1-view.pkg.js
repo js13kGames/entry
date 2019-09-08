@@ -1,18 +1,8 @@
-const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoods, images) => {
+const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, images) => {
   const [canvas, ctx] = createCanvas();
   const tileHeight = 100;
   const tileWidth = 100;
 
-  const {
-    OUT_OF_BOUNDS,
-    BLOCKED,
-    BUILDING_2X4,
-    OUT_OF_BOUNDS_CUTOFF,
-    STREET,
-    PIZZA,
-    HOTDOG,
-    EXIT
-  } = cellIds;
   const [
     hotdogImg,
     kongBackImg,

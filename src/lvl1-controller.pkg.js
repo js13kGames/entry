@@ -11,7 +11,6 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
 
   const {
     getMapView,
-    cellIds,
     numFoods,
     enableExit
   } = initModel(20, 20, .1);
@@ -63,7 +62,7 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
       let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
-        if (cell.itemId === cellIds.PIZZA || cell.itemId === cellIds.HOTDOG) {
+        if (cell.itemId === PIZZA || cell.itemId === HOTDOG) {
           cell.itemId = null;
           pizzaCount = pizzaCount - 1;
           pizzaSound();
@@ -73,7 +72,7 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
           canExit = true;
         }
         let gameOver = state.gameOver;
-        if (cell.displayId === cellIds.EXIT) {
+        if (cell.displayId === EXIT) {
           gameOver = true;
           setTimeout(() => {
             viewCleanUp();
@@ -103,7 +102,7 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
     tileHeight,
     tileWidth,
     cleanUp: viewCleanUp
-  } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods, images);
+  } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, numFoods, images);
 
   // init
   modelSetState({

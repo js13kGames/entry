@@ -32,7 +32,7 @@ function css () {
 }
 
 function js () {
-  return src(['src/iffe-start.js', 'src/*.pkg.js', 'src/index.js', 'src/iffe-end.js'], { sourcemaps: isDev })
+  return src(['src/iffe-start.js', 'src/*.dep.js', 'src/*.pkg.js', 'src/index.js', 'src/iffe-end.js'], { sourcemaps: isDev })
     .pipe(concat('game.min.js'))
     .pipe(gulpif(isProd, uglify()))
     .pipe(dest('dist', { sourcemaps: isDev && '.' }));

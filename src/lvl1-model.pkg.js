@@ -1,16 +1,16 @@
+// display constants
+const OUT_OF_BOUNDS = uid();
+const BLOCKED = uid();
+const B = BLOCKED;
+const BUILDING_2X4 = uid();
+const POLICE = uid();
+const OUT_OF_BOUNDS_CUTOFF = uid();
+const STREET = uid();
+const S = STREET;
+const PIZZA = uid();
+const HOTDOG = uid();
+const EXIT = uid();
 const initModel = (height, width, foodCoveragePercent) => {
-  // display constants
-  const OUT_OF_BOUNDS = uid();
-  const BLOCKED = uid();
-  const B = BLOCKED;
-  const BUILDING_2X4 = uid();
-  const POLICE = uid();
-  const OUT_OF_BOUNDS_CUTOFF = uid();
-  const STREET = uid();
-  const S = STREET;
-  const PIZZA = uid();
-  const HOTDOG = uid();
-  const EXIT = uid();
   const colorStreet = '#111327';
 
   const map = [];
@@ -333,17 +333,6 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   return {
     getMapView,
-    cellIds: {
-      OUT_OF_BOUNDS,
-      BLOCKED,
-      BUILDING_2X4,
-      POLICE,
-      OUT_OF_BOUNDS_CUTOFF,
-      STREET,
-      PIZZA,
-      HOTDOG,
-      EXIT
-    },
     numFoods,
     enableExit
   };
