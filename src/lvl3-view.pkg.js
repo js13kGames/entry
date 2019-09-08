@@ -76,7 +76,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images
       ctx.translate(-img.width, 0);
       ctx.drawImage(
         img,
-        multiplier * (mapStart + charState.location * charSize),
+        multiplier * (mapStart + charState.location * charSize - img.width + charSize),
         canvas.height - charSize * 2
       );
     } else {
