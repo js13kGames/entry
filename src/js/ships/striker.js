@@ -1,7 +1,6 @@
 
 export default () => {
     return {
-        name: 'striker',
         rof: 4,
         turnRate: 5,
         radius: 9,

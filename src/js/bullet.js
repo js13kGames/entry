@@ -15,9 +15,9 @@ export function createBullet(parent) {
         x: parent.x + cos * parent.radius,
         y: parent.y + sin * parent.radius,
 
-        // Move bullet #x faster than the ship
-        dx: parent.dx + cos * 12,
-        dy: parent.dy + sin * 12,
+        // Move bullet 9 units/s faster than the ship
+        dx: parent.dx + cos * 9,
+        dy: parent.dy + sin * 9,
 
         // live 50 frames, just under 1s (1sh)
         ttl: 50,

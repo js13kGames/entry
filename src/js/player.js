@@ -25,11 +25,11 @@ export class Player {
 
         // For menu item / key debouncing so doesn't spam
         this.debounce = {
-            up: 10,
-            down: 10,
-            left: 10,
-            right: 10,
-            accept: 10
+            up: 15,
+            down: 15,
+            left: 15,
+            right: 15,
+            accept: 15
         };
     }
 
@@ -64,14 +64,6 @@ export class Player {
         if (this.keys && this.keys !== 'AI') {
             this.handleKeyPresses();
         }
-    }
-
-    menuUpdate() {
-        this.debounce.up--;
-        this.debounce.down--;
-        this.debounce.left--;
-        this.debounce.right--;
-        this.debounce.accept--;
     }
 
     scoreInc() {

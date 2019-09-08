@@ -4,10 +4,10 @@ let browserGamepads = []; // Actually an object in Chrome hrmm
 
 export function initGamepads() {
 
-    if (!navigator.getGamepads) {
-        console.warn('This browser does not support gamepads');
-        return false;
-    }
+    // if (!navigator.getGamepads) {
+    //     console.warn('This browser does not support gamepads');
+    //     return false;
+    // }
 
     browserGamepads = navigator.getGamepads ? navigator.getGamepads() : [];
 
@@ -17,7 +17,7 @@ export function initGamepads() {
         if (!pad) {
             return;
         }
-        console.log(`Gamepad already connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+        // console.log(`Gamepad already connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
         gamepads[pad.index] = {
             id: pad.id,
             pressedButtons: [],
@@ -30,7 +30,7 @@ export function initGamepads() {
     window.addEventListener('gamepadconnected', function(e) {
         let pad = e.gamepad;
 
-        console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+        // console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
         gamepads[pad.index] = {
             id: pad.id,
             pressedButtons: {},

@@ -1,7 +1,6 @@
 
 export default () => {
     return {
-        name: 'tri',
         rof: 5,
         ror: 4,
         turnRate: 8,
