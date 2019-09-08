@@ -22,37 +22,23 @@ export class Menu {
     }
 
     next() {
-        if (this.debounce > 0) {
-            return;
-        }
-
         if (++this.focus === this.items.length) {
             this.focus = 0;
         }
 
-        this.debounce = 10;
         this.items.forEach((item, i) => {
             item.focus = i === this.focus ? true : false;
         });
     }
 
     prev() {
-        if (this.debounce > 0) {
-            return;
-        }
-
         if (--this.focus < 0) {
             this.focus = this.items.length - 1;
         }
 
-        this.debounce = 10;
         this.items.forEach((item, i) => {
             item.focus = i === this.focus ? true : false;
         });
-    }
-
-    update() {
-        this.debounce--;
     }
 
     render(scale) {
