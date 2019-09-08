@@ -201,11 +201,22 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
         }
 
         if (sprite2.type === 'ship') {
-            if (sprite2.rewinding || sprite1.shield || sprite2.shield) {
+            if (sprite2.rewinding) {
                 return;
             }
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
                 if (sprite1.rainbow) {
+                    if (sprite1.shield) {
+                        sprite2.x += cResult.overlap * cResult.overlap_x;
+                        sprite2.y += cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
+                    if (sprite2.shield) {
+                        sprite2.shieldDegrading = sprite2.shieldDegrading || 60;
+                        sprite2.x += cResult.overlap * cResult.overlap_x;
+                        sprite2.y += cResult.overlap * cResult.overlap_y;
+                        return;
+                    }
                     sprite2.explode();
                     sprite1.player.scoreInc();
                     return;
