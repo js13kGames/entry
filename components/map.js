@@ -28,15 +28,21 @@ AFRAME.registerComponent("map", {
       }
 
       for (let link of world.links) {
-        const start = world.nodes.find(e=>e.name==link[0]);
-        const end = world.nodes.find(e=>e.name==link[1]);
+        const start = world.nodes.find(n=>n.name==link[0]);
+        const end = world.nodes.find(n=>n.name==link[1]);
+        console.log(start, end);
 
         const linkEl = document.createElement("a-entity");
-        linkEl.setAttribute("line", {
-          start: {x: start.x, y: start.y, z: start.z},
-          end: {x: end.x, y: end.y, z: end.z},
-          color: "#fff"
+        const aj = end.x - start.x;
+        const op = end.y - start.y;
+        linkEl.setAttribute("geometry", {
+          primitive: "plane",
+          width: 0.01,
+          height: Math.sqrt(aj*aj + op*op)
         });
+        linkEl.object3D.position.set(start.x + aj/2, start.y + op/2, 0.001);
+        linkEl.object3D.rotation.z = Math.atan2(op, aj) - Math.PI / 2;
+        linkEl.setAttribute("material", {color: "#fff"});
         el.appendChild(linkEl);
       }
     });
