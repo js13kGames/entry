@@ -1,4 +1,3 @@
-//import { Sprite } from 'kontra';
 import { Sprite } from './sprite';
 import * as util from './utility';
 
