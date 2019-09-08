@@ -3,7 +3,8 @@
  * 20461 Dioretsa, and the smaller space rocks are meteoroids!
  */
 
-import { Sprite } from 'kontra';
+//import { Sprite } from 'kontra';
+import { Sprite } from './sprite';
 import * as util from './utility';
 import { createShrapnel } from './shrapnel';
 
@@ -71,16 +72,16 @@ export function createMeteor(props) {
             this.context.restore();
         },
 
-        update() {
+        update(dt) {
             this.rotation += this.dr;
-            this.advance();
+            this.velocity = this.velocity.add(this.acceleration, dt);
+            this.position = this.position.add(this.velocity, dt);
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
             this.hitbox.angle = util.degToRad(this.rotation);
         },
 
         explode() {
-            this.exploded = true;
             this.ttl = 0;
 
             // Create new line sprites where the ship lines were

@@ -1,4 +1,5 @@
-import { Sprite } from 'kontra';
+//import { Sprite } from 'kontra';
+import { Sprite } from './sprite';
 import * as util from './utility';
 
 export function createShrapnel(line, parent, sprites) {
@@ -42,14 +43,15 @@ export function createShrapnel(line, parent, sprites) {
                                     : Math.random() * 60,
         dr: Math.random() * 20 - 10,
 
-        update() {
+        update(dt) {
             this.dx *= .999;
             this.dy *= .999;
             this.rotation += this.dr;
+            this.position = this.position.add(this.velocity, dt);
+            this.ttl--;
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
             this.hitbox.angle = util.degToRad(this.rotation);
-            this.advance();
         },
 
         render(scale) {
