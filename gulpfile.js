@@ -7,6 +7,7 @@ const minifyCSS = require("gulp-clean-css");
 const minifyHTML = require("gulp-htmlmin");
 const minifyJS = require("gulp-terser");
 const replaceHTML = require("gulp-html-replace");
+const sourcemaps = require("gulp-sourcemaps");
 const zip = require("gulp-zip");
 
 const paths = {
@@ -54,8 +55,10 @@ function buildCSS() {
 
 function buildJS() {
   return gulp.src(paths.src.js)
-    .pipe(concat(paths.dist.js))
-    .pipe(minifyJS())
+    .pipe(sourcemaps.init())
+      .pipe(concat(paths.dist.js))
+      .pipe(minifyJS())
+    .pipe(sourcemaps.write("."))
     .pipe(gulp.dest(paths.dist.dir));
 }
 
@@ -67,7 +70,7 @@ function copyModels() {
 function makeZip() {
   const thirteenKb = 13 * 1024;
 
-  return gulp.src(`${paths.dist.dir}/**`)
+  return gulp.src([`${paths.dist.dir}/**`, "!**/*.map"])
     .pipe(zip(paths.zip))
     .pipe(gulp.dest("."))
     .pipe(checkFileSize({ fileSizeLimit: thirteenKb }));
