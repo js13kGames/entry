@@ -3,13 +3,10 @@ import { Collisions } from 'collisions';
 import { createMeteor } from '../meteor';
 import { pollGamepads } from '../gamepad';
 import { doCollisions } from '../doCollisions';
-// import { initGamepads, pollGamepads, buttonPressed, axisValue } from '../gamepad';
-// import { Ship } from '../ship.js';
 import { AmmoPickup } from '../pickups/ammo.js';
 import { ShieldPickup } from '../pickups/shield.js';
 import { StarPickup } from '../pickups/star.js';
-// import { Player } from '../player.js';
-// import { createMeteor } from '../meteor';
+import { dontDetectNewInput } from '../detectInput';
 import * as gameOver from '../gameOver';
 
 var game;
@@ -42,6 +39,7 @@ function endGame() {
     });
     game.places.forEach((player, i) => {
         player.place = i;
+
     });
 }
 
@@ -56,7 +54,7 @@ const gameLoop = GameLoop({  // create the main game loop
 
             // Players are already .ready from game start, so check for unready
             game.players.forEach(player => {
-                if (player.keys.accept()) {
+                if (player.keys.accept() && game.over > 60) {
                     player.debounce.accept--;
                     if (player.debounce.accept <= 0) {
                         player.ready = !player.ready;
@@ -181,13 +179,13 @@ const gameLoop = GameLoop({  // create the main game loop
         }
 
         // Render debug collision stuff
-        game.context.save();
-        game.context.scale(game.scale, game.scale);
-        game.context.strokeStyle = '#0F0';
-        game.context.beginPath();
-        game.cSystem.draw(game.context);
-        game.context.stroke();
-        game.context.restore();
+        // game.context.save();
+        // game.context.scale(game.scale, game.scale);
+        // game.context.strokeStyle = '#0F0';
+        // game.context.beginPath();
+        // game.cSystem.draw(game.context);
+        // game.context.stroke();
+        // game.context.restore();
     }
 });
 
@@ -196,6 +194,8 @@ var game;
 export function startGame(newGame, otherScenes) {
     game = newGame;
     scenes = otherScenes;
+
+    dontDetectNewInput();
 
     game.meteors = [];
     game.pickups = [];

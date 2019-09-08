@@ -1,77 +1,25 @@
 
-let gamepads = {};
 let browserGamepads = []; // Actually an object in Chrome hrmm
 
-export function initGamepads() {
-
-    // if (!navigator.getGamepads) {
-    //     console.warn('This browser does not support gamepads');
-    //     return false;
-    // }
-
-    browserGamepads = navigator.getGamepads ? navigator.getGamepads() : [];
-
-    // Existing gamepad connections (not working? Or never connected?..)
-    Array.prototype.forEach.call(browserGamepads, pad => {
-        console.log(pad);
-        if (!pad) {
-            return;
-        }
-        // console.log(`Gamepad already connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
-        gamepads[pad.index] = {
-            id: pad.id,
-            pressedButtons: [],
-            buttons: pad.buttons,
-            axes: []
-        }
-    });
-
-    // Event when new gamepads get connected
-    window.addEventListener('gamepadconnected', function(e) {
-        let pad = e.gamepad;
-
-        // console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
-        gamepads[pad.index] = {
-            id: pad.id,
-            pressedButtons: {},
-            axes: {}
-        };
-        if (pad.id.indexOf('Joy-Con') > -1) {
-            gamepads[pad.index].buttonMap = {
-                'a': 1,
-                'b': 0,
-                'x': 3,
-                'y': 2,
-                'l': 4,
-                'r': 5
-            };
-            gamepads[pad.index].axesMap = {
-                'x': 4,
-                'y': 5
-            };
-        }
-    });
-}
-
 export function buttonPressed(gamepadIndex, button) {
-    if (!gamepads[gamepadIndex]) {
+    if (!window.gamepads[gamepadIndex]) {
         return false;
     }
-    return !!gamepads[gamepadIndex].pressedButtons[button];
+    return !!window.gamepads[gamepadIndex].pressedButtons[button];
 }
 
 export function axisValue(gamepadIndex, axesIndex) {
-    if (!gamepads[gamepadIndex]) {
+    if (!window.gamepads[gamepadIndex]) {
         return false;
     }
-    return gamepads[gamepadIndex].axes[axesIndex];
+    return window.gamepads[gamepadIndex].axes[axesIndex];
 }
 
 function getKeyByValue(obj, value) {
     return Object.keys(obj).find(key => obj[key] === value);
 }
 
-export function pollGamepads() {
+export function pollGamepads(game) {
 
     browserGamepads = navigator.getGamepads();
 
@@ -79,7 +27,7 @@ export function pollGamepads() {
         if (!pad) {
             return;
         }
-        var gamepad = gamepads[pad.index];
+        var gamepad = window.gamepads[pad.index];
         pad.buttons.forEach((button, i) => {
             let mappedKey = getKeyByValue(gamepad.buttonMap, i);
             if (button.pressed) {
