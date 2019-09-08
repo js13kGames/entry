@@ -1,4 +1,5 @@
-import { Sprite } from 'kontra';
+//import { Sprite } from 'kontra';
+import { Sprite } from './sprite';
 import * as util from './utility';
 
 export function createBullet(parent) {
@@ -25,8 +26,10 @@ export function createBullet(parent) {
         color: parent.color,
         hitbox: parent.game.cSystem.createPoint(parent.x, parent.y),
 
-        update() {
-            this.advance();
+        update(dt) {
+            this.velocity = this.velocity.add(this.acceleration, dt);
+            this.position = this.position.add(this.velocity, dt);
+            this.ttl--;
             this.hitbox.x = this.x;
             this.hitbox.y = this.y;
         },

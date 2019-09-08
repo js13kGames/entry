@@ -1,4 +1,5 @@
-import { Sprite, keyPressed } from 'kontra';
+import { keyPressed } from 'kontra';
+import { Sprite } from './sprite';
 import * as util from './utility';
 import ships from './ships/import';
 import { createBullet } from './bullet';

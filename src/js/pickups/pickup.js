@@ -1,4 +1,5 @@
-import { Sprite } from 'kontra';
+//import { Sprite } from 'kontra';
+import { Sprite } from '../sprite';
 import * as util from '../utility';
 
 export class Pickup extends Sprite.class {
@@ -28,7 +29,7 @@ export class Pickup extends Sprite.class {
         this.colorCounter = 0;
     }
 
-    update() {
+    update(dt) {
         this.rotation += this.dr;
         util.applyMaxSpeed(this.velocity, this.maxSpeed);
         this.position = this.position.add(this.velocity);

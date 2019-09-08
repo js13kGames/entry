@@ -1,4 +1,4 @@
-import { init, Sprite, GameLoop, initKeys, keyPressed } from 'kontra';
+import { init, GameLoop, initKeys, keyPressed } from 'kontra';
 import { Collisions } from 'collisions';
 import { doCollisions } from './doCollisions';
 import { initGamepads, pollGamepads, buttonPressed, axisValue } from './gamepad';
@@ -47,7 +47,6 @@ const gameLoop = GameLoop({  // create the main game loop
 
         // Remove dead sprites from the sprites list
         game.sprites = game.sprites.filter(sprite => sprite.isAlive());
-
         game.meteors = game.meteors.filter(sprite => sprite.isAlive());
         game.pickups = game.pickups.filter(sprite => sprite.isAlive());
 
