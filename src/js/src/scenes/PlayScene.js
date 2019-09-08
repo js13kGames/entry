@@ -289,8 +289,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       from: 1700, // x,
       to: 1755,
       duration: 0.5,
-      onStep: setX,
-      timeFunction: Anim.easingFunctions.easeOutQuad
+      onStep: setX
     }).and({
       from: 8 * Math.PI / 6, // angle
       to: 9 * Math.PI / 6,
@@ -304,7 +303,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       onStep: setX,
       timeFunction: Anim.easingFunctions.easeInOutQuad
     }).and({
-      from: 9 * Math.PI / 6,
+      from: 9 * Math.PI / 6, // angle
       to: 5 * Math.PI / 6,
       duration: 0.5,
       onStep: setAngle,

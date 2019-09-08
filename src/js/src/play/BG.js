@@ -92,6 +92,216 @@ function BG(options) {
       y: 441,
       radius: 15,
       color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 178,
+      y: 520,
+      radius: 30,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 406,
+      y: 475,
+      radius: 15,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 560,
+      y: 630,
+      radius: 20,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 671,
+      y: 511,
+      radius: 35,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 915,
+      y: 550,
+      radius: 25,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 781,
+      y: 596,
+      radius: 15,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 440,
+      y: 560,
+      radius: 30,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 268,
+      y: 663,
+      radius: 60,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 750,
+      y: 687,
+      radius: 25,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1327,
+      y: 670,
+      radius: 30,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1502,
+      y: 672,
+      radius: 20,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1714,
+      y: 650,
+      radius: 15,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1856,
+      y: 712,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2112,
+      y: 650,
+      radius: 10,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2244,
+      y: 708,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2396,
+      y: 663,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2298,
+      y: 693,
+      radius: 20,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2057,
+      y: 715,
+      radius: 30,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1797,
+      y: 673,
+      radius: 30,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1629,
+      y: 723,
+      radius: 15,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1454,
+      y: 727,
+      radius: 25,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1133,
+      y: 715,
+      radius: 25,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 970,
+      y: 680,
+      radius: 20,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 902,
+      y: 680,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1038,
+      y: 677,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 828,
+      y: 481,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 590,
+      y: 521,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 448,
+      y: 703,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 281,
+      y: 496,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 64,
+      y: 455,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1600,
+      y: 628,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1430,
+      y: 667,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1522,
+      y: 742,
+      radius: 5,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 1964,
+      y: 675,
+      radius: 15,
+      color: 'gray'
+    }),
+    new DisplayCirc({
+      x: 2214,
+      y: 655,
+      radius: 30,
+      color: 'gray'
     })
   ]);
 
