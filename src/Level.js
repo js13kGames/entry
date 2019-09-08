@@ -226,7 +226,7 @@ export class Level {
       animation.render()
     }
 
-    if (!this.paused) {
+    if (!this.paused && !this.endAnimation) {
       this.renderNextTetrominoes()
     }
 
@@ -239,7 +239,7 @@ export class Level {
 
     drawBoldText(`HOLD`, -6, -8)
 
-    if (!this.paused && this.heldTetromino) {
+    if (!this.paused && !this.endAnimation && this.heldTetromino) {
       if (this.controller.wasHeld) {
         this.renderGhostTetromino(this.heldTetromino, 0, TILE_SIZE / 2, 2)
         Graphics.fillStyle = 'rgba(0,0,0,0.5)'
