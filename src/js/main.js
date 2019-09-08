@@ -88,13 +88,13 @@ game.players.push(new Player({
     game: game
 }));
 
-// game.players.push(new Player({
-//     color: colors.red,
-//     shipType: 'coback',
-//     controls: 'wasd',
-//     context: context,
-//     game: game
-// }));
+game.players.push(new Player({
+    color: colors.red,
+    shipType: 'coback',
+    controls: 'wasd',
+    context: context,
+    game: game
+}));
 //
 // game.players.push(new Player({
 //     color: colors.blue,
@@ -109,28 +109,30 @@ let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads();
 
-        mainMenu.update();
-
         game.players.forEach(player => {
-            player.debounce.up--;
-            player.debounce.down--;
-            player.debounce.left--;
-            player.debounce.right--;
-            player.debounce.accept--;
 
-            if (player.keys.up() && player.debounce.up <= 0) {
+            if (player.keys.up()) {
+                if (player.debounce.up > 0) {
+                    player.debounce.up--;
+                    return;
+                }
                 mainMenu.prev();
                 player.debounce.up = 15;
+            } else {
+                player.debounce.up = 0;
             }
 
-            if (player.keys.down() && player.debounce.down <= 0) {
-                mainMenu.next();
-                player.debounce.down = 15;
+            if (player.keys.down()) {
+                player.debounce.down--;
+                if (player.debounce.down <= 0) {
+                    mainMenu.next();
+                    player.debounce.down = 15;
+                }
+            } else {
+                player.debounce.down = 0;
             }
 
             if (player.keys.accept()) {
-                // Do whatever da button says
-                player.debounce.accept = 15;
                 mainMenuLoop.stop()
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
                     game.players.forEach(player => {
@@ -157,15 +159,15 @@ let shipMenuLoop = GameLoop({  // create the main game loop
         pollGamepads();
 
         game.players.forEach((player, i) => {
-            player.debounce.up--;
-            player.debounce.down--;
-            player.debounce.left--;
-            player.debounce.right--;
-            player.debounce.accept--;
 
-            if (player.keys.accept() && player.debounce.accept <= 0) {
-                player.ready = !player.ready;
-                player.debounce.accept = 15;
+            if (player.keys.accept()) {
+                player.debounce.accept--;
+                if (player.debounce.accept <= 0) {
+                    player.ready = !player.ready;
+                    player.debounce.accept = 15;
+                }
+            } else {
+                player.debounce.accept = 0;
             }
 
             if (player.ready) {
@@ -174,38 +176,64 @@ let shipMenuLoop = GameLoop({  // create the main game loop
 
             player.ship.rotation += player.ship.dr;
 
-            if (player.keys.up() && player.debounce.up <= 0) {
-                game.players[i].color = util.objValPrev(colors, player.color);
+            if (player.keys.up()) {
+                if (player.debounce.up > 0) {
+                    player.debounce.up--;
+                    return;
+                }
+
+                player.color = util.objValPrev(colors, player.color);
 
                 while (util.otherPlayerHasSameColor(game.players, player)) {
-                    game.players[i].color = util.objValPrev(colors, player.color);
+                    player.color = util.objValPrev(colors, player.color);
                 }
 
                 game.players[i].ship.color = player.color;
                 player.debounce.up = 15;
+            } else {
+                player.debounce.up = 0;
             }
 
-            if (player.keys.down() && player.debounce.down <= 0) {
-                game.players[i].color = util.objValNext(colors, player.color);
+            if (player.keys.down()) {
+                if (player.debounce.down > 0) {
+                    player.debounce.down--;
+                    return;
+                }
+
+                player.color = util.objValNext(colors, player.color);
 
                 while (util.otherPlayerHasSameColor(game.players, player)) {
-                    game.players[i].color = util.objValNext(colors, player.color);
+                    player.color = util.objValNext(colors, player.color);
                 }
 
                 game.players[i].ship.color = player.color;
                 player.debounce.down = 15;
+            } else {
+                player.debounce.down = 0;
             }
 
-            if (player.keys.left() && player.debounce.left <= 0) {
-                player.shipType = util.objKeyNext(ships, player.shipType);
-                player.debounce.left = 15;
-                player.pseudoSpawn();
-            }
-
-            if (player.keys.right() && player.debounce.right <= 0) {
+            if (player.keys.left()) {
+                if (player.debounce.left > 0) {
+                    player.debounce.left--;
+                    return;
+                }
                 player.shipType = util.objKeyPrev(ships, player.shipType);
-                player.debounce.right = 15;
                 player.pseudoSpawn();
+                player.debounce.left = 15;
+            } else {
+                player.debounce.left = 0;
+            }
+
+            if (player.keys.right()) {
+                if (player.debounce.right > 0) {
+                    player.debounce.right--;
+                    return;
+                }
+                player.shipType = util.objKeyNext(ships, player.shipType);
+                player.pseudoSpawn();
+                player.debounce.right = 15;
+            } else {
+                player.debounce.right = 0;
             }
 
         });
