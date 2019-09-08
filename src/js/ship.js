@@ -29,6 +29,7 @@ export class Ship extends Sprite.class {
         this.rewinding = 0;
         this.rewindSpeed = 5; // E.g. rewind time 5* faster than realtime
         this.type = 'ship';
+        this.rotation = Math.random() * 360;
         this.dr = props.dr || 0;
 
         // Modify these values defined in shipData specs to make less crazy

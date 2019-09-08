@@ -23,6 +23,10 @@ initKeys();
 // Init gamepad event listeners n stuff
 initGamepads();
 
+window.addEventListener('gamepadconnected', function(e) {
+    console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+})
+
 canvas.style = 'width:100%;background:#000';
 
 const game = {
@@ -258,7 +262,7 @@ let shipMenuLoop = GameLoop({  // create the main game loop
                 text: player.ready ? 'ready!' : 'selecting',
                 color: player.color,
                 size: .8,
-                x: x + game.width / 2 - 20,
+                x: x + game.width / 2 - 22,
                 y: y + game.height / 2 - 20,
                 scale: game.scale,
                 context: context
