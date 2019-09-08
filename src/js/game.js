@@ -8,77 +8,8 @@ import { ShieldPickup } from './pickups/shield.js';
 import { StarPickup } from './pickups/star.js';
 import { Player } from './player.js';
 import { createMeteor } from './meteor';
-import { renderText } from './text';
+import * as gameOver from './gameOver';
 
-function renderGameOver() {
-    var pad = game.width / 16; // Padding around set of 4 cards
-    var margin = 7; // Padding in game units between each card
-    var contWidth = game.width - pad * 2; // Card container width
-    var cardWidth = contWidth / 4 - margin * 2;
-    var y = pad + margin;
-    console.log(`pad: ${pad}, contWidth: ${contWidth}, cardWidth: ${cardWidth}`);
-
-    game.players.forEach((player, i) => {
-        var x = pad + (cardWidth + margin * 2) * i;
-
-        game.context.save();
-        game.context.scale(game.scale, game.scale);
-        game.context.clearRect(
-            x,
-            y,
-            cardWidth,
-            game.height - (pad + margin) * 2,
-        );
-        game.context.strokeStyle = player.color;
-        game.context.strokeRect(
-            x,
-            y,
-            cardWidth,
-            game.height - (pad + margin) * 2
-        )
-        game.context.restore();
-
-        if (player.place === 0) {
-            renderText({
-                text: 'winner!',
-                color: player.color,
-                x: x + margin,
-                y: y + margin,
-                size: 1.2,
-                scale: game.scale,
-                context: game.context
-            });
-            game.context.save();
-            game.context.scale(game.scale, game.scale);
-            game.context.strokeStyle = player.color;
-            game.context.strokeRect(
-                x - 6,
-                y - 6,
-                cardWidth + 12,
-                game.height - (pad + margin) * 2 + 12
-            )
-            game.context.strokeRect(
-                x - 3,
-                y - 3,
-                cardWidth + 6,
-                game.height - (pad + margin) * 2 + 6
-            )
-            game.context.restore();
-        } else {
-
-        }
-
-        renderText({
-            text: 'player ' + (i + 1),
-            color: player.color,
-            size: .8,
-            x: x + margin,
-            y: y + 30,
-            scale: game.scale,
-            context: game.context
-        });
-    });
-}
 
 function endGame() {
     // Pause the game and put win screen up?
@@ -88,7 +19,23 @@ function endGame() {
     game.players.forEach(player => {
         game.places.push(player);
     });
-    game.places.sort((a, b) => b.score - a.score);
+    game.places.sort((p1, p2) => {
+        if (p1.score > p2.score) {
+            return -1;
+        }
+        if (p1.score < p2.score) {
+            return 1;
+        }
+        // Scores are the same so compare deaths
+        if (p1.deaths < p2.deaths) {
+            return -1;
+        }
+        if (p1.deaths > p2.deaths) {
+            return 1;
+        }
+        // Deaths are the same as well, so return random
+        return Math.round(Math.random() < .5 ? -1 : 1);
+    });
     game.places.forEach((player, i) => {
         player.place = i;
     });
@@ -206,17 +153,17 @@ const gameLoop = GameLoop({  // create the main game loop
         game.players.map((player, i) => player.renderScore(i));
 
         if (game.over) {
-            renderGameOver();
+            gameOver.render(game);
         }
 
         // Render debug collision stuff
-        // context.save();
-        // context.scale(game.scale, game.scale);
-        // context.strokeStyle = '#0F0';
-        // context.beginPath();
-        // game.cSystem.draw(context);
-        // context.stroke();
-        // context.restore();
+        game.context.save();
+        game.context.scale(game.scale, game.scale);
+        game.context.strokeStyle = '#0F0';
+        game.context.beginPath();
+        game.cSystem.draw(game.context);
+        game.context.stroke();
+        game.context.restore();
     }
 });
 

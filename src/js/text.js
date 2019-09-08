@@ -72,11 +72,13 @@ export function renderText(props) {
     var xAlign = yAlign = 0;
 
     if (props.alignBottom) {
-        yAlign = -17 * size; // Approx height of text
+        // Approx height of text
+        yAlign = -17 * size;
     }
 
     if (props.alignRight) {
-        xAlign = -props.text.length * 13 * size; // Approx width of text
+        // Approx width of text
+        xAlign = -props.text.toString().length * 13 * size;
     }
 
     props.context.translate(props.x + xAlign, props.y + yAlign);

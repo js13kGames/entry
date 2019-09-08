@@ -24,7 +24,7 @@ export function createBullet(parent) {
         ttl: 50,
 
         color: parent.color,
-        hitbox: parent.game.cSystem.createPoint(parent.x, parent.y),
+        hitbox: parent.game.cSystem.createCircle(parent.x, parent.y, 1),
 
         update(dt) {
             this.velocity = this.velocity.add(this.acceleration, dt);
