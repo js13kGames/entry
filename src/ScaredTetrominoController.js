@@ -18,7 +18,6 @@ const dirMapping = {
 export class ScaredTetrominoController extends TetrominoControllerBase {
   constructor (tetromino, board) {
     super(tetromino, board)
-    this.tetromino = tetromino
 
     this.cachedInstructions = []
     this.timer = 0
@@ -30,7 +29,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     this.lastDirection = 1
   }
 
-  step () {
+  handleTetromino () {
     if (this.done) {
       return
     }
@@ -75,7 +74,6 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
       if (!this.move(0, 1)) {
         if (this.manouvered > 10) {
           this.tetromino.fleeing = false
-          this.board.putTetromino(this.tetromino)
           this.done = true
           return
         }
@@ -91,19 +89,20 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
 
     if (this.tetromino.y > this.board.height) {
       this.done = true
+      this.removeTetromino = true
     }
   }
 
   isFreeableTetromino () {
-    let currentStateX = this.tetromino.x
-    let currentStateY = this.tetromino.y
-    let currentStateRotation = this.tetromino.rotation
+    let originalStateX = this.tetromino.x
+    let originalStateY = this.tetromino.y
+    let originalStateRotation = this.tetromino.rotation
 
     this.cachedInstructions = this.getInstructionsToGetFree()
 
-    this.tetromino.x = currentStateX
-    this.tetromino.y = currentStateY
-    this.tetromino.rotation = currentStateRotation
+    this.tetromino.x = originalStateX
+    this.tetromino.y = originalStateY
+    this.tetromino.rotation = originalStateRotation
 
     return !!this.cachedInstructions
   }

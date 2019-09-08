@@ -13,6 +13,7 @@ export class Board {
     }
 
     this.tetrominoes = new Set()
+    this.tetrominoPositions = new Map()
   }
 
   isSolidAt (x, y) {
@@ -59,14 +60,26 @@ export class Board {
   }
 
   putTetromino (tetromino) {
-    this.tetrominoes.add(tetromino)
+    let positions = []
     for (let [px, py] of tetromino.getBlockPositions()) {
       this.grid[py][px] = tetromino
+      positions.push([px, py])
     }
+    this.tetrominoPositions.set(tetromino, positions)
+    this.tetrominoes.add(tetromino)
+  }
+
+  updateTetrominoPosition (tetromino) {
+    const oldPositions = this.tetrominoPositions.get(tetromino)
+    for (let [px, py] of oldPositions) {
+      this.grid[py][px] = 0
+    }
+    this.putTetromino(tetromino)
   }
 
   removeTetromino (tetromino) {
     this.tetrominoes.delete(tetromino)
+    this.tetrominoPositions.delete(tetromino)
     for (let [px, py] of tetromino.getBlockPositions()) {
       this.grid[py][px] = 0
     }
@@ -95,6 +108,7 @@ export class Board {
 
     for (let [tetromino, delta] of tetrominoesToMove) {
       tetromino.y -= delta
+      this.putTetromino(tetromino)
     }
 
     for (let y = this.heightWithMargin - index; y < this.heightWithMargin; y++) {

@@ -6,6 +6,16 @@ export class TetrominoControllerBase {
     this.board = board
   }
 
+  step () {
+    this.handleTetromino()
+
+    this.board.updateTetrominoPosition(this.tetromino)
+
+    if (this.removeTetromino) {
+      this.board.removeTetromino(this.tetromino)
+    }
+  }
+
   move (dx, dy) {
     this.tetromino.move(dx, dy)
     if (this.invalidState()) {

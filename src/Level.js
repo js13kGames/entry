@@ -94,9 +94,6 @@ export class Level {
 
         this.scaredTetrominoControllers = this.getScaredTetrominoControllers(this.fleeingTetrominoesCandidates)
 
-        for (let controller of this.scaredTetrominoControllers) {
-          this.board.removeTetromino(controller.tetromino)
-        }
         if (this.scaredTetrominoControllers.size > 0) {
           this.currentTetromino = null
         } else {
@@ -183,8 +180,6 @@ export class Level {
           for (let position of positions) {
             rows.add(position[1])
           }
-
-          this.board.putTetromino(this.currentTetromino)
 
           this.checkState(rows)
         }
@@ -526,7 +521,8 @@ export class Level {
       const [x, y] = positions[i]
       for (let delta = 0; delta <= y; delta++) {
         let ghostY = y - delta
-        if (!this.board.getItemAt(x, ghostY)) {
+        let item = this.board.getItemAt(x, ghostY)
+        if (!item || item === this.currentTetromino) {
           maxDeltas[i] = delta
         } else {
           break
@@ -552,6 +548,7 @@ export class Level {
         this.renderTetrominoEyes(tetromino)
       }
 
+      // Render the current tetromino always (even outside of the board)
       if (this.currentTetromino) {
         this.renderGhostTetromino(this.currentTetromino, this.getGhostOffset(), TILE_SIZE, this.tileCountY - 1)
         this.renderTetromino(this.currentTetromino, TILE_SIZE, this.tileCountY - 1)
@@ -560,10 +557,6 @@ export class Level {
 
     if (this.clearAnimation) {
       this.clearAnimation.render()
-    } else  {
-      for (let controller of this.scaredTetrominoControllers) {
-        this.renderTetromino(controller.tetromino, TILE_SIZE, this.tileCountY - 1)
-      }
     }
 
     if (this.endAnimation) {
@@ -591,6 +584,8 @@ export class Level {
   }
 
   holdTetromino () {
+    this.board.removeTetromino(this.currentTetromino)
+
     if (this.heldTetromino && this.board.overflows(this.heldTetromino)) {
       this.setGameOver()
       return
@@ -604,12 +599,27 @@ export class Level {
     this.heldTetromino.y = 0
     this.heldTetromino.rotation = 0
     if (heldTetromino) {
-      this.currentTetromino = heldTetromino
-      this.controller = new TetrominoController(this.currentTetromino, this.board)
+      this.updateController(heldTetromino)
     } else {
       this.nextTetromino()
     }
     this.controller.wasHeld = true
+  }
+
+  updateController (tetromino) {
+    this.currentTetromino = tetromino
+
+    tetromino.x = this.board.width / 2 - 1
+    tetromino.y = this.board.height - 2
+    tetromino.eyeDirection = [0, 2]
+
+    while (this.board.invalidPosition(tetromino)) {
+      tetromino.move(0, 1)
+    }
+
+    this.board.putTetromino(tetromino)
+
+    this.controller = new TetrominoController(tetromino, this.board)
   }
 
   nextTetromino () {
@@ -618,10 +628,8 @@ export class Level {
       return
     }
 
-    this.currentTetromino = this.nextTetrominoes.shift()
+    this.updateController(this.nextTetrominoes.shift())
     this.nextTetrominoes.push(this.tetrominoSource.getNext())
-
-    this.controller = new TetrominoController(this.currentTetromino, this.board)
   }
 
   renderTetromino (tetromino, size, bottom) {

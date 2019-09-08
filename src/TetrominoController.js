@@ -28,14 +28,6 @@ export class TetrominoController extends TetrominoControllerBase {
   constructor (tetromino, board) {
     super (tetromino, board)
 
-    this.tetromino.x = board.width / 2 - 1
-    this.tetromino.y = board.height - 2
-    this.tetromino.eyeDirection = [0, 2]
-
-    while (this.invalidState()) {
-      this.tetromino.move(0, 1)
-    }
-
     this.inputDelayTimer = Input.getKey(MOVE_LEFT) || Input.getKey(MOVE_RIGHT) ? 0 : AUTO_SHIFT_DELAY
     this.repeatTimer = 0
     this.updateGravity()
@@ -55,7 +47,7 @@ export class TetrominoController extends TetrominoControllerBase {
     this.gravity = 60 * (0.8 - ((currentLevel - 1) * 0.007)) ** (currentLevel - 1)
   }
 
-  step () {
+  handleTetromino () {
     this.updateGravity()
 
     let prevX = this.tetromino.x
