@@ -20,6 +20,7 @@ import { ScaredTetrominoController } from './ScaredTetrominoController'
 import { FallingEyePair } from './Animations/FallingEyePair'
 import { PauseScreen } from './PauseScreen';
 import { Background } from './Animations/Background';
+import { debugScenario } from './debugUtils'
 
 export class Level {
   constructor () {
@@ -34,6 +35,8 @@ export class Level {
     this.time = 0
 
     this.board = new Board(this.tileCountX, this.tileCountY)
+
+    debugScenario(this)
 
     this.width = TILE_SIZE * this.tileCountX
     this.height = TILE_SIZE * this.tileCountY

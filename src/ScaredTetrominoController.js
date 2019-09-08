@@ -108,7 +108,7 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     return !!this.cachedInstructions
   }
 
-  getInstructionsToGetFree (stepsToTry = 3, instructionHistory = '') {
+  getInstructionsToGetFree (stepsToTry = 5, instructionHistory = '') {
     if (stepsToTry === 0) {
       return ''
     }
@@ -132,6 +132,17 @@ export class ScaredTetrominoController extends TetrominoControllerBase {
     if (this.tetromino.fleeing && this.move(0, 1)) {
       return instructionHistory + MOVE_UP
     }
+
+    reset()
+
+    if (this.move(0, 1)) {
+      let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + MOVE_UP)
+      if (result) {
+        return result
+      }
+    }
+
+    reset()
 
     if (this.move(this.lastDirection, 0)) {
       let result = this.getInstructionsToGetFree(stepsToTry - 1, instructionHistory + dirMapping[this.lastDirection])
