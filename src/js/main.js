@@ -30,6 +30,7 @@ initGamepads();
 canvas.style = 'width:100%;background:#000';
 
 const game = {
+    context: context,
     // meteors: [],
     // pickups: [],
     players: [],
@@ -95,6 +96,23 @@ game.players.push(new Player({
     context: context,
     game: game
 }));
+
+game.players.push(new Player({
+    color: colors.blue,
+    shipType: 'coback',
+    controls: 'wasd',
+    context: context,
+    game: game
+}));
+
+game.players.push(new Player({
+    color: colors.orange,
+    shipType: 'coback',
+    controls: 'wasd',
+    context: context,
+    game: game
+}));
+
 //
 // game.players.push(new Player({
 //     color: colors.blue,

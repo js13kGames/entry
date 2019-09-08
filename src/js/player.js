@@ -34,7 +34,7 @@ export class Player {
     }
 
     handleKeyPresses() {
-        if (this.ship && this.ship.isAlive) {
+        if (this.ship && this.ship.isAlive && !this.game.over) {
             // Rewind is first here so it has priority over everything
             if (this.keys.rewind()) {
                 this.ship.rewind();

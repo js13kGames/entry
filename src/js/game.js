@@ -10,10 +10,97 @@ import { Player } from './player.js';
 import { createMeteor } from './meteor';
 import { renderText } from './text';
 
+function renderGameOver() {
+    var pad = game.width / 16; // Padding around set of 4 cards
+    var margin = 7; // Padding in game units between each card
+    var contWidth = game.width - pad * 2; // Card container width
+    var cardWidth = contWidth / 4 - margin * 2;
+    var y = pad + margin;
+    console.log(`pad: ${pad}, contWidth: ${contWidth}, cardWidth: ${cardWidth}`);
+
+    game.players.forEach((player, i) => {
+        var x = pad + (cardWidth + margin * 2) * i;
+
+        game.context.save();
+        game.context.scale(game.scale, game.scale);
+        game.context.clearRect(
+            x,
+            y,
+            cardWidth,
+            game.height - (pad + margin) * 2,
+        );
+        game.context.strokeStyle = player.color;
+        game.context.strokeRect(
+            x,
+            y,
+            cardWidth,
+            game.height - (pad + margin) * 2
+        )
+        game.context.restore();
+
+        if (player.place === 0) {
+            renderText({
+                text: 'winner!',
+                color: player.color,
+                x: x + margin,
+                y: y + margin,
+                size: 1.2,
+                scale: game.scale,
+                context: game.context
+            });
+            game.context.save();
+            game.context.scale(game.scale, game.scale);
+            game.context.strokeStyle = player.color;
+            game.context.strokeRect(
+                x - 6,
+                y - 6,
+                cardWidth + 12,
+                game.height - (pad + margin) * 2 + 12
+            )
+            game.context.strokeRect(
+                x - 3,
+                y - 3,
+                cardWidth + 6,
+                game.height - (pad + margin) * 2 + 6
+            )
+            game.context.restore();
+        } else {
+
+        }
+
+        renderText({
+            text: 'player ' + (i + 1),
+            color: player.color,
+            size: .8,
+            x: x + margin,
+            y: y + 30,
+            scale: game.scale,
+            context: game.context
+        });
+    });
+}
+
+function endGame() {
+    // Pause the game and put win screen up?
+    game.over = true;
+    game.places = [];
+    // Give each player a position (1st, 2nd, etc)
+    game.players.forEach(player => {
+        game.places.push(player);
+    });
+    game.places.sort((a, b) => b.score - a.score);
+    game.places.forEach((player, i) => {
+        player.place = i;
+    });
+}
 
 const gameLoop = GameLoop({  // create the main game loop
     update() { // update the game state
         pollGamepads();
+
+        if (game.over) {
+            game.over++;
+        }
 
         game.players.forEach(player => {
             player.update();
@@ -52,20 +139,23 @@ const gameLoop = GameLoop({  // create the main game loop
 
         // Remove exploded ships from the both lists & the player
         game.sprites = game.sprites.filter(sprite => !sprite.exploded);
-        game.players.forEach(player => {
-            if (player.ship.exploded && player.ship.ttl) {
-                player.ship = {};
-                setTimeout(() => {
-                    player.respawn();
-                }, 3000);
-            }
 
-            // Check if someone has won!
-            // TODO: See if it's likely for 2 ships to get to 10 in same update
-            if (player.score === 10) {
-                // Pause the game and put win screen up?
-            }
-        });
+        if (!game.over) {
+            game.players.forEach(player => {
+                if (player.ship.exploded && player.ship.ttl) {
+                    player.ship = {};
+                    setTimeout(() => {
+                        player.respawn();
+                    }, 3000);
+                }
+
+                // Check if someone has won!
+                // TODO: See if it's likely for 2 ships to get to 10 in same update
+                if (player.score === 1) {
+                    endGame();
+                }
+            });
+        }
 
         if (game.meteors.length < 5 && Math.random() < .005) {
             createMeteor({
@@ -107,12 +197,17 @@ const gameLoop = GameLoop({  // create the main game loop
         }
 
     },
+
     render() {
         // Render all the sprites
         game.sprites.map(sprite => sprite.render(game.scale));
 
         // Render the player scores
         game.players.map((player, i) => player.renderScore(i));
+
+        if (game.over) {
+            renderGameOver();
+        }
 
         // Render debug collision stuff
         // context.save();
