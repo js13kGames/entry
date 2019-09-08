@@ -1,10 +1,22 @@
 
 let gamepads = {};
+let browserGamepads = []; // Actually an object in Chrome hrmm
 
 export function initGamepads() {
 
+    if (!navigator.getGamepads) {
+        console.warn('This browser does not support gamepads');
+        return false;
+    }
+
+    browserGamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+
     // Existing gamepad connections (not working? Or never connected?..)
-    navigator.getGamepads().forEach(pad => {
+    Array.prototype.forEach.call(browserGamepads, pad => {
+        console.log(pad);
+        if (!pad) {
+            return;
+        }
         console.log(`Gamepad already connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
         gamepads[pad.index] = {
             id: pad.id,
@@ -18,7 +30,7 @@ export function initGamepads() {
     window.addEventListener('gamepadconnected', function(e) {
         let pad = e.gamepad;
 
-        //console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+        console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
         gamepads[pad.index] = {
             id: pad.id,
             pressedButtons: {},
@@ -61,12 +73,12 @@ function getKeyByValue(obj, value) {
 
 export function pollGamepads() {
 
-    // if (!navigator.getGamepads) {
-    //     console.warn('This browser does not support gamepads');
-    //     return false;
-    // }
+    browserGamepads = navigator.getGamepads();
 
-    navigator.getGamepads().forEach(pad => {
+    Array.prototype.forEach.call(browserGamepads, pad => {
+        if (!pad) {
+            return;
+        }
         var gamepad = gamepads[pad.index];
         pad.buttons.forEach((button, i) => {
             let mappedKey = getKeyByValue(gamepad.buttonMap, i);
