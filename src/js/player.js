@@ -13,6 +13,7 @@ export class Player {
         this.game = props.game;
         this.ready = false;
         this.score = 0;
+        this.deaths = 0;
         this.context = props.context;
         this.shipType = props.shipType;
 

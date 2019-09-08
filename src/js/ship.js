@@ -278,6 +278,10 @@ export class Ship extends Sprite.class {
     explode() {
         this.exploded = true;
 
+        if (this.player) {
+            this.player.deaths++;
+        }
+
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
             createShrapnel(line, this, this.game.sprites);

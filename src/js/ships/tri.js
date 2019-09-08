@@ -20,9 +20,11 @@ export default () => {
                 [ -5, -2, -8,  0 ],
                 [ -8,  0, -5,  2 ]
             ],
+            // The tri's hitbox extends out the front slight so the "point bit"
+            // at the end can be hit, and it doesn't include the concave rear
             hitbox: [
                 [ -6, -5 ],
-                [  7,  0 ],
+                [  8,  0 ],
                 [ -6,  5 ]
             ]
         }
