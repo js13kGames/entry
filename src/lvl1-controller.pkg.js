@@ -1,4 +1,4 @@
-const initLevel1 = async (nextLevel) => {
+const initLevel1 = async (pizzaSound, nextLevel) => {
   const loop = () => {
     const state = getSnapshot();
     const heightPadding = ceil(((state.height / tileHeight) - 1) / 2)
@@ -66,6 +66,7 @@ const initLevel1 = async (nextLevel) => {
         if (cell.itemId === cellIds.PIZZA || cell.itemId === cellIds.HOTDOG) {
           cell.itemId = null;
           pizzaCount = pizzaCount - 1;
+          pizzaSound();
         }
         if (pizzaCount === 0 && !canExit) {
           enableExit();
@@ -108,7 +109,6 @@ const initLevel1 = async (nextLevel) => {
     tileWidth,
     cleanUp: viewCleanUp
   } = initLevel1View(modelSetState, { onWindowResize, onKeyDown }, cellIds, numFoods, images);
-
 
   // init
   modelSetState({

@@ -1,4 +1,4 @@
-const initLevel3 = async (nextLevel) => {
+const initLevel3 = async (punchSound, nextLevel) => {
   let gameIsOver = false;
   const opponentOf = {
     trex: 'kong',
@@ -173,6 +173,7 @@ const initLevel3 = async (nextLevel) => {
   }
 
   function attack (attacker, cb = noop) {
+    punchSound();
     // both will need to recover after the attack
     setState(state => {
       return checkIfUnderAttack(opponentOf[attacker], {
