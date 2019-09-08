@@ -46,11 +46,8 @@ export class Pickup extends Sprite.class {
         this.context.scale(scale, scale);
         this.context.translate(this.x, this.y);
         this.context.rotate(util.degToRad(this.rotation));
-
-        // Draw
-        this.context.strokeStyle = this.color;
-
         this.context.beginPath();
+        this.context.strokeStyle = this.color;
 
         this.context.arc(
             0,
