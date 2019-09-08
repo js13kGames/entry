@@ -14,6 +14,10 @@ const menuLoop = GameLoop({  // create the main game loop
 
         game.players.forEach((player, i) => {
 
+            if (!player.ship) {
+                player.pseudoSpawn();
+            }
+
             if (player.keys.accept()) {
                 player.debounce.accept--;
                 if (player.debounce.accept <= 0) {
@@ -92,7 +96,8 @@ const menuLoop = GameLoop({  // create the main game loop
 
         });
 
-        if (game.players.every(player => player.ready)) {
+        if (game.players.length > 1 &&
+            game.players.every(player => player.ready)) {
             menuLoop.stop();
             scenes.startGame(game, scenes);
         }
@@ -141,6 +146,17 @@ const menuLoop = GameLoop({  // create the main game loop
             });
 
             renderText({
+                alignBottom: true,
+                text: player.gamepadId ? player.gamepadId : player.controls,
+                color: player.color,
+                size: .5,
+                x: x + 12,
+                y: y + game.height / 2 - 20,
+                scale: game.scale,
+                context: game.context
+            });
+
+            renderText({
                 alignRight: true,
                 alignBottom: true,
                 text: player.ready ? 'ready!' : 'selecting',
@@ -152,11 +168,13 @@ const menuLoop = GameLoop({  // create the main game loop
                 context: game.context
             });
 
-            player.ship.pseudoRender(
-                game.scale,
-                x + game.width / 2 - 80,
-                y + (game.height / 2 - 12) / 2
-            );
+            if (player.ship) {
+                player.ship.pseudoRender(
+                    game.scale,
+                    x + game.width / 2 - 80,
+                    y + (game.height / 2 - 12) / 2
+                );
+            }
         });
     }
 });

@@ -3,6 +3,7 @@ import { pollGamepads } from '../gamepad';
 import { Menu } from '../menu';
 import { Player } from '../player';
 import { colors } from '../colors';
+import { detectNewInput } from '../detectInput';
 
 var game;
 var mainMenu;
@@ -10,7 +11,7 @@ var scenes;
 
 let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
-        pollGamepads();
+        pollGamepads(game);
 
         game.players.forEach(player => {
 
@@ -43,9 +44,6 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
                 mainMenuLoop.stop()
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
-                    game.players.forEach(player => {
-                        player.pseudoSpawn();
-                    });
                     scenes.startShipSelect(game, scenes);
                 }
                 player.debounce.accept = 15;
@@ -68,6 +66,8 @@ export function startMainMenu(newGame, otherScenes) {
     game = newGame;
     scenes = otherScenes;
 
+    detectNewInput();
+
     mainMenu = new Menu({
         context: game.context,
         x: 30,
@@ -79,25 +79,6 @@ export function startMainMenu(newGame, otherScenes) {
             { text: 'credits' }
         ]
     });
-
-    if (!game.players.length) {
-
-        game.players.push(new Player({
-            color: colors.yellow,
-            shipType: 'tri',
-            controls: 'arrows',
-            context: game.context,
-            game: game
-        }));
-
-        game.players.push(new Player({
-            color: colors.red,
-            shipType: 'coback',
-            controls: 'wasd',
-            context: game.context,
-            game: game
-        }));
-    }
 
     mainMenuLoop.start(game, scenes);
 }

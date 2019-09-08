@@ -1,5 +1,4 @@
 import { init, initKeys } from 'kontra';
-import { initGamepads } from './gamepad';
 
 // Import all the scenes because we're somehow going to handle changing
 // between them here... to stop circular dependencies getting in the way
@@ -8,28 +7,8 @@ import { startMainMenu } from './scenes/main';
 import { startShipSelect } from './scenes/select';
 import { startGame } from './scenes/game';
 
-// Setup canvas stuff (probably w/Kontra)
-
 // Kontra init canvas
 let { canvas, context } = init();
-
-// Kontra init keyboard stuff
-initKeys();
-
-// Init gamepad event listeners n stuff
-initGamepads();
-
-const scenes = {
-    startMainMenu: startMainMenu,
-    startShipSelect: startShipSelect,
-    startGame: startGame
-};
-
-// window.addEventListener('gamepadconnected', function(e) {
-//     console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
-// })
-
-canvas.style = 'width:100%;background:#000';
 
 const game = {
     canvas: canvas,
@@ -45,6 +24,25 @@ const game = {
     // width: 360,
     // height: 202.5
 };
+
+const scenes = {
+    startMainMenu: startMainMenu,
+    startShipSelect: startShipSelect,
+    startGame: startGame
+};
+
+// Give game to window object so can be accessed w/eventListeners (e.g.
+// gamepadconnected). There must be a better way to do this.
+window.game = game;
+
+// Kontra init keyboard stuff
+initKeys();
+
+// window.addEventListener('gamepadconnected', function(e) {
+//     console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+// })
+
+canvas.style = 'width:100%;background:#000';
 
 /**
  * Sets the canvas size, and the game options variables for scaling the game.
