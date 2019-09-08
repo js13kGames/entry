@@ -85,13 +85,13 @@ s = player second location
 
 var level_1 = `
 #############
-####.....####
-###...s...###
 ##.........##
-#..e..#..i..#
+##.s.....i.##
 ##.........##
-###...p...###
-####.....####
+#############
+##.........##
+##.p.....e.##
+##.........##
 #############
 `;
 var level_2 = `
@@ -154,7 +154,44 @@ var level_6 = `
 #############
 `;
 
-var levels = [level_1, level_2, level_3, level_4, level_5, level_6];
+var level_7 = `
+#############
+####e...i####
+######.######
+##.......####
+#e.#..##.####
+#.i##.i...p##
+#.....#######
+#####.s...e##
+#############
+`;
+
+var level_8 = `
+#############
+####i....#e##
+#e###.e#...i#
+#......###s##
+##..#......##
+##p###.###e##
+######i######
+#############
+#############
+`;
+
+var level_9 = `
+#############
+###i.....####
+###...##..###
+##...#e.#..##
+#..e..#..i..#
+##.....#...##
+###.....#.###
+####...p#.se#
+#############
+`;
+
+
+var levels = [level_1, level_2, level_3, level_4, level_5, level_6, level_7, level_8, level_9];
 var paths = [];//These strings record the movement of the player so the shadowPlayer can follow their movements later
 let h;
 for (h=0; h < levels.length; h++) paths.push("");
@@ -709,58 +746,58 @@ function removeValueArray(value, arr){
 }
 
 
-Mousetrap.bind('w', function(){
+Mousetrap.bind(['w', 'up'], function(){
     if (!keyQueue.includes('w')){
         keyQueue.push('w');
     }
 }, "keydown");
-Mousetrap.bind('w', function(){
+Mousetrap.bind(['w', 'up'], function(){
     if (keyQueue.includes('w')){
         keyQueue = removeValueArray('w', keyQueue);
     }
 }, "keyup");
 
-Mousetrap.bind('s', function(){
+Mousetrap.bind(['s', 'down'], function(){
     if (!keyQueue.includes('s')){
         keyQueue.push('s');
     }
 }, "keydown");
-Mousetrap.bind('s', function(){
+Mousetrap.bind(['s', 'down'], function(){
     if (keyQueue.includes('s')){
         keyQueue = removeValueArray('s', keyQueue);
     }
 }, "keyup");
 
-Mousetrap.bind('a', function(){
+Mousetrap.bind(['a','left'], function(){
     if (!keyQueue.includes('a')){
         keyQueue.push('a');
     }
 }, "keydown");
 
-Mousetrap.bind('a', function(){
+Mousetrap.bind(['a','left'], function(){
     if (keyQueue.includes('a')){
         keyQueue = removeValueArray('a', keyQueue);
     }
 }, "keyup");
 
-Mousetrap.bind('d', function(){
+Mousetrap.bind(['d','right'], function(){
     if (!keyQueue.includes('d')){
         keyQueue.push('d');
     }
 }, "keydown");
-Mousetrap.bind('d', function(){
+Mousetrap.bind(['d','right'], function(){
     if (keyQueue.includes('d')){
         keyQueue = removeValueArray('d', keyQueue);
     }
 }, "keyup");
 
-
+/*
 Mousetrap.bind('n', function () {
     transition = true;
     takeInput = false;
     animationCounter = 0;
     levelTransition(100);
-});
+});*/
 
 
 /* MOVING SHADOW PLAYER */
@@ -1035,7 +1072,7 @@ function coilMsg(){
         "\c",
         "\n",
         "XRP",
-        "is a crytocurrency which you can use to...",
+        "is a cryptocurrency which you can use to...",
         "\n",
         "buy stuff?",
         "\n","d","d","d",
