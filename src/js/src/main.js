@@ -10,7 +10,7 @@ function Main(){
   this.animManager = new AnimManager();
   Main.globalAnimManager = this.animManager;
   this.scene = null;
-  this.setScene(new BGEditor(this));
+  this.setScene(new PlayScene(this));
   this.time = 0;
 
   // global font

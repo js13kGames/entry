@@ -14,6 +14,71 @@ function TestScene() {
     color: 'blue'
   });
   this.addChild(this.rect);
+
+  this.groupText = new DisplayText({
+    text: 'group anim',
+    x: SETTINGS.width / 2,
+    y: SETTINGS.height / 2
+  });
+  this.addChild(this.groupText);
+
+  this.seqText = new DisplayText({
+    text: 'seq anim',
+    x: SETTINGS.width / 2,
+    y: SETTINGS.height / 2
+  });
+  this.addChild(this.seqText);
+
+  this.groupAnimOpts = {
+    object: this.groupText,
+    anims: [
+      {
+        onStep: function (adjusted, ratio, timeRatio, obj) {
+          obj.x = adjusted;
+        },
+        from: SETTINGS.width / 2,
+        to: SETTINGS.width / 2 + 200,
+        duration: 1,
+        timeFunction: Anim.easingFunctions.easeInOutCubic
+      },
+      {
+        onStep: function (adjusted, ratio, timeRatio, obj) {
+          obj.angle = adjusted;
+        },
+        from: 0,
+        to: Math.PI * 2,
+        duration: 1,
+        timeFunction: Anim.easingFunctions.easeInOutCubic
+      }
+    ],
+    onEnd: this.addGroupAnim.bind(this)
+  };
+
+  this.seqAnimOpts = {
+    object: this.seqText,
+    anims: [
+      {
+        onStep: function (adjusted, ratio, timeRatio, obj) {
+          obj.x = adjusted;
+        },
+        from: SETTINGS.width / 2,
+        to: SETTINGS.width / 2 + 200,
+        duration: 1,
+        timeFunction: Anim.easingFunctions.easeInOutCubic
+      },
+      {
+        onStep: function (adjusted, ratio, timeRatio, obj) {
+          obj.angle = adjusted;
+        },
+        from: 0,
+        to: Math.PI * 2,
+        duration: 1,
+        timeFunction: Anim.easingFunctions.easeInOutCubic
+      }
+    ],
+    onEnd: this.addSeqAnim.bind(this)
+  };
+
   this.keys = [];
   this.aKey = KB(KB.keys.a, function () {
     vel.x += -speed;
@@ -46,9 +111,31 @@ function TestScene() {
   });
 }
 TestScene.prototype = extendPrototype(Scene.prototype, {
+  create: function () {
+    this.addGroupAnim();
+    this.addSeqAnim();
+  },
   destroy: function () {
     this.keys.forEach(function (key) {
       key.destroy();
     });
+  },
+  addGroupAnim: function () {
+    this.main.animManager.add(new AnimGroup({
+      object: this.groupAnimOpts.object,
+      anims: this.groupAnimOpts.anims.map(function (anim) {
+        return new Anim(anim);
+      }),
+      onEnd: this.groupAnimOpts.onEnd
+    }));
+  },
+  addSeqAnim: function () {
+    this.main.animManager.add(new AnimSeq({
+      object: this.seqAnimOpts.object,
+      anims: this.seqAnimOpts.anims.map(function (anim) {
+        return new Anim(anim);
+      }),
+      onEnd: this.seqAnimOpts.onEnd
+    }));
   }
 });

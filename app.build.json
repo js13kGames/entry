@@ -52,6 +52,9 @@
         "src/js/src/math/AABB.js",
         
         "src/js/src/anim/Anim.js",
+        "src/js/src/anim/AnimSeq.js",
+        "src/js/src/anim/AnimGroup.js",
+        "src/js/src/anim/AnimBuilder.js",
         "src/js/src/anim/AnimManager.js",
         
         "src/js/src/graphics/DisplayItem.js",

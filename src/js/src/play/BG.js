@@ -1,6 +1,6 @@
 function BG(options) {
   var opts = extend({
-    w: 1000,
+    w: 2500,
     h: 800
   }, options || {});
   CachedContainer.call(this, opts);
@@ -12,16 +12,16 @@ function BG(options) {
   this.upperGround = new DisplayRect({
     x: 0,
     y: 400,
-    w: 500,
+    w: 1000,
     h: 400,
     color: '#651a1a'
   });
   this.addChild(this.upperGround);
 
   this.lowerGround = new DisplayRect({
-    x: 500,
+    x: 1000,
     y: 600,
-    w: 500,
+    w: 1500,
     h: 200,
     color: '#651a1a'
   });
@@ -34,7 +34,7 @@ function BG(options) {
     radius = Math.ceil((this.lowerGround.y - this.upperGround.y) / numRocks / 2);
   for (i = this.upperGround.y + radius; i <= this.lowerGround.y - radius; i += radius * 2) {
     this.cliffRocks.push(new DisplayCirc({
-      x: 500,
+      x: 1000,
       y: i,
       radius: radius,
       color: 'gray'
@@ -52,43 +52,43 @@ function BG(options) {
 
   this.cliffRocks = this.cliffRocks.concat([
     new DisplayCirc({
-      x: 533,
+      x: 1033,
       y: 461,
       radius: 50,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 540,
+      x: 1040,
       y: 518,
       radius: 40,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 650,
+      x: 1150,
       y: 573,
       radius: 45,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 601,
+      x: 1101,
       y: 565,
       radius: 50,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 536,
+      x: 1036,
       y: 575,
       radius: 50,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 545,
+      x: 1045,
       y: 528,
       radius: 65,
       color: 'gray'
     }),
     new DisplayCirc({
-      x: 490,
+      x: 990,
       y: 441,
       radius: 15,
       color: 'gray'

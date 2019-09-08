@@ -2,18 +2,21 @@
 function PlayScene() {
   Scene.apply(this, arguments);
 
+  var rollMagnitude = 100;
+
+  // to get the right arc length that will cover the roll length (2 * magnitude)
+  this.shellRadius = 2 *rollMagnitude / Math.PI; 
+
   // rolling "line" and settings
   this.roll = {
     center: {
-      x: SETTINGS.width / 2,
-      y: SETTINGS.height / 2
+      x: 1750,
+      y: 600 - this.shellRadius + 5
     },
-    magnitude: 100,
+    magnitude: rollMagnitude,
     damping: Math.pow(0.5, 1/60), // damp by this amount so it reaches this fraction by 1 second
     backMaxAccel: 400
   };
-
-  this.shellRadius = 2 * this.roll.magnitude / Math.PI; // to get the right arc length that will cover the roll length (2 * magnitude)
 
   // outro settings
   this.outroSettings = {
@@ -95,22 +98,25 @@ PlayScene.states = {
 
 PlayScene.prototype = extendPrototype(Scene.prototype, {
   create: function () {
+    var skyGradient = this.main.context.createLinearGradient(0, 0, 0, SETTINGS.height);
+    skyGradient.addColorStop(0, 'lightskyblue');
+    skyGradient.addColorStop(1, 'white');
     this.sky = new DisplayRect({
       w: SETTINGS.width,
       h: SETTINGS.height,
-      color: 'white'
+      color: skyGradient
     });
     this.addChild(this.sky);
 
-    this.bg = new BG({
-      scaleX: 0.25,
-      scaleY: 0.25
-    });
-    this.addChild(this.bg);
+    this.scrollLayer = new DisplayContainer();
+    this.addChild(this.scrollLayer);
+
+    this.bg = new BG();
+    this.scrollLayer.addChild(this.bg);
   
     this.turtle = new Turtle({
-      x: this.roll.center.x,
-      y: this.roll.center.y,
+      x: 500,
+      y: 395,
       angle: 0,
       shell: {
         radius: this.shellRadius
@@ -122,16 +128,18 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       leftLeg: {
         x: -40,
         w: 20,
-        h: 10
+        h: 10,
+        direction: 1
       },
       rightLeg: {
         x: 40,
         w: 20,
-        h: 10
+        h: 10,
+        direction: -1
       },
       rollMagnitude: this.roll.magnitude
     });
-    this.addChild(this.turtle);
+    this.scrollLayer.addChild(this.turtle);
 
     this.timeText = new DisplayText({
       x: SETTINGS.width / 2,
@@ -140,6 +148,194 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       textAlign: 'center'
     });
     this.addChild(this.timeText);
+
+    var setX = function (adjusted, ratio, timeRatio, obj) {
+      obj.x = Math.floor(adjusted);
+    };
+    var setY = function (adjusted, ratio, timeRatio, obj) {
+      obj.y = Math.floor(adjusted);
+    };
+    var setAngle = function (adjusted, ratio, timeRatio, obj) {
+      obj.angle = adjusted;
+    };
+
+    this.introAnim = AnimBuilder.start(this.turtle).then({ // walking
+      from: 500,
+      to: 1000,
+      duration: 5,
+      onStep: setX,
+      onEnd: function () {
+        this.turtle.animateHide();
+        this.turtle.head.eye.state = Eye.states.struggle;
+        this.turtle.leftLeg.setState(Leg.states.hiding);
+        this.turtle.rightLeg.setState(Leg.states.hiding);
+      }.bind(this)
+    }).then({ // tripping
+      from: 1000, // x
+      to: 1100,
+      duration: 0.5,
+      onStep: setX
+    }).and({
+      from: 395, // y
+      to: 450,
+      duration: 0.5,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeInCubic
+    }).and({
+      from: 0, // angle
+      to: Math.PI,
+      duration: 0.5,
+      onStep: setAngle
+    }).then({ // bounce
+      from: 1100, // x
+      to: 1200,
+      duration: 0.5,
+      onStep: setX
+    }).and({
+      from: 450, // y
+      to: 350,
+      duration: 0.5,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeOutCubic
+    }).and({
+      from: Math.PI, // angle
+      to: Math.PI * 4,
+      duration: 0.5,
+      onStep: setAngle
+    }).then({ // falling
+      from: 1200, // x
+      to: 1300,
+      duration: 0.5,
+      onStep: setX
+    }).and({
+      from: 350, // y
+      to: 600 - this.shellRadius + 5,
+      duration: 0.5,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeInCubic
+    }).and({
+      from: 0, // angle
+      to: Math.PI * 3,
+      duration: 0.5,
+      onStep: setAngle
+    }).then({ // bounce 2
+      from: 1300, // x
+      to: 1400,
+      duration: 0.3,
+      onStep: setX
+    }).and({
+      from: 550, // y
+      to: 450,
+      duration: 0.3,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeOutCubic
+    }).and({
+      from: Math.PI, // angle
+      to: Math.PI * 2,
+      duration: 0.3,
+      onStep: setAngle
+    }).then({ // falling 2
+      from: 1400, // x
+      to: 1500,
+      duration: 0.3,
+      onStep: setX
+    }).and({
+      from: 450, // y
+      to: 600 - this.shellRadius + 5,
+      duration: 0.3,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeInCubic
+    }).and({
+      from: 0, // angle
+      to: Math.PI,
+      duration: 0.3,
+      onStep: setAngle
+    }).then({ // bounce 3
+      from: 1500, // x
+      to: 1600,
+      duration: 0.3,
+      onStep: setX
+    }).and({
+      from: 600 - this.shellRadius + 5, // y
+      to: 500,
+      duration: 0.2,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeOutCubic
+    }).and({
+      from: Math.PI, // angle
+      to: 7 * Math.PI / 6,
+      duration: 0.2,
+      onStep: setAngle
+    }).then({ // falling 3
+      from: 1600, // x
+      to: 1700,
+      duration: 0.2,
+      onStep: setX
+    }).and({
+      from: 500, // y
+      to: 600 - this.shellRadius + 5,
+      duration: 0.2,
+      onStep: setY,
+      timeFunction: Anim.easingFunctions.easeInCubic
+    }).and({
+      from: 7 * Math.PI / 6, // angle
+      to: 8 * Math.PI / 6,
+      duration: 0.2,
+      onStep: setAngle
+    }).then({ // settling
+      from: 1700, // x,
+      to: 1755,
+      duration: 0.5,
+      onStep: setX,
+      timeFunction: Anim.easingFunctions.easeOutQuad
+    }).and({
+      from: 8 * Math.PI / 6, // angle
+      to: 9 * Math.PI / 6,
+      duration: 0.5,
+      onStep: setAngle,
+      timeFunction: Anim.easingFunctions.easeOutQuad
+    }).then({
+      from: 1755, // x
+      to: 1745,
+      duration: 0.5,
+      onStep: setX,
+      timeFunction: Anim.easingFunctions.easeInOutQuad
+    }).and({
+      from: 9 * Math.PI / 6,
+      to: 5 * Math.PI / 6,
+      duration: 0.5,
+      onStep: setAngle,
+      timeFunction: Anim.easingFunctions.easeInOutQuad
+    }).then({
+      from: 1745, // x
+      to: 1752,
+      duration: 0.5,
+      onStep: setX,
+      timeFunction: Anim.easingFunctions.easeInOutQuad
+    }).and({
+      from: 5 * Math.PI / 6,
+      to: 13 * Math.PI / 12,
+      duration: 0.5,
+      onStep: setAngle,
+      timeFunction: Anim.easingFunctions.easeInOutQuad
+    }).then({ // settling
+      from: 1752, // x
+      to: 1750,
+      duration: 0.5,
+      onStep: setX,
+      timeFunction: Anim.easingFunctions.easeInOutQuad,
+      onEnd: function () {
+        this.setState(PlayScene.states.waiting);
+      }.bind(this)
+    }).and({
+      from: 13 * Math.PI / 12,
+      to: Math.PI,
+      duration: 0.5,
+      onStep: setAngle,
+      timeFunction: Anim.easingFunctions.easeInOutQuad
+    }).build();
+
+    // y: 600 - this.shellRadius + 5,
   
     this.keys = [];
     this.keys.push(KB(
@@ -156,7 +352,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.addSteppable(this.cycle.bind(this));
     this.addSteppable(this.turtle.step.bind(this.turtle));
 
-    this.setState(PlayScene.states.idle);
+    this.setState(PlayScene.states.intro);
+    this.setCamera(this.turtle.x, this.turtle.y);
   },
   destroy: function () {
     this.keys.forEach(function (key) {
@@ -166,8 +363,17 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   setState: function (state) {
     this.state = state;
     switch (state) {
+      case PlayScene.states.intro:
+        this.main.animManager.add(this.introAnim);
+        this.turtle.leftLeg.setState(Leg.states.walking);
+        this.turtle.rightLeg.setState(Leg.states.walking);
+        break;
       case PlayScene.states.waiting:
         this.turtle.angle = Math.PI;
+        this.turtle.animateShow();
+        this.turtle.head.eye.state = Eye.states.normal;
+        this.turtle.leftLeg.setState(Leg.states.idle);
+        this.turtle.rightLeg.setState(Leg.states.idle);
         break;
       case PlayScene.states.outro:
         if (this.turtle.x < this.roll.center.x) {
@@ -245,11 +451,17 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.maybeEnableDamping();
     this.updateShiftState();
   },
+  setCamera: function (x, y) {
+    this.scrollLayer.x = Math.floor(-x + SETTINGS.width / 2);
+    this.scrollLayer.y = Math.floor(-y + SETTINGS.height / 2);
+  },
   cycle: function (dts) {
     this.currentCycle(dts);
   },
   cycleIdle: function (dts) {},
-  cycleIntro: function (dts) {},
+  cycleIntro: function (dts) {
+    this.setCamera(this.turtle.x, this.turtle.y);
+  },
   cycleWaiting: function (dts) {
 
   },
