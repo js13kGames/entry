@@ -12,7 +12,7 @@ window.gamepads = [];
 function setupGamepad(e) {
     let pad = e.gamepad;
 
-    console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
+    //console.log(`Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
     window.gamepads[pad.index] = {
         id: pad.id,
         pressedButtons: {},
@@ -49,12 +49,10 @@ export function detectNewInput() {
     window.addEventListener('gamepadconnected', setupGamepad);
 
     bindKeys(['space', 'up', 'right', 'down', 'left'], function(e) {
-      e.preventDefault();
       keySetUsed('arrows');
     });
 
     bindKeys(['w', 'a', 's', 'd'], function(e) {
-      e.preventDefault();
       keySetUsed('wasd');
     });
 }
