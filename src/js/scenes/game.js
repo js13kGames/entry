@@ -14,7 +14,7 @@ var scenes;
 
 function endGame() {
     // Pause the game and put win screen up?
-    game.over = true;
+    game.over = 1;
     game.places = [];
     // Give each player a position (1st, 2nd, etc)
     game.players.forEach(player => {
@@ -39,7 +39,6 @@ function endGame() {
     });
     game.places.forEach((player, i) => {
         player.place = i;
-
     });
 }
 
@@ -114,7 +113,7 @@ const gameLoop = GameLoop({  // create the main game loop
                 if (player.ship.exploded && player.ship.ttl) {
                     player.ship = {};
                     setTimeout(() => {
-                        player.respawn();
+                        player.spawn();
                     }, 3000);
                 }
 
@@ -200,6 +199,7 @@ export function startGame(newGame, otherScenes) {
     game.meteors = [];
     game.pickups = [];
     game.sprites = [];
+    game.over = 0;
 
     // Create new collision system & collision result object
     game.cSystem = new Collisions();
@@ -218,6 +218,7 @@ export function startGame(newGame, otherScenes) {
     });
 
     game.players.forEach(player => {
+        player.reset();
         player.spawn();
     });
 

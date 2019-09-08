@@ -11,10 +11,9 @@ export class Player {
         this.controls = props.controls;
         this.game = props.game;
         this.ready = false;
-        this.score = 0;
-        this.deaths = 0;
         this.context = props.context;
         this.shipType = props.shipType;
+        this.reset();
 
         // Set control scheme
         if (this.controls === 'gamepad') {
@@ -32,6 +31,11 @@ export class Player {
             right: 15,
             accept: 15
         };
+    }
+
+    reset() {
+        this.score = 0;
+        this.deaths = 0;
     }
 
     handleKeyPresses() {
@@ -128,14 +132,6 @@ export class Player {
 
         this.game.sprites.push(this.ship);
 
-        this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
-    }
-
-    respawn() {
-        // Reset anything ???
-
-        // Spawn an entirely new ship for the player ???
-        this.spawn();
         this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
     }
 

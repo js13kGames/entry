@@ -1,9 +1,11 @@
-import tri from './tri.js';
-import striker from './striker.js';
-import coback from './coback.js';
+import tri from './tri';
+import striker from './striker';
+import coback from './coback';
+import rocket from './rocket';
 
 export default {
     tri: tri(),
     striker: striker(),
-    coback: coback()
+    coback: coback(),
+    rocket: rocket()
 };
