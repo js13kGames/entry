@@ -144,13 +144,13 @@ var level_5 = `
 
 var level_6 = `
 #############
-#ie###e....i#
+#ie##e.....i#
 #....##.#####
 ####.......e#
-##...########
-##..#e.....s#
-#i.....######
-###e##.....p#
+##...####.###
+###.##.....s#
+#......######
+#i####.....p#
 #############
 `;
 
@@ -178,7 +178,7 @@ var target = "e"; //which object to decrement the goal
 var goal = 0; //this keeps track of how many more objects needs to be destroyed
 
 /* WEB MONETIZATION SKIN CODE */
-var enableSkins = true;
+var enableSkins = false;
 var playerSpriteIndex = 0;
 
 var score = 0; //The Player's score!
@@ -438,6 +438,14 @@ async function drawPixelTextSlow(message, x, y, size, delay, color = "white") {
             } else if (message[queueCounter] === "v") {
                 Mousetrap.unbind('space');
                 main = setInterval(mainLoop, 25);
+            } else if (message[queueCounter] == "COIL FOR WEB MONETIZATION"){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "orange");
+                beepSnd.play();//make sound effect
+            } else if (message[queueCounter] === "XRP"){
+                drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, "lime");
+                beepSnd.play();
+            } else if (message[queueCounter] === ";"){ 
+                window.location.reload();
             } else {
                 drawPixelText(message[queueCounter][slowTextCounter], x, y, size, false, color);
                 beepSnd.play();//make sound effect
@@ -980,6 +988,7 @@ function titleScreen() {
     let gameX = 5;
     let gameY = 48;
     let fontSize = 2;
+    score = 0;
 
     ctx.fillStyle = "black";
     ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
@@ -995,6 +1004,75 @@ function titleScreen() {
         main = setInterval(mainLoop, 25);
     });
 }
+
+// info about coil
+function coilMsg(){
+
+    let info = [
+        "HELLO DEAR PLAYER, IT IS I the",
+        "narrator",
+        "!",
+        "d",
+        "\n",
+        "I see you're curious about the paid skins.",
+        "\n",
+        "You see, this game uses",
+        "COIL FOR WEB MONETIZATION",
+        "\n",
+        "SO you can use the coil extension for your",
+        "\n",
+        "web browser to pay any amount in",
+        "XRP","to unlock",
+        "\n",
+        "the special skins for the target characters",
+        "\n",
+        "in the game.",
+        "d","d","d",
+        "what is ",
+        "XRP",
+        "? you ask?",
+        "d","d","d","d",
+        "\c",
+        "\n",
+        "XRP",
+        "is a crytocurrency which you can use to...",
+        "\n",
+        "buy stuff?",
+        "\n","d","d","d",
+        "it can do 1500 transactions per second.",
+        "d","d","d",
+        "\n",
+        "that's cool.",
+        "d","d",
+        "\n",
+        "look if you want the skins just send some",
+        "\n",
+        "XRP",
+        "points?",
+        "d","d","d",
+        "dollars?",
+        "d","d",
+        'coins?',
+        "\n",
+        "just send some numbers and press the SHIFT key",
+        "\n",
+        "to shuffle through skins.",
+        "d",
+        "d",
+        "d",
+        "d",
+        "d",
+        "d",
+        ";"
+    ];
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 32, 19 * gridSize, (this_level.length - 2) * gridSize);
+    score = 1;
+    drawPixelTextSlow(info, 5, 48, 2, 65);
+
+}
+
 
 //first screen player sees
 function splashScreen() {
@@ -1022,6 +1100,9 @@ function splashScreen() {
 
     Mousetrap.bind("s", function(){
         //run the info dialogue for paying for skins
+        Mousetrap.unbind("s");
+        Mousetrap.unbind("enter");
+        coilMsg();
     });
 
     Mousetrap.bind("enter", function () {
@@ -1034,6 +1115,7 @@ function splashScreen() {
 
 function gameWin() {
 
+    spaceBind = true;
     let endscreenText = [
         "GOOD JOB!",
         "\n",
