@@ -68,13 +68,13 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, cellIds, numFoo
       case 'down': kong = kongFrontImg; break;
       case 'left': kong = kongRightImg; break;
     }
-    let mult = 1;
+    let multiplier = 1;
     if (dir === 'left') {
       ctx.scale(-1, 1);
       ctx.translate(-100, 0);
-      mult = -1;
+      multiplier = -1;
     }
-    ctx.drawImage(kong, mult * (canvas.width / 2 - kong.width / 2), canvas.height / 2 - kong.height / 2);
+    ctx.drawImage(kong, multiplier * (canvas.width / 2 - kong.width / 2), canvas.height / 2 - kong.height / 2);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 

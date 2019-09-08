@@ -1,4 +1,4 @@
-const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
+const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images) => {
   const [canvas, ctx] = createCanvas();
 
   const progressWrapper = createElement('div');
@@ -11,25 +11,16 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   progressWrapper.appendChild(trexProgressBar);
   root.appendChild(progressWrapper);
 
-  const ape = ctx.createImageData(100, 100);
-  // Iterate through every pixel
-  for (let i = 0; i < ape.data.length; i += 4) {
-    // Modify pixel data
-    ape.data[i + 0] = 0;  // R value
-    ape.data[i + 1] = 0;    // G value
-    ape.data[i + 2] = 0;  // B value
-    ape.data[i + 3] = 255;  // A value
-  }
-
-  const dino = ctx.createImageData(100, 100);
-  // Iterate through every pixel
-  for (let i = 0; i < dino.data.length; i += 4) {
-    // Modify pixel data
-    dino.data[i + 0] = 190;  // R value
-    dino.data[i + 1] = 0;    // G value
-    dino.data[i + 2] = 210;  // B value
-    dino.data[i + 3] = 255;  // A value
-  }
+  const [
+    kongAttack,
+    kongBlock,
+    kongDisabled,
+    kongRight,
+    trexAttack,
+    trexBlock,
+    trexDisabled,
+    trexRight
+  ] = images
 
   const keydown = addEventListener(
     window,
@@ -70,11 +61,41 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions) => {
   }
 
   function renderCharacter (charName, charState, charSize, mapStart) {
+    let img;
+    let multiplier = 1;
     if (charName === 'trex') {
-      ctx.putImageData(dino, mapStart + charState.location * charSize, canvas.height - charSize * 2);
+      switch(charState.currentAction) {
+        case actions.ATTACKING: img = trexAttack; break;
+        case actions.BLOCKING: img = trexBlock; break;
+        case actions.DISABLED: img = trexDisabled; break;
+        case actions.READY:
+        default: img = trexRight;
+      }
+      multiplier = -1;
+      ctx.scale(-1, 1);
+      ctx.translate(-img.width, 0);
+      ctx.drawImage(
+        img,
+        multiplier * (mapStart + charState.location * charSize),
+        canvas.height - charSize * 2
+      );
     } else {
-      ctx.putImageData(ape, 3 * charSize, canvas.height - charSize * 2);
+      switch(charState.currentAction) {
+        case actions.ATTACKING: img = kongAttack; break;
+        case actions.BLOCKING: img = kongBlock; break;
+        case actions.DISABLED: img = kongDisabled; break;
+        case actions.READY:
+        default: img = kongRight;
+      }
+      if (charState.direction === directions.LEFT) {
+        multiplier = -1;
+        ctx.scale(-1, 1);
+        multiplier = -1;
+        ctx.translate(-img.width, 0);
+      }
+      ctx.drawImage(img, multiplier * (3 * charSize), canvas.height - charSize * 2);
     }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   function showHealth(kong, trex) {
