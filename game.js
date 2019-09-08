@@ -171,6 +171,8 @@ function initGame() {
         ],
     });
 
+    checkCookie();
+
     resizeScreen();
 
     loadLevel();
@@ -224,7 +226,7 @@ function loadLevel() {
         obstaclestogenerate = 10
     } else {
         obstaclestogenerate = 1 + (3 * level)
-        timeleft = 15 + (5*level)
+        timeleft = 12 + (6*level)
     }
 
     illo.rotate = {x: -(TAU/16), y: TAU/16};
@@ -233,7 +235,7 @@ function loadLevel() {
 
     if (level != 11) {
         activated = 0;
-        activategoal = Math.round( obstacle.length * (1.8 + (level * 0.2)))
+        activategoal = Math.round( obstacle.length * (1.6 + (level * 0.08)))
     }
 
     flipline.translate.y = flipy;
@@ -250,31 +252,29 @@ function generateObstacles(amount,position,direction) {
         var obstaclex = 0; var obstacley = 0;
         var front = (random() >= 0.1); if (flipped == -1) {front = !front}
 
-        console.log(i.toString() + " "+ rand.toString())
-
         switch(rand)
         {
             case 0: //Two tall platforms at same height
-                height = 40+(random()*100);
-                obstaclex = (Math.round(random()/10)*10 * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
+                height = 40+((Math.round(random()*10)/10)*100);
+                obstaclex = (((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.7;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(random()*32), height, front)
-                obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(24), height, front)
                 break;
             case 1: //Two tall platforms, one lower than the other
-                height = 40+(random()*100);
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
+                height = 40+((Math.round(random()*10)/10)*100);
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front)
                 obstacley += 50;
-                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(24), height, front)
 
                 off += 50*direction;
                 break;
             case 2: //Funnel
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
+                obstaclex = ((((Math.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
                 obstacley = off;
                 height = 30;
 
@@ -282,11 +282,11 @@ function generateObstacles(amount,position,direction) {
                 obstacley += 50*direction;
                 obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,24, height, front);
 
-                off += 50*direction;
+                off += 80*direction;
                 break;
             case 3: //Three tall platforms at same height
                 height = 80;
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.4),obstacley,24, height, front)
@@ -295,36 +295,36 @@ function generateObstacles(amount,position,direction) {
                 off += 50*direction;
                 break;
             case 4: //Three tall platforms at descending heights
-                height = 40+(random()*100);
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                height = 40+((Math.round(random()*10)/10)*100);
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16+(24), height, front)
                 obstacley += 50*direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,16+(24), height, front)
                 obstacley += 50*direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16+(24), height, front)
 
                 off += 150*direction;
                 break;
 
             case 5: //Enclosed box
-                height = 80+(random()*40); var width = height;
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                height = 80+((Math.round(random()*10)/10)*40); var width = height;
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width, 16, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width, 8, front)
                 obstacley += height/2;
                 obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16, height, front)
                 obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16, height, front)
                 obstacley += height/2;
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width, 16, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width, 8, front)
 
                 off += 100*direction;
                 break;
                 
             case 6: //Wide platform
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.1;
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.1;
                 obstacley = off+20;
                 height = 16;
 
@@ -333,14 +333,14 @@ function generateObstacles(amount,position,direction) {
                 off += 50*direction;
                 break;
             default: //Other chances, just generate one long platform
-                height = 40+(random()*100);
-                obstaclex = (random() * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
+                height = 40+((Math.round(random()*10)/10)*100);
+                obstaclex = ((((Math.round(random()/10))*10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(random()*32), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front)
         }
 
-        off += (20+height)*direction;
+        off += (40+height)*direction;
     }
 
     return(off)
@@ -368,11 +368,11 @@ function addObstacle(xx,yy,width,height,front) {
 
 function step(framestep) {
 
-    if (inputtime >= 2)
+    if (inputtime >= 2 && inputbuffer != "")
     {
         inputtime -= 1
         input(inputbuffer)
-        if (inputtime == 1) {inputtime = 0}
+        if (inputtime == 1) {inputtime = 0; inputbuffer = ""}
     }
 
     if (state == 1 && paused == false)
@@ -411,7 +411,10 @@ function step(framestep) {
         ypercent = Math.max(0,ypercent); //To avoid interface displaying -0 in some cases
         i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
     } else {
-        i2.innerHTML = activated.toString() + " of "+activategoal.toString();
+        if (activategoal >= 100)
+        { i2.innerHTML = activated.toString() + " / "+activategoal.toString(); }
+        else { i2.innerHTML = activated.toString() + " of "+activategoal.toString(); }
+        
         i3.innerHTML = "Level:\n" +level.toString();
     }
 
@@ -483,11 +486,11 @@ function step(framestep) {
         {
             if (flipped == 1)
             {
-                flipy = flipbottom;
+                flipy = flipbottom+c_yflipmargin;
             }
             else
             {
-                flipy = fliptop;
+                flipy = fliptop-c_yflipmargin;
             }
         }
         flipline.translate.y = flipy;
@@ -553,10 +556,10 @@ function step(framestep) {
             for (var i = 0; i != visobstacle.length; i++)
             {
                 xx = visobstacle[i].translate.x-(flipped*10); //The player is on a different layer compared to the blocks, so we offset the x to closely match the perspective the player is seeing.
-                yy = visobstacle[i].translate.y;
+                yy = visobstacle[i].translate.y+3;
                 zz = visobstacle[i].translate.z;
                 w = visobstacle[i].width; aw = visobstacle[i].width*1.2; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
-                h = visobstacle[i].height*0.9;
+                h = visobstacle[i].height+6;
 
                 if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - aw && player.translate.x < xx + aw && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
@@ -577,7 +580,7 @@ function step(framestep) {
                     } else if (player.translate.x > xx - w && player.translate.x < xx + w) { //Player kicked side of this block
                         if (playermovex > 0) {shakex = 5;} else if (playermovex < 0) {shakex = -5} else {shakex = 0}
                         playermovex = 0;
-                        playermovey = c_fallspeed*flipped;
+                        playermovey = c_dropspeed*flipped;
                         shakey = 0; shakeduration = 2;
                         collided = true;
                     }
@@ -657,6 +660,11 @@ function handleGesture(e) { //Source: https://gist.github.com/SleepWalker/da5636
 
 function input(key) {
 
+    if (key != inputbuffer)
+    {
+        inputbuffer = "";
+    }
+
     if (state == 0) //Main menu
     {
         if (key == " " && canstartgame) {
@@ -669,7 +677,7 @@ function input(key) {
                 l2.style.visibility = "hidden";
             }, 975);
             if (hiscore == 0) {state = 1; level = 1; loadLevel(level); l3.style.visibility = "hidden"; }
-            else {state = 2; level == Math.min(hiscore,11); updateLevelSelect();}
+            else {state = 2; level == Math.min(hiscore,11); switchPalette(palette); updateLevelSelect();}
             return;
         }
     }
@@ -677,28 +685,24 @@ function input(key) {
     {
         if (key == "ArrowLeft" || key == "a" || key == "q") {
             level -= 1; if (level == 0) {level = 1}; updateLevelSelect();
-            console.log("Decreased level")
         }
         else if (key == "ArrowRight" || key == "d") {
             level += 1; 
             if (level == hiscore+2) {level = hiscore+1}; 
             if (level > 11) {level = 11}; 
             updateLevelSelect();
-            console.log("Increased level")
         }
         else if (key == "ArrowUp" || key == "w" || key == "z") {
             palette -= 1; 
-            if (palette == -1) {palette = 4}; 
+            if (palette == -1) {palette = 6}; 
             switchPalette(palette)
             updateLevelSelect();
-            console.log("Prev palette")
         }
         else if (key == "ArrowDown" || key == "s") {
             palette += 1; 
-            if (palette == 5) {palette = 0}; 
+            if (palette == 7) {palette = 0}; 
             switchPalette(palette)
             updateLevelSelect();
-            console.log("Next palette")
         }
         else if (key == " ") {
             state = 1;
@@ -709,7 +713,6 @@ function input(key) {
             d4.style.visibility = "hidden";
             k.style.visibility = "hidden";
             l3.style.visibility = "hidden"; 
-            console.log("Confirmed")
         }
     }
     else if (state == 1) //Gameplay
@@ -718,6 +721,20 @@ function input(key) {
         {
             pause(-1)
             return;
+        }
+
+        if (paused && key == "Backspace") {
+            if (l3.style.visibility == "hidden")
+            {
+                l3.style.visibility = "visible"; 
+                l3.innerHTML = "Confirm with [Backspace]";
+            }
+            else
+            {
+                l3.style.visibility = "hidden";
+                pause(-1);
+                gameOver();
+            }
         }
         
         if (paused) 
@@ -731,29 +748,26 @@ function input(key) {
         var delta = 0; 
         if (key == "ArrowLeft" || key == "a" || key == "q") {delta = -1}
         if (key == "ArrowRight" || key == "d") {delta = 1}
-        
-        if (Math.sign(playermovey) == flipped || Math.sign(playermovey) == 0) //Not moving against the fall direction
+
+        if (delta != 0 && playermovex == 0)
         {
-            if (delta != 0 && playermovex == 0)
-            {
-                playermovex = c_startverticalspeed*delta;
-                playermovey = 0;
-                sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
-                return;
-            } else if ((key == "ArrowUp" || key == "w" || key == "z"))
-            {
-                playermovex = 0;
-                playermovey = -c_jumpspeed*flipped;
-                sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
-                return;
-            } else if (((key == "ArrowDown" || key == " ") || key == "s") && ((playermovey < c_dropspeed && flipped == 1) || (playermovey > -c_dropspeed && flipped == -1)) )
-            {
-                playermovex = 0;
-                playermovey = c_dropspeed*flipped;
-                sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
-                return;
-            }
-        } //else the player is moving against fall direction.
+            playermovex = c_startverticalspeed*delta;
+            playermovey = 0;
+            sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
+            return;
+        } else if ((key == "ArrowUp" || key == "w" || key == "z") && (Math.sign(playermovey) == flipped || Math.sign(playermovey) == 0))
+        {
+            playermovex = 0;
+            playermovey = -c_jumpspeed*flipped;
+            sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
+            return;
+        } else if (((key == "ArrowDown" || key == " ") || key == "s") && ((playermovey < c_dropspeed && flipped == 1) || (playermovey > -c_dropspeed && flipped == -1)) )
+        {
+            playermovex = 0;
+            playermovey = c_dropspeed*flipped;
+            sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
+            return;
+        }
 
         if (key == " ")
         {
@@ -764,13 +778,18 @@ function input(key) {
         //If this point of the function is reached, no keys have been handled. Activate input buffer.
         if (inputtime == 0 || key != inputbuffer)
         {
-            inputbuffer = key; inputtime = 15;
+            inputbuffer = key; inputtime = 10;
         }
     }
 }
 
 function draw() {
-    var yoff = (TAU/4)*(1-flipvisual); if (flipped == -1) {yoff = ((TAU/4)*flipvisual)+(TAU/4)*3} //Some fancy numbers to make the player rotate smoothly while flipping screen
+    var yoff = (TAU/4)*(1-flipvisual); 
+    if (flipped == -1) 
+    {
+        yoff = ((TAU/4)*flipvisual)+((TAU/4)*3)
+        //Some fancy numbers to make the player rotate smoothly while flipping screen
+    }
     player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipvisual)+yoff} //x and y swap here
     border.translate.y = player.translate.y
 
@@ -790,11 +809,13 @@ function gameWin() {
         not.style.visibility = "visible";
         if (hiscore != 11)
         {
-             not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!";
+             not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!<br>Progress saved.";
+             setCookie('backflipped_level',hiscore)
         }
         else
         {
-            not.innerHTML = "You unlocked Endless mode!";
+            not.innerHTML = "You unlocked Endless mode!<br>Thanks for playing the game!";
+            setCookie('backflipped_level',hiscore)
         }
     }
 
@@ -814,7 +835,8 @@ function gameOver() {
         {
             if (hiscore > 0)
             {
-                not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke your old highscore of<br>"+hiscore.toString()+" with a new score of "+score.toString()+"!";
+                not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke the old highscore of<br>"+hiscore.toString()+" with a new score of <b>"+score.toString()+"</b>!";
+                setCookie('backflipped_level',hiscore)
             }
             hiscore = score;
         }
@@ -858,7 +880,7 @@ function updateLevelSelect() {
     if (level == hiscore+1 || level == 11) {d4.style.visibility="hidden"}
     else { d4.style.visibility="visible" }
 
-    k1.innerHTML = "Colors ("+(palette+1).toString()+"/5)"
+    k1.innerHTML = "Colors ("+(palette+1).toString()+"/7)"
     k2.innerHTML = palettename;
 }
 
@@ -901,12 +923,13 @@ function pause(toggle) {
     else if (paused != toggle) {paused = toggle} else {return;}
 
     if (paused) {
-        not.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume";
+        not.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br>[Backspace] to give up";
         i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
     }
     else {
         not.style.visibility = "hidden";
         i1.style.visibility = "visible"; i2.style.visibility = "visible"; i3.style.visibility = "visible";
+        l3.style.visibility = "hidden";
     }
 }
 
@@ -938,21 +961,23 @@ function isOdd(num) { return num % 2;}
 
 function switchPalette(id) {
 
-    /*if (id == 1 && hiscore < 5) {palettename = "⚿ Reach level 5 to unlock"; return;}
-    else if (id == 2 && hiscore < 20) {palettename = "⚿ Reach 20 flips in endless mode"; return;}
-    else if (id == 3 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ Exclusive for Coil subscribers"; return;}
-    else if (id == 4 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ Exclusive for Coil subscribers"; return;}*/
+    if (id == 1 && hiscore < 3) {palettename = "⚿ (Beat level 3 to unlock)"; return;}
+    else if (id == 2 && hiscore < 5) {palettename = "⚿ (Beat level 5 to unlock)"; return;}
+    else if (id == 3 && hiscore < 10) {palettename = "⚿ (Beat level 10 to unlock)"; return;}
+    else if (id == 4 && hiscore < 20) {palettename = "⚿ (Reach 20 flips in Endless mode)"; return;}
+    else if (id == 5 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ (Exclusive for Coil subscribers)"; return;}
+    else if (id == 6 && !(document.monetization && document.monetization.state === 'started')) {palettename = "⚿ (Exclusive for Coil subscribers)"; return;}
 
     switch(palette) {
         case 0: c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; eyes.color = "#fff"; palettename = "Default Colors"; break;
-        case 1: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; eyes.color = "#fff"; palettename = "Blueberry Juice"; break;
-        case 2: c[0] = "#ddd" ; c[1] = "#222"; c[2] = "#444" ; c[3] = "#bbb"; c[4] = "#888"; eyes.color = "#fff"; palettename = "Stylish Monochrome"; break;
-        case 3: c[0] = "#0F5FA4" ; c[1] = "#9CC6EC"; c[2] = "#BBD6E7" ; c[3] = "#4087C9"; c[4] = "#fff"; eyes.color = "#000"; palettename = "Coil Exclusive: Dyed Blueprint"; break;
-        case 4: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; eyes.color = "#444"; palettename = "Coil Exclusive: Dawnbreak"; break;
+        case 1: c[0] = "#A5836A" ; c[1] = "#FD3633"; c[2] = "#D33826" ; c[3] = "#E8BD32"; c[4] = "#668D2E"; eyes.color = "#fff"; palettename = "Strawberry Patch"; break;
+        case 2: c[0] = "#22393F" ; c[1] = "#00B8B5"; c[2] = "#50DADC" ; c[3] = "#0087BD"; c[4] = "#14A9FF"; eyes.color = "#fff"; palettename = "Blueberry Juice"; break;
+        case 3: c[0] = "#71009F" ; c[1] = "#FE9BCC"; c[2] = "#FEAED6" ; c[3] = "#AF00F5"; c[4] = "#fff"; eyes.color = "#000"; palettename = "Bright Neon"; break;
+        case 4: c[0] = "#ddd" ; c[1] = "#222"; c[2] = "#444" ; c[3] = "#bbb"; c[4] = "#888"; eyes.color = "#fff"; palettename = "Stylish Monochrome"; break;
+        case 5: c[0] = "#0F5FA4" ; c[1] = "#9CC6EC"; c[2] = "#BBD6E7" ; c[3] = "#4087C9"; c[4] = "#fff"; eyes.color = "#000"; palettename = "Coil Exclusive: Beau Blueprint"; break;
+        case 6: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; eyes.color = "#444"; palettename = "Coil Exclusive: Dawnbreak"; break;
         //case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;
     }
-
-    console.log(palettename)
 
     if (flipped == 1) {
         bgcolor = c[0]; border.color = c[1]; flipline.color = c[1];
@@ -969,22 +994,31 @@ function switchPalette(id) {
 
 function setCookie(cname, cvalue) {
     localStorage.setItem(cname, cvalue);
-  }
+    console.log("BackFlipped: Cookie "+cname+" set to "+cvalue.toString())
+}
 
-  function getCookie(cname) {
+function getCookie(cname) {
     var data = localStorage.getItem(cname);
-    if (data == null) {
-      return "noone";
-    } else return parseInt(data);
-  }
-
-  function checkCookie() {
-    var savedlvl = getCookie("backflipped_level");
-    if (savedlvl != "noone") {
-      levelnr = savedlvl //Set level id, and load it
-      console.log('Backflipped: Loaded save, starting on level ' + savedlvl)
-    } else {
-      setCookie('backflipped_level', 1)
-      console.log('BackFlipped: New save')
+    if (data == null) 
+    {
+        return "noone";
+    } 
+    else 
+    {
+        return parseInt(data);
     }
-  }
+}
+
+function checkCookie() {
+    var savedscore = getCookie("backflipped_level");
+    if (savedscore != "noone") 
+    {
+        hiscore = savedscore; level = hiscore+1 //Set level id, and load it
+        console.log('BackFlipped: Loaded save, starting on level ' + savedscore)
+    } 
+    else 
+    {
+        setCookie('backflipped_level', 0)
+        console.log('BackFlipped: New save')
+    }
+}
