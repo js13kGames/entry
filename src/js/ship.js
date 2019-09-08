@@ -53,26 +53,6 @@ export class Ship extends Sprite.class {
         this.lines.thrust = shipData.lines.thrust || [];
         this.lines.hitbox = shipData.lines.hitbox || [];
 
-        // Scale all the lines of this ship. It'd be better to do this by
-        // looping through with Object.keys, but that takes more bytes!
-        // Note that this scales the shipData.lines as well!
-
-        // this.lines.body.forEach((line, i) => {
-        //     line.forEach((v, i) => { line[i] *= this.scale });
-        // });
-        //
-        // this.lines.detail.forEach((line, i) => {
-        //     line.forEach((v, i) => { line[i] *= this.scale });
-        // });
-        //
-        // this.lines.thrust.forEach((line, i) => {
-        //     line.forEach((v, i) => { line[i] *= this.scale });
-        // });
-        //
-        // this.lines.hitbox.forEach((line, i) => {
-        //     line.forEach((v, i) => { line[i] *= this.scale });
-        // });
-
         // Merge body & detail into 'ship' line array for doing fun effects etc
         this.lines.ship = this.lines.body.concat(this.lines.detail);
 
@@ -151,8 +131,8 @@ export class Ship extends Sprite.class {
         this.ammoCurrent--;
 
         // Knockback (hass less effect for ships with greater mass)
-        this.dx -= cos / (this.mass / 4);
-        this.dy -= sin / (this.mass / 4);
+        this.dx -= cos / (this.mass / 2);
+        this.dy -= sin / (this.mass / 2);
 
         createBullet(this);
     }
@@ -260,7 +240,8 @@ export class Ship extends Sprite.class {
                 this.dx *= .8;
                 this.dy *= .8;
                 this.invuln = .2;
-                this.ammoCurrent = this.ammo;
+                this.ammoCurrent = this.history[0].ammo;
+                this.rainbow = this.history[0].rainbow;
             }
 
             return true; // Don't do any other ship updating this game update
@@ -277,10 +258,15 @@ export class Ship extends Sprite.class {
 
         this.position = this.position.add(this.velocity);
 
-        // Record current location into locations history
-        this.history.push({ x: this.x, y: this.y});
+        // Record current location & info into rewind history
+        this.history.push({
+            x: this.x,
+            y: this.y,
+            ammo: this.ammoCurrent,
+            rainbow: this.rainbow
+        });
         // Remove last update location from location history
-        if (this.history.length > 90) {
+        if (this.history.length > 120) {
             this.history.shift();
         }
 
