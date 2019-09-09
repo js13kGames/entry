@@ -1,7 +1,5 @@
 function initMusic () {
-  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.5;
+  let audioCtx, masterGain;
 
   let lastScheduledNote = {
     drum: 1,
@@ -68,6 +66,9 @@ function initMusic () {
   }
 
   function playMusic () {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.5;
     setInterval(scheduleInstruments, 100);
     return true;
   }
@@ -77,7 +78,6 @@ function initMusic () {
   }
 
   function punchSound () {
-    console.log('punch');
     makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
   }
 
