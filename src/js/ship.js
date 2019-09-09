@@ -129,6 +129,7 @@ export class Ship extends Sprite.class {
 
         this.fireDt = 0;
         this.ammoCurrent--;
+        this.player.shotsFired++;
 
         // Knockback (hass less effect for ships with greater mass)
         this.dx -= cos / (this.mass / 2);

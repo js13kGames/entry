@@ -197,7 +197,7 @@ export function startShipSelect(newGame, otherScenes) {
 
     game.players.forEach(player => {
         player.ship = null;
-        player.ready = false;
+        player.reset();
     });
 
     menuLoop.start();

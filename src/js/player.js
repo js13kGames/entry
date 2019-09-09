@@ -10,7 +10,6 @@ export class Player {
         this.color = props.color;
         this.controls = props.controls;
         this.game = props.game;
-        this.ready = false;
         this.context = props.context;
         this.shipType = props.shipType;
         this.reset();
@@ -35,8 +34,12 @@ export class Player {
     }
 
     reset() {
-        this.score = 0;
+        this.crashes = 0;
         this.deaths = 0;
+        this.ready = false;
+        this.score = 0;
+        this.shotsFired = 0;
+        this.shotsLanded = 0;
     }
 
     handleKeyPresses() {
