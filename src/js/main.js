@@ -20,7 +20,7 @@
   **
   ** Handles all the game logic.
   **/
-  AFRAME.registerComponent('dont-look-back', {
+  AFRAME.registerComponent('game', {
     schema: {default: ''},
     
     // Game map generated on each level
@@ -518,6 +518,6 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     // Init the game component.
-    document.querySelector('a-scene').setAttribute('dont-look-back', '');
+    document.querySelector('a-scene').setAttribute('game', '');
   })
 })();
