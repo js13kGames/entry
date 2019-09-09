@@ -1,11 +1,14 @@
 <html>
   <head>
-    <title>JS13KGames - Jerome Lecomte</title>
+    <title>Don't Look Back by Jerome Lecomte (JS13KGames 2019)</title>
     <script src="aframe-v0.9.2.min.js"></script>
     <script src="game.js"></script>
   </head>
   <body>
-    <a-scene screen-manager>
+    <a-scene
+      loading-screen="dotsColor: white; backgroundColor: #663931"
+      screen-manager
+    >
       <!-- game title -->
       <a-entity
         id="title"
@@ -83,36 +86,36 @@
       <a-entity
         class="chicken one"
         position="-2.5 0.5 -4.5"
-        target="revive: .chicken.two"
+        target="revive: .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       >
       </a-entity>
       <a-entity
         class="chicken two"
         position="0 0.5 -4.5"
-        target
+        target="texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       >
       </a-entity>
       <a-entity
         class="chicken three"
-        target="revive: .chicken.one, .chicken.two"
         position="2.5 0.5 -4.5"
+        target="revive: .chicken.one, .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       ></a-entity>
 
       <!-- enemy outlaws -->
       <a-entity
         class="outlaw one"
-        position="-2.5 -100.5 -6.5"
-        target="revive: .outlaw.two"
+        position="-1.5 -100.5 -5.5"
+        target="revive: .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       >
       </a-entity>
       <a-entity
         class="outlaw two"
-        position="2.5 -100.5 -6.5"
-        target
+        position="2.5 -100.5 -5.5"
+        target="texture: #outlaw2_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
 
@@ -131,6 +134,22 @@
         radius="1"
       ></a-icosahedron>
       <a-sky color="#36C3FF"></a-sky>
+
+      <!-- assets -->
+      <a-assets>
+        <img
+          id="chicken_texture"
+          src="chicken_x4.png"
+        />
+        <img
+          id="outlaw1_texture"
+          src="outlaw1_x4.png"
+        />
+        <img
+          id="outlaw2_texture"
+          src="outlaw2_x4.png"
+        />
+      </a-assets>
 
     </a-scene>
   </body>

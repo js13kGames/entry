@@ -64,11 +64,20 @@ AFRAME.registerComponent('screen-manager', {
 
 AFRAME.registerComponent('target', {
   schema: {
+    height: {
+      type: 'number',
+    },
     revive: {
       // hack: a selector that has very little chance to match anything, so selectorAll returns an empty array
       default: '#null.null',
       type: 'selectorAll',
     },
+    texture: {
+      type: 'string',
+    },
+    width: {
+      type: 'number',
+    }
   },
   init: function() {
     // hack related to stateremoved
@@ -77,11 +86,12 @@ AFRAME.registerComponent('target', {
     this.el.addState('up');
 
     // add target entity within
-    this.targetEl = document.createElement('a-ring');
-    this.targetEl.setAttribute('color', 'red');
-    this.targetEl.setAttribute('radius-inner', 0.1);
-    this.targetEl.setAttribute('radius-outer', 0.6);
-    this.targetEl.object3D.position.set(0, 0.6, 0);
+    this.targetEl = document.createElement('a-plane');
+    this.targetEl.setAttribute('material', { alphaTest: 0.5 });
+    this.targetEl.setAttribute('src', this.data.texture);
+    this.targetEl.setAttribute('width', this.data.width);
+    this.targetEl.setAttribute('height', this.data.height);
+    this.targetEl.object3D.position.set(0, this.data.height / 2, 0);
     this.el.appendChild(this.targetEl);
 
     this.onShot = AFRAME.utils.bind(this.onShot, this);
