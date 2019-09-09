@@ -707,10 +707,10 @@ export class Level {
   }
 
   getTimeText () {
-    let milliseconds = Math.floor((this.time / 60) % 1 * 100)
-    let seconds = Math.floor(this.time / 60)
-    let hours = Math.floor(seconds / 3600)
-    let minutes = Math.floor(seconds / 60)
+    let milliseconds = 0|((this.time / 60) % 1 * 100)
+    let seconds = 0|(this.time / 60)
+    let hours = 0|(seconds / 3600)
+    let minutes = 0|(seconds / 60)
 
     return `${zeroPad(hours, 2)}:${zeroPad(minutes % 60, 2)}:${zeroPad(seconds % 60, 2)}.${zeroPad(milliseconds, 2)}`
   }

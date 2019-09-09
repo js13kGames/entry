@@ -37,10 +37,6 @@ export function distanceSquared(x1, y1, x2, y2) {
   return dx * dx + dy * dy
 }
 
-export function randomInt (upper) {
-  return Math.floor(upper * Math.random())
-}
-
 export let forRectangularRegion = (x0, y0, x1, y1, callback) => {
   for (let yi = y0; yi <= y1; yi++) {
     for (let xi = x0; xi <= x1; xi++) {

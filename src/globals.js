@@ -22,5 +22,5 @@ export function resetLineClears () {
 
 export function addLineClears (amount) {
   lineClears += amount
-  currentLevel = Math.floor(lineClears / 10) + 1
+  currentLevel = 0|(lineClears / 10) + 1
 }

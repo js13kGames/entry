@@ -34,13 +34,13 @@ export const COLORS = [
 
 export const GRAY_COLORS = [
   ,
-  '#83adad',
-  '#8385ad',
-  '#ad9983',
-  '#adad83',
-  '#83ad83',
-  '#9c839c',
-  '#ad8383',
+  '#5aa',
+  '#549',
+  '#a74',
+  '#995',
+  '#5a4',
+  '#747',
+  '#954',
 ]
 
 export const TILE_SIZE = 16
