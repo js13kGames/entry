@@ -1,3 +1,8 @@
+function setBar(barEl, percent) {
+  barEl.setAttribute("height", Math.max(0.5 * percent, .0001));
+  barEl.object3D.position.y = 0.25 * (percent - 1);
+}
+    
 AFRAME.registerComponent('ship', {
   schema: {},
 
@@ -13,11 +18,6 @@ AFRAME.registerComponent('ship', {
     this.location = null;
     this.fuel = 0.8;
     this.scoopDeployed = false;
-
-    function setBar(barEl, percent) {
-      barEl.setAttribute("height", Math.max(0.5 * percent, .0001));
-      barEl.object3D.position.y = 0.25 * (percent - 1);
-    }
 
     setBar(fuelGuage, this.fuel);
     setBar(jumpGuage, 0);
@@ -42,8 +42,18 @@ AFRAME.registerComponent('ship', {
     sceneEl.addEventListener("worldReady", e => {
       this.location = e.detail.nodes[0];
     });
+
+    sceneEl.addEventListener("toggleScoop", e => {
+      console.log("Scoop");
+      this.scoopDeployed = !this.scoopDeployed;
+      fuelGuage.setAttribute("color", this.scoopDeployed ? "yellow" : "green");
+    });
   },
 
   tick: function(time, timeDelta) {
+    if (this.scoopDeployed) {
+      this.fuel = Math.min(this.fuel + 0.05 * timeDelta / 1000, 1);
+      setBar(fuelGuage, this.fuel);
+    }
   }
 });
