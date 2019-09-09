@@ -65,21 +65,19 @@ function initMusic () {
     );
   }
 
-  function playMusic () {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.5;
-    setInterval(scheduleInstruments, 100);
-    return true;
-  }
-
-  function pizzaSound () {
-    makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
-  }
-
-  function punchSound () {
-    makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
-  }
-
-  return {playMusic, pizzaSound, punchSound};
+  return {
+    playMusic () {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.5;
+      setInterval(scheduleInstruments, 100);
+      return true;
+    },
+    pizzaSound () {
+      makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
+    },
+    punchSound () {
+      makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
+    }
+  };
 }

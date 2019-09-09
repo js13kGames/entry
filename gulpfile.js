@@ -90,11 +90,20 @@ function injectStrings () {
     ].forEach(path => {
       piped = piped.pipe(inject.replace(
         `"${path}"`, // double quotes because the uglifier makes them that way
-        `svgDataURL(\`${fs.readFileSync('dist/' + path)}\`)` // ticks to avoid double quotes in SVG markup
+        `svgDataURL('${fs.readFileSync('dist/' + path)}')` // ticks to avoid double quotes in SVG markup
       ));
     });
 
-    piped.pipe(dest('dist'));
+    piped
+      .pipe(inject.replace(
+        `svgDataURL\\('<svg width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">`,
+        `svgDataURL100('`
+      ))
+      .pipe(inject.replace(
+        `svgDataURL\\('<svg width="150" height="100" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url\\(#clip0\\)">`,
+        `svgDataURL150('`
+      ))
+      .pipe(dest('dist'));
     return piped;
 }
 
