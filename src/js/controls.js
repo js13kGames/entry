@@ -16,17 +16,17 @@ export default (scheme, gamepadIndex) => {
                     accept: () => keyPressed('space'),
                     back:   () => keyPressed('esc'),
                 };
-            case 'wasd':
+            case 'wasd/zqsd':
                 return {
-                    thrust: () => keyPressed('w'),
+                    thrust: () => keyPressed('w') || keyPressed('z'),
                     fire:   () => keyPressed('e'),
-                    left:   () => keyPressed('a'),
+                    left:   () => keyPressed('a') || keyPressed('q'),
                     right:  () => keyPressed('d'),
                     rewind: () => keyPressed('s'),
                     up:     () => keyPressed('w'),
                     down:   () => keyPressed('s'),
                     accept: () => keyPressed('e'),
-                    back:   () => keyPressed('q'),
+                    back:   () => keyPressed('x'),
                 };
             case 'gamepad':
                 return {
