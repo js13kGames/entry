@@ -203,7 +203,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       onStep: setAngle
     }).then({ // bounce
       from: 1100, // x
-      to: 1200,
+      to: 1250,
       duration: 0.5,
       onStep: setX
     }).and({
@@ -218,8 +218,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       duration: 0.5,
       onStep: setAngle
     }).then({ // falling
-      from: 1200, // x
-      to: 1300,
+      from: 1250, // x
+      to: 1400,
       duration: 0.5,
       onStep: setX
     }).and({
@@ -234,8 +234,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       duration: 0.5,
       onStep: setAngle
     }).then({ // bounce 2
-      from: 1300, // x
-      to: 1400,
+      from: 1400, // x
+      to: 1490,
       duration: 0.3,
       onStep: setX
     }).and({
@@ -250,8 +250,8 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       duration: 0.3,
       onStep: setAngle
     }).then({ // falling 2
-      from: 1400, // x
-      to: 1500,
+      from: 1490, // x
+      to: 1580,
       duration: 0.3,
       onStep: setX
     }).and({
@@ -266,9 +266,9 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       duration: 0.3,
       onStep: setAngle
     }).then({ // bounce 3
-      from: 1500, // x
-      to: 1600,
-      duration: 0.3,
+      from: 1580, // x
+      to: 1640,
+      duration: 0.2,
       onStep: setX
     }).and({
       from: 600 - this.shellRadius + 5, // y
@@ -282,7 +282,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       duration: 0.2,
       onStep: setAngle
     }).then({ // falling 3
-      from: 1600, // x
+      from: 1640, // x
       to: 1700,
       duration: 0.2,
       onStep: setX
