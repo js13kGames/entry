@@ -24,6 +24,6 @@ AFRAME.registerComponent("logic", {
     // May have to put this stuff in a timeout if component load order becomes
     // an issue...
     this.el.emit("worldReady", this.world);
-    this.el.querySelector("#ship").components.ship.location = this.world.nodes[0];
+    this.el.emit("changeLocation", this.world.nodes[0]);
   }
 });

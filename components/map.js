@@ -46,5 +46,50 @@ AFRAME.registerComponent("map", {
         el.appendChild(linkEl);
       }
     });
+
+    const targetEl = this.el.querySelector("#target");
+    this.el.sceneEl.addEventListener("changeLocation", e => {
+      const n = e.detail;
+
+      if (n) {
+        targetEl.object3D.position.set(n.x, n.y, .003);
+        targetEl.object3D.visible = true;
+
+        const off = Math.max(n.size + 0.01, 0.03);
+        const a = off - 0.01;
+
+        targetEl.children[0].object3D.position.set(a, off, 0);
+        targetEl.children[1].object3D.position.set(off, a, 0);
+
+        targetEl.children[2].object3D.position.set(a, -off, 0);
+        targetEl.children[3].object3D.position.set(off, -a, 0);
+
+        targetEl.children[4].object3D.position.set(-a, -off, 0);
+        targetEl.children[5].object3D.position.set(-off, -a, 0);
+
+        targetEl.children[6].object3D.position.set(-a, off, 0);
+        targetEl.children[7].object3D.position.set(-off, a, 0);
+      } else {
+        targetEl.object3D.visible = false;
+      }
+    });
+
+    const locationEl = this.el.querySelector("#location");
+    this.el.sceneEl.addEventListener("changeTarget", e => {
+      const n = e.detail;
+
+      if (n) {
+        locationEl.object3D.position.set(n.x, n.y, .003);
+        locationEl.object3D.visible = true;
+
+        const off = Math.max(n.size + 0.02, 0.03);
+        locationEl.children[0].object3D.position.set(0, off, 0);
+        locationEl.children[1].object3D.position.set(off, 0, 0);
+        locationEl.children[2].object3D.position.set(0, -off, 0);
+        locationEl.children[3].object3D.position.set(-off, 0, 0);
+      } else {
+        locationEl.object3D.visible = false;
+      }
+    });
   }
 });

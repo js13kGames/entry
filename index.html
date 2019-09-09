@@ -61,23 +61,33 @@
 
         <!-- <a-circle position="0 0 0.001" color="yellow" radius="0.05"></a-circle>
         <a-circle position="0.1 0 0.001" color="brown" radius="0.02"></a-circle> -->
-        <a-entity obj-model="obj: #l-mark" material="color: #fff"></a-entity>
-        <a-entity>
-          <!-- Top right -->
-          <a-plane position=".075 .085 .003" width=".03" height=".01"></a-plane>
-          <a-plane position=".085 .075 .003" width=".01" height=".03"></a-plane>
+        <a-entity id="target" position="0 0 .003" visible="false">
+          <!-- Top Right -->
+          <a-plane width=".03" height=".01"></a-plane>
+          <a-plane width=".01" height=".03"></a-plane>
           
-          <!-- Bottom right -->
-          <a-plane position=".075 -.085 .003" width=".03" height=".01"></a-plane>
-          <a-plane position=".085 -.075 .003" width=".01" height=".03"></a-plane>
+          <!-- Bottom Right -->
+          <a-plane width=".03" height=".01"></a-plane>
+          <a-plane width=".01" height=".03"></a-plane>
 
-          <!-- Bottom left -->
-          <a-plane position="-.075 -.085 .003" width=".03" height=".01"></a-plane>
-          <a-plane position="-.085 -.075 .003" width=".01" height=".03"></a-plane>
+          <!-- Bottom Left -->
+          <a-plane width=".03" height=".01"></a-plane>
+          <a-plane width=".01" height=".03"></a-plane>
 
           <!-- Top left -->
-          <a-plane position="-.075 .085 .003" width=".03" height=".01"></a-plane>
-          <a-plane position="-.085 .075 .003" width=".01" height=".03"></a-plane>
+          <a-plane width=".03" height=".01"></a-plane>
+          <a-plane width=".01" height=".03"></a-plane>
+        </a-entity>
+
+        <a-entity id="location" position="0 0 .003" visible="false">
+          <!-- Top -->
+          <a-plane width=".01" height=".02"></a-plane>
+          <!-- Right -->
+          <a-plane width=".02" height=".01"></a-plane>
+          <!-- Bottom -->
+          <a-plane width=".01" height=".02"></a-plane>
+          <!-- Left -->
+          <a-plane width=".02" height=".01"></a-plane>
         </a-entity>
       </a-plane>
 
