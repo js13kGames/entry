@@ -50,7 +50,15 @@ switchPalette(palette)
 setInterval(e=>{ step(false) },(1/60)*1000);
 
 //Mobile input init
-onkeydown=e=>{ input(e.key); }
+onkeydown=e=>{
+    if (e.key == "ArrowLeft" || e.key == "ArrowRight" || e.key == " " || e.key == "Backspace")
+    {
+        e.preventDefault();
+    }
+
+     input(e.key);
+}
+
 let pageWidth = window.innerWidth || document.body.clientWidth;
 let treshold = 10;
 let touchstartX = 0;
@@ -807,7 +815,7 @@ function gameWin() {
     {
         hiscore = level; level = hiscore+1;
         not.style.visibility = "visible";
-        if (hiscore != 11)
+        if (hiscore != 10)
         {
              not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!<br>Progress saved.";
              setCookie('backflipped_level',hiscore)
