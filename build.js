@@ -127,7 +127,9 @@ function minify() {
             unsafe: true,
             unsafe_arrows: true,
             unsafe_comps: true,
-            unsafe_math: true
+            unsafe_math: true,
+            // unsafe_proto: true, // ~ 3 bytes
+            // booleans_as_integers: true // ~ 20 bytes if really needed
         },
         mangle: {
             properties: {
@@ -145,7 +147,13 @@ function minify() {
     console.log('Minifying JS...');
 
     let code = fs.readFileSync('dist/main.js', 'utf8');
+
+    // Replace Kontra's debug stuff
     code = pp.preprocess(code, { DEBUG, VISUAL_DEBUG }, { type: 'js' });
+
+    // Replace Collisions debug stuff
+    code = code.replace(/if.*[\s]*throw.*Error.*[\s]*}/g, '');
+
     const result = terser.minify(code, options);
 
     if (result.error) {
