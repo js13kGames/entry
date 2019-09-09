@@ -67,19 +67,16 @@ function initMusic () {
     );
   }
 
-  function playMusic () {
-    setInterval(scheduleInstruments, 100);
-    return true;
-  }
-
-  function pizzaSound () {
-    makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
-  }
-
-  function punchSound () {
-    console.log('punch');
-    makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
-  }
-
-  return {playMusic, pizzaSound, punchSound};
+  return {
+    playMusic () {
+      setInterval(scheduleInstruments, 100);
+      return true;
+    },
+    pizzaSound () {
+      makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
+    },
+    punchSound () {
+      makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
+    }
+  };
 }
