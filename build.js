@@ -129,7 +129,12 @@ function minify() {
             unsafe_comps: true,
             unsafe_math: true
         },
-        toplevel: true,
+        mangle: {
+            properties: {
+                regex: '/(debounce)\g'
+            },
+            toplevel: true
+        },
         module: true,
         sourceMap: DEVMODE ? {
             content: fs.readFileSync('dist/main.js.map', 'utf8'),
@@ -152,6 +157,8 @@ function minify() {
     if (result.map) {
         fs.writeFileSync('dist/main.min.js.map', result.map);
     }
+
+    //fs.writeFileSync('cacheFile', JSON.stringify(options.nameCache), "utf8");
 
     logOutput(Date.now() - startTime, 'dist/main.min.js');
 
