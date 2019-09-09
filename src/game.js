@@ -41,6 +41,7 @@ export default class Game {
     this.GRENADE_REGENERATE = 2
     this.GRENADE_ATTACK = 100
     this.GRENADE_PROGRESS = 2
+    this.GRENADE_CAPACITY = 3
 
     this.MINE_WIDTH = this.WIDTH / 32
     this.MINE_HEIGHT = this.MINE_WIDTH / 2
@@ -50,6 +51,7 @@ export default class Game {
     this.MINE_REGENERATE = 5
     this.MINE_ATTACK = 200
     this.MINE_PROGRESS = 4
+    this.MINE_CAPACITY = 1
 
     this.ENEMY_WIDTH_MIN = this.PLAYER_WIDTH * 0.5
     this.ENEMY_WIDTH_MAX = this.PLAYER_WIDTH * 2
@@ -67,8 +69,59 @@ export default class Game {
     this.TREE_MIN_INTERVAL = 0.2
     this.TREE_MAX_INTERVAL = 1.5
 
+    // upgrades
+    this.UPGRADES = [
+      {
+        msg: 'Flash Bang Capacity ↑',
+        func: () => { this.GRENADE_CAPACITY += 1 },
+        weight: 15
+      },
+      {
+        msg: 'Flash Bang Blast Range ↑',
+        func: () => { this.GRENADE_BLAST_RANGE += this.WIDTH / 100 },
+        weight: 20
+      },
+      {
+        msg: 'Flash Bang Damage ↑',
+        func: () => { this.GRENADE_ATTACK += 10 },
+        weight: 20
+      },
+      {
+        msg: 'Flash Bang Regenerate ↑',
+        func: () => { this.GRENADE_REGENERATE -= 0.1 },
+        weight: 20
+      },
+      {
+        msg: 'Flash Mine Capacity ↑',
+        func: () => { this.MINE_CAPACITY += 1 },
+        weight: 5
+      },
+      {
+        msg: 'Flash Mine Blast Range ↑',
+        func: () => { this.MINE_BLAST_RANGE += this.WIDTH / 100 },
+        weight: 20
+      },
+      {
+        msg: 'Flash Mine Damage ↑',
+        func: () => { this.MINE_ATTACK += 20 },
+        weight: 20
+      },
+      {
+        msg: 'Flash Mine Regenerate ↑',
+        func: () => { this.MINE_REGENERATE -= 0.2 },
+        weight: 20
+      },
+      {
+        msg: 'Running Speed ↑',
+        func: () => { this.ENEMY_SPEED-= this.WIDTH / 8000 },
+        weight: 15
+      }
+    ]
+
     // globals
     this.gameProgress = 0
+    this.message = ''
+    this.messageDuration = 0
     this.kills = 0
     this.blasting_duration = 0
     this.total_blast_duration = 0
@@ -83,14 +136,14 @@ export default class Game {
       create: Sprite
     })
 
-    this.grenades = 3
+    this.grenades = this.GRENADE_CAPACITY
     this.grenadeCD = this.GRENADE_COOLDOWN
     this.grenadeReg = this.GRENADE_REGENERATE
     this.grenadePool = Pool({
       create: Sprite
     })
 
-    this.mines = 1
+    this.mines = this.MINE_CAPACITY
     this.mineReg = this.MINE_REGENERATE
     this.minePool = Pool({
       create: Sprite
@@ -151,8 +204,15 @@ export default class Game {
           this.treeInterval -= dt
         }
 
+        // message
+        if (this.messageDuration > 0) {
+          this.messageDuration -= dt
+        } else {
+          this.messageDuration = 0
+        }
+
         // grenades
-        if (this.grenades < 3) {
+        if (this.grenades < this.GRENADE_CAPACITY) {
           if (this.grenadeReg < this.GRENADE_REGENERATE) {
             this.grenadeReg += dt
           } else {
@@ -169,7 +229,7 @@ export default class Game {
         }
 
         // mines
-        if (this.mines < 1) {
+        if (this.mines < this.MINE_CAPACITY) {
           if (this.mineReg < this.MINE_REGENERATE) {
             this.mineReg += dt
           } else {
@@ -192,6 +252,9 @@ export default class Game {
               if (enemy.hp <= 0) {
                 enemy.ttl = 0
                 this.kills++
+                if (this.kills % 10 === 0) {
+                  this.randomUpgrade()
+                }
               }
             }
           })
@@ -442,6 +505,11 @@ export default class Game {
         ctx.fillText(`FLASH MINES [X]: ${self.mines}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 4)
         // kills
         ctx.fillText(`KILLS: ${self.kills}`, self.WIDTH * 0.05, self.UI_FONT_SIZE * 2)
+        // message
+        if (self.messageDuration > 0) {
+          let msgWidth = ctx.measureText(self.message).width
+          ctx.fillText(self.message, self.WIDTH - msgWidth - self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 2)
+        }
       }
     })
 
@@ -484,6 +552,29 @@ export default class Game {
 
   updateTrees() {
     this.treePool.update()
+  }
+
+  randomUpgrade() {
+    const totalWeight = this.UPGRADES.reduce((prev, cur) => {
+      return prev + cur.weight
+    }, 0)
+    const dice = Math.random()
+    let percent = 0
+    for(let upgrade of this.UPGRADES) {
+      let ratio = upgrade.weight / totalWeight
+      if (dice >= percent && dice < percent + ratio) {
+        upgrade.func()
+        this.showMessage(upgrade.msg)
+        break
+      } else {
+        percent += ratio
+      }
+    }
+  }
+
+  showMessage(msg) {
+    this.message = msg
+    this.messageDuration = 3
   }
 
   onGameOver() { }
