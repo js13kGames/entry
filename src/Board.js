@@ -1,5 +1,7 @@
 import { Tetromino } from './Tetrominoes/Tetromino';
-import { COLORS } from './constants';
+import { Block } from './Tetrominoes/Block';
+
+const wall = new Block(1)
 
 export class Board {
   constructor (width, height) {
@@ -22,17 +24,9 @@ export class Board {
 
   getItemAt (x, y) {
     if (x < 0 || x >= this.width || y < 0) {
-      return 1 // "something"
+      return wall
     }
     return this.grid[y][x]
-  }
-
-  getColorAt (x, y) {
-    const item = this.grid[y][x]
-    if (item instanceof Tetromino) {
-      return item.getColor()
-    }
-    return COLORS[item]
   }
 
   isEmptyRow (y) {
@@ -132,7 +126,7 @@ export class Board {
   changeTetrominoesToBlocks (tetrominoes) {
     for (let tetromino of tetrominoes) {
       for (let [x, y] of tetromino.getBlockPositions()) {
-        this.grid[y][x] = tetromino.getId()
+        this.grid[y][x] = new Block(tetromino.getId())
       }
       this.tetrominoes.delete(tetromino)
     }

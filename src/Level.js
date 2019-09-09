@@ -1,7 +1,7 @@
 import { Graphics, Canvas, drawSprite, drawAt, resetTransform, fillAndStrokeRectangle } from "./Graphics"
 import { TetrominoT } from './Tetrominoes/TetrominoT'
 import { TetrominoController } from './TetrominoController'
-import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR, PAUSE, GOAL } from './constants'
+import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR, PAUSE, GOAL, COLORS, GRAY_COLORS } from './constants'
 import { ClearAnimation } from './Animations/ClearAnimation'
 import { Input } from './Input'
 import { Board } from './Board'
@@ -21,6 +21,7 @@ import { FallingEyePair } from './Animations/FallingEyePair'
 import { PauseScreen } from './PauseScreen';
 import { Background } from './Animations/Background';
 import { debugScenario } from './debugUtils'
+import { Block } from './Tetrominoes/Block'
 
 export class Level {
   constructor () {
@@ -148,6 +149,15 @@ export class Level {
 
     for (let tetromino of this.board.tetrominoes) {
       tetromino.updateEyes()
+    }
+
+    for (let y = 0; y < this.board.height; y++) {
+      for (let x = 0; x < this.board.width; x++) {
+        const item = this.board.getItemAt(x, y)
+        if (item instanceof Block) {
+          item.step()
+        }
+      }
     }
   }
 
@@ -536,9 +546,9 @@ export class Level {
   renderBoard () {
     for (let y = 0; y < this.board.height; y++) {
       for (let x = 0; x < this.board.width; x++) {
-        const color = this.board.getColorAt(x, y)
-        if (color) {
-          this.renderBlock(x, this.tileCountY - 1 - y, color)
+        const item = this.board.getItemAt(x, y)
+        if (item) {
+          this.renderBlock(x, this.tileCountY - 1 - y, item.getColor(), TILE_SIZE, item instanceof Block)
         }
       }
     }
@@ -679,12 +689,14 @@ export class Level {
     }
   }
 
-  renderBlock (x, y, color, size = TILE_SIZE) {
+  renderBlock (x, y, color, size = TILE_SIZE, isDead = false) {
     Graphics.fillStyle = color
     Graphics.fillRect(x * size, y * size, size - 1, size - 1)
-    Graphics.fillStyle = 'rgba(255,255,255,0.5)'
-    Graphics.fillRect(x * size, y * size, 2, size)
-    Graphics.fillRect(x * size, y * size, size, 2)
+    if (!isDead) {
+      Graphics.fillStyle = 'rgba(255,255,255,0.5)'
+      Graphics.fillRect(x * size, y * size, 2, size)
+      Graphics.fillRect(x * size, y * size, size, 2)
+    }
   }
 
   renderGhostBlock (x, y, color, size = TILE_SIZE) {

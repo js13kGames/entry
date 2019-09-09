@@ -24,12 +24,23 @@ export const TETROMINO_Z = 7
 export const COLORS = [
   ,
   '#0ff',
-  '#00f',
+  '#01f',
   '#f80',
   '#ff0',
   '#0f0',
   '#909',
   '#f00',
+]
+
+export const GRAY_COLORS = [
+  ,
+  '#83adad',
+  '#8385ad',
+  '#ad9983',
+  '#adad83',
+  '#83ad83',
+  '#9c839c',
+  '#ad8383',
 ]
 
 export const TILE_SIZE = 16
