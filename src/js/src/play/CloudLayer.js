@@ -7,7 +7,7 @@ function CloudLayer(settings) {
     maxBound: { x: 400, y: 100 },
     cloudMinRadius: 10,
     cloudMaxRadius: 20,
-    numClouds: 20,
+    numClouds: 10,
     cloudScaleX: 2,
     cloudScaleY: 1
   }, settings || {});
@@ -15,7 +15,7 @@ function CloudLayer(settings) {
   var i, bounds, cloud, radius;
   var miniBoundsSize = (this.settings.maxBound.x - this.settings.minBound.x) / this.settings.numClouds;
 
-  for (i = 0; i < this.settings.numClouds; i += 2) {
+  for (i = 0; i < this.settings.numClouds; i += 1) {
     x = this.settings.minBound.x + i * miniBoundsSize;
     radius = Random.range(this.settings.cloudMinRadius, this.settings.cloudMaxRadius);
     bounds = {
