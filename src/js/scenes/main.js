@@ -17,7 +17,17 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
         game.sprites[0].rotation += game.sprites[0].dr;
 
-        game.players.forEach(player => {
+        game.players.forEach((player, i) => {
+
+            if (player.keys.back()) {
+                player.debounce.back--;
+                if (player.debounce.back <= 0) {
+                    game.players.splice(i, 1);
+                    return;
+                }
+            } else {
+                player.debounce.back = 0;
+            }
 
             if (player.keys.up()) {
                 if (player.debounce.up > 0) {

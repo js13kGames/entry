@@ -12,8 +12,10 @@ export class StarPickup extends Pickup {
     }
 
     applyTo(ship) {
-        ship.rainbow += 8; // Be all rainbowy & invincible for 8s
-        ship.maxSpeed *= 1.5; // Set max speed to be higher for the 8s
+        // Be all rainbowy & invincible for 8s
+        ship.rainbow += 8;
+        // Set max speed to be 1.5* while rainbow-y
+        ship.maxSpeed = (ship.shipData.maxSpeed + 6) / 9;
     }
 
     render(scale) {

@@ -28,6 +28,17 @@ const menuLoop = GameLoop({  // create the main game loop
                 player.debounce.accept = 0;
             }
 
+            if (player.keys.back()) {
+                player.debounce.back--;
+                if (player.debounce.back <= 0) {
+                    menuLoop.stop();
+                    scenes.startMainMenu(game, scenes);
+                    player.debounce.back = 15;
+                }
+            } else {
+                player.debounce.back = 0;
+            }
+
             if (player.ready) {
                 return;
             }
@@ -186,6 +197,7 @@ export function startShipSelect(newGame, otherScenes) {
 
     game.players.forEach(player => {
         player.ship = null;
+        player.ready = false;
     });
 
     menuLoop.start();
