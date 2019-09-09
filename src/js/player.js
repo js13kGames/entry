@@ -29,7 +29,8 @@ export class Player {
             down: 15,
             left: 15,
             right: 15,
-            accept: 15
+            accept: 15,
+            back: 15
         };
     }
 

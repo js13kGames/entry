@@ -5,12 +5,12 @@ export default () => {
     return {
         rof: 5,
         ror: 4,
-        turnRate: 8,
+        turnRate: 9,
         radius: 8,
         mass: 4,
         thrust: 8,
         ammo: 4,
-        maxSpeed: 7,
+        maxSpeed: 8,
         lines: {
             body: [
                 [ -6, -7, -2, -6 ],
