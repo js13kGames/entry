@@ -69,6 +69,7 @@
         "src/js/src/play/Head.js",
         "src/js/src/play/Shell.js",
         "src/js/src/play/Turtle.js",
+        "src/js/src/play/CloudLayer.js",
         "src/js/src/play/BG.js",
         
         "src/js/src/scenes/Scene.js",

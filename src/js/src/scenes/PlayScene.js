@@ -113,6 +113,18 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     });
     this.addChild(this.sky);
 
+    this.cloudLayer = new CloudLayer({
+      minBound: {
+        x: 0,
+        y: 50
+      },
+      maxBound: {
+        x: 1500,
+        y: 150
+      }
+    });
+    this.addChild(this.cloudLayer);
+
     this.scrollLayer = new DisplayContainer();
     this.addChild(this.scrollLayer);
 
@@ -467,6 +479,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.cameraPos.y = y;
     this.scrollLayer.x = Math.floor(-x + SETTINGS.width / 2);
     this.scrollLayer.y = Math.floor(-y + SETTINGS.height / 2);
+    this.cloudLayer.setCamera(x, y);
   },
   cycle: function (dts) {
     this.currentCycle(dts);
