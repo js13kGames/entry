@@ -131,9 +131,9 @@ function minify() {
         },
         mangle: {
             properties: {
-                regex: '/(debounce)\g'
-            },
-            toplevel: true
+                keep_quoted: true,
+                reserved: [ 'game' ]
+            }
         },
         module: true,
         sourceMap: DEVMODE ? {
