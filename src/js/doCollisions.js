@@ -35,7 +35,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
                 sprite2.ttl = 0;
 
-                if (60 > sprite1.radius && sprite1.radius > 8) {
+                if (sprite1.mass < 1e4 && sprite1.radius > 8) {
 
                     // Split the meteor
                     for (var i = 0; i < 3; i++) {
@@ -47,7 +47,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                         });
                     }
                     sprite1.ttl = 0
-                } else if (sprite1.radius > 60) {
+                } else if (sprite1.mass > 1e4) {
                     // TODO: Sparks or shrapnel or something?
                 } else {
                     sprite1.explode(sprites);
@@ -117,14 +117,15 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 return;
             }
 
-            if (sprite1.invuln) {
-                return;
-            }
-
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
+                sprite2.owner.player.shotsLanded++;
                 sprite2.ttl = 0;
 
                 if (sprite1.rainbow) {
+                    return;
+                }
+
+                if (sprite1.invuln) {
                     return;
                 }
 
@@ -188,6 +189,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 }
 
                 sprite1.explode(sprites);
+                sprite1.player.crashes++;
             }
             return;
         }

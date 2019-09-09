@@ -154,6 +154,46 @@ export function render(game) {
         });
 
         renderText({
+            text: 'accuracy' ,
+            color: player.color,
+            size: .5,
+            x: x + margin,
+            y: y + 145,
+            scale: game.scale,
+            context: game.context
+        });
+
+        renderText({
+            text: ((player.shotsFired && player.shotsLanded) ? Math.round(100 / player.shotsFired * player.shotsLanded) : 0) + '%',
+            color: player.color,
+            alignRight: true,
+            x: x + cardWidth - margin,
+            y: y + 140,
+            scale: game.scale,
+            context: game.context
+        });
+
+        renderText({
+            text: 'crashes' ,
+            color: player.color,
+            size: .5,
+            x: x + margin,
+            y: y + 175,
+            scale: game.scale,
+            context: game.context
+        });
+
+        renderText({
+            text: player.crashes,
+            color: player.color,
+            alignRight: true,
+            x: x + cardWidth - margin,
+            y: y + 170,
+            scale: game.scale,
+            context: game.context
+        });
+
+        renderText({
             text: player.ready ? 'next>' : 'ready!',
             color: player.color,
             alignRight: true,
