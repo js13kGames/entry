@@ -1,5 +1,6 @@
 import { Player } from './player';
 import { colors } from './colors';
+import ships from './ships/import/';
 
 /**
  * Pick random not-currently-used color. Based on:
@@ -48,7 +49,7 @@ export function newPlayer(game, controls, controllerId) {
 
     game.players.push(new Player({
         color: color,
-        shipType: 'tri',
+        shipType: Object.keys(ships)[0],
         controls: controls,
         gamepadId: controllerId,
         context: game.context,
