@@ -1,14 +1,17 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+  "name": "Backorder Storehouse",
+  "description": "It's Black Friday, you need to dispatch all the parcels on backorder to the proper airports. 1. Look for orders airport code & id / 2. Find the box with the matching code / 3. Grab the box & place it on the appropriate conveyor belt.     Unlimited levels : 120 seconds to send multiple orders. My best score : Level 5 !   Hard mode : If you want difficulty, activate 'airport code only' mode.  Coil monetization : Coil subscribers unlock 20 secondes more",
+  "images": {
+    "image_large": "400_250.png",
+    "image_thumbnail": "160_160.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+  "categories": [
+    "Web Monetization",
+    "WebXR"
+  ],
+  "user": {
+    "name": "Julien Kermarec",
+    "website": "https://www.julienkermarec.com",
+    "twitter": "@julienkermarec"
   }
 }
