@@ -86,6 +86,7 @@
       <a-entity
         class="chicken one"
         position="-2.5 0.5 -4.5"
+        rotation="0 40 0"
         target="revive: .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       >
@@ -100,6 +101,7 @@
       <a-entity
         class="chicken three"
         position="2.5 0.5 -4.5"
+        rotation="0 -40 0"
         target="revive: .chicken.one, .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       ></a-entity>
@@ -107,14 +109,44 @@
       <!-- enemy outlaws -->
       <a-entity
         class="outlaw one"
-        position="-1.5 -100.5 -5.5"
+        position="-1.6 -100.5 -5.5"
+        rotation="0 14 0"
         target="revive: .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       >
       </a-entity>
       <a-entity
         class="outlaw two"
-        position="2.5 -100.5 -5.5"
+        position="3 -100.5 -5.5"
+        rotation="0 -25 0"
+        target="revive: .outlaw.six; texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        visible="true"
+      ></a-entity>
+      <a-entity
+        class="outlaw three"
+        position="5.5 -100.5 0.5"
+        rotation="0 -90 0"
+        target="revive: .outlaw.one, .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw four"
+        position="6.5 -100.5 6.5"
+        rotation="0 -135 0"
+        target="revive: .outlaw.three, .outlaw.five; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw five"
+        position="-6.5 -100.5 6.5"
+        rotation="0 135 0"
+        target="revive: .outlaw.three; texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw six"
+        position="-8.5 -100.5 0.5"
+        rotation="0 90 0"
         target="texture: #outlaw2_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
@@ -131,6 +163,18 @@
         color="#FF926B"
         position="-2 0.25 -4"
         rotation="0 45 0"
+        radius="1"
+      ></a-icosahedron>
+      <a-icosahedron
+        color="#FF926B"
+        position="8 0.15 -1"
+        rotation="25 60 0"
+        radius="1"
+      ></a-icosahedron>
+      <a-icosahedron
+        color="#FF926B"
+        position="-12 0.3 6"
+        rotation="25 60 0"
         radius="1"
       ></a-icosahedron>
       <a-sky color="#36C3FF"></a-sky>

@@ -56,6 +56,9 @@ AFRAME.registerComponent('screen-manager', {
     }
   },
   onShotFired: function(evt) {
+    if (!this.shotsFired) {
+      this.startButtonEl.setAttribute('visible', false);
+    }
     this.shotsFired += 1;
     this.shotsEl.setAttribute('value', `shots\n${this.shotsFired}`);
   }
