@@ -13,17 +13,14 @@ const addEventListener = (target, event, handler) => {
 const rAF = window.requestAnimationFrame;
 const cancelAF = window.cancelAnimationFrame;
 const noop = () => null;
-const createProgressBar = (barId, label) => {
+const createProgressBar = (label) => {
   const wrap = createElement('div');
   const meter = createElement('div');
   const bar = createElement('span');
   const p = createElement('p');
   p.innerHTML = label;
   bar.classList.add('bar');
-  bar.classList.add(barId);
-  bar.id = barId;
   meter.classList.add('progress');
-  meter.classList.add(barId);
   wrap.classList.add('progress-box');
   meter.appendChild(bar);
   wrap.appendChild(meter);

@@ -23,7 +23,7 @@ canvas {
 }
 
 .progress-box {
-  background-color: black;
+  background: black;
   border: 2px solid orange;
   padding: 0.5em;
   position: relative;
@@ -39,7 +39,7 @@ canvas {
 }
 
 .progress {
-  background-color: lightgray;
+  background: lightgray;
   border-radius: 10px;
   height: 15px;
   overflow: hidden;
@@ -47,32 +47,16 @@ canvas {
   width: 200px;
 }
 
-.progress.kong-progress {
-  left: 0px;
-}
-
-.progress.trex-progress {
-  right: 0px;
-}
-
 .bar {
+  background: green;
   display: inline-block;
   height: 100%;
 }
 
-.bar.pizza-progress {
-  background-color: orange;
+.below-60 {
+  background: yellow;
 }
 
-.bar.kong-progress,
-.bar.trex-progress {
-  background-color: green;
-}
-
-.bar.below-60 {
-  background-color: yellow;
-}
-
-.bar.below-30 {
-  background-color: red;
+.below-30 {
+  background: red;
 }

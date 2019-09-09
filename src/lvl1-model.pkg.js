@@ -10,8 +10,8 @@ const S = STREET;
 const PIZZA = uid();
 const HOTDOG = uid();
 const EXIT = uid();
+const colorStreet = '#111327';
 const initModel = (height, width, foodCoveragePercent) => {
-  const colorStreet = '#111327';
 
   const map = [];
   // Create cell object

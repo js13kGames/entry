@@ -1,10 +1,10 @@
-const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images) => {
+const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
   const [canvas, ctx] = createCanvas();
 
   const progressWrapper = createElement('div');
   progressWrapper.className = 'progress-wrapper';
-  const [kongProgressBar, kongSpan] = createProgressBar('kong-progress', 'Kong Health');
-  const [trexProgressBar, trexSpan] = createProgressBar('trex-progress', 'TRex Health');
+  const [kongProgressBar, kongSpan] = createProgressBar('Kong Health');
+  const [trexProgressBar, trexSpan] = createProgressBar('TRex Health');
   const root = document.getElementById('root');
   root.appendChild(canvas);
   progressWrapper.appendChild(kongProgressBar);
@@ -50,10 +50,10 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images
     let multiplier = 1;
     if (charName === 'trex') {
       switch(charState.currentAction) {
-        case actions.ATTACKING: img = trexAttack; break;
-        case actions.BLOCKING: img = trexBlock; break;
-        case actions.DISABLED: img = trexDisabled; break;
-        case actions.READY:
+        case ATTACKING: img = trexAttack; break;
+        case BLOCKING: img = trexBlock; break;
+        case DISABLED: img = trexDisabled; break;
+        case READY:
         default: img = trexRight;
       }
       multiplier = -1;
@@ -66,13 +66,13 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images
       );
     } else {
       switch(charState.currentAction) {
-        case actions.ATTACKING: img = kongAttack; break;
-        case actions.BLOCKING: img = kongBlock; break;
-        case actions.DISABLED: img = kongDisabled; break;
-        case actions.READY:
+        case ATTACKING: img = kongAttack; break;
+        case BLOCKING: img = kongBlock; break;
+        case DISABLED: img = kongDisabled; break;
+        case READY:
         default: img = kongRight;
       }
-      if (charState.direction === directions.LEFT) {
+      if (charState.direction === LEFT) {
         multiplier = -1;
         ctx.scale(-1, 1);
         multiplier = -1;
@@ -101,15 +101,15 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images
     }
   }
 
-  function render (mapData, kong, trex) {
+  function render (mapWidth, kong, trex) {
     return new Promise((resolve, reject) => {
       try {
         // regardless of screen size, show 12 "cells" wide viewport
         const cellWidth = 100;
         canvas.height = body.clientHeight;
-        canvas.width = cellWidth * mapData.width;
+        canvas.width = cellWidth * mapWidth;
 
-        renderMap(canvas.height, canvas.width, cellWidth, mapData.width, kong, trex);
+        renderMap(canvas.height, canvas.width, cellWidth, mapWidth, kong, trex);
         showHealth(kong, trex);
 
         resolve();

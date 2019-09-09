@@ -1,4 +1,5 @@
 const initLevel3 = async (punchSound, nextLevel) => {
+  const MAP_WIDTH = 50;
   let gameIsOver = false;
   const opponentOf = {
     trex: 'kong',
@@ -20,7 +21,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const state = getSnapshot();
 
     render(
-      mapData,
+      MAP_WIDTH,
       state.kong,
       state.trex
     ).then(() => isUpdated() && loop());
@@ -28,12 +29,9 @@ const initLevel3 = async (punchSound, nextLevel) => {
 
   // init
   const {
-    mapData,
     initialKongState,
     initialTrexState,
-    actions,
-    directions
-  } = initLevel3Model(50, 25, 35);
+  } = initLevel3Model(25, 35);
 
   const {
     getState,
@@ -44,15 +42,15 @@ const initLevel3 = async (punchSound, nextLevel) => {
   const setState = (...args) => modelSetState(...args) && loop();
 
   const isLocationValid = (nextLocation, name, state = getState()) => {
-    return nextLocation < mapData.width
+    return nextLocation < MAP_WIDTH
       && nextLocation >= 0
       && nextLocation !== state[opponentOf[name]].location
   }
 
   const respondToHit = (name, cb = noop) => newState => {
-    if (newState[name].currentAction === actions.READY) cb();
+    if (newState[name].currentAction === READY) cb();
     // You were hit!
-    if (newState[name].currentAction === actions.DISABLED) {
+    if (newState[name].currentAction === DISABLED) {
       if (newState[name].health <= 0) {
         gameIsOver = true;
         wait(name, 500, () => endGame(opponentOf[name]));
@@ -66,7 +64,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const state = getState();
     const char = state[name];
 
-    if (char.currentAction !== actions.READY) return;
+    if (char.currentAction !== READY) return;
 
     setState((state) => {
       const char = state[name];
@@ -75,11 +73,11 @@ const initLevel3 = async (punchSound, nextLevel) => {
       switch (desiredDirection) {
         case 'left':
           nextLocation--;
-          newFacingDirection = directions.LEFT;
+          newFacingDirection = LEFT;
           break;
         case 'right':
           nextLocation++;
-          newFacingDirection = directions.RIGHT;
+          newFacingDirection = RIGHT;
           break;
       }
       if (!isLocationValid(nextLocation, name, state)) nextLocation = char.location; // reset to current state
@@ -97,13 +95,13 @@ const initLevel3 = async (punchSound, nextLevel) => {
 
   function block (name) {
     const object = getState()[name];
-    if (object.currentAction !== actions.READY) return;
+    if (object.currentAction !== READY) return;
     setState(state => {
-      if (state[name].currentAction === actions.READY) {
+      if (state[name].currentAction === READY) {
         return {
           [name]: {
             ...state[name],
-            currentAction: actions.BLOCKING
+            currentAction: BLOCKING
           }
         }
       }
@@ -114,10 +112,10 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const object = state[name];
     const attackerName = opponentOf[name];
     const attackerState = state[attackerName];
-    if (attackerState.currentAction !== actions.ATTACKING) return state;
-    if (object.currentAction === actions.BLOCKING) return state;
+    if (attackerState.currentAction !== ATTACKING) return state;
+    if (object.currentAction === BLOCKING) return state;
 
-    const attackLocation = attackerState.location + (attackerState.direction === directions.LEFT ? -1 : 1);
+    const attackLocation = attackerState.location + (attackerState.direction === LEFT ? -1 : 1);
     if (object.location !== attackLocation) return state;
 
     // [name] is under attack
@@ -132,7 +130,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     }
     object.health -= 10;
     object.location = isLocationValid(newLocation, name, state) ? newLocation : object.location;
-    object.currentAction = actions.DISABLED
+    object.currentAction = DISABLED
 
     return state;
   }
@@ -143,7 +141,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
         ...state,
         [name]: {
           ...state[name],
-          currentAction: actions.READY
+          currentAction: READY
         }
       });
     }, respondToHit(name, cb));
@@ -155,7 +153,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
         ...state,
         [name]: {
           ...state[name],
-          currentAction: actions.READY
+          currentAction: READY
         }
       });
     }, respondToHit(name, cb));
@@ -166,7 +164,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
       return {
         [name]: {
           ...state[name],
-          currentAction: actions.DISABLED
+          currentAction: DISABLED
         }
       }
     }, cb);
@@ -180,7 +178,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
         ...state,
         [attacker]: {
           ...state[attacker],
-          currentAction: actions.ATTACKING
+          currentAction: ATTACKING
         }
       });
     }, (newState) => {
@@ -206,12 +204,12 @@ const initLevel3 = async (punchSound, nextLevel) => {
   function startAttackSequence (name, cb = noop) {
     const char = getState()[name];
     // check if can attack
-    if (char.currentAction !== actions.READY) return;
+    if (char.currentAction !== READY) return;
     setState(state => {
       return {
         [name]: {
           ...state[name],
-          currentAction: actions.PREPARING_ATTACK
+          currentAction: PREPARING_ATTACK
         }
       };
     }, () => wait(name, 500, () => attack(name, cb)));
@@ -295,7 +293,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
   const {
     cleanUp,
     render,
-  } = initLevel3View(keydownHandler, keyupHandler, clickHandler, actions, directions, images);
+  } = initLevel3View(keydownHandler, keyupHandler, clickHandler, images);
   setState({
     kong: initialKongState,
     trex: initialTrexState

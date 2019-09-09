@@ -15,12 +15,12 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
     [BLOCKED]: 'transparentx',
     [BUILDING_2X4]: 'brown',
     // [OUT_OF_BOUNDS_CUTOFF]:
-    [STREET]: '#111327',
+    [STREET]: colorStreet,
     [PIZZA]: 'yellow',
     [EXIT]: 'green'
   };
 
-  const [progressBar, pizzaSpan] = createProgressBar('pizza-progress', 'Pizzas Eaten');
+  const [progressBar, pizzaSpan] = createProgressBar('Pizzas Eaten');
 
   function draw(mapView, state) {
     canvas.width = state.width;

@@ -1,25 +1,15 @@
-const initLevel3Model = (mapWidth, kongStart, trexStart) => {
+// actions
+const READY = uid();
+const BLOCKING = uid();
+const PREPARING_ATTACK = uid();
+const ATTACKING = uid();
+const DISABLED = uid();
 
-  // actions
-  const READY = uid();
-  const BLOCKING = uid();
-  const PREPARING_ATTACK = uid();
-  const ATTACKING = uid();
-  const DISABLED = uid();
+// directions
+const LEFT = uid();
+const RIGHT = uid();
 
-  // directions
-  const LEFT = uid();
-  const RIGHT = uid();
-
-  // make map data
-  const mapData = {
-    width: mapWidth
-  }
-
-  const getMapCells = () => {
-    
-  }
-
+const initLevel3Model = (kongStart, trexStart) => {
   const initialHealth = 100;
 
   // init kong
@@ -41,19 +31,7 @@ const initLevel3Model = (mapWidth, kongStart, trexStart) => {
   }
 
   return {
-    mapData,
     initialKongState: kong,
     initialTrexState: trex,
-    actions: {
-      READY,
-      BLOCKING,
-      PREPARING_ATTACK,
-      ATTACKING,
-      DISABLED
-    },
-    directions: {
-      LEFT,
-      RIGHT
-    }
   };
 }
