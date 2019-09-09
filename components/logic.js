@@ -17,13 +17,13 @@ AFRAME.registerComponent("logic", {
     this.world.nodes.push({name: "star2", x: -0.5, y: -0.2, size: 0.04, color: "orange"});
     this.world.nodes.push({name: "star2-nav", x: -0.55, y: -0.1, size: 0.02, color: "grey"});
 
-    this.world.links.push(["startStar", "startStar-nav"]);
-    this.world.links.push(["startStar", "star2"]);
-    this.world.links.push(["star2", "star2-nav"]);
+    this.world.links.push({nodes: ["startStar", "startStar-nav"], cost: 0.1});
+    this.world.links.push({nodes: ["startStar", "star2"], cost: 0.5});
+    this.world.links.push({nodes: ["star2", "star2-nav"], cost: 0.2});
 
     // May have to put this stuff in a timeout if component load order becomes
     // an issue...
     this.el.emit("worldReady", this.world);
-    this.el.emit("changeLocation", this.world.nodes[0]);
+    this.el.emit("changeLocation", {node: this.world.nodes[0], cost: 0});
   }
 });

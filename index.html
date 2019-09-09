@@ -39,20 +39,25 @@
       <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
 
       <!-- Front panel -->
-      <a-box position="0 .79 -1.76" rotation="-52 0 0" height=".3" width=".3" depth=".1" shadow>
-        <a-cylinder 
-          class="clickable" 
-          color="red" 
-          height=".1"
-          radius=".1" 
-          position="0 0 .05" 
-          rotation="90 0 0" 
-          shadow 
-          button="pressed: true"
-          go-button
-          animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
-          animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
-      </a-box>
+      <a-entity position="0 .8 -1.75" rotation="-51.34 0 0">
+        <a-box postition="0 0 -0.1" height=".3" width=".3" depth=".1" shadow>
+          <a-cylinder 
+            class="clickable" 
+            color="red" 
+            height=".1"
+            radius=".1" 
+            position="0 0 .05" 
+            rotation="90 0 0" 
+            shadow 
+            button="pressed: true"
+            go-button
+            animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
+            animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
+        </a-box>
+
+        <a-plane id="fuelGuage" color="#0f0" position="-.3 0 .01" width=".1" height=".5"></a-plane>
+        <a-plane id="jumpGuage" color="#00f" position=".3 0 .01" width=".1" height=".5"></a-plane>
+      </a-entity>
 
       <!-- Map panel -->
       <a-plane id="map" color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8" map shadow>
@@ -102,7 +107,7 @@
       </a-box>
 
       <!-- Camera -->
-      <a-entity rotation="0 -90 0">
+      <a-entity rotation="0 0 0">
         <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
           <a-entity cursor="fuse: false" position="0 0 -1"
             geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"

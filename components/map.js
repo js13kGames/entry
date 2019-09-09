@@ -23,17 +23,17 @@ AFRAME.registerComponent("map", {
         nodeEl.setAttribute("position", {x: node.x + offset.x, y: node.y + offset.y, z: 0.002});
         nodeEl.className = "clickable";
         nodeEl.addEventListener("click", e => {
-          if (ship.location != node && world.links.find(l => l.includes(node.name) && l.includes(ship.location.name))) {
-            nodeEl.emit("changeTarget", node);
+          const jumpLink = world.links.find(l => l.nodes.includes(node.name) && l.nodes.includes(ship.location.name));
+          if (ship.location != node && jumpLink) {
+            nodeEl.emit("changeTarget", {node: node, cost: jumpLink.cost});
           }
         });
         mapObjects.appendChild(nodeEl);
       }
 
       for (let link of world.links) {
-        const start = world.nodes.find(n=>n.name==link[0]);
-        const end = world.nodes.find(n=>n.name==link[1]);
-        console.log(start, end);
+        const start = world.nodes.find(n=>n.name==link.nodes[0]);
+        const end = world.nodes.find(n=>n.name==link.nodes[1]);
 
         const linkEl = document.createElement("a-entity");
         const aj = end.x - start.x;
@@ -58,7 +58,7 @@ AFRAME.registerComponent("map", {
 
     const locationEl = this.el.querySelector("#location");
     this.el.sceneEl.addEventListener("changeLocation", e => {
-      const n = e.detail;
+      const n = e.detail.node;
 
       if (n) {
         offset = {x: -n.x, y: -n.y};
@@ -88,7 +88,7 @@ AFRAME.registerComponent("map", {
 
     const targetEl = this.el.querySelector("#target");
     this.el.sceneEl.addEventListener("changeTarget", e => {
-      const n = e.detail;
+      const n = e.detail.node;
 
       if (n) {
         targetEl.object3D.position.set(n.x, n.y, .003);
