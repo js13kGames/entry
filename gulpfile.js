@@ -14,8 +14,11 @@ const path = require('path'),
   micro = require('gulp-micro'),
   htmlmin = require('gulp-htmlmin'),
   express = require('express'),
+  ftp = require('vinyl-ftp'),
   del = require('del'),
   Q = require('q');
+
+require('dotenv').config();
 
 const appBuildPath = './app.build.json';
 
@@ -147,4 +150,21 @@ gulp.task('dist', ['build'], () => {
     .pipe(size())
     .pipe(micro({ limit: 13 * 1024 }))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task('deploy', ['build'], function () {
+  const conn = ftp.create({
+    host: process.env.FTP_HOST,
+    port: parseInt(process.env.FTP_PORT, 10),
+    user: process.env.FTP_USER,
+    password: process.env.FTP_PASSWORD,
+    parallel: parseInt(process.env.FTP_PARALLEL, 10),
+    maxConnections: parseInt(process.env.FTP_MAXCONNECTIONS, 10),
+    log: console.log
+  });
+  const globs = ['build/**'];
+
+  return gulp.src(globs, { base: './build', buffer: false })
+    .pipe(conn.newer(process.env.FTP_PATH))
+    .pipe(conn.dest(process.env.FTP_PATH));
 });
