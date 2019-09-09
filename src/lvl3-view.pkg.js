@@ -38,21 +38,6 @@ const initLevel3View = (onKeydown, onKeyup, onClick, actions, directions, images
     (e) => onClick(e)
   );
 
-  function renderAction (action) {
-    switch (action) {
-      case actions.READY:
-        return 'READY';
-      case actions.BLOCKING:
-        return 'BLOCKING';
-      case actions.ATTACKING:
-        return 'ATTACKING';
-      case actions.PREPARING_ATTACK:
-        return 'PREPARING_ATTACK';
-      case actions.DISABLED:
-        return 'DISABLED';
-    }
-  }
-
   function renderMap (canvasHeight, canvasWidth, cellWidth, mapWidth,  kong, trex) {
     ctx.fillStyle = 'green';
     ctx.fillRect(kong.location * -cellWidth + 300, canvasHeight - cellWidth, canvasWidth, cellWidth);
