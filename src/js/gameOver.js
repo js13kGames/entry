@@ -1,5 +1,11 @@
 import { renderText } from './text';
 
+/**
+ * Render an end-game type screen. This isn't _quite_ a scene, because
+ * it's displayed over the top of the game scene.
+ * @param  {[type]} game [description]
+ * @return {[type]}      [description]
+ */
 export function render(game) {
     var pad = game.width / 16; // Padding around set of 4 cards
     var margin = 7; // Padding in game units between each card
@@ -148,7 +154,7 @@ export function render(game) {
         });
 
         renderText({
-            text: player.ready ? 'reviewing' : 'done',
+            text: player.ready ? 'next>' : 'ready!',
             color: player.color,
             alignRight: true,
             alignBottom: true,

@@ -62,7 +62,46 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
     render() {
         game.sprites[0].render(game.scale * 2);
-        mainMenu.render(game.scale);
+
+        if (game.players.length) {
+            mainMenu.render(game.scale);
+            game.players.forEach((player, i) => {
+                renderText({
+                    alignBottom: true,
+                    text: 'P' + (i + 1) + ' ' + player.controls,
+                    color: player.color,
+                    size: .8,
+                    x: 30,
+                    y: game.height - 30 - ((game.players.length - 1) * 20) + i * 20,
+                    scale: game.scale,
+                    context: game.context
+                });
+            });
+        } else {
+            renderText({
+                alignRight: true,
+                alignBottom: true,
+                text: 'Press arrow keys,',
+                color: '#fff',
+                size: .8,
+                x: game.width - 30,
+                y: game.height - 50,
+                scale: game.scale,
+                context: game.context
+            });
+            renderText({
+                alignRight: true,
+                alignBottom: true,
+                text: 'a gamepad, or wasd/qzsd',
+                color: '#fff',
+                size: .8,
+                x: game.width - 30,
+                y: game.height - 30,
+                scale: game.scale,
+                context: game.context
+            });
+        }
+
         renderText({
             alignRight: true,
             text: '20461 Dioretsa',

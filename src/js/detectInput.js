@@ -52,8 +52,8 @@ export function detectNewInput() {
       keySetUsed('arrows');
     });
 
-    bindKeys(['w', 'a', 's', 'd'], function(e) {
-      keySetUsed('wasd');
+    bindKeys(['w', 'a', 's', 'd', 'z', 'q'], function(e) {
+      keySetUsed('wasd/zqsd');
     });
 }
 
