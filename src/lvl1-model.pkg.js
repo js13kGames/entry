@@ -57,35 +57,16 @@ const initModel = (height, width, foodCoveragePercent) => {
     map.push([newCell]);
   }
 
-  // Building size options
-  const buildings = {
-    '2x4': [
-      [BUILDING_2X4, B],
-      [B, B],
-      [B, B],
-      [B, B]
-    ],
-    '4x2': [
-      [B, B, B, B],
-      [B, B, B, B]
-    ],
-    '4x4': [
-      [B, B, B, B],
-      [B, B, B, B],
-      [B, B, B, B],
-      [B, B, B, B]
-    ],
-    '4x5xalley': [
-      [B, B, B, B],
-      [B, B, B, B],
-      [S, S, S, B],
-      [B, B, B, B],
-      [B, B, B, B]
-    ]
-  }
+  // Building size
+  const building = [
+    [BUILDING_2X4, B],
+    [B, B],
+    [B, B],
+    [B, B]
+  ];
 
   // Container to hold sliced image cells
-  const buildingsImageCells = {};
+  const buildingImageCells = {};
 
   // Create building styles
   function drawBuilding (color, type) {
@@ -247,8 +228,8 @@ const initModel = (height, width, foodCoveragePercent) => {
     ));
   }
 
-  buildingsImageCells['2x4'] = sliceBuilding(buildings['2x4'], drawBuilding('#01ADC4', 1));
-  buildingsImageCells['2x4-2'] = sliceBuilding(buildings['2x4'], drawBuilding('#700', 2));
+  buildingImageCells['2x4'] = sliceBuilding(building, drawBuilding('#01ADC4', 1));
+  buildingImageCells['2x4-2'] = sliceBuilding(building, drawBuilding('#700', 2));
 
 
   // Set map height and width
@@ -281,10 +262,10 @@ const initModel = (height, width, foodCoveragePercent) => {
   // Loop through map rows to add buildings
   // TODO add a variety of buildings
   function addBuildings() {
-    const b = buildings['2x4'];
+    const b = building;
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
-        const bpx = buildingsImageCells['2x4' + (Math.random() < .5 ? '' : '-2')];
+        const bpx = buildingImageCells['2x4' + (Math.random() < .5 ? '' : '-2')];
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
           addBuilding(map, row, column, b, bpx);
