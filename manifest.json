@@ -1,6 +1,6 @@
 {
   "name": "They Are Behind You",
-  "description": "You are stuck in a cursed world and now you have to find your way out, but watch out with the evil entities that wants your soul.\nCONTROLS: point the cursor to the play button. WASD to move.",
+  "description": "You are stuck in a cursed world and now you have to find your way out, but watch out with the evil entities that wants your soul.\nCONTROLS: point the cursor to the play button to start playing. WASD to move.",
   "images" : {
     "image_large": "theyarebehindyou-big.jpg",
     "image_thumbnail": "theyarebehindyou-small.jpg"
