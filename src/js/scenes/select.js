@@ -121,7 +121,7 @@ const menuLoop = GameLoop({  // create the main game loop
 
     render() {
         game.players.forEach((player, i) => {
-            var x = y = 0;
+            let x = y = 0;
 
             if (i === 1 || i == 3) {
                 x = 4 + game.width / 2;
@@ -172,6 +172,19 @@ const menuLoop = GameLoop({  // create the main game loop
                 context: game.context
             });
 
+            if (player.controls === 'ai') {
+                renderText({
+                    alignBottom: true,
+                    text: '[m to remove]',
+                    color: player.color,
+                    size: .5,
+                    x: x + 30,
+                    y: y + game.height / 2 - 20,
+                    scale: game.scale,
+                    context: game.context
+                });
+            }
+
             renderText({
                 alignRight: true,
                 alignBottom: true,
@@ -192,6 +205,31 @@ const menuLoop = GameLoop({  // create the main game loop
                 );
             }
         });
+
+        // Draw "add new player" infos
+        for (let i = game.players.length; i < 4; i++) {
+            let x = y = 0;
+
+            if (i === 1 || i == 3) {
+                x = 4 + game.width / 2;
+            } else {
+                x = 8;
+            }
+            if (i === 2 || i === 3) {
+                y = 4 + game.height / 2;
+            } else {
+                y = 8;
+            }
+
+            renderText({
+                text: 'press n to add new ai player',
+                size: .8,
+                x: x + 12,
+                y: y + 12,
+                scale: game.scale,
+                context: game.context
+            });
+        }
     }
 });
 
