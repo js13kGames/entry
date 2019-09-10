@@ -48,8 +48,8 @@ Statue.prototype.playMorse = function(morse) {
     this.sprites = [this.g.text("Playing morse", "30px Times", "black", 0, 0)];
     this.scene.addChild(this.modal);
     this.modal.putLeft(this.sprites[0], cw / 5, -10);
-    if (noteList.length === 0) 
-        let nl = [];{
+    if (noteList.length === 0) {
+        let nl = [];
         morse.map((ch, i) => {
             ch.code.map(code => {
                 nl.push(`${code.n} ${code.l}`);
