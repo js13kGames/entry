@@ -10,9 +10,10 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
     kongRightImg,
     pizzaImg
   ] = images
+  window.kongRight = kongRightImg;
   const cellStyles = {
     [OUT_OF_BOUNDS]: 'lightblue',
-    [BLOCKED]: 'transparentx',
+    [BLOCKED]: 'transparent',
     [BUILDING_2X4]: 'brown',
     // [OUT_OF_BOUNDS_CUTOFF]:
     [STREET]: colorStreet,

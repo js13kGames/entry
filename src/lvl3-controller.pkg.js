@@ -283,14 +283,14 @@ const initLevel3 = async (punchSound, nextLevel) => {
     'assets/kong-attack.svg',
     'assets/kong-block.svg',
     'assets/kong-disabled.svg',
-    'assets/kong-right.svg',
     'assets/rex-attack.svg',
     'assets/rex-block.svg',
     'assets/rex-disabled.svg',
     'assets/rex-right.svg',
     'assets/background.svg'
   ]);
-
+  if (DEBUG) window.kongRight = window.kongRight || (await loadSVGs(['assets/kong-right.svg']))[0];
+  images.push(window.kongRight); // comes from level 1
   const {
     cleanUp,
     render,

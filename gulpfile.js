@@ -104,6 +104,7 @@ function injectStrings () {
       'assets/rex-block.svg',
       'assets/rex-disabled.svg',
       'assets/rex-right.svg',
+      'assets/background.svg'
     ].forEach(path => {
       piped = piped.pipe(inject.replace(
         `"${path}"`, // double quotes because the uglifier makes them that way

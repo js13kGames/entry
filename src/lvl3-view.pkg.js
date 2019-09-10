@@ -15,12 +15,12 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     kongAttack,
     kongBlock,
     kongDisabled,
-    kongRight,
     trexAttack,
     trexBlock,
     trexDisabled,
     trexRight,
-    background
+    background,
+    kongRight
   ] = images
 
   const keydown = addEventListener(

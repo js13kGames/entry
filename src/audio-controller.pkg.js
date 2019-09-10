@@ -70,6 +70,7 @@ function initMusic () {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       masterGain = audioCtx.createGain();
       masterGain.gain.value = 0.5;
+      if (DEBUG) masterGain.gain.value = 0;
       setInterval(scheduleInstruments, 100);
       return true;
     },
@@ -80,7 +81,7 @@ function initMusic () {
       if (DEBUG && !audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         masterGain = audioCtx.createGain();
-        masterGain.gain.value = 0.5;
+        masterGain.gain.value = 0;
       }
       makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
     }
