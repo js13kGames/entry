@@ -1,6 +1,7 @@
 import { keyPressed } from 'kontra';
 import { Ship } from './ship';
 import { renderText } from './text';
+import * as ai from './ai';
 import getKeys from './controls';
 
 let gamepadIndex = 0;
@@ -13,6 +14,12 @@ export class Player {
         this.context = props.context;
         this.shipType = props.shipType;
         this.reset();
+
+        // Is an AI player?
+        if (this.controls === 'ai') {
+            this.ready = true;
+            return;
+        }
 
         // Set control scheme
         if (this.controls === 'gamepad') {
@@ -70,7 +77,9 @@ export class Player {
     }
 
     update() {
-        if (this.keys && this.keys !== 'AI') {
+        if (this.controls === 'ai') {
+            ai.update(this);
+        } else if (this.controls) {
             this.handleKeyPresses();
         }
     }

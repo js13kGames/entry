@@ -18,6 +18,11 @@ const menuLoop = GameLoop({  // create the main game loop
                 player.pseudoSpawn();
             }
 
+            if (player.controls === 'ai') {
+                player.ready = true;
+                return;
+            }
+
             if (player.keys.accept()) {
                 player.debounce.accept--;
                 if (player.debounce.accept <= 0) {
@@ -189,7 +194,6 @@ const menuLoop = GameLoop({  // create the main game loop
         });
     }
 });
-
 
 export function startShipSelect(newGame, otherScenes) {
     game = newGame;
