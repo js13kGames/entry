@@ -3,7 +3,7 @@
   "description": "A game about a cat (yes, that's a cat) that want to go back to home. Pink/Red spike ball are enemies. To move the cat, just use the arrow keys. Reach the build to get at home and go to the next level.",
   "images" : {
     "image_large": "large_image.png",
-    "image_thumbnail": "small_image.png"
+    "image_thumbnail": "small_image.PNG"
   },
   "categories": ["Desktop"],
   "user" : {
