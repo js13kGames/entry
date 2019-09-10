@@ -19,7 +19,8 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     trexAttack,
     trexBlock,
     trexDisabled,
-    trexRight
+    trexRight,
+    background
   ] = images
 
   const keydown = addEventListener(
@@ -38,7 +39,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     (e) => onClick(e)
   );
 
-  function renderMap (canvasHeight, canvasWidth, cellWidth, mapWidth,  kong, trex) {
+  function renderMap (canvasHeight, canvasWidth, cellWidth, kong, trex) {
     ctx.fillStyle = 'green';
     ctx.fillRect(kong.location * -cellWidth + 300, canvasHeight - cellWidth, canvasWidth, cellWidth);
     renderCharacter('kong', kong, cellWidth);
@@ -108,8 +109,10 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
         const cellWidth = 100;
         canvas.height = body.clientHeight;
         canvas.width = cellWidth * mapWidth;
-
-        renderMap(canvas.height, canvas.width, cellWidth, mapWidth, kong, trex);
+        ctx.fillStyle = '#7E8390';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+        ctx.drawImage(background, 0, 0, document.body.clientWidth, document.body.clientHeight);
+        renderMap(canvas.height, canvas.width, cellWidth, kong, trex);
         showHealth(kong, trex);
 
         resolve();

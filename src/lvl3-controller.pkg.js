@@ -288,6 +288,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     'assets/rex-block.svg',
     'assets/rex-disabled.svg',
     'assets/rex-right.svg',
+    'assets/background.svg'
   ]);
 
   const {

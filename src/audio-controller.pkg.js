@@ -77,6 +77,11 @@ function initMusic () {
       makeSound(audioCtx.currentTime, 'triangle', 0.25, 350, 440);
     },
     punchSound () {
+      if (DEBUG && !audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.5;
+      }
       makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
     }
   };
