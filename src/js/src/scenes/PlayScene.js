@@ -5,7 +5,7 @@ function PlayScene() {
   var rollMagnitude = 100;
 
   // to get the right arc length that will cover the roll length (2 * magnitude)
-  this.shellRadius = 2 *rollMagnitude / Math.PI; 
+  this.shellRadius = 2 * rollMagnitude / Math.PI; 
 
   // rolling "line" and settings
   this.roll = {
@@ -99,6 +99,7 @@ function PlayScene() {
   this.stateMap[PlayScene.states.playing] = this.cyclePlaying.bind(this);
   this.stateMap[PlayScene.states.outro] = this.cycleOutro.bind(this);
   this.stateMap[PlayScene.states.end] = this.cycleEnd.bind(this);
+  this.stateMap[PlayScene.states.transitionOut] = this.cycleTransitionOut.bind(this);
 }
 
 PlayScene.states = {
@@ -107,7 +108,14 @@ PlayScene.states = {
   waiting: 2,
   playing: 3,
   outro: 4,
-  end: 5
+  end: 5,
+  transitionOut: 6
+};
+
+PlayScene.devScore = 16.64586;
+
+PlayScene.setAlpha = function (adjusted, ratio, timeRatio, obj) {
+  obj.alpha = adjusted;
 };
 
 PlayScene.prototype = extendPrototype(Scene.prototype, {
@@ -221,6 +229,25 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       text: 'to retry'
     });
     this.endTutorial.addChild(this.retryText);
+
+    this.beatDevScore = new DisplayText({
+      x: 0,
+      y: -40,
+      color: 'black',
+      font: '14px Arial',
+      text: 'Try to beat the dev\'s score of ' + PlayScene.devScore.toFixed(3) + 's!',
+      textAlign: 'center',
+      visible: false
+    });
+    this.endTutorial.addChild(this.beatDevScore);
+
+    this.transitionLayer = new DisplayRect({
+      w: SETTINGS.width,
+      h: SETTINGS.height,
+      color: 'black',
+      alpha: 1
+    });
+    this.addChild(this.transitionLayer);
 
     var setX = function (adjusted, ratio, timeRatio, obj) {
       obj.x = Math.floor(adjusted);
@@ -445,8 +472,24 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         this.main.animManager.add(this.introAnim);
         this.turtle.leftLeg.setState(Leg.states.walking);
         this.turtle.rightLeg.setState(Leg.states.walking);
+        this.main.animManager.add(new Anim({
+          object: this.transitionLayer,
+          from: 1,
+          to: 0,
+          duration: 0.5,
+          onStep: PlayScene.setAlpha
+        }));
         break;
       case PlayScene.states.waiting:
+        if (this.settings.skipIntro) {
+          this.main.animManager.add(new Anim({
+            object: this.transitionLayer,
+            from: 1,
+            to: 0,
+            duration: 0.5,
+            onStep: PlayScene.setAlpha
+          }));
+        }
         this.turtle.x = this.roll.center.x;
         this.turtle.y = this.roll.center.y;
         this.setCamera(this.turtle.x, this.turtle.y);
@@ -499,6 +542,9 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         break;
       case PlayScene.states.end:
         this.turtle.animateShow();
+        if (this.playSeconds > PlayScene.devScore) {
+          this.beatDevScore.visible = true;
+        }
         this.main.animManager.add(
           new Anim({
             object: this.turtle,
@@ -534,6 +580,21 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
           })
         );
         this.retryGuiKey.startAnim();
+        break;
+      case PlayScene.states.transitionOut:
+        this.turtle.head.eye.state = Eye.states.uwu;
+        this.main.animManager.add(new Anim({
+          object: this.transitionLayer,
+          from: 0,
+          to: 1,
+          duration: 0.5,
+          onStep: PlayScene.setAlpha,
+          onEnd: function () {
+            this.main.setScene(new PlayScene(this.main, {
+              skipIntro: true
+            }));
+          }.bind(this)
+        }));
         break;
     }
     this.currentCycle = this.stateMap[state];
@@ -601,9 +662,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       return;
     }
 
-    this.main.setScene(new PlayScene(this.main, {
-      skipIntro: true
-    }));
+    this.setState(PlayScene.states.transitionOut);
   },
   setCamera: function (x, y) {
     this.cameraPos.x = x;
@@ -694,5 +753,6 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         );
       }
     }
-  }
+  },
+  cycleTransitionOut: function (dts) {}
 });
