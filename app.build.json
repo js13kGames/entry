@@ -1,0 +1,210 @@
+{
+  "game": {
+    "title": "Turtleback",
+    "width": 640,
+    "height": 360
+  },
+  "export": {
+    "path": "build",
+    "files": [
+      { "from": "src/js/b.js", "to": "." },
+      { "from": "src/style/c.css", "to": "." },
+      { "from": "src/views/index.html", "to": "." }
+    ]
+  },
+  "templates": {
+    "indexHtml": {
+      "from": "src/templates/index.html",
+      "to": "src/views/index-nomin.html",
+      "extraSettings": {
+        "page": {
+          "css": "c.css",
+          "js": "b.js"
+        }
+      }
+    },
+    "indexHtmlDev": {
+      "from": "src/templates/index.html",
+      "to": "src/views/dev.html",
+      "extraSettings": {
+        "page": {
+          "css": "c.css",
+          "js": "bundle-wrap.js"
+        }
+      }
+    }
+  },
+  "sass": {
+    "from": "src/style/main.scss",
+    "to": "src/style/c.css",
+    "options": {
+      "outputStyle": "compressed"
+    }
+  },
+  "concat": {
+    "js": {
+      "files": [
+        "src/js/src/utils/Polyfills.js",
+        "src/js/src/utils/DOM.js",
+        "src/js/src/utils/CookieJar.js",
+        "src/js/src/utils/PersistStorage.js",
+        "src/js/src/input/KB.js",
+        "src/js/src/math/Random.js",
+        "src/js/src/math/JMath.js",
+        "src/js/src/math/AABB.js",
+        
+        "src/js/src/anim/Anim.js",
+        "src/js/src/anim/AnimSeq.js",
+        "src/js/src/anim/AnimGroup.js",
+        "src/js/src/anim/AnimBuilder.js",
+        "src/js/src/anim/AnimManager.js",
+        
+        "src/js/src/graphics/DisplayItem.js",
+        "src/js/src/graphics/DisplayContainer.js",
+        "src/js/src/graphics/DisplayRect.js",
+        "src/js/src/graphics/DisplayCirc.js",
+        "src/js/src/graphics/DisplayText.js",
+        "src/js/src/graphics/CachedContainer.js",
+
+        "src/js/src/play/Eye.js",
+        "src/js/src/play/Leg.js",
+        "src/js/src/play/Head.js",
+        "src/js/src/play/Shell.js",
+        "src/js/src/play/Turtle.js",
+        "src/js/src/play/CloudLayer.js",
+        "src/js/src/play/BG.js",
+        "src/js/src/play/GuiKey.js",
+        "src/js/src/play/Scoreboard.js",
+        
+        "src/js/src/scenes/Scene.js",
+        "src/js/src/scenes/MainMenuScene.js",
+        "src/js/src/scenes/PlayScene.js",
+        "src/js/src/scenes/TestScene.js",
+        "src/js/src/scenes/BGEditor.js",
+        
+        "src/js/src/main.js"
+      ],
+      "output": "src/js/bundle.js"
+    }
+  },
+  "wrap": {
+    "wrapper": "src/templates/wrapper.js",
+    "from": "src/js/bundle.js",
+    "to": "src/js/bundle-wrap.js"
+  },
+  "minify": {
+    "js": {
+      "from": "src/js/bundle-wrap.js",
+      "to": "src/js/b.js",
+      "options": {
+        "mangle": {
+          "properties": {
+            "reserved": [
+              "keyCode",
+              "addEventListener",
+              "removeEventListener",
+              "appendChild",
+              "preventDefault",
+              "requestAnimationFrame",
+              "getElementById",
+              "createElement",
+              "width",
+              "height",
+              "position",
+              "left",
+              "top",
+              "marginLeft",
+              "marginTop",
+              "prototype",
+              "getContext",
+              "game",
+              "fillStyle",
+              "strokeStyle",
+              "shadowColor",
+              "shadowBlur",
+              "shadowOffsetX",
+              "shadowOffsetY",
+              "createLinearGradient",
+              "createPattern",
+              "createRadialGradient",
+              "addColorStop",
+              "lineCap",
+              "lineJoin",
+              "lineWidth",
+              "miterLimit",
+              "rect",
+              "fillRect",
+              "strokeRect",
+              "clearRect",
+              "fill",
+              "stroke",
+              "beginPath",
+              "moveTo",
+              "closePath",
+              "lineTo",
+              "clip",
+              "quadraticCurveTo",
+              "bezierCurveTo",
+              "arc",
+              "arcTo",
+              "isPointInPath",
+              "scale",
+              "rotate",
+              "translate",
+              "transform",
+              "setTransform",
+              "font",
+              "textAlign",
+              "textBaseline",
+              "fillText",
+              "strokeText",
+              "measureText",
+              "drawImage",
+              "createImageData",
+              "getImageData",
+              "putImageData",
+              "globalAlpha",
+              "globalCompositeOperation",
+              "save",
+              "restore",
+              "getComputedStyle",
+              "style",
+              "cookie",
+              "window",
+              "document",
+              "Date",
+              "setSeconds",
+              "getSeconds",
+              "reduce",
+              "trim",
+              "toUTCString",
+              "split",
+              "localStorage",
+              "setItem",
+              "getItem",
+              "removeItem",
+              "sort",
+              "pop",
+              "map",
+              "isArray",
+              "scores",
+              "score",
+              "date",
+              "parse",
+              "stringify"
+            ]
+          }
+        }
+      }
+    },
+    "html": {
+      "from": "src/views/index-nomin.html",
+      "to": "src/views/index.html",
+      "options": {
+        "collapseWhitespace": true,
+        "removeAttributeQuotes": true,
+        "removeComments": true
+      }
+    }
+  }
+}
