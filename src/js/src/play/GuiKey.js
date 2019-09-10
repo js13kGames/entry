@@ -6,7 +6,8 @@ function GuiKey(options) {
     d: 10,
     text: 'A',
     font: null,
-    pressDuration: 1
+    pressDuration: 1,
+    color: 'white'
   }, options || {});
 
   this.w = opts.w;
@@ -14,6 +15,7 @@ function GuiKey(options) {
   this.d = opts.d;
   this.text = opts.text;
   this.font = opts.font;
+  this.color = opts.color;
   this.pressDuration = opts.pressDuration;
 
   this.pressDepth = 0;
@@ -58,13 +60,13 @@ GuiKey.prototype = extendPrototype(DisplayItem.prototype, {
   },
   render: function (context) {
     // key
-    context.strokeStyle = 'white';
+    context.strokeStyle = this.color;
     context.lineWidth = 2;
     context.strokeRect(0, this.pressDepth, this.w, this.h);
     context.strokeRect(0, this.h + this.pressDepth, this.w, this.d - this.pressDepth);
 
     // text
-    context.fillStyle = 'white';
+    context.fillStyle = this.color;
     if (this.font) {
       context.font = this.font;
     }

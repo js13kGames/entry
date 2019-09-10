@@ -147,22 +147,6 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       shell: {
         radius: this.shellRadius
       },
-      head: {
-        x: 78,
-        y: -25
-      },
-      leftLeg: {
-        x: -40,
-        w: 20,
-        h: 10,
-        direction: 1
-      },
-      rightLeg: {
-        x: 40,
-        w: 20,
-        h: 10,
-        direction: -1
-      },
       rollMagnitude: this.roll.magnitude
     });
     this.scrollLayer.addChild(this.turtle);
@@ -202,6 +186,41 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       text: 'D'
     });
     this.tutorialLayer.addChild(this.rightGuiKey);
+
+    this.scoreboard = new Scoreboard({
+      x: SETTINGS.width / 2 - 100,
+      y: SETTINGS.height / 2 + 70,
+      alpha: 0
+    });
+    this.addChild(this.scoreboard);
+
+    this.endTutorial = new DisplayContainer({
+      x: SETTINGS.width / 2,
+      y: this.timeText.y + 20,
+      alpha: 0
+    });
+    this.addChild(this.endTutorial);
+
+    this.retryGuiKey = new GuiKey({
+      x: -30,
+      y: 5,
+      w: 15,
+      h: 15,
+      d: 5,
+      text: 'R',
+      color: 'black',
+      font: '12px Arial'
+    });
+    this.endTutorial.addChild(this.retryGuiKey);
+
+    this.retryText = new DisplayText({
+      x: -10,
+      y: 10,
+      color: 'black',
+      font: '14px Arial',
+      text: 'to retry'
+    });
+    this.endTutorial.addChild(this.retryText);
 
     var setX = function (adjusted, ratio, timeRatio, obj) {
       obj.x = Math.floor(adjusted);
@@ -397,17 +416,27 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       this.rightPressed.bind(this),
       this.rightReleased.bind(this)
     ));
+    this.keys.push(KB(
+      82, // r for retry
+      this.retryPressed.bind(this),
+      this.retryReleased.bind(this)
+    ));
   
     this.addSteppable(this.cycle.bind(this));
     this.addSteppable(this.turtle.step.bind(this.turtle));
 
-    this.setState(PlayScene.states.intro);
+    if (this.settings.skipIntro) {
+      this.setState(PlayScene.states.waiting);
+    } else {
+      this.setState(PlayScene.states.intro);
+    }
     this.setCamera(this.turtle.x, this.turtle.y);
   },
   destroy: function () {
     this.keys.forEach(function (key) {
       key.destroy();
     });
+    this.retryGuiKey.stopAnim();
   },
   setState: function (state) {
     this.state = state;
@@ -418,6 +447,9 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         this.turtle.rightLeg.setState(Leg.states.walking);
         break;
       case PlayScene.states.waiting:
+        this.turtle.x = this.roll.center.x;
+        this.turtle.y = this.roll.center.y;
+        this.setCamera(this.turtle.x, this.turtle.y);
         this.turtle.angle = Math.PI;
         this.turtle.animateShow();
         this.turtle.head.eye.state = Eye.states.normal;
@@ -463,6 +495,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         }
         this.turtle.animateHide();
         this.turtle.setShiftState(Turtle.shiftStates.idle);
+        this.scoreboard.addScore(this.playSeconds, new Date());
         break;
       case PlayScene.states.end:
         this.turtle.animateShow();
@@ -478,6 +511,29 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
             timeFunction: Anim.easingFunctions.easeOutCubic
           })
         );
+        this.main.animManager.add(
+          new Anim({
+            object: this.scoreboard,
+            from: 0,
+            to: 1,
+            duration: 0.25,
+            onStep: function (adjusted, ratio, timeRatio, obj) {
+              obj.alpha = adjusted;
+            }
+          })
+        );
+        this.main.animManager.add(
+          new Anim({
+            object: this.endTutorial,
+            from: 0,
+            to: 1,
+            duration: 0.25,
+            onStep: function (adjusted, ratio, timeRatio, obj) {
+              obj.alpha = adjusted;
+            }
+          })
+        );
+        this.retryGuiKey.startAnim();
         break;
     }
     this.currentCycle = this.stateMap[state];
@@ -534,6 +590,20 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.turtleAccel -= this.turtleAccelMagnitude;
     this.maybeEnableDamping();
     this.updateShiftState();
+  },
+  retryPressed: function () {
+    if (this.state !== PlayScene.states.end) {
+      return;
+    }
+  },
+  retryReleased: function () {
+    if (this.state !== PlayScene.states.end) {
+      return;
+    }
+
+    this.main.setScene(new PlayScene(this.main, {
+      skipIntro: true
+    }));
   },
   setCamera: function (x, y) {
     this.cameraPos.x = x;

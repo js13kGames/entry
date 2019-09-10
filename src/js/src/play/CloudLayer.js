@@ -1,5 +1,5 @@
 function CloudLayer(settings) {
-  DisplayContainer.apply(this, arguments);
+  CachedContainer.apply(this, arguments);
 
   this.settings = extend({
     parallaxScale: 0.5,
@@ -12,6 +12,8 @@ function CloudLayer(settings) {
     cloudScaleY: 1
   }, settings || {});
 
+  this.setDimensions(this.settings.maxBound.x, this.settings.maxBound.y);
+
   var i, bounds, cloud, radius;
   var miniBoundsSize = (this.settings.maxBound.x - this.settings.minBound.x) / this.settings.numClouds;
 
@@ -21,11 +23,11 @@ function CloudLayer(settings) {
     bounds = {
       min: {
         x: x + radius * this.settings.cloudScaleX,
-        y: this.settings.minBound.y
+        y: this.settings.minBound.y + radius * this.settings.cloudScaleY
       },
       max: {
         x: x + miniBoundsSize - radius * this.settings.cloudScaleX,
-        y: this.settings.maxBound.y
+        y: this.settings.maxBound.y - radius * this.settings.cloudScaleY
       }
     };
 
@@ -42,7 +44,7 @@ function CloudLayer(settings) {
   }
 }
 
-CloudLayer.prototype = extendPrototype(DisplayContainer.prototype, {
+CloudLayer.prototype = extendPrototype(CachedContainer.prototype, {
   setCamera: function (x, y) {
     this.x = Math.floor(-x + SETTINGS.width / 2) * this.settings.parallaxScale;
     // we don't move y

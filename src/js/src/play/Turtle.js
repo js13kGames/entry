@@ -2,9 +2,22 @@ function Turtle(options) {
   DisplayContainer.apply(this, arguments);
 
   var opts = extend({
-    leftLeg: null,
-    rightLeg: null,
-    head: null,
+    head: {
+      x: 78,
+      y: -25
+    },
+    leftLeg: {
+      x: -40,
+      w: 20,
+      h: 10,
+      direction: 1
+    },
+    rightLeg: {
+      x: 40,
+      w: 20,
+      h: 10,
+      direction: -1
+    },
     shell: null,
     rollMagnitude: 100
   }, options || {});

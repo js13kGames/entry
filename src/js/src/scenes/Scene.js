@@ -1,7 +1,7 @@
 function Scene(main, settings) {
   DisplayContainer.call(this);
   this.main = main;
-  this.settings = settings;
+  this.settings = settings || {};
   this.steppables = [];
 }
 Scene.prototype = extendPrototype(DisplayContainer.prototype, {

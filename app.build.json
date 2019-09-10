@@ -46,6 +46,8 @@
       "files": [
         "src/js/src/utils/Polyfills.js",
         "src/js/src/utils/DOM.js",
+        "src/js/src/utils/CookieJar.js",
+        "src/js/src/utils/PersistStorage.js",
         "src/js/src/input/KB.js",
         "src/js/src/math/Random.js",
         "src/js/src/math/JMath.js",
@@ -72,6 +74,7 @@
         "src/js/src/play/CloudLayer.js",
         "src/js/src/play/BG.js",
         "src/js/src/play/GuiKey.js",
+        "src/js/src/play/Scoreboard.js",
         
         "src/js/src/scenes/Scene.js",
         "src/js/src/scenes/PlayScene.js",
@@ -164,7 +167,30 @@
               "save",
               "restore",
               "getComputedStyle",
-              "style"
+              "style",
+              "cookie",
+              "window",
+              "document",
+              "Date",
+              "setSeconds",
+              "getSeconds",
+              "reduce",
+              "trim",
+              "toUTCString",
+              "split",
+              "localStorage",
+              "setItem",
+              "getItem",
+              "removeItem",
+              "sort",
+              "pop",
+              "map",
+              "isArray",
+              "scores",
+              "score",
+              "date",
+              "parse",
+              "stringify"
             ]
           }
         }
