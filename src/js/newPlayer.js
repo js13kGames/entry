@@ -44,8 +44,10 @@ function pickColor(players, controllerId) {
 }
 
 export function newPlayer(game, controls, controllerId) {
-    var controls = controls === 'gamepad' ? 'gamepad' : controls;
+    //var controls = controls === 'gamepad' ? 'gamepad' : controls;
     var color = pickColor(game.players, controllerId);
+
+    console.log(controllerId);
 
     game.players.push(new Player({
         color: color,

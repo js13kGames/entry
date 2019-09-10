@@ -19,7 +19,9 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
         game.players.forEach((player, i) => {
 
-            if (player.keys.back()) {
+            // If esc or x pressed on keyboard, remove keyboard player
+            // this doesn't work for gamepads as you could get 'em back!
+            if (player.keys.back() && player.controls !== 'gamepad') {
                 player.debounce.back--;
                 if (player.debounce.back <= 0) {
                     game.players.splice(i, 1);
@@ -92,7 +94,6 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 alignRight: true,
                 alignBottom: true,
                 text: 'Press arrow keys,',
-                color: '#fff',
                 size: .8,
                 x: game.width - 30,
                 y: game.height - 50,
@@ -102,8 +103,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
             renderText({
                 alignRight: true,
                 alignBottom: true,
-                text: 'a gamepad, or wasd/qzsd',
-                color: '#fff',
+                text: 'gamepad, or wasd/qzsd',
                 size: .8,
                 x: game.width - 30,
                 y: game.height - 30,
@@ -115,7 +115,6 @@ let mainMenuLoop = GameLoop({  // create the main game loop
         renderText({
             alignRight: true,
             text: '20461 Dioretsa',
-            color: '#fff',
             size: 2,
             x: game.width - 30,
             y: 30,
@@ -140,7 +139,6 @@ export function startMainMenu(newGame, otherScenes) {
         context: game.context,
         x: 30,
         y: 30,
-        color: '#fff',
         items: [
             { text: 'play' },
             { text: 'settings' },
