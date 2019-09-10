@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "They Are Behind You",
+  "description": "You are stuck in a cursed world and now you have to find your way out, but watch out with the evil entities that wants your soul.\nCONTROLS: point the cursor to the play button. WASD to move.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "theyarebehindyou-big.jpg",
+    "image_thumbnail": "theyarebehindyou-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["WebXR"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Erwin Andres",
+    "website": "https://erwinandres.github.io/",
+    "twitter": "erwinlarios"
   }
 }
