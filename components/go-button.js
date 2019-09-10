@@ -10,7 +10,7 @@ AFRAME.registerComponent("go-button", {
     shipEl.addEventListener("loaded", e => ship = shipEl.components.ship);
 
     let world;
-    sceneEl.addEventListener("worldReady", e => world = e.detail);
+    sceneEl.addEventListener("updateWorld", e => world = e.detail);
 
     function checkPress() {
       console.log(ship.target, ship.scoopDeployed);

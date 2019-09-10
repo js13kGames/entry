@@ -11,9 +11,11 @@
   <script src="components/logic.js"></script>
   <script src="components/go-button.js"></script>
   <script src="components/map.js"></script>
+  <script src="components/scan-button.js"></script>
   <script src="components/scoop-button.js"></script>
   <script src="components/ship.js"></script>
   <script src="components/star.js"></script>
+  <script src="components/utils.js"></script>
   <!-- endbuild -->
 </head>
 
@@ -104,7 +106,18 @@
 
       <!-- Left panel -->
       <a-box position="-1.26 .79 .25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
-        <a-cylinder color="blue" height=".1" radius=".1" position="0 0 .05" rotation="90 0 0" shadow></a-cylinder>
+        <a-cylinder
+            class="clickable" 
+            color="blue" 
+            height=".1"
+            radius=".1" 
+            position="0 0 .05" 
+            rotation="90 0 0" 
+            shadow 
+            button="resetTime: 100"
+            scan-button
+            animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
+            animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
       </a-box>
       <a-box position="-1.26 .79 -.25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
         <a-cylinder 
@@ -122,7 +135,7 @@
       </a-box>
 
       <!-- Camera -->
-      <a-entity rotation="0 0 0">
+      <a-entity rotation="0 -90 0">
         <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
           <a-entity cursor="fuse: false" position="0 0 -1"
             geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"

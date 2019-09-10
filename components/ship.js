@@ -14,6 +14,8 @@ AFRAME.registerComponent('ship', {
     const fuelGuage = el.querySelector("#fuelGuage");
     const jumpGuage = el.querySelector("#jumpGuage");
 
+    let world;
+
     this.target = null;
     this.location = null;
     this.fuel = 0.8;
@@ -39,14 +41,31 @@ AFRAME.registerComponent('ship', {
       }
     });
 
-    sceneEl.addEventListener("worldReady", e => {
-      this.location = e.detail.nodes[0];
+    sceneEl.addEventListener("updateWorld", e => {
+      world = e.detail;
+      this.location = world.nodes[0];
     });
 
     sceneEl.addEventListener("toggleScoop", e => {
       console.log("Scoop");
       this.scoopDeployed = !this.scoopDeployed;
       fuelGuage.setAttribute("color", this.scoopDeployed ? "yellow" : "green");
+    });
+
+    sceneEl.addEventListener("scan", e => {
+      console.log("trying to scan");
+      const name = this.location.name;
+      if (name.startsWith("nav")) {
+        const starName = name.split("nav-")[1];
+        const links = world.links.filter(l => l.nodes.includes(starName));
+        for (let link of links) {
+          for (let node of link.nodes) {
+            world.nodes[world.nodes.indexOf(findByName(world.nodes, node))].scanned = true;
+          }
+        }
+      }
+      console.log(world);
+      sceneEl.emit("updateWorld", world);
     });
   },
 

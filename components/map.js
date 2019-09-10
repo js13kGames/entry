@@ -14,45 +14,49 @@ AFRAME.registerComponent("map", {
     let world;
 
     function draw() {
+      console.log("drawing map");
       mapObjects.innerHTML = "";
 
       for (let node of world.nodes) {
-        const nodeEl = document.createElement("a-circle");
-        nodeEl.setAttribute("color", node.color);
-        nodeEl.setAttribute("geometry", {radius: node.size});
-        nodeEl.setAttribute("position", {x: node.x + offset.x, y: node.y + offset.y, z: 0.002});
-        nodeEl.className = "clickable";
-        nodeEl.addEventListener("click", e => {
-          const jumpLink = world.links.find(l => l.nodes.includes(node.name) && l.nodes.includes(ship.location.name));
-          if (ship.location != node && jumpLink) {
-            nodeEl.emit("changeTarget", {node: node, cost: jumpLink.cost});
-          }
-        });
-        mapObjects.appendChild(nodeEl);
+        if (node.scanned) {
+          const nodeEl = document.createElement("a-circle");
+          nodeEl.setAttribute("color", node.color);
+          nodeEl.setAttribute("geometry", {radius: node.size});
+          nodeEl.setAttribute("position", {x: node.x + offset.x, y: node.y + offset.y, z: 0.002});
+          nodeEl.className = "clickable";
+          nodeEl.addEventListener("click", e => {
+            const jumpLink = world.links.find(l => l.nodes.includes(node.name) && l.nodes.includes(ship.location.name));
+            if (ship.location != node && jumpLink) {
+              nodeEl.emit("changeTarget", {node: node, cost: jumpLink.cost});
+            }
+          });
+          mapObjects.appendChild(nodeEl);
+        }
       }
 
       for (let link of world.links) {
-        const start = world.nodes.find(n=>n.name==link.nodes[0]);
-        const end = world.nodes.find(n=>n.name==link.nodes[1]);
+        const start = findByName(world.nodes, link.nodes[0]);
+        const end = findByName(world.nodes, link.nodes[1]);
 
-        const linkEl = document.createElement("a-entity");
-        const aj = end.x - start.x;
-        const op = end.y - start.y;
-        linkEl.setAttribute("geometry", {
-          primitive: "plane",
-          width: 0.01,
-          height: Math.sqrt(aj*aj + op*op)
-        });
-        linkEl.object3D.position.set(start.x + aj/2 + offset.x, start.y + op/2 + offset.y, 0.001);
-        linkEl.object3D.rotation.z = Math.atan2(op, aj) - Math.PI / 2;
-        linkEl.setAttribute("material", {color: "#fff"});
-        mapObjects.appendChild(linkEl);
+        if (start.scanned && end.scanned) {
+          const linkEl = document.createElement("a-entity");
+          const aj = end.x - start.x;
+          const op = end.y - start.y;
+          linkEl.setAttribute("geometry", {
+            primitive: "plane",
+            width: 0.01,
+            height: Math.sqrt(aj*aj + op*op)
+          });
+          linkEl.object3D.position.set(start.x + aj/2 + offset.x, start.y + op/2 + offset.y, 0.001);
+          linkEl.object3D.rotation.z = Math.atan2(op, aj) - Math.PI / 2;
+          linkEl.setAttribute("material", {color: "#fff"});
+          mapObjects.appendChild(linkEl);
+        }
       }
     }
 
-    sceneEl.addEventListener("worldReady", e => {
+    sceneEl.addEventListener("updateWorld", e => {
       world = e.detail;
-      console.log(world);
       draw();
     });
 
