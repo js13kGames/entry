@@ -13,7 +13,7 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
     getMapView,
     numFoods,
     enableExit
-  } = initModel(20, 20, .1);
+  } = initModel(40, 38, .1);
 
   const {
     getState,

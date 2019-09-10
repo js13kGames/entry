@@ -11,8 +11,8 @@ const PIZZA = uid();
 const HOTDOG = uid();
 const EXIT = uid();
 const colorStreet = '#111327';
-const initModel = (height, width, foodCoveragePercent) => {
 
+const initModel = (height, width, foodCoveragePercent) => {
   const map = [];
   // Create cell object
   function makeMapCell (cellId, imgData) {
@@ -204,15 +204,12 @@ const initModel = (height, width, foodCoveragePercent) => {
       ctx.closePath();
     }
 
-    function makeCars (x, y) {
-      makeCar(60, 1);
-      makeCar(30, 19);
-      makeCar(0, 37);
-      makeCar(30, 53);
-      makeCar(60, 71);
+    function makeCars () {
+      makeCar(5, 19);
+      makeCar(55, 53);
     }
 
-    makeCars(0, 0);
+    makeCars();
 
     return ctx.getImageData(0, 0, size, size);
   })();
@@ -298,12 +295,14 @@ const initModel = (height, width, foodCoveragePercent) => {
   // init
   initMap(height, width);
   addBuildings();
-  dealShuffled(getOpenSquares(), 2)
-    .forEach(cell => {
-      cell.canEnter = false;
-      cell.displayId = POLICE;
-      cell.imgData = policeLeftImg;
-    })
+  
+  const openForPolice = getOpenSquares();
+  const policeLocations = [0, 10, 48, 75, 100, 125, 156, 175, 200, 225, 250, 275, 300, 315, 325, 350, 375, 400, 425, 450, 455, 475, 500, 525, 528, 550, 575, 595, 625, 655, 675];
+  for (let i = 0; i < policeLocations.length; i++) {
+    openForPolice[policeLocations[i]].canEnter = false;
+    openForPolice[policeLocations[i]].displayId = POLICE;
+    openForPolice[policeLocations[i]].imgData = policeLeftImg;
+  }
 
   const openSquaresForPizzas = getOpenSquares();
   const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
