@@ -41,6 +41,10 @@ function setupGamepad(e) {
 function keySetUsed(keys) {
     if (!window.game.players.some(p => p.controls === keys)) {
         newPlayer(window.game, keys)
+        console.log("removing " + keys);
+        window.game.unusedControls = window.game.unusedControls.replace(
+            '[' + keys + ']', ''
+        );
     }
 }
 
@@ -50,15 +54,15 @@ export function detectNewInput() {
     window.addEventListener('gamepadconnected', setupGamepad);
 
     bindKeys(['space', 'up', 'right', 'down', 'left'], function(e) {
-      keySetUsed('arrows');
+        keySetUsed('arrows');
     });
 
     bindKeys(['w', 'a', 's', 'd', 'z', 'q'], function(e) {
-      keySetUsed('wasd/zqsd');
+        keySetUsed('wasd/zqsd');
     });
 
     bindKeys(['n'], function(e) {
-      newPlayer(window.game, 'ai');
+        newPlayer(window.game, 'ai');
     });
 
     bindKeys(['m'], function(e) {
@@ -68,7 +72,11 @@ export function detectNewInput() {
                 lastAiIndex = i;
             }
         });
-        window.game.players.splice(lastAiIndex, 1);
+
+        // Explodes if the AI was at index - 0 but that shouldn't happen!
+        if (lastAiIndex) {
+            window.game.players.splice(lastAiIndex, 1);
+        }
     });
 }
 

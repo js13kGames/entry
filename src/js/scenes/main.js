@@ -28,6 +28,9 @@ let mainMenuLoop = GameLoop({  // create the main game loop
             if (player.keys.back() && player.controls !== 'gamepad') {
                 player.debounce.back--;
                 if (player.debounce.back <= 0) {
+                    if (player.controls !== 'gamepad') {
+                        game.unusedControls += '[' + player.controls + ']'
+                    }
                     game.players.splice(i, 1);
                     return;
                 }

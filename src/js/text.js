@@ -8,7 +8,7 @@ const glyphs = [
     '',                              // "
     '',                              // #
     '',                              // $
-    '1 5 1 2 4 2 4 5Z M2 15 9 0 M7 10 10 10 10 13 7 13Z',                              // %
+    '1 5 1 2 4 2 4 5Z M2 15 9 0 M7 10 10 10 10 13 7 13Z',// %
     '',                              // &
     '',                              // '
     '',                              // (
@@ -62,6 +62,9 @@ const glyphs = [
     '2 0 10 14 M10 0 2 14',          // X
     '6 14 6 8 M2 1 6 8 10 1',        // Y
     '1 1 9 1 2 13 10 13',            // Z
+    '8 0 4 0 4 14 8 14',             // [
+    '8 15 2 0',                      // \
+    '3 0 7 0 7 14 3 14',             // ]
 ].map(path => new Path2D('M' + path));
 
 export function drawText(props) {
@@ -86,6 +89,11 @@ export function renderText(props) {
     props.context.scale(props.scale, props.scale);
 
     var xAlign = yAlign = 0;
+
+    if (props.alignCenter) {
+        yAlign = -8.5 * size;
+        xAlign = -props.text.toString().length * 6.5 * size;
+    }
 
     if (props.alignBottom) {
         // Approx height of text

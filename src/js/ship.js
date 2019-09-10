@@ -192,6 +192,14 @@ export class Ship extends Sprite.class {
 
     shipUpdate() {
 
+        // Keep the ships rotation between 0 and 360 (makes AI simpler)
+        if (this.rotation > 360) {
+            this.rotation -= 360;
+        }
+        if (this.rotation < 0) {
+            this.rotation += 360;
+        }
+
         if (this.shieldDegrading) {
             this.shieldDegrading--;
             if (this.shieldDegrading === 0) {
