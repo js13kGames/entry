@@ -9,16 +9,25 @@ AFRAME.registerComponent('screen-manager', {
     this.timerEl = this.el.querySelector('#timer');
     this.shotsEl = this.el.querySelector('#shots');
     this.chickenEls = Array.from(this.el.querySelectorAll('.chicken'));
-    this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
+    this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw:not(.coil)'));
 
     this.onGameStart = AFRAME.utils.bind(this.onGameStart, this);
     this.onStateRemoved = AFRAME.utils.bind(this.onStateRemoved, this);
     this.onShotFired = AFRAME.utils.bind(this.onShotFired, this);
+    this.onMonetizationStart = AFRAME.utils.bind(this.onMonetizationStart, this);
 
     this.startButtonEl.addEventListener('mouseenter', this.onGameStart);
     this.outlawEls.forEach(function(outlawEl) {
       outlawEl.addEventListener('stateremoved', this.onShotFired);
     });
+
+    if (document.monetization) {
+      if (document.monetization.state === 'started') {
+        this.onMonetizationStart();
+      } else if (document.monetization.state === 'pending') {
+        document.monetization.addEventListener('monetizationstart', this.onMonetizationStart);
+      }
+    }
   },
   onGameStart: function() {
     this.startButtonEl.removeEventListener('mouseenter', this.onGameStart);
@@ -32,6 +41,7 @@ AFRAME.registerComponent('screen-manager', {
     [this.titleEl, ...this.chickenEls].forEach(function(elToHide) {
       elToHide.setAttribute('visible', false);
     });
+
     [this.timerEl, this.shotsEl, ...this.outlawEls].forEach(function(elToShow) {
       elToShow.setAttribute('visible', true);
     });
@@ -61,7 +71,14 @@ AFRAME.registerComponent('screen-manager', {
     }
     this.shotsFired += 1;
     this.shotsEl.setAttribute('value', `shots\n${this.shotsFired}`);
-  }
+  },
+  onMonetizationStart: function() {
+    // include the 2 extra outlaws for Coil subscriber
+    this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
+    // customize messages
+    this.startButtonEl.setAttribute('value', 'Oh boy, you looked back!\nNow the outlaws are after you.\nI sure hope you\'re a fast gun, cowboy Coil!');
+    this.endEl.setAttribute('value', 'You survived, cowboy Coil!\n\nYou really are the fastest gun\nin the whole wild West!');
+  },
 });
 
 
