@@ -162,7 +162,7 @@ MainMenuScene.prototype = extendPrototype(Scene.prototype, {
     this.js13kText = new DisplayText({
       x: SETTINGS.width / 2,
       y: SETTINGS.height - 5,
-      text: 'A game by jayther for the jsk13 2019 competition.',
+      text: 'A game by jayther for the js13k 2019 competition.',
       color: '#dddddd',
       textAlign: 'center',
       textBaseline: 'bottom',
