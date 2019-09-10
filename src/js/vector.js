@@ -1,6 +1,6 @@
 
 export function dir(vec) {
-    return Math.atan2(vec.x, vec.y);
+    return Math.atan2(vec.y, vec.x);
 }
 
 export function magnitude(vec) {
