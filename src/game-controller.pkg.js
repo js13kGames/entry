@@ -1,5 +1,5 @@
 const initGameController = () => {
-  let currentLevel = 0;
+  let currentLevel = 5;
   const { playMusic, pizzaSound, punchSound } = initMusic();
 
   const levelInitters = [
