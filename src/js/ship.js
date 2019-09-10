@@ -275,6 +275,7 @@ export class Ship extends Sprite.class {
             rainbow: this.rainbow
         });
         // Remove last update location from location history
+        // 120 (frames) means rewind goes back 2s in time
         if (this.history.length > 120) {
             this.history.shift();
         }

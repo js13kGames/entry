@@ -41,7 +41,6 @@ function setupGamepad(e) {
 function keySetUsed(keys) {
     if (!window.game.players.some(p => p.controls === keys)) {
         newPlayer(window.game, keys)
-        console.log("removing " + keys);
         window.game.unusedControls = window.game.unusedControls.replace(
             '[' + keys + ']', ''
         );
