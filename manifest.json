@@ -1,14 +1,13 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+  "name": "Back in Dino",
+  "description": "Dino is stuck in time. He can't walk back in the past... he can just moonwalk. He can't go in the future either. The only thing left for him is to enjoy the present also it is not that easy, especially when some weird circles try to catch him. Help Dino to stay alive and enjoy the present time. Commands:Arrow right '>' to move right, Arrow left '<' to move left, Arrow up '^' to jump",
+  "images": {
+    "image_large": "image_big.png",
+    "image_thumbnail": "image_small.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+  "categories": ["Desktop"],
+  "user": {
+    "name": "Nicolantonio Vignola",
+    "twitter": "https://twitter.com/MrN1ck"
   }
 }
