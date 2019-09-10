@@ -105,8 +105,8 @@ html, body {
 
 .jackpot {
   font-size: 20px;
-  transform: translate(50%,100%) rotate(-10deg);
-  width: 120px;
+  transform: translate(25%,100%) rotate(-10deg);
+  width: 200px;
   color: black;
   background-color: white;
   mix-blend-mode: screen; /* This makes the cutout text possible */
@@ -177,33 +177,27 @@ html, body {
   }
 }
 
-@keyframes jackpot-gain {
-  from {
-    transform: translate(50%,80%) rotate(-10deg);
-  }
-  to {
-    transform: translate(50%,100%) rotate(-10deg);
-  }
-}
-
-@keyframes jackpot-gain-2 {
-  from {
-    transform: translate(50%,80%) rotate(-10deg);
-  }
-  to {
-    transform: translate(50%,100%) rotate(-10deg);
-  }
-}
-
-@keyframes jackpot-claim {
+@keyframes jackpot-claim-1 {
   0% {
-    transform: translate(50%,100%) rotate(-10deg);
+    transform: translate(25%,100%) rotate(-10deg);
   }
   50% {
-    transform: translate(50%,100%) rotate(-190deg);
+    transform: translate(25%,100%) rotate(-190deg);
   }
   100% {
-    transform: translate(50%,100%) rotate(-370deg);
+    transform: translate(25%,100%) rotate(-370deg);
+  }
+}
+
+@keyframes jackpot-claim-2 {
+  0% {
+    transform: translate(25%,100%) rotate(-10deg);
+  }
+  50% {
+    transform: translate(25%,100%) rotate(-190deg);
+  }
+  100% {
+    transform: translate(25%,100%) rotate(-370deg);
   }
 }
 
