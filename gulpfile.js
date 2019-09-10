@@ -1,6 +1,6 @@
 const gulp = require('gulp');
 
-const deleteFiles = require('gulp-rimraf');
+const del = require('del');
 const minifyHTML = require('gulp-minify-html');
 const minifyJS = require('gulp-terser');
 const concat = require('gulp-concat');
@@ -22,10 +22,7 @@ const paths = {
     }
 };
 
-gulp.task('cleanDist', () => {
-    return gulp.src('dist/**/*', { read: false })
-        .pipe(deleteFiles());
-});
+gulp.task('cleanDist', () => del('dist/**/*'));
 
 gulp.task('buildHTML', () => {
     return gulp.src(paths.src.html)
@@ -52,8 +49,7 @@ gulp.task('optimizeImages', () => {
 gulp.task('zip', () => {
     const thirteenKb = 13 * 1024;
 
-    gulp.src('zip/*')
-        .pipe(deleteFiles());
+    del('zip/*');
 
     return gulp.src(`${paths.dist.dir}/**`)
         .pipe(zip('dont-look-back.zip'))
