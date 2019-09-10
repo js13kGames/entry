@@ -9,11 +9,9 @@ export class FallingEyePair extends AnimationBase {
 
     this.x = x
     this.y = y
-    this.rotation = 0
 
     this.dy = sampleNoise()
     this.dx = sampleNoise()
-    this.drot = sampleNoise()
   }
 
   step () {
@@ -23,7 +21,6 @@ export class FallingEyePair extends AnimationBase {
 
     this.y += this.dy
     this.x += this.dx
-    this.rotation += this.drot
   }
 
   render () {

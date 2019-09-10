@@ -147,17 +147,8 @@ export class Level {
       animation.step()
     }
 
-    for (let tetromino of this.board.tetrominoes) {
-      tetromino.updateEyes()
-    }
-
-    for (let y = 0; y < this.board.height; y++) {
-      for (let x = 0; x < this.board.width; x++) {
-        const item = this.board.getItemAt(x, y)
-        if (item instanceof Block) {
-          item.step()
-        }
-      }
+    for (let entity of this.board.entities) {
+      entity.step()
     }
   }
 

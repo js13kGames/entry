@@ -53,6 +53,7 @@ const preMangle = {
   transformBundle (code) {
     code = code.replace(/"maps":/g, 'maps:')
     code = code.replace(/"entities":/g, 'entities:')
+    code = code.replace(/\[(\d+)\]:/g, '$1:')
 
     for (let word of [
       'frames',

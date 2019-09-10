@@ -7,7 +7,7 @@
         margin: 0;
         background: #222;
       }
-      body, .overlay {
+      body, div {
         display: flex;
         width: 100vw;
         height: 100vh;
@@ -18,11 +18,11 @@
         background: #000;
         font-family: monospace;
       }
-      .overlay {
+      div {
         position: fixed;
         display: none;
       }
-      body.loading .overlay {
+      body.l div {
         display: flex;
       }
       canvas {
@@ -32,9 +32,9 @@
       }
     </style>
   </head>
-  <body class="loading">
+  <body class="l">
     <canvas width="600" height="400"></canvas>
-    <div class="overlay">Generating audio assets...</div>
+    <div>Generating audio assets...</div>
     <script src="build.js"></script>
   </body>
 </html>

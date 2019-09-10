@@ -1,4 +1,4 @@
-import { COLORS } from '../constants';
+import { COLORS } from '../constants'
 
 export class Tetromino {
   constructor () {
@@ -27,7 +27,7 @@ export class Tetromino {
     this.rotation = (this.rotation + 3) % 4
   }
 
-  updateEyes () {
+  step () {
     this.eyeUpdateTimer++
     if (this.eyeUpdateTimer > 60 && Math.random() < this.randomness) {
       if (this.eyesIndex) {

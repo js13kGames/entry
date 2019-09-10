@@ -121,5 +121,5 @@ export async function loadAssets () {
     createVictorySong(),
   ])
 
-  document.body.classList.remove('loading')
+  document.body.classList.remove('l')
 }

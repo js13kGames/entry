@@ -15,6 +15,7 @@ export class Board {
     }
 
     this.tetrominoes = new Set()
+    this.entities = new Set()
     this.tetrominoPositions = new Map()
   }
 
@@ -61,6 +62,7 @@ export class Board {
     }
     this.tetrominoPositions.set(tetromino, positions)
     this.tetrominoes.add(tetromino)
+    this.entities.add(tetromino)
   }
 
   updateTetrominoPosition (tetromino) {
@@ -73,6 +75,7 @@ export class Board {
 
   removeTetromino (tetromino) {
     this.tetrominoes.delete(tetromino)
+    this.entities.delete(tetromino)
     this.tetrominoPositions.delete(tetromino)
     for (let [px, py] of tetromino.getBlockPositions()) {
       this.grid[py][px] = 0
@@ -87,15 +90,19 @@ export class Board {
     let index = 0
     for (let y = 0; y < this.heightWithMargin; y++) {
       if (y === rows[index]) {
+        this.forEachItemInRow(y, item => {
+          if (item instanceof Block) {
+            this.entities.delete(item)
+          }
+        })
         index++
       }
       else {
-        for (let x = 0; x < this.width; x++) {
-          const item = this.grid[y][x]
+        this.forEachItemInRow(y, item => {
           if (item instanceof Tetromino) {
             tetrominoesToMove.set(item, index)
           }
-        }
+        })
         this.grid[y - index] = this.grid[y]
       }
     }
@@ -110,15 +117,21 @@ export class Board {
     }
   }
 
+  forEachItemInRow (y, callback) {
+    for (let x = 0; x < this.width; x++) {
+      const item = this.grid[y][x]
+      if (item) callback(item)
+    }
+  }
+
   getTetrominoesInRows (rows) {
     let tetrominoes = new Set()
     for (let y of rows) {
-      for (let x = 0; x < this.width; x++) {
-        const item = this.grid[y][x]
+      this.forEachItemInRow(y, item => {
         if (item instanceof Tetromino) {
           tetrominoes.add(item)
         }
-      }
+      })
     }
     return tetrominoes
   }
@@ -127,8 +140,10 @@ export class Board {
     for (let tetromino of tetrominoes) {
       for (let [x, y] of tetromino.getBlockPositions()) {
         this.grid[y][x] = new Block(tetromino.getId())
+        this.entities.add(this.grid[y][x])
       }
       this.tetrominoes.delete(tetromino)
+      this.entities.delete(tetromino)
     }
   }
 
