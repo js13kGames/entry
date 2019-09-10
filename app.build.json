@@ -71,6 +71,7 @@
         "src/js/src/play/Turtle.js",
         "src/js/src/play/CloudLayer.js",
         "src/js/src/play/BG.js",
+        "src/js/src/play/GuiKey.js",
         
         "src/js/src/scenes/Scene.js",
         "src/js/src/scenes/PlayScene.js",

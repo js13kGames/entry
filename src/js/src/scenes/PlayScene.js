@@ -72,6 +72,15 @@ function PlayScene() {
   // stopwatch
   this.playSeconds = 0;
 
+  // tutorial keys
+  this.tutorialKeys = [
+    { left: 'A', right: 'D' },
+    { left: 'Q', right: 'D' },
+    { left: '←', right: '→' }
+  ];
+  this.tutorialKeyIndex = 0;
+  this.tutorialKeyTimeLeft = 1;
+
   this.cameraPos = {
     x: 0,
     y: 0
@@ -162,9 +171,37 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
       x: SETTINGS.width / 2,
       y: 100,
       text: '0.000s',
-      textAlign: 'center'
+      textAlign: 'center',
+      visible: false
     });
     this.addChild(this.timeText);
+
+    this.tutorialLayer = new DisplayContainer({
+      x: SETTINGS.width / 2,
+      y: SETTINGS.height / 2 + 100,
+      alpha: 0
+    });
+    this.addChild(this.tutorialLayer);
+
+    this.leftGuiKey = new GuiKey({
+      x: -40,
+      y: 0,
+      w: 30,
+      h: 30,
+      d: 10,
+      text: 'A'
+    });
+    this.tutorialLayer.addChild(this.leftGuiKey);
+
+    this.rightGuiKey = new GuiKey({
+      x: 10,
+      y: 0,
+      w: 30,
+      h: 30,
+      d: 10,
+      text: 'D'
+    });
+    this.tutorialLayer.addChild(this.rightGuiKey);
 
     var setX = function (adjusted, ratio, timeRatio, obj) {
       obj.x = Math.floor(adjusted);
@@ -351,7 +388,7 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
   
     this.keys = [];
     this.keys.push(KB(
-      [KB.keys.a, KB.keys.left],
+      [KB.keys.a, KB.keys.left, 81], // q, for azerty
       this.leftPressed.bind(this),
       this.leftReleased.bind(this)
     ));
@@ -384,7 +421,31 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
         this.turtle.angle = Math.PI;
         this.turtle.animateShow();
         this.turtle.head.eye.state = Eye.states.normal;
-        // TODO show instruction
+        this.timeText.visible = true;
+        this.main.animManager.add(new Anim({
+          object: this.tutorialLayer,
+          from: 0,
+          to: 1,
+          duration: 0.25,
+          onStep: function (adjusted, ratio, timeRatio, obj) {
+            obj.alpha = adjusted;
+          }
+        }));
+        this.leftGuiKey.startAnim();
+        this.rightGuiKey.startAnim(0.5);
+        break;
+      case PlayScene.states.playing:
+        this.main.animManager.add(new Anim({
+          object: this.tutorialLayer,
+          from: this.tutorialLayer.alpha,
+          to: 0,
+          duration: 0.25,
+          onStep: function (adjusted, ratio, timeRatio, obj) {
+            obj.alpha = adjusted;
+          }
+        }));
+        this.leftGuiKey.stopAnim();
+        this.rightGuiKey.stopAnim();
         break;
       case PlayScene.states.outro:
         if (this.turtle.x < this.roll.center.x) {
@@ -489,7 +550,14 @@ PlayScene.prototype = extendPrototype(Scene.prototype, {
     this.setCamera(this.turtle.x, this.turtle.y);
   },
   cycleWaiting: function (dts) {
-
+    this.tutorialKeyTimeLeft -= dts;
+    if (this.tutorialKeyTimeLeft <= 0) {
+      this.tutorialKeyTimeLeft += 1;
+      this.tutorialKeyIndex += 1;
+      var tutorialKey = this.tutorialKeys[this.tutorialKeyIndex % this.tutorialKeys.length];
+      this.leftGuiKey.text = tutorialKey.left;
+      this.rightGuiKey.text = tutorialKey.right;
+    }
   },
   cyclePlaying: function (dts) {
     this.rollBackAccel = this.rollPos / this.roll.magnitude * -this.roll.backMaxAccel;
