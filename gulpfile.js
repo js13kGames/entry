@@ -52,7 +52,7 @@ gulp.task('zip', () => {
     del('zip/*');
 
     return gulp.src(`${paths.dist.dir}/**`)
-        .pipe(zip('dont-look-back.zip'))
+        .pipe(zip('bundle.zip'))
         .pipe(gulp.dest('zip'))
         .pipe(checkFileSize({ fileSizeLimit: thirteenKb }));
 });
