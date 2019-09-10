@@ -62,15 +62,15 @@ export function detectNewInput() {
     });
 
     bindKeys(['m'], function(e) {
-        var lastAi;
-        for (let i = window.game.players.length - 1; i > 0; i--) {
-            if (window.game.players[i].controls === 'ai') {
-                lastAi = window.game.players[i];
+        var lastAiIndex;
+        window.game.players.forEach((player, i) => {
+            if (player.controls === 'ai') {
+                lastAiIndex = i;
             }
-        }
+        });
         console.log("last ai:");
         console.log(lastAi);
-        window.game.players = window.game.players.filter(p => p !== lastAi);
+        window.game.players.splice(lastAiIndex, 1);
     });
 }
 
