@@ -16,7 +16,7 @@ const glyphs = [
     '',                              // *
     '',                              // +
     '6 12 4 15',                     // ,
-    '',                              // -
+    '3 6 8 6',                       // -
     '',                              // .
     '2 15 8 0',                      // /
     '6 0 11 7 6 14 1 7Z M6 6 6 8',   // 0
@@ -100,7 +100,7 @@ export function renderText(props) {
     props.context.translate(props.x + xAlign, props.y + yAlign);
 
     props.context.scale(size, size);
-    props.context.strokeStyle = props.color;
+    props.context.strokeStyle = props.color || '#fff';
     props.context.lineWidth = 1.5;
     drawText(props);
     props.context.restore();
