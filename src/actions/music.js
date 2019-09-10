@@ -1,34 +1,24 @@
 import Sequence from './../../lib/TinyMusic.js';
 // create a new Web Audio API context
-var ac = new AudioContext();
-let currentSequence;
-
-let generateSequence = function(noteList, tempo) {
-	let notes = [];
-	noteList.map(n => {
-		notes.push(`${n.n} ${n.len}`);
-	});
-	let sequence = new Sequence(ac, tempo, notes);
-	sequence.loop = false;
-	sequence.staccato = 0.5;
-	sequence.gain.gain.value = 0.5;
-	sequence.createCustomWave([-0.8, 1, 0.8, 0.8, -0.8, -0.8, -1]);
-	return sequence;
-}
+// var ac = new AudioContext();
+let seq;
 
 let MusicActions = {
-	playMusic: function(noteList, tempo, cb) {
-		if (currentSequence) {
-			currentSequence.stop();
+	playMusic: function(nl, tempo) {
+		if (seq) {
+			seq.stop();
 		}
-		currentSequence = generateSequence(noteList, tempo);
-		
-		currentSequence.play(ac.currentTime + ( 60 / tempo ));
+		seq = new Sequence(null, tempo, nl);
+		seq.loop = false;
+		seq.staccato = 0.5;
+		seq.gain.gain.value = 0.5;
+		seq.createCustomWave([-0.8, 1, 0.8, 0.8, -0.8, -0.8, -1]);
+		seq.play();
 	},
 
 	stopMusic: function() {
-		if (currentSequence) {
-			currentSequence.stop();
+		if (seq) {
+			seq.stop();
 		}
 	}
 };

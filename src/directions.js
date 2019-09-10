@@ -1,8 +1,12 @@
+let UP = 'up';
+let D = 'down';
+let R = 'right';
+let L = 'left';
 export default {
-    UP: 'up',
-    DOWN: 'down',
-    RIGHT: 'right',
-    LEFT: 'left',
+    UP,
+    D,
+    R,
+    L,
     BACK: 'back',
-    ALL: ['up', 'down', 'left', 'right'],
+    ALL: [UP, D, L, R],
 }

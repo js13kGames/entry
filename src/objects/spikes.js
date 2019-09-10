@@ -1,30 +1,32 @@
-import directions from './../directions.js';
+import dirs from './../directions.js';
 
 let Spikes = function(g, side) {
-    let x, y, width, height;
+    let x, y, w, h;
+    let cw = g.canvas.width;
+    let ch = g.canvas.height;
     let size = 36;
-    if (side === directions.UP) {
+    if (side === dirs.UP) {
         y = 0;
         x = 0;
-        width = g.canvas.width;
-        height = size;
-    } else if (side === directions.DOWN) {
+        w = cw;
+        h = size;
+    } else if (side === dirs.D) {
         x = 0;
-        y = g.canvas.height - size;
-        width = g.canvas.width;
-        height = size;
-    } else if (side === directions.LEFT) {
+        y = ch - size;
+        w = cw;
+        h = size;
+    } else if (side === dirs.L) {
         x = 0;
         y = 0;
-        width = size;
-        height = g.canvas.height;
-    } else if (side === directions.RIGHT) {
-        x = g.canvas.width - size;
+        w = size;
+        h = ch;
+    } else if (side === dirs.R) {
+        x = cw - size;
         y = 0;
-        width = size;
-        height = g.canvas.height;
+        w = size;
+        h = ch;
     }
-    this.sprite = g.rectangle(width, height, 'grey', 'grey', 1, x, y);
+    this.sprite = g.rectangle(w, h, 'grey', 'grey', 1, x, y);
     this.sprite.alpha = 0.5;
     this.side = side;
 }

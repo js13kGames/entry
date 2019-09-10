@@ -1,5 +1,5 @@
 import Spikes from './../objects/spikes.js';
-import directions from './../directions.js';
+import dirs from './../directions.js';
 import Enemy from './../actors/enemy.js';
 import Boss from './../actors/boss.js';
 import GameOver from './game-over.js';
@@ -7,10 +7,11 @@ import {toRadians, reverseDirection} from './../utils.js';
 
 let EnemyRoom = function(g, loadNext) {
     this.g = g;
-    this.player = g.globals.player;
+    this.player = g.player;
+    this.sword = g.player.sword;
     this.exitPit = g.rectangle(50,50,'yellow');
     this.loadNext = loadNext;
-    this.spikes = [new Spikes(g, directions.UP), new Spikes(g, directions.DOWN), new Spikes(g, directions.LEFT), new Spikes(g, directions.RIGHT)];
+    this.spikes = [new Spikes(g, dirs.UP), new Spikes(g, dirs.D), new Spikes(g, dirs.L), new Spikes(g, dirs.R)];
     this.scene = g.group(this.exitPit, this.spikes[0].sprite, this.spikes[1].sprite, this.spikes[2].sprite, this.spikes[3].sprite);
     this.scene.visible = false;
     this.fromDir = '';
@@ -19,14 +20,13 @@ let EnemyRoom = function(g, loadNext) {
     this.hasTreasure = false;
     this.canOpen = false;
     this.deathCount = 0;
-    this.bossRoom = false;
     this.deathMax = 30;
     this.actionKey = g.keyboard(70);
     this.actionKey.press = () => {
         if (this.canOpen) {
             this.treasure.activate();
-        } else if (!this.player.sword.active && this.scene.visible) {
-            this.player.sword.startSwing(this.player.sprite.direction, 
+        } else if (!this.sword.active && this.scene.visible) {
+            this.sword.startSwing(this.player.sprite.direction, 
                 this.player.sprite.x + this.player.sprite.halfWidth, 
                 this.player.sprite.y - this.player.sprite.halfHeight);
         }
@@ -54,7 +54,6 @@ EnemyRoom.prototype.load = function(fromDir, explored, numEnemies, hasTreasure, 
 EnemyRoom.prototype.loadBoss = function() {
     this.g.stage.putCenter(this.player.sprite, 0, 0);
     this.enemies.push(new Boss(this.g, this.player.sprite));
-    this.bossRoom = true;
     this.exitPit.visible = false;
     this.g.stage.putCenter(this.exitPit, 0, -50);
 };
@@ -80,6 +79,8 @@ EnemyRoom.prototype.placeEnemies = function() {
 };
 
 EnemyRoom.prototype.loop = function() {
+    let p = this.player.sprite;
+
     if (this.player.dead) {
         this.deathCount++;
         this.scene.alpha -= 0.02;
@@ -89,34 +90,34 @@ EnemyRoom.prototype.loop = function() {
         return;
     }
 
-    if (!this.player.sword.active) {
-        this.g.move(this.player.sprite);
+    if (!this.sword.active) {
+        this.g.move(p);
     }
-    if (this.player.sprite.vx != 0 || this.player.sprite.vy != 0) {
+    if (p.vx != 0 || p.vy != 0) {
         this.canOpen = false;
     }
-    this.g.contain(this.player.sprite, this.g.stage.localBounds);
-    if (this.exitPit.visible && this.g.hitTestRectangle(this.player.sprite, this.exitPit)) {
-        this.loadNext(directions.BACK, this.fromDir);
+    this.g.contain(p, this.g.stage.localBounds);
+    if (this.exitPit.visible && this.g.hitTestRectangle(p, this.exitPit)) {
+        this.loadNext(dirs.BACK, this.fromDir);
     }
 
-    if (this.hasTreasure && this.treasure.sprite.visible && this.g.rectangleCollision(this.player.sprite, this.treasure.sprite)) {
+    if (this.hasTreasure && this.treasure.sprite.visible && this.g.rectangleCollision(p, this.treasure.sprite)) {
         this.canOpen = true;
     }
 
     this.spikes.forEach(spike => {
-        if (this.g.hitTestRectangle(this.player.sprite, spike.sprite)) {
+        if (this.g.hitTestRectangle(p, spike.sprite)) {
             this.player.takeDamage(1, spike.side);
         }
     })
 
-    if(this.player.sword.active) {
-        this.g.rotateAroundSprite(this.player.sword.sprite, this.player.sprite, this.player.sprite.width, this.player.sword.degrees);
-        this.player.sword.swing();
+    if(this.sword.active) {
+        this.g.rotateAroundSprite(this.sword.sprite, p, p.width, this.sword.degrees);
+        this.sword.swing();
     }
 
     if (this.enemies.length === 0 && !this.exitPit.visible) {
-        if (this.g.hitTestRectangle(this.exitPit, this.player.sprite)) {
+        if (this.g.hitTestRectangle(this.exitPit, p)) {
             this.exitPit.y = 50;
         }
         this.exitPit.visible = true;
@@ -127,28 +128,28 @@ EnemyRoom.prototype.loop = function() {
     } else {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             let e = this.enemies[i];
-            if (this.player.sword.active && !e.invincible) {
-                let side = this.g.hitTestRectangle(this.player.sword.sprite, e.sprite)
+            if (this.sword.active && !e.invinc) {
+                let side = this.g.hitTestRectangle(this.sword.sprite, e.sprite)
                 if (side) {
-                    e.takeDamage(this.player.sword.damage, reverseDirection(this.player.sprite.direction), this.player.sprite);
+                    e.takeDamage(this.sword.dmg, reverseDirection(p.direction), p);
                 }
             }
             
             if (!e.dead) {
                 if (e.sprite.visible) {
-                    this.g.followConstant(e.sprite, this.player.sprite, e.speed);
+                    this.g.followConstant(e.sprite, p, e.speed);
                     this.g.contain(e.sprite, this.g.stage.localBounds);
                     e.moveHealth();
-                    if (!this.player.invincible) {
-                        let side = this.g.rectangleCollision(this.player.sprite, e.sprite, true);
+                    if (!this.player.invinc) {
+                        let side = this.g.rectangleCollision(p, e.sprite, true);
                         if(side) {
-                            this.player.takeDamage(e.damage, side);
+                            this.player.takeDamage(e.dmg, side);
                         }
                     }
                 }
             } else {
                 this.g.remove(e.sprite);
-                this.g.remove(e.healthSprite);
+                this.g.remove(e.hSprite);
                 this.enemies.splice(i, 1);
             }
         }

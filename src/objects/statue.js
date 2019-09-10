@@ -8,7 +8,7 @@ let noteList = [];
 
 let Statue = function(g, mode) {
     Interactable.call(this, g);
-    this.sprite = g.rectangle(48, 64, 'brown');
+    this.sprite = g.rectangle(48, 64, 'gray');
     this.scene = g.group();
     this.sprites = [];
     this.modal = {};
@@ -43,22 +43,21 @@ Statue.prototype.closeModal = function() {
 
 Statue.prototype.playMorse = function(morse) {
     let cw = this.g.canvas.width;
-    this.modal = this.g.rectangle(cw / 2, this.g.canvas.height / 10, 'teal', 'black', 1, cw/ 4, this.g.canvas.height / 10);
+    let cHeight = this.g.canvas.height / 10;
+    this.modal = this.g.rectangle(cw / 2, cHeight, 'teal', 'black', 1, cw / 4, cHeight);
     this.sprites = [this.g.text("Playing morse", "30px Times", "black", 0, 0)];
     this.scene.addChild(this.modal);
     this.modal.putLeft(this.sprites[0], cw / 5, -10);
-    let nl = [];
-    if (noteList.length === 0) {
+    if (noteList.length === 0) 
+        let nl = [];{
         morse.map((ch, i) => {
             ch.code.map(code => {
-                nl.push({n: code.n, len: code.len});
+                nl.push(`${code.n} ${code.l}`);
             })
         })
         noteList = nl;
-    } else {
-        nl = noteList;
     }
-    MusicActions.playMusic(nl, this.g.globals.GAME_TEMPO);
+    MusicActions.playMusic(noteList, this.g.tempo);
 };
 
 Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
@@ -87,16 +86,16 @@ Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
             xPos += circleSize + padding;
         } else {
             char.code.map((code, i) => {
-                if (code.len === 1) {
+                if (code.l === 1) {
                     sprites.push(this.g.circle(circleSize, 'black', 'black', 1, xPos, yPos));
                     xPos += circleSize + padding;
-                } else if (code.len === 3 && char.ch !== '|') {
+                } else if (code.l === 3 && char.ch !== '|') {
                     sprites.push(this.g.rectangle(rectSize, circleSize, 'black', 'black', 1, xPos, yPos));
                     xPos += rectSize + padding;
                 } else if (char.ch === '|') {
                     sprites.push(this.g.rectangle(1, circleSize, 'red', 'red', 1, xPos, yPos));
                     xPos += 1 + padding;
-                } else if (code.len === 7) {
+                } else if (code.l === 7) {
                     sprites.push(this.g.rectangle(rectSize, 0.5, 'red', 'red', 1, xPos, yPos + padding));
                     xPos += rectSize + padding;
                 }

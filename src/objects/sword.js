@@ -6,7 +6,7 @@ let Sword = function(g) {
     this.sprite.rotation = 0;
     this.deltaAngle = Math.PI / 16;
     this.frame = 0;
-    this.damage = 1;
+    this.dmg = 1;
     this.maxFrame = 12;
 };
 

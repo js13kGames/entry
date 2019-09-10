@@ -4,12 +4,12 @@ import Pit from './../objects/pit.js';
 
 let StatueRoom = function(g, mode, loadNext) {
     this.g = g;
-    this.player = g.globals.player;
+    this.player = g.player;
     this.loadNext = loadNext;
     this.mode = mode;
     this.statue = new Statue(g, mode);
     this.canUseStatue = false;
-    this.pits = [new Pit(g, directions.UP), new Pit(g, directions.DOWN), new Pit(g, directions.LEFT), new Pit(g, directions.RIGHT)];
+    this.pits = [new Pit(g, directions.UP), new Pit(g, directions.D), new Pit(g, directions.L), new Pit(g, directions.R)];
     
     g.stage.putCenter(this.statue.sprite);
     
@@ -45,13 +45,13 @@ StatueRoom.prototype.placePlayer = function(dir) {
     if (dir === directions.UP) {
         y = 2 * size - this.g.canvas.height / 2;
         x = 0;
-    } else if (dir === directions.DOWN) {
+    } else if (dir === directions.D) {
         x = 0;
         y = this.g.canvas.height / 2 - 2 * size;
-    } else if (dir === directions.LEFT) {
+    } else if (dir === directions.L) {
         x = 2 * size - this.g.canvas.width / 2;
         y = 0;
-    } else if (dir === directions.RIGHT) {
+    } else if (dir === directions.R) {
         x = this.g.canvas.width / 2 - 2 * size;
         y = 0;
     } 

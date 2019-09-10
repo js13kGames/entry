@@ -1,24 +1,24 @@
-let Actor = function(g, health, invinceTime, healthWidth) {
+let Actor = function(g, hp, invinceTime, healthWidth) {
     this.g = g;
-    this.health = health;
-    this.invincible = false;
+    this.hp = hp;
+    this.invinc = false;
     this.invinceTime = invinceTime || 1000;
     this.dead = false;
     this.healthWidth = healthWidth;
-    this.healthSprite = g.rectangle(this.healthWidth * this.health, this.healthWidth, 'purple');
-    // this.healthSprite.layer = 1000;
-    this.healthSprite.visible = false;
-    this.healthSprite.alpha = 0.5;
+    this.hSprite = g.rectangle(this.healthWidth * this.hp, this.healthWidth, 'purple');
+    // this.hSprite.layer = 1000;
+    this.hSprite.visible = false;
+    this.hSprite.alpha = 0.5;
 };
 
 Actor.prototype.show = function() {
     this.sprite.visible = true;
-    this.healthSprite.visible = true;
+    this.hSprite.visible = true;
 };
 
 Actor.prototype.hide = function() {
     this.sprite.visible = false;
-    this.healthSprite.visible = false;
+    this.hSprite.visible = false;
 };
 
 Actor.prototype.stopMoving = function() {
@@ -27,26 +27,26 @@ Actor.prototype.stopMoving = function() {
 };
 
 Actor.prototype.heal = function(amt) {
-    this.health += amt;
-    this.healthSprite.width += this.healthWidth * amt;
+    this.hp += amt;
+    this.hSprite.width += this.healthWidth * amt;
 };
 
-Actor.prototype.takeDamage = function(amount, direction) {
-    if (this.invincible) {
+Actor.prototype.takeDamage = function(amount, dir) {
+    if (this.invinc) {
         return;
     }
-    this.health -= amount;
-    if (this.health <= 0) {
+    this.hp -= amount;
+    if (this.hp <= 0) {
         this.dead = true;
-        this.healthSprite.width = 0;
+        this.hSprite.width = 0;
         return;
     }
-    this.invincible = true;
+    this.invinc = true;
     this.sprite.alpha = 0.5;
-    this.healthSprite.width -= this.healthWidth * amount;
+    this.hSprite.width -= this.healthWidth * amount;
     let bounce = 40;
     this.loseInvincibility(this.invinceTime);
-    switch(direction) {
+    switch(dir) {
         case 'right':
             this.sprite.x -= bounce;
             break;
@@ -64,14 +64,14 @@ Actor.prototype.takeDamage = function(amount, direction) {
 
 Actor.prototype.loseInvincibility = function(invinceTime) {
     this.g.wait(invinceTime, () => {
-        this.invincible = false;
+        this.invinc = false;
         this.sprite.alpha = 1;
     });
 };
 
 Actor.prototype.moveHealth = function() {
-    this.healthSprite.x = this.sprite.x;
-    this.healthSprite.y = this.sprite.y - this.healthWidth;
+    this.hSprite.x = this.sprite.x;
+    this.hSprite.y = this.sprite.y - this.healthWidth;
 };
 
 export default Actor;

@@ -1,1 +1,0 @@
-export const scale = 1.25;

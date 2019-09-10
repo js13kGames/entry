@@ -32,7 +32,7 @@ let Braille = {
     question: [0,0,1,0,1,1],
 };
 
-function characterToBraille(ch) {
+function convert(ch) {
     switch(ch) {
         case ' ':
             return Braille.space;
@@ -50,14 +50,14 @@ function characterToBraille(ch) {
 };
 
 function toBraille(sentence) {
-    let brailleForm = [];
+    let bf = [];
     sentence.split(' ').forEach(word => {
         for(let i = 0; i < word.length; i++) {
-            brailleForm.push({ch: word[i], dots: characterToBraille(word[i])});
+            bf.push({ch: word[i], dots: convert(word[i])});
         };
-        brailleForm.push({ch: ' ', dots: characterToBraille(' ')});
+        bf.push({ch: ' ', dots: convert(' ')});
     });
-    return brailleForm;
+    return bf;
 };
 
 export default toBraille;

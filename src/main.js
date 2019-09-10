@@ -11,15 +11,14 @@ var g = ga(
 g.start();
 
 function setup() {
-    g.canvas.style.border = "1px black dashed";
+    let gc = g.canvas.style;
+    gc.border = "1px black dashed";
     g.backgroundColor = "white";
-    g.canvas.style.display = "block";
-    g.canvas.style.margin = "auto";
+    gc.display = "block";
+    gc.margin = "auto";
     let player = new Player(g);
     player.sprite.layer = 5;
-    g.globals = {
-        player,
-        GAME_TEMPO: 440,
-    };
+    g.player = player;
+    g.tempo = 440;
     g.state = new Menu(g);
 }

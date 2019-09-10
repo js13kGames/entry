@@ -1,4 +1,4 @@
-import directions from './directions';
+import dirs from './directions';
 
 export const getRand = function(max) {
     return Math.floor(Math.random() * Math.abs(max)); 
@@ -10,13 +10,13 @@ export const toRadians = function(angle) {
 
 export const reverseDirection = function(dir) {
     switch(dir) {
-        case directions.RIGHT:
-            return directions.LEFT;
-        case directions.LEFT:
-            return directions.RIGHT;
-        case directions.UP:
-            return directions.DOWN;
-        case directions.DOWN:
-            return directions.UP;
+        case dirs.R:
+            return dirs.L;
+        case dirs.L:
+            return dirs.R;
+        case dirs.UP:
+            return dirs.D;
+        case dirs.D:
+            return dirs.UP;
     }
 };
