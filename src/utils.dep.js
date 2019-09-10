@@ -39,5 +39,6 @@ const loadSVGs = (url) => Promise.all(url.map(url => new Promise(res => {
 
 // Only used in data transformation in gulp
 svgDataURL = (svgMarkup, pre = '') => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(pre + svgMarkup);
+window.svgDataURL = svgDataURL;
 window.svgDataURL100 = svgMarkup => svgDataURL(svgMarkup, '<svg width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">');
 window.svgDataURL150 = svgMarkup => svgDataURL(svgMarkup, '<svg width="150" height="100" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)">');
