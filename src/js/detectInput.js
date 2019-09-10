@@ -1,6 +1,7 @@
 /**
  * When a new "input device" (gamepad, keyboard wasd, keyboard arrows), etc.
- * add a new player (if they don't exist already)
+ * add a new player (if they don't exist already).
+ * Also contains code for adding and removing AI players from the game!
  */
 
 import { newPlayer } from './newPlayer';
@@ -58,6 +59,18 @@ export function detectNewInput() {
 
     bindKeys(['n'], function(e) {
       newPlayer(window.game, 'ai');
+    });
+
+    bindKeys(['m'], function(e) {
+        var lastAi;
+        for (let i = window.game.players.length - 1; i > 0; i--) {
+            if (window.game.players[i].controls === 'ai') {
+                lastAi = window.game.players[i];
+            }
+        }
+        console.log("last ai:");
+        console.log(lastAi);
+        window.game.players = window.game.players.filter(p => p !== lastAi);
     });
 }
 
