@@ -1,4 +1,5 @@
 import Game from './game'
+import Sound from './sound'
 
 // set canvas size
 const canvas = document.getElementById('game')
@@ -26,13 +27,13 @@ function checkStartKey(ev) {
   if (ev.key === 'z') {
     game = new Game(canvas)
     game.onGameOver = () => {
-      splashFade(gameOverSplash, true, () => {
+      splashFade(gameOverSplash, true, Sound.gameOver, () => {
         game = null
         document.addEventListener('keypress', checkStartKey)
       })
     }
     game.onGameBeaten = () => {
-      splashFade(gameBeatenSplash, true, () => {
+      splashFade(gameBeatenSplash, true, Sound.gameOver, () => {
         game = null
         document.addEventListener('keypress', checkStartKey)
       })
@@ -40,19 +41,20 @@ function checkStartKey(ev) {
 
     const splash = newGameSplash.style.opacity === '1' ? newGameSplash : 
       (gameOverSplash.style.opacity === '1' ? gameOverSplash : gameBeatenSplash)
-    splashFade(splash, false, () => {
+    splashFade(splash, false, Sound.gameStartAndBeaten, () => {
       game.start()
       document.removeEventListener('keypress', checkStartKey)
     })
   }
 }
 
-function splashFade(splash, fadeIn, callback) {
+function splashFade(splash, fadeIn, onBefore, onAfter) {
+  onBefore()
   const splashInterval = setInterval(() => {
     splash.style.opacity -= (fadeIn ? -1 : 1) * 100 / 2000
     if (fadeIn && parseFloat(splash.style.opacity) >= 1 || !fadeIn && parseFloat(splash.style.opacity) <= 0) {
       clearInterval(splashInterval)
-      callback()
+      onAfter()
     }
   }, 100)
 }

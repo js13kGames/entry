@@ -6,6 +6,7 @@ import {
   keyPressed,
   Pool
 } from 'kontra'
+import Sound from './sound'
 
 export default class Game {
   constructor(canvas) {
@@ -283,6 +284,7 @@ export default class Game {
             }
           })
           if (hit) {
+            Sound.playerHit()
             this.player.hp -= this.ENEMY_ATTACK
             this.playerHitTimer += 0.01
           }
@@ -478,6 +480,7 @@ export default class Game {
     if (this.enemyMaxHp < 300) {
       this.enemyMaxHp += dp
     }
+    Sound.blast()
   }
 
   updateBlast(dt) {
@@ -500,9 +503,9 @@ export default class Game {
         // flash bangs
         ctx.fillStyle = textColor
         ctx.font = `${self.UI_FONT_SIZE}px Helvetica,Arial`
-        ctx.fillText(`FLASH BANGS [Z]: ${self.grenades}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 2)
+        ctx.fillText(`FLASH BANGS [Z]: ${self.grenades} / ${self.GRENADE_CAPACITY}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 2)
         // flash mines
-        ctx.fillText(`FLASH MINES [X]: ${self.mines}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 4)
+        ctx.fillText(`FLASH MINES [X]: ${self.mines} / ${self.MINE_CAPACITY}`, self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 4)
         // kills
         ctx.fillText(`KILLS: ${self.kills}`, self.WIDTH * 0.05, self.UI_FONT_SIZE * 2)
         // message
@@ -570,6 +573,7 @@ export default class Game {
         percent += ratio
       }
     }
+    Sound.upgrade()
   }
 
   showMessage(msg) {
