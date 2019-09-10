@@ -25,6 +25,22 @@ function html () {
     .pipe(dest('dist'));
 }
 
+function finalHtml () {
+  return src('dist/index.html')
+    .pipe(htmlmin({
+      collapseWhitespace: true,
+      removeAttributeQuotes: true,
+      removeComments: true,
+      minifyCSS: true,
+      minifyJS: true,
+      minifyURLs: true,
+      removeEmptyAttributes: true,
+      removeOptionalTags: true,
+      useShortDoctype: true
+    }))
+    .pipe(dest('dist'));
+}
+
 function css () {
   return src('src/styles.css')
     .pipe(minifyCSS())
@@ -123,5 +139,5 @@ module.exports = {
   css,
   html,
   dev: series(parallel(html, css, js, svg), dev),
-  default: series(clean, parallel(html, css, js, svg), injectStrings, deleteInjected, zip)
+  default: series(clean, parallel(html, css, js, svg), injectStrings, deleteInjected, finalHtml, zip)
 };
