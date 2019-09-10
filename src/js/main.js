@@ -311,7 +311,7 @@
 
             dead = document.createElement('a-plane');
             this.deadsEl.appendChild(dead);
-            dead.setAttribute('material', 'src: #sprite-redead; transparent: true; side: double');
+            dead.setAttribute('material', 'src: #sprite-dead; transparent: true; side: double');
             dead.setAttribute('width', 0.57);
             dead.setAttribute('height', 1.5);
 
