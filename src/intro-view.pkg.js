@@ -9,11 +9,11 @@ const initIntroView = (height, width) => {
   // canvas.width = width;
   // canvas.setAttribute('style', 'z-index: 0;');
 
-  const heading = createElement('h1');
-  const dir = createElement('h2');
-  const desc = createElement('div');
-  const inst = createElement('div');
   const button = createElement('button');
+  const heading = createElement('h1');
+  const desc = createElement('div');
+  const dirH = createElement('h2');
+  const dir = createElement('div');
   let listeners = [];
 
   const render = (buttonText, description, directions, title, onButtonClick) => {
@@ -24,12 +24,11 @@ const initIntroView = (height, width) => {
     root.appendChild(desc);
 
     if (directions) {
-      dir.innerHTML = 'Directions';
+      dirH.innerHTML = 'Directions';
+      root.appendChild(dirH);
+      dir.innerHTML = directions;
       root.appendChild(dir);
     }
-
-    inst.innerHTML = directions;
-    root.appendChild(inst);
 
     if (buttonText) {
       button.id = 'button';
@@ -48,8 +47,10 @@ const initIntroView = (height, width) => {
     root.removeChild(heading);
     root.removeChild(desc);
     root.removeChild(button);
-    root.removeChild(inst);
-    if (root.contains(dir)) root.removeChild(dir);
+    if (root.contains(dirH)) {
+      root.removeChild(dirH);
+      root.removeChild(dir);
+    }
   }
 
   return {
