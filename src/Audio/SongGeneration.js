@@ -1,4 +1,4 @@
-import { TheAudioContext, TheAudioDestination, TheReverbDestination } from './Context'
+import { TheAudioContext, TheAudioDestination, TheReverbDestination, contextSampleRate } from './Context'
 import { waitForNextFrame, EnvelopeSampler } from '../utils'
 
 export function addSoundToBuffer (sourceData, targetData, offset, mono = false) {
@@ -26,7 +26,7 @@ export function addSoundToBuffer (sourceData, targetData, offset, mono = false) 
 }
 
 export function createTempBuffer (noteCount, bpm) {
-  return new Float32Array(Math.ceil(TheAudioContext.sampleRate * noteCount * 60 / bpm))
+  return new Float32Array(Math.ceil(contextSampleRate * noteCount * 60 / bpm))
 }
 
 export function addNotes (notes, output, instrument, bpm, mono = false) {
@@ -46,12 +46,12 @@ export function addNotes (notes, output, instrument, bpm, mono = false) {
 }
 
 export function getSamplePositionWithinBeat (n, bpm) {
-  let beatDuration = TheAudioContext.sampleRate * 60 / bpm
+  let beatDuration = contextSampleRate * 60 / bpm
   return (n % beatDuration) / beatDuration
 }
 
 export function getOffsetForBeat (n, bpm) {
-  return Math.round(TheAudioContext.sampleRate * n * 60 / bpm)
+  return Math.round(contextSampleRate * n * 60 / bpm)
 }
 
 export function getFrequencyForTone (n) {
@@ -87,9 +87,9 @@ export function offsetNotes (notes, amount) {
   return notes
 }
 
-export async function createBuffer (trackFunction, sampleCount, bpm) {
-  const buffer = TheAudioContext.createBuffer(1, sampleCount, TheAudioContext.sampleRate)
-  trackFunction(buffer.getChannelData(0), bpm)
+export async function createBuffer (trackFunction, sampleCount) {
+  const buffer = TheAudioContext.createBuffer(1, sampleCount, contextSampleRate)
+  trackFunction(buffer.getChannelData(0))
 
   await waitForNextFrame()
 

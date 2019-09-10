@@ -13,3 +13,5 @@ export function setReverbDestination (reverb) {
   TheReverbDestination.connect(reverb)
   reverb.connect(TheAudioDestination)
 }
+
+export let contextSampleRate = TheAudioContext.sampleRate

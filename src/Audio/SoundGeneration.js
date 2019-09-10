@@ -1,5 +1,5 @@
-import { TheAudioContext } from './Context'
-import { EnvelopeSampler } from '../utils'
+import { contextSampleRate, TheAudioContext } from './Context'
+import { EnvelopeSampler, waitForNextFrame } from '../utils'
 export { EnvelopeSampler } from '../utils'
 
 // D:\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.cpp
@@ -46,7 +46,7 @@ function coefficients (b0, b1, b2, a0, a1, a2) {
 }
 
 function getHighPassCoefficients (frequency, Q) {
-  let n = Math.tan(Math.PI * frequency / TheAudioContext.sampleRate)
+  let n = Math.tan(Math.PI * frequency / contextSampleRate)
   let nSquared = n * n
   let invQ = 1 / Q
   let c1 = 1 / (1 + invQ * n + nSquared)
@@ -60,7 +60,7 @@ function getHighPassCoefficients (frequency, Q) {
 }
 
 function getLowPassCoefficients (frequency, Q) {
-  let n = 1 / Math.tan(Math.PI * frequency / TheAudioContext.sampleRate)
+  let n = 1 / Math.tan(Math.PI * frequency / contextSampleRate)
   let nSquared = n * n
   let invQ = 1 / Q
   let c1 = 1 / (1 + invQ * n + nSquared)
@@ -74,7 +74,7 @@ function getLowPassCoefficients (frequency, Q) {
 }
 
 function getBandPassCoefficients (frequency, Q) {
-  let n = 1 / Math.tan(Math.PI * frequency / TheAudioContext.sampleRate)
+  let n = 1 / Math.tan(Math.PI * frequency / contextSampleRate)
   let nSquared = n * n
   let invQ = 1 / Q
   let c1 = 1 / (1 + invQ * n + nSquared)
@@ -91,7 +91,7 @@ function filter (buffer, coeffFunction, frequencies, Qs) {
   let lv1 = 0
   let lv2 = 0
 
-  const freqSampler = new EnvelopeSampler(frequencies)
+  const freqSampler = new EnvelopeSampler(frequencies, true)
   const qSampler = new EnvelopeSampler(Qs)
 
   for (let i = 0; i < buffer.length; ++i) {
@@ -164,10 +164,10 @@ export function multiplySounds (buffers) {
 }
 
 export function generateSound (length, sampleFunction) {
-  const buffer = new Float32Array(length * TheAudioContext.sampleRate)
+  const buffer = new Float32Array(length * contextSampleRate)
 
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] = sampleFunction(i / buffer.length, i / TheAudioContext.sampleRate)
+    buffer[i] = sampleFunction(i / buffer.length, i / contextSampleRate)
   }
 
   return buffer
@@ -183,5 +183,20 @@ export function applyEnvelope (buffer, envelope) {
 }
 
 export function getFrequencyDelta (freq) {
-  return freq / TheAudioContext.sampleRate
+  return freq / contextSampleRate
+}
+
+export async function createAudioBuffer (dataFunction) {
+  let array = dataFunction()
+  if (!Array.isArray(array)) {
+    array = [ array ]
+  }
+  const result = TheAudioContext.createBuffer(array.length, array[0].length, contextSampleRate)
+  for (let i = 0; i < array.length; i++) {
+    result.getChannelData(i).set(array[i])
+  }
+
+  await waitForNextFrame()
+
+  return result
 }

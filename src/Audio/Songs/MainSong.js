@@ -1,28 +1,24 @@
-import { TheAudioContext } from '../Context'
-import { Song, createBuffer } from '../SongGeneration'
+import { Song } from '../SongGeneration'
 
+import { createBassTrack } from './MainSong/Bass'
 import { createLeadTrack } from './MainSong/Lead'
 
 import { decibelsToAmplitude } from '../Utility'
-import { createBassTrack } from './MainSong/Bass'
+import { createAudioBuffer } from '../SoundGeneration'
 
 export default async function createSong () {
-  const bpm = 132
-  const trackBeatCount = 12 * 4
-  const sampleCount = trackBeatCount * 60 * TheAudioContext.sampleRate / bpm
-
   const [
     bufferLead,
     bufferBass,
   ] = await Promise.all([
     createLeadTrack,
     createBassTrack,
-  ].map(func => createBuffer(func, sampleCount, bpm)))
+  ].map(func => createAudioBuffer(func)))
 
   return new Song(
     [
-      { buffer: bufferLead, volume: decibelsToAmplitude(-20), sendToReverb: 1 },
-      { buffer: bufferBass, volume: decibelsToAmplitude(-14) },
+      { buffer: bufferLead, volume: decibelsToAmplitude(-200), sendToReverb: 0.5 },
+      { buffer: bufferBass, volume: decibelsToAmplitude(-400) }
     ]
   )
 }

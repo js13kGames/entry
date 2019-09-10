@@ -1,7 +1,9 @@
 import { addNotes, offsetNotes, addOctave } from '../../SongGeneration'
 import createLeadSound from '../../MusicSamples/Lead'
+import { bpm, sampleCount } from './common'
 
-export function createMainTrack (output, bpm) {
+export function createMainTrack () {
+  const output = new Float32Array(sampleCount)
 
   const mainNotes = [
     [0, -2],
@@ -42,4 +44,6 @@ export function createMainTrack (output, bpm) {
     [0.167, -4],
     ...offsetNotes(mainNotes, 0.333)
   ], output, createLeadSound, bpm)
+
+  return output
 }

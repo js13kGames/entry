@@ -1,6 +1,6 @@
 import { waitForNextFrame } from './utils'
 import { createRotateSound } from './Audio/Samples/Rotate'
-import { TheAudioContext, setReverbDestination } from './Audio/Context'
+import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
 import { createLandSound } from './Audio/Samples/Land'
 import { createLockSound } from './Audio/Samples/Lock'
 import { createShiftSound } from './Audio/Samples/Shift'
@@ -22,16 +22,7 @@ import TextsAsset from './Sprites/Texts'
 import EyesAsset from './Sprites/Eyes'
 import GamepadAsset from './Sprites/Gamepad'
 import LogoAsset from './Sprites/Logo'
-
-async function createAudioSampleAsset (createSampleFunction) {
-  const array = createSampleFunction()
-  const result = TheAudioContext.createBuffer(1, array.length, TheAudioContext.sampleRate)
-  result.getChannelData(0).set(array)
-
-  await waitForNextFrame()
-
-  return result
-}
+import { createAudioBuffer } from './Audio/SoundGeneration'
 
 function createSpriteAsset (spriteObject) {
   return new Promise((resolve) => {
@@ -53,25 +44,25 @@ export let LogoSprite
 export let MainSong
 export let VictorySong
 
-export let RotateSound = createAudioSampleAsset(createRotateSound)
-export let LandSound = createAudioSampleAsset(createLandSound)
-export let LockSound = createAudioSampleAsset(createLockSound)
-export let ShiftSound = createAudioSampleAsset(createShiftSound)
+export let RotateSound = createAudioBuffer(createRotateSound)
+export let LandSound = createAudioBuffer(createLandSound)
+export let LockSound = createAudioBuffer(createLockSound)
+export let ShiftSound = createAudioBuffer(createShiftSound)
 export let LineClearSounds = [
-  createAudioSampleAsset(createSingleLineSound),
-  createAudioSampleAsset(createDoubleLineSound),
-  createAudioSampleAsset(createTripleLineSound),
-  createAudioSampleAsset(createFourLinesSound),
+  createAudioBuffer(createSingleLineSound),
+  createAudioBuffer(createDoubleLineSound),
+  createAudioBuffer(createTripleLineSound),
+  createAudioBuffer(createFourLinesSound),
 ]
-export let HardDropSound = createAudioSampleAsset(createHardDropSound)
-export let HoldSound = createAudioSampleAsset(createHoldSound)
-export let TSpinSound = createAudioSampleAsset(createTSpinSound)
-export let AllClearSound = createAudioSampleAsset(createAllClearSound)
+export let HardDropSound = createAudioBuffer(createHardDropSound)
+export let HoldSound = createAudioBuffer(createHoldSound)
+export let TSpinSound = createAudioBuffer(createTSpinSound)
+export let AllClearSound = createAudioBuffer(createAllClearSound)
 
 async function createReverb () {
   const reverb = TheAudioContext.createConvolver()
   const ir = createReverbIR()
-  const irBuffer = TheAudioContext.createBuffer(2, ir[0].length, TheAudioContext.sampleRate)
+  const irBuffer = TheAudioContext.createBuffer(2, ir[0].length, contextSampleRate)
   irBuffer.getChannelData(0).set(ir[0])
   irBuffer.getChannelData(1).set(ir[1])
 

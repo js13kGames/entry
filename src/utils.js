@@ -82,8 +82,9 @@ export function makeColorWithAlpha (color, alpha) {
  * Animation and audio utils
  */
 export class EnvelopeSampler {
-  constructor (envelope) {
+  constructor (envelope, logarithmic = false) {
     this.envelope = envelope
+    this.logarithmic = logarithmic
     this.reset()
   }
 
@@ -102,7 +103,7 @@ export class EnvelopeSampler {
         } else {
           t = 1 - (1 - t) ** (1 / curve)
         }
-        return v1 + t * (v2 - v1)
+        return this.logarithmic ? v1 * (v2 / v1) ** t : v1 + t * (v2 - v1)
       }
       this.i++
     }

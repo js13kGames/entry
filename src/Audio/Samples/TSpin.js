@@ -3,20 +3,17 @@ import { getFrequencyForTone } from '../SongGeneration';
 
 export function createTSpinSound () {
   const volumeEnvelope = [
-    [0.0, 0, 2],
-    [0.1, 0.5],
-    [0.5, 0.5],
-    [0.51, 0],
-    [0.6, 0],
-    [0.61, 0.5],
-    [0.9, 0.5],
-    [1.0, 0.0]
+    [0, 0, 0.1],
+    [0.3, 0.5, 20],
+    [0.5, 0],
+    [0.6, 0, 0.1],
+    [0.8, 0.5],
+    [1, 0],
   ]
 
   const pitchEnvelope = new EnvelopeSampler([
     [0, 5],
     [0.3, 12],
-    [0.6, 11],
     [0.6, 10]
   ])
 

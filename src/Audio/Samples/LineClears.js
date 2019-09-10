@@ -6,7 +6,7 @@ export function createLineClearSoundFactory (tones, length)  {
     let phase = 0
 
     function sample (pos) {
-      const toneIndex = Math.floor(pos * tones.length)
+      const toneIndex = 0|(pos * tones.length)
       const freq = getFrequencyForTone(tones[toneIndex])
       phase += getFrequencyDelta(freq)
       return samplePulse(phase, 0.5 - pos * 0.2)

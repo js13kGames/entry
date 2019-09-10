@@ -1,8 +1,11 @@
 import { addNotes, offsetNotes } from '../../SongGeneration'
 import createBassSound from '../../MusicSamples/Bass'
 import { highPassFilter } from '../../SoundGeneration'
+import { bpm, sampleCount } from './common'
 
-export function createBassTrack (output, bpm) {
+export function createBassTrack () {
+  const output = new Float32Array(sampleCount)
+
   addNotes([
     ...offsetNotes([
       [0, -30],
@@ -17,4 +20,6 @@ export function createBassTrack (output, bpm) {
   ], output, createBassSound, bpm, true)
 
   highPassFilter(output, 20)
+
+  return output
 }

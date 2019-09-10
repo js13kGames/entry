@@ -1,6 +1,7 @@
-import { addNotes, applyRepeatingEnvelope } from '../../SongGeneration'
+import { addNotes, applyRepeatingEnvelope, createTempBuffer } from '../../SongGeneration'
 import { highPassFilter } from '../../SoundGeneration'
 import createBassSound from '../../MusicSamples/Bass'
+import { sidechainCurve, partPositions, bpm, sampleCount } from './common'
 
 function pattern1 (offset, note) {
   return [
@@ -17,7 +18,8 @@ function pattern2 (offset, note1, note2) {
     [offset * 4 + 3, note2]
   ]
 }
-export const notes = [
+
+export const notesBlock1 = [
   ...pattern1(0, -26),
   ...pattern1(1, -30),
   ...pattern2(2, -28, -31),
@@ -36,15 +38,49 @@ export const notes = [
   [11 * 4 + 2, -38],
 ]
 
-export function createBassTrack (output, bpm) {
-  addNotes(notes, output, createBassSound, bpm, true)
+export const notesBlock2 = [
+  [0, -26],
+  [2, -26],
+  [4, -30],
+  [6, -30],
+  [8, -33],
+  [10, -33],
+  [12, -35],
+  [14, -31],
+  [16, -30],
+  [18, -28],
+  [20, -26],
+  [22, -28],
+  [24, -30],
+  [26, -30],
+  [28, -28],
+  [30, -27],
+]
 
-  highPassFilter(output, 20)
+export function createBassTrack () {
+  const output = new Float32Array(sampleCount)
 
-  applyRepeatingEnvelope(output, [
-    [0, 0.15, 2],
-    [0.5, 0.9],
-    [0.999, 1],
-    [1, 0],
-  ], bpm)
+  function createPart1 () {
+    const buffer = createTempBuffer(12 * 4, bpm)
+    addNotes(notesBlock1, buffer, createBassSound, bpm, true)
+    return applyRepeatingEnvelope(highPassFilter(buffer, 20), sidechainCurve, bpm)
+  }
+
+  function createPart2 () {
+    const buffer = createTempBuffer(8 * 4, bpm)
+    addNotes(notesBlock2, buffer, createBassSound, bpm, true)
+    return applyRepeatingEnvelope(highPassFilter(buffer, 20), sidechainCurve, bpm)
+  }
+
+  const part1 = createPart1()
+  const part2 = createPart2()
+
+  output.set(part1, partPositions[0])
+  output.set(part1, partPositions[1])
+  output.set(part2, partPositions[2])
+  output.set(part1, partPositions[3])
+  output.set(part1, partPositions[4])
+  output.set(part2, partPositions[5])
+
+  return output
 }
