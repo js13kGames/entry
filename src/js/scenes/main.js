@@ -19,6 +19,10 @@ let mainMenuLoop = GameLoop({  // create the main game loop
 
         game.players.forEach((player, i) => {
 
+            if (player.controls === 'ai') {
+                return;
+            }
+
             // If esc or x pressed on keyboard, remove keyboard player
             // this doesn't work for gamepads as you could get 'em back!
             if (player.keys.back() && player.controls !== 'gamepad') {

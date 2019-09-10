@@ -53,6 +53,10 @@ const gameLoop = GameLoop({  // create the main game loop
 
             // Players are already .ready from game start, so check for unready
             game.players.forEach(player => {
+                if (player.controls === 'ai') {
+                    player.ready = false;
+                    return;
+                }
                 if (player.keys.accept() && game.over > 60) {
                     player.debounce.accept--;
                     if (player.debounce.accept <= 0) {

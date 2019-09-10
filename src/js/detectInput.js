@@ -55,6 +55,10 @@ export function detectNewInput() {
     bindKeys(['w', 'a', 's', 'd', 'z', 'q'], function(e) {
       keySetUsed('wasd/zqsd');
     });
+
+    bindKeys(['n'], function(e) {
+      newPlayer(window.game, 'ai');
+    });
 }
 
 export function dontDetectNewInput() {
