@@ -159,6 +159,17 @@ MainMenuScene.prototype = extendPrototype(Scene.prototype, {
     });
     this.menuLayer.addChild(this.startText);
 
+    this.js13kText = new DisplayText({
+      x: SETTINGS.width / 2,
+      y: SETTINGS.height - 5,
+      text: 'A game by jayther for the jsk13 2019 competition.',
+      color: '#dddddd',
+      textAlign: 'center',
+      textBaseline: 'bottom',
+      font: '12px Arial'
+    });
+    this.menuLayer.addChild(this.js13kText);
+
     this.transitionLayer = new DisplayRect({
       w: SETTINGS.width,
       h: SETTINGS.height,
