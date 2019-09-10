@@ -7,15 +7,8 @@
   
   <!-- build:js -->
   <script src="components/button.js"></script>
-  <script src="components/clicker.js"></script>
   <script src="components/logic.js"></script>
-  <script src="components/go-button.js"></script>
-  <script src="components/map.js"></script>
-  <script src="components/scan-button.js"></script>
-  <script src="components/scoop-button.js"></script>
-  <script src="components/ship.js"></script>
   <script src="components/star.js"></script>
-  <script src="components/utils.js"></script>
   <!-- endbuild -->
 </head>
 
@@ -35,16 +28,17 @@
     </a-sphere>
     
     <!-- Container for ship items -->
-    <a-entity id="ship" ship>
+    <a-entity id="ship">
       <a-entity rotation="0 -90 0" obj-model="obj: #cockpit" material="color: #3f3f3f" shadow></a-entity>
 
       <!-- Fire Extinguisher -->
-      <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" clicker shadow></a-cylinder>
+      <a-cylinder class="clickable" color="red" radius=".15" height=".6" position="-.85 .2 0" rotation="90 0 0" shadow></a-cylinder>
 
       <!-- Front panel -->
       <a-entity position="0 .8 -1.75" rotation="-51.34 0 0">
         <a-box postition="0 0 -0.1" height=".3" width=".3" depth=".1" shadow>
           <a-cylinder 
+            id="launchButton"
             class="clickable" 
             color="red" 
             height=".1"
@@ -53,7 +47,6 @@
             rotation="90 0 0" 
             shadow 
             button="pressed: true"
-            go-button
             animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
             animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
         </a-box>
@@ -61,12 +54,12 @@
         <a-plane id="fuelGuage" color="#0f0" position="-.3 0 .01" width=".1" height=".5"></a-plane>
         <a-plane color="#000" position="-.3 0 .009" width=".1" height=".5"></a-plane>
 
-        <a-plane id="jumpGuage" color="#00f" position=".3 0 .01" width=".1" height=".5"></a-plane>
+        <a-plane id="jumpCostGuage" color="#00f" position=".3 0 .01" width=".1" height=".5"></a-plane>
         <a-plane color="#000" position=".3 0 .009" width=".1" height=".5"></a-plane>
       </a-entity>
 
       <!-- Map panel -->
-      <a-plane id="map" color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8" map shadow>
+      <a-plane id="map" color="#333" height="1" width="1.5" position="1.2 1.25 0" rotation="0 -90 0" opacity="0.8" shadow>
         <!-- <a-entity text="value: Fuel:; anchor: left; baseline: top; transparent: false; width: 2" position="-.7 .35 0"></a-entity>
         <a-plane position=".12 .32 .001" color="green" height=".07" width="1.18"></a-plane> -->
 
@@ -101,12 +94,13 @@
           <a-plane width=".02" height=".01"></a-plane>
         </a-entity>
 
-        <a-entity id="mo"></a-entity>
+        <a-entity id="mapObjects"></a-entity>
       </a-plane>
 
       <!-- Left panel -->
       <a-box position="-1.26 .79 .25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
         <a-cylinder
+            id="scanButton"
             class="clickable" 
             color="blue" 
             height=".1"
@@ -115,12 +109,12 @@
             rotation="90 0 0" 
             shadow 
             button="resetTime: 100"
-            scan-button
             animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
             animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
       </a-box>
       <a-box position="-1.26 .79 -.25" rotation="-52 90 0" height=".3" width=".3" depth=".1" shadow>
         <a-cylinder 
+            id="scoopButton"
             class="clickable" 
             color="yellow" 
             height=".1"
@@ -129,13 +123,12 @@
             rotation="90 0 0" 
             shadow 
             button="resetTime: 100"
-            scoop-button
             animation__in="property: object3D.position.z; startEvents: in; from: .05; to: .01; dur: 100"
             animation__out="property: object3D.position.z; startEvents: out; from: .01; to: .05; dur: 100"></a-cylinder>
       </a-box>
 
       <!-- Camera -->
-      <a-entity rotation="0 -90 0">
+      <a-entity rotation="0 0 0">
         <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.2 0">
           <a-entity cursor="fuse: false" position="0 0 -1"
             geometry="primitive: ring; radiusInner: 0.0001; radiusOuter: 0.005" material="color: white; shader: flat"
