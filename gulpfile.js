@@ -18,7 +18,7 @@ const paths = {
     dist: {
         dir: 'dist',
         js: 'script.min.js',
-        images: 'dist/img'
+        images: 'dist'
     }
 };
 
