@@ -68,8 +68,6 @@ export function detectNewInput() {
                 lastAiIndex = i;
             }
         });
-        console.log("last ai:");
-        console.log(lastAi);
         window.game.players.splice(lastAiIndex, 1);
     });
 }
