@@ -1,14 +1,14 @@
-import TinyMusic from 'tinymusic';
+import Sequence from './../../lib/TinyMusic.js';
 // create a new Web Audio API context
 var ac = new AudioContext();
 let currentSequence;
 
 let generateSequence = function(noteList, tempo) {
 	let notes = [];
-	noteList.map(note => {
-		notes.push(`${note.note} ${note.len}`);
+	noteList.map(n => {
+		notes.push(`${n.n} ${n.len}`);
 	});
-	let sequence = new TinyMusic.Sequence(ac, tempo, notes);
+	let sequence = new Sequence(ac, tempo, notes);
 	sequence.loop = false;
 	sequence.staccato = 0.5;
 	sequence.gain.gain.value = 0.5;

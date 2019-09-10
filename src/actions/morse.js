@@ -1,79 +1,49 @@
-let note = 'C3';
+let n = 'C3';
 let dot = 1;
 let dash = 3;
 let spaceNote = '-'
 let spaceLen = 7;
-let endLetterLen = 3;
+let el = 3;
 
 let Morse = {
-    a: [{note, len: dot}, {note, len: dash}],
-    b: [{note, len: dash}, {note, len: dot}, {note, len: dot}, {note, len: dot}],
-    c: [{note, len: dash}, {note, len: dot}, {note, len: dash}, {note, len: dot}],
-    d: [{note, len: dash}, {note, len: dot}, {note, len: dot}],
-    e: [{note, len: dot}],
-    f: [{note, len: dot}, {note, len: dot}, {note, len: dash}, {note, len: dot}],
-    g: [{note, len: dash}, {note, len: dash}, {note, len: dot}],
-    h: [{note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dot}],
-    i: [{note, len: dot}, {note, len: dot}],
-    j: [{note, len: dot}, {note, len: dash}, {note, len: dash}, {note, len: dash}],
-    k: [{note, len: dash}, {note, len: dot}, {note, len: dash}],
-    l: [{note, len: dot}, {note, len: dash}, {note, len: dot}, {note, len: dot}],
-    m: [{note, len: dash}, {note, len: dash}],
-    n: [{note, len: dash}, {note, len: dot}],
-    o: [{note, len: dash}, {note, len: dash}, {note, len: dash}],
-    p: [{note, len: dot}, {note, len: dash}, {note, len: dash}, {note, len: dot}],
-    q: [{note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dash}],
-    r: [{note, len: dot}, {note, len: dash}, {note, len: dot}],
-    s: [{note, len: dot}, {note, len: dot}, {note, len: dot}],
-    t: [{note, len: dash}],
-    u: [{note, len: dot}, {note, len: dot}, {note, len: dash}],
-    v: [{note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dash}],
-    w: [{note, len: dot}, {note, len: dash}, {note, len: dash}],
-    x: [{note, len: dash}, {note, len: dot}, {note, len: dot}, {note, len: dash}],
-    y: [{note, len: dash}, {note, len: dot}, {note, len: dash}, {note, len: dash}],
-    z: [{note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dot}],
-    one: [{note, len: dot}, {note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dash}],
-    two: [{note, len: dot}, {note, len: dot}, {note, len: dash}, {note, len: dash}, {note, len: dash}],
-    three: [{note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dash}, {note, len: dash}],
-    four: [{note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dash}],
-    five: [{note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dot}],
-    six: [{note, len: dash}, {note, len: dot}, {note, len: dot}, {note, len: dot}, {note, len: dot}],
-    seven: [{note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dot}, {note, len: dot}],
-    eight: [{note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dot}],
-    nine: [{note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dot}],
-    zero: [{note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dash}, {note, len: dash}],
-    period: [{note, len: dot}, {note, len: dash}, {note, len: dot}, {note, len: dash}, {note, len: dot}, {note, len: dash}],
-    comma: [{note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dot}, {note, len: dash}, {note, len: dash}],
-    question: [{note, len: dot}, {note, len: dot}, {note, len: dash}, {note, len: dash}, {note, len: dot}, {note, len: dot}],
-    exclamation: [{note, len: dash}, {note, len: dot}, {note, len: dash}, {note, len: dot}, {note, len: dash}, {note, len: dash}],
-    space: [{note: spaceNote, len: spaceLen}],
-    endLetter: [{note: spaceNote, len: endLetterLen}]
+    a: [{n, len: dot}, {n, len: dash}],
+    b: [{n, len: dash}, {n, len: dot}, {n, len: dot}, {n, len: dot}],
+    c: [{n, len: dash}, {n, len: dot}, {n, len: dash}, {n, len: dot}],
+    d: [{n, len: dash}, {n, len: dot}, {n, len: dot}],
+    e: [{n, len: dot}],
+    f: [{n, len: dot}, {n, len: dot}, {n, len: dash}, {n, len: dot}],
+    g: [{n, len: dash}, {n, len: dash}, {n, len: dot}],
+    h: [{n, len: dot}, {n, len: dot}, {n, len: dot}, {n, len: dot}],
+    i: [{n, len: dot}, {n, len: dot}],
+    j: [{n, len: dot}, {n, len: dash}, {n, len: dash}, {n, len: dash}],
+    k: [{n, len: dash}, {n, len: dot}, {n, len: dash}],
+    l: [{n, len: dot}, {n, len: dash}, {n, len: dot}, {n, len: dot}],
+    m: [{n, len: dash}, {n, len: dash}],
+    n: [{n, len: dash}, {n, len: dot}],
+    o: [{n, len: dash}, {n, len: dash}, {n, len: dash}],
+    p: [{n, len: dot}, {n, len: dash}, {n, len: dash}, {n, len: dot}],
+    q: [{n, len: dash}, {n, len: dash}, {n, len: dot}, {n, len: dash}],
+    r: [{n, len: dot}, {n, len: dash}, {n, len: dot}],
+    s: [{n, len: dot}, {n, len: dot}, {n, len: dot}],
+    t: [{n, len: dash}],
+    u: [{n, len: dot}, {n, len: dot}, {n, len: dash}],
+    v: [{n, len: dot}, {n, len: dot}, {n, len: dot}, {n, len: dash}],
+    w: [{n, len: dot}, {n, len: dash}, {n, len: dash}],
+    x: [{n, len: dash}, {n, len: dot}, {n, len: dot}, {n, len: dash}],
+    y: [{n, len: dash}, {n, len: dot}, {n, len: dash}, {n, len: dash}],
+    z: [{n, len: dash}, {n, len: dash}, {n, len: dot}, {n, len: dot}],
+    period: [{n, len: dot}, {n, len: dash}, {n, len: dot}, {n, len: dash}, {n, len: dot}, {n, len: dash}],
+    comma: [{n, len: dash}, {n, len: dash}, {n, len: dot}, {n, len: dot}, {n, len: dash}, {n, len: dash}],
+    question: [{n, len: dot}, {n, len: dot}, {n, len: dash}, {n, len: dash}, {n, len: dot}, {n, len: dot}],
+    exclamation: [{n, len: dash}, {n, len: dot}, {n, len: dash}, {n, len: dot}, {n, len: dash}, {n, len: dash}],
+    space: [{n: spaceNote, len: spaceLen}],
+    endL: [{n: spaceNote, len: el}]
 };
 
-function characterToMorse(character) {
-    switch(character) {
+function characterToMorse(ch) {
+    switch(ch) {
         case ' ':
             return Morse.space;
-        case '0':
-            return Morse.zero;
-        case '1':
-            return Morse.one;
-        case '2':
-            return Morse.two;
-        case '3':
-            return Morse.three;
-        case '4':
-            return Morse.four;
-        case '5':
-            return Morse.five;
-        case '6':
-            return Morse.six;
-        case '7':
-            return Morse.seven;
-        case '8':
-            return Morse.eight;
-        case '9':
-            return Morse.nine;
         case '.':
             return Morse.period;
         case ',':
@@ -83,29 +53,22 @@ function characterToMorse(character) {
         case '!':
             return Morse.exclamation;
         default:
-            return Morse[character];
+            return Morse[ch];
     }
 };
 
 let MorseActions = {
-    sentenceToMorse: function(sentence) {
-        let MorseForm = [];
-        sentence.split(' ').forEach(word => {
+    toMorse: function(s) {
+        let mf = [];
+        s.split(' ').forEach(word => {
             for(let i = 0; i < word.length; i++) {
-                MorseForm.push({character: word[i], code: characterToMorse(word[i])});
-                MorseForm.push({character: '|', code: Morse.endLetter});
+                mf.push({ch: word[i], code: characterToMorse(word[i])});
+                mf.push({ch: '|', code: Morse.endL});
             };
-            MorseForm.pop();
-            MorseForm.push({character: ' ', code: characterToMorse(' ')});
+            mf.pop();
+            mf.push({ch: ' ', code: characterToMorse(' ')});
         });
-        return MorseForm;
-    },
-
-    codeLengths: {
-        dot,
-        dash,
-        space: spaceLen,
-        endLetter: endLetterLen,
+        return mf;
     },
 };
 

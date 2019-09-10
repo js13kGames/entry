@@ -5,32 +5,23 @@ let templates = [
     "$good is good.",
     "Danger $bad, $bad, and $bad.",
     "$good",
-    "Neither $bad, $bad nor $bad are your friend",
-    "$good is your friend",
     "Go $good",
-    "Brave one, $good will lead you home.",
-    "I will aid you on your journey. $good is save",
-    "A breeze can be felt from $good.",
-    "$bad, $bad, and $bad are your enemy.",
     "Hark! $good lies in safety.",
-    "$bad lies, $bad takes, $bad destroys, while $good lives",
     "Fight or be conquered at $bad, $bad, and $bad",
 ];
 
 let treasureTemplates = [
     "$treasure holds fortune, but $good is the way forward.",
     "$good to proceed. If treasure you seek then go $treasure.",
-    "$bad and $bad lie death. $treasure and $good are fine but $treasure may also be death.",
-    "$treasure, a powerful foe awaits. $good is the cowards path.",
     "Noises come from $treasure, $bad and $bad hold a sense of dread.",
     "$treasure shines, $bad and $bad are dark.",
 ];
 
 let dirs = {
-    up: ['north', 'up', 'ahead', '12 o clock'],
-    down: ['south', 'down', 'behind', '6 o clock'],
-    left: ['west', 'left', '9 o clock'],
-    right: ['east', 'right', '3 o clock'],
+    up: ['north', 'up', 'ahead'],
+    down: ['south', 'down', 'behind'],
+    left: ['west', 'left'],
+    right: ['east', 'right'],
 };
 
 function parseSentence(sentence, goodDir, treasure = false, treasureDir) {

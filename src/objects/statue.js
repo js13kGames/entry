@@ -2,7 +2,7 @@ import modes from './../modes.js';
 import Interactable from './interactable.js';
 import MorseActions from './../actions/morse.js';
 import MusicActions from './../actions/music.js';
-import sentenceToBraille from './../actions/braille.js';
+import toBraille from './../actions/braille.js';
 
 let noteList = [];
 
@@ -19,13 +19,14 @@ Statue.prototype = Object.create(Interactable.prototype);
 
 Statue.prototype.initialize = function(sentence, shownChar) {
     if (this.mode === modes[0]) {
-        this.action = () => this.showBraille(sentenceToBraille(sentence.toLowerCase()), this.scene, shownChar);
+        this.action = () => this.showBraille(toBraille(sentence), this.scene, shownChar);
         this.stop = this.closeModal;
     } else if (this.mode === modes[1]) {
-        this.action = () => this.showMorse(MorseActions.sentenceToMorse(sentence.toLowerCase()), this.scene, shownChar);
+        this.action = () => this.showMorse(MorseActions.toMorse(sentence), this.scene, shownChar);
         this.stop = this.closeModal;
     } else {
-        this.action = () => this.playMorse(MorseActions.sentenceToMorse(sentence.toLowerCase()));
+        noteList = [];
+        this.action = () => this.playMorse(MorseActions.toMorse(sentence));
         this.stop = this.stopMorse;
     }
 };
@@ -41,15 +42,16 @@ Statue.prototype.closeModal = function() {
 };
 
 Statue.prototype.playMorse = function(morse) {
-    this.modal = this.g.rectangle(this.g.canvas.width / 2, this.g.canvas.height / 10, 'teal', 'black', 1, this.g.canvas.width / 4, this.g.canvas.height / 10);
-    this.sprites = [this.g.text("Playing morse code", "30px Times", "black", 0, 0)];
+    let cw = this.g.canvas.width;
+    this.modal = this.g.rectangle(cw / 2, this.g.canvas.height / 10, 'teal', 'black', 1, cw/ 4, this.g.canvas.height / 10);
+    this.sprites = [this.g.text("Playing morse", "30px Times", "black", 0, 0)];
     this.scene.addChild(this.modal);
-    this.modal.putLeft(this.sprites[0], this.g.canvas.width / 5, -10);
+    this.modal.putLeft(this.sprites[0], cw / 5, -10);
     let nl = [];
     if (noteList.length === 0) {
-        morse.map((character, i) => {
-            character.code.map(code => {
-                nl.push({note: code.note, len: code.len});
+        morse.map((ch, i) => {
+            ch.code.map(code => {
+                nl.push({n: code.n, len: code.len});
             })
         })
         noteList = nl;
@@ -69,10 +71,9 @@ Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
     let sprites = [];
     let rows = 2;
     let width = this.g.canvas.width - rectSize;
-    console.log(morse);
     let shownChar = '';
     if (showingChar) {
-        shownChar = morse[0].character;
+        shownChar = morse[0].ch;
     }
     morse.map(char => {
         if (char.code.length * rectSize + xPos >= width) {
@@ -80,7 +81,7 @@ Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
             yPos += circleSize * 2;
             rows++;
         }
-        if (char.character === shownChar) {
+        if (char.ch === shownChar) {
             let txt = this.g.text(shownChar, '20px Times', 'yellow', xPos, yPos - padding);
             sprites.push(txt);
             xPos += circleSize + padding;
@@ -89,10 +90,10 @@ Statue.prototype.showMorse = function(morse, scene, showingChar = false) {
                 if (code.len === 1) {
                     sprites.push(this.g.circle(circleSize, 'black', 'black', 1, xPos, yPos));
                     xPos += circleSize + padding;
-                } else if (code.len === 3 && char.character !== '|') {
+                } else if (code.len === 3 && char.ch !== '|') {
                     sprites.push(this.g.rectangle(rectSize, circleSize, 'black', 'black', 1, xPos, yPos));
                     xPos += rectSize + padding;
-                } else if (char.character === '|') {
+                } else if (char.ch === '|') {
                     sprites.push(this.g.rectangle(1, circleSize, 'red', 'red', 1, xPos, yPos));
                     xPos += 1 + padding;
                 } else if (code.len === 7) {
@@ -118,11 +119,8 @@ Statue.prototype.showBraille = function(braille, scene, showingChar = false) {
     let rows = 2;
     let width = this.g.canvas.width - padding;
     let shownChar = '';
-    // showingChar = true;
-    console.log('showingChar');
-    console.log(showingChar);
     if (showingChar) {
-        shownChar = braille[0].character;
+        shownChar = braille[0].ch;
     }
     braille.map(char => {
         if (circleSize * 3 + xPos >= width) {
@@ -130,7 +128,7 @@ Statue.prototype.showBraille = function(braille, scene, showingChar = false) {
             yPos += (circleSize + padding) * 2;
             rows++;
         }
-        if (char.character === shownChar) {
+        if (char.ch === shownChar) {
             let txt = this.g.text(shownChar, '40px Times', 'yellow', xPos + padding / 3, yPos);
             sprites.push(txt);
         } else {

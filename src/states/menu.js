@@ -27,11 +27,6 @@ let Menu = function(g) {
         this.cancelKey.press = null;
         g.state = new Maze(this.g, modes[this.selected]);
     };
-    this.cancelKey.press = () => {
-        this.actions[this.selected].deselect();
-        this.selected = (this.selected + 1) % this.actions.length;
-        this.actions[this.selected].select();
-    };
 
     return () => {};
 };

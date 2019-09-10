@@ -1,11 +1,8 @@
 import directions from './../directions.js';
 
 let Spikes = function(g, side) {
-    let x = 0;
-    let y = 0;
+    let x, y, width, height;
     let size = 36;
-    let width = 0;
-    let height = 0;
     if (side === directions.UP) {
         y = 0;
         x = 0;

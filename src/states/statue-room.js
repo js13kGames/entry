@@ -2,10 +2,10 @@ import directions from './../directions.js';
 import Statue from './../objects/statue.js';
 import Pit from './../objects/pit.js';
 
-let StatueRoom = function(g, mode, loadNextRoom) {
+let StatueRoom = function(g, mode, loadNext) {
     this.g = g;
     this.player = g.globals.player;
-    this.loadNextRoom = loadNextRoom;
+    this.loadNext = loadNext;
     this.mode = mode;
     this.statue = new Statue(g, mode);
     this.canUseStatue = false;
@@ -35,7 +35,7 @@ let StatueRoom = function(g, mode, loadNextRoom) {
 };
 
 StatueRoom.prototype.load = function(sentence, shownChar) {
-    this.statue.initialize(sentence, shownChar);
+    this.statue.initialize(sentence.toLowerCase(), shownChar);
     this.g.stage.putCenter(this.player.sprite, 0, 100);
 };
 
@@ -63,7 +63,7 @@ StatueRoom.prototype.loop = function() {
         this.g.move(this.player.sprite);
     }
     this.g.contain(this.player.sprite, this.g.stage.localBounds);
-    if (this.g.hit(this.player.sprite, this.statue.sprite, true)) {
+    if (this.g.rectangleCollision(this.player.sprite, this.statue.sprite)) {
         if (this.player.sprite.direction === directions.UP) {
             this.canUseStatue = true;
         }
@@ -73,7 +73,7 @@ StatueRoom.prototype.loop = function() {
     }
     this.pits.forEach(pit => {
         if (this.g.hitTestRectangle(this.player.sprite, pit.sprite)) {
-            this.loadNextRoom(pit.dir);
+            this.loadNext(pit.dir);
         }
     })
 };  

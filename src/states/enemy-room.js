@@ -5,11 +5,11 @@ import Boss from './../actors/boss.js';
 import GameOver from './game-over.js';
 import {toRadians, reverseDirection} from './../utils.js';
 
-let EnemyRoom = function(g, loadNextRoom) {
+let EnemyRoom = function(g, loadNext) {
     this.g = g;
     this.player = g.globals.player;
     this.exitPit = g.rectangle(50,50,'yellow');
-    this.loadNextRoom = loadNextRoom;
+    this.loadNext = loadNext;
     this.spikes = [new Spikes(g, directions.UP), new Spikes(g, directions.DOWN), new Spikes(g, directions.LEFT), new Spikes(g, directions.RIGHT)];
     this.scene = g.group(this.exitPit, this.spikes[0].sprite, this.spikes[1].sprite, this.spikes[2].sprite, this.spikes[3].sprite);
     this.scene.visible = false;
@@ -97,10 +97,10 @@ EnemyRoom.prototype.loop = function() {
     }
     this.g.contain(this.player.sprite, this.g.stage.localBounds);
     if (this.exitPit.visible && this.g.hitTestRectangle(this.player.sprite, this.exitPit)) {
-        this.loadNextRoom(directions.BACK, this.fromDir);
+        this.loadNext(directions.BACK, this.fromDir);
     }
 
-    if (this.hasTreasure && this.treasure.sprite.visible && this.g.hit(this.player.sprite, this.treasure.sprite, true)) {
+    if (this.hasTreasure && this.treasure.sprite.visible && this.g.rectangleCollision(this.player.sprite, this.treasure.sprite)) {
         this.canOpen = true;
     }
 

@@ -15,7 +15,7 @@ let Maze = function(g, mode) {
     this.goodDir = '';
     this.treasureDir = '';
     this.mode = mode;
-    this.statueRoom = new StatueRoom(this.g, mode, function(dir){this.loadNextRoom(dir);}.bind(this));
+    this.statueRoom = new StatueRoom(this.g, mode, function(dir){this.loadNext(dir);}.bind(this));
     this.enemyRoom = {};
     this.treasureRoom = {};
     this.explored = [];
@@ -28,7 +28,7 @@ let Maze = function(g, mode) {
     switch(mode) {
         case modes[0]:
         case modes[1]:
-            this.treasures.push(new Treasure(this.g, 'Dictionary', 'A character is revealed', function(){this.showingChar = true; console.log(this);}.bind(this)));
+            this.treasures.push(new Treasure(this.g, 'Dictionary', 'A character is revealed', function(){this.showingChar = true;}.bind(this)));
             break;
         case modes[2]:
             this.treasures.push(new Treasure(this.g, "Monochrome", 'Morse speed down', function(){this.g.globals.GAME_TEMPO -= 60;}.bind(this)))
@@ -38,13 +38,13 @@ let Maze = function(g, mode) {
     this.numWrongRooms = 0;
     this.levelText = g.text(`${this.level}`, "28px sans-serif", "black");
     this.levelText.layer = 1000;
-    this.loadNextRoom(this.goodDir);
+    this.loadNext(this.goodDir);
     g.globals.player.show();
 
     return () => this.loop();
 };
 
-Maze.prototype.loadNextRoom = function(dir, fromDir) {
+Maze.prototype.loadNext = function(dir, fromDir) {
     if (this.level === this.endLevel) {
         this.endGame();
         return;
@@ -81,8 +81,8 @@ Maze.prototype.loadNextRoom = function(dir, fromDir) {
 
 Maze.prototype.enterNextLevel = function() {
     this.level++;
-    this.enemyRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNextRoom(dir, fromDir);}.bind(this));
-    this.treasureRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNextRoom(dir, fromDir);}.bind(this));
+    this.enemyRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNext(dir, fromDir);}.bind(this));
+    this.treasureRoom = new EnemyRoom(this.g, function(dir, fromDir){this.loadNext(dir, fromDir);}.bind(this));
     this.levelText.content = `lv ${this.level}`;
     let goodInd = getRand(this.dirs.length);
     // goodInd = 0;

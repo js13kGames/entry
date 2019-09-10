@@ -32,8 +32,8 @@ let Braille = {
     question: [0,0,1,0,1,1],
 };
 
-function characterToBraille(character) {
-    switch(character) {
+function characterToBraille(ch) {
+    switch(ch) {
         case ' ':
             return Braille.space;
         case '!': 
@@ -44,40 +44,20 @@ function characterToBraille(character) {
             return Braille.period;
         case '?':
             return Braille.question;
-        case '0':
-            return Braille.j;
-        case '1':
-            return Braille.a;
-        case '2':
-            return Braille.b;
-        case '3':
-            return Braille.c;
-        case '4':
-            return Braille.d;
-        case '5':
-            return Braille.e;
-        case '6':
-            return Braille.f;
-        case '7':
-            return Braille.g;
-        case '8':
-            return Braille.h;
-        case '9':
-            return Braille.i;
         default:
-            return Braille[character];
+            return Braille[ch];
     }
 };
 
-function sentenceToBraille(sentence) {
+function toBraille(sentence) {
     let brailleForm = [];
     sentence.split(' ').forEach(word => {
         for(let i = 0; i < word.length; i++) {
-            brailleForm.push({character: word[i], dots: characterToBraille(word[i])});
+            brailleForm.push({ch: word[i], dots: characterToBraille(word[i])});
         };
-        brailleForm.push({character: ' ', dots: characterToBraille(' ')});
+        brailleForm.push({ch: ' ', dots: characterToBraille(' ')});
     });
     return brailleForm;
 };
 
-export default sentenceToBraille;
+export default toBraille;
