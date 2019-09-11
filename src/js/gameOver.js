@@ -16,6 +16,7 @@ export function render(game) {
 
     game.players.forEach((player, i) => {
         var x = pad + (cardWidth + margin * 2) * i + margin;
+        var player
 
         game.context.save();
         game.context.scale(game.scale, game.scale);
@@ -90,7 +91,7 @@ export function render(game) {
                     scale: game.scale,
                     context: game.context
                 });
-            } else if (player.place === 3) {
+            } else {
                 renderText({
                     text: 'th',
                     color: player.color,

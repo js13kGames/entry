@@ -38,10 +38,6 @@ window.game = game;
 // Kontra init keyboard stuff
 initKeys();
 
-// window.addEventListener('gamepadconnected', function(e) {
-//     console.log(`!Gamepad connected at index ${pad.index}: ${pad.id}. ${pad.buttons.length} buttons, ${pad.axes.length} axes.`);
-// })
-
 canvas.style = 'width:100%;background:#000';
 
 /**
