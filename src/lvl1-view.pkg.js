@@ -40,8 +40,8 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
           ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
         if (cell.itemId) {
-          if (cell.itemId === PIZZA) ctx.drawImage(pizzaImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
-          if (cell.itemId === HOTDOG) ctx.drawImage(hotdogImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+          if (cell.itemId == PIZZA) ctx.drawImage(pizzaImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
+          if (cell.itemId == HOTDOG) ctx.drawImage(hotdogImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
       }
     }
@@ -60,7 +60,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
       case 'left': kong = kongRightImg; break;
     }
     let multiplier = 1;
-    if (dir === 'left') {
+    if (dir == 'left') {
       ctx.scale(-1, 1);
       ctx.translate(-100, 0);
       multiplier = -1;

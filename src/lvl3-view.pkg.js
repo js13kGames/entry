@@ -49,7 +49,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
   function renderCharacter (charName, charState, charSize, mapStart) {
     let img;
     let multiplier = 1;
-    if (charName === 'trex') {
+    if (charName == 'trex') {
       switch(charState.currentAction) {
         case ATTACKING: img = trexAttack; break;
         case BLOCKING: img = trexBlock; break;
@@ -73,7 +73,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
         case READY:
         default: img = kongRight;
       }
-      if (charState.direction === LEFT) {
+      if (charState.direction == LEFT) {
         multiplier = -1;
         ctx.scale(-1, 1);
         multiplier = -1;
@@ -111,7 +111,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
         canvas.width = cellWidth * mapWidth;
         ctx.fillStyle = '#7E8390';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        ctx.drawImage(background, 0, 0, document.body.clientWidth, document.body.clientHeight);
+        ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
         renderMap(canvas.height, canvas.width, cellWidth, kong, trex);
         showHealth(kong, trex);
 

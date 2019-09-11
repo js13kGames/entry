@@ -48,9 +48,9 @@ const initLevel3 = async (punchSound, nextLevel) => {
   }
 
   const respondToHit = (name, cb = noop) => newState => {
-    if (newState[name].currentAction === READY) cb();
+    if (newState[name].currentAction == READY) cb();
     // You were hit!
-    if (newState[name].currentAction === DISABLED) {
+    if (newState[name].currentAction == DISABLED) {
       if (newState[name].health <= 0) {
         gameIsOver = true;
         wait(name, 250, () => endGame(opponentOf[name]));
@@ -97,7 +97,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const object = getState()[name];
     if (object.currentAction !== READY) return;
     setState(state => {
-      if (state[name].currentAction === READY) {
+      if (state[name].currentAction == READY) {
         return {
           [name]: {
             ...state[name],
@@ -113,9 +113,9 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const attackerName = opponentOf[name];
     const attackerState = state[attackerName];
     if (attackerState.currentAction !== ATTACKING) return state;
-    if (object.currentAction === BLOCKING) return state;
+    if (object.currentAction == BLOCKING) return state;
 
-    const attackLocation = attackerState.location + (attackerState.direction === LEFT ? -1 : 1);
+    const attackLocation = attackerState.location + (attackerState.direction == LEFT ? -1 : 1);
     if (object.location !== attackLocation) return state;
 
     // [name] is under attack
@@ -184,7 +184,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
     }, (newState) => {
       respondToHit(
         opponentOf[attacker],
-        opponentOf[attacker] === 'trex' ? trexLoop : noop
+        opponentOf[attacker] == 'trex' ? trexLoop : noop
       )(newState);
       wait(
         attacker,

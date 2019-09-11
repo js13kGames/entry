@@ -12,8 +12,8 @@ const gulpZip = require('gulp-zip');
 const advzip = require('gulp-advzip');
 
 const env = process.env.NODE_ENV;
-const isProd = env === 'production';
-const isDev = env === 'development';
+const isProd = env == 'production';
+const isDev = env == 'development';
 
 function html () {
   return src('src/index.html')
