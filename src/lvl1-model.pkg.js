@@ -138,12 +138,12 @@ const initModel = (height, width, foodCoveragePercent) => {
     fill();
 
     // windows
-    if (type === 1) {
+    if (type == 1) {
       // horizontal windows
       for (let y = 25; y <= 241; y += 27) {
         fillRect(61, y, 115, 16)
       }
-    } else if (type === 2) {
+    } else if (type == 2) {
       // vertical windows
       for (let x = 61; x <= 160; x += 33) {
         fillRect(x, 25, 20, 321);

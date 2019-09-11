@@ -1,33 +1,27 @@
 const initIntroView = (height, width) => {
   const root = document.getElementById('root');
-  // const canvas = createElement('canvas');
-  // const ctx = canvas.getContext('2d');
-  // root.appendChild(canvas);
 
-  // ctx.fillStyle = 'black';
-  // canvas.height = height;
-  // canvas.width = width;
-  // canvas.setAttribute('style', 'z-index: 0;');
-
-  const button = createElement('button');
-  const heading = createElement('h1');
-  const desc = createElement('div');
-  const dirH = createElement('h2');
-  const dir = createElement('div');
+  const button = document.createElement('button');
+  const heading = document.createElement('h1');
+  const desc = document.createElement('div');
+  const dirH = document.createElement('h2');
+  const dir = document.createElement('div');
   let listeners = [];
+  const page = createElement('div')
+  page.classList.add('page');
 
   const render = (buttonText, description, directions, title, onButtonClick) => {
     heading.innerHTML = title;
-    root.appendChild(heading);
+    page.appendChild(heading);
 
     desc.innerHTML = description;
-    root.appendChild(desc);
+    page.appendChild(desc);
 
     if (directions) {
       dirH.innerHTML = 'Directions';
-      root.appendChild(dirH);
+      page.appendChild(dirH);
       dir.innerHTML = directions;
-      root.appendChild(dir);
+      page.appendChild(dir);
     }
 
     if (buttonText) {
@@ -37,20 +31,16 @@ const initIntroView = (height, width) => {
       listeners.push(
         addEventListener(button, 'click', onButtonClick)
       );
-      root.appendChild(button);
+      page.appendChild(button);
     }
+
+    root.appendChild(page);
   };
 
   const cleanUp = () => {
     listeners.forEach(remove => remove());
     listeners = [];
-    root.removeChild(heading);
-    root.removeChild(desc);
-    root.removeChild(button);
-    if (root.contains(dirH)) {
-      root.removeChild(dirH);
-      root.removeChild(dir);
-    }
+    root.removeChild(page);
   }
 
   return {

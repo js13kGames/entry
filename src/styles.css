@@ -1,9 +1,27 @@
 body {
   font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2em;
   height: 100vh;
   margin: 0;
 }
-
+button {
+  background: #3c6;
+  color: #111327;
+  cursor: pointer;
+  border: 2px solid #fff;
+  border-radius: 50px;
+  font-size: 1rem;
+  padding: .5em 2em;
+  font-weight: bold;
+}
+.page {
+  background: #111327;
+  box-sizing: border-box;
+  color: #3c6;
+  height: 100%;
+  padding: 5em;
+  width: 100%;
+}
 canvas {
   left: 0;
   position: absolute;

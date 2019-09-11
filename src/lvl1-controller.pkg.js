@@ -62,17 +62,17 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
       let canExit = state.canExit;
       const cell = getMapView(proposedNewPosition, 0, 0)[0][0];
       if (cell.canEnter) {
-        if (cell.itemId === PIZZA || cell.itemId === HOTDOG) {
+        if (cell.itemId == PIZZA || cell.itemId == HOTDOG) {
           cell.itemId = null;
           pizzaCount = pizzaCount - 1;
           pizzaSound();
         }
-        if (pizzaCount === 0 && !canExit) {
+        if (pizzaCount == 0 && !canExit) {
           enableExit();
           canExit = true;
         }
         let gameOver = state.gameOver;
-        if (cell.displayId === EXIT) {
+        if (cell.displayId == EXIT) {
           gameOver = true;
           setTimeout(() => {
             viewCleanUp();

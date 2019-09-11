@@ -14,8 +14,8 @@ const initState = () => {
 
   const setState = (update, cb = noop) => {
     let newState = update;
-    if (typeof update === 'function') newState = update(state);
-    if (!newState || newState === state) {
+    if (typeof update == 'function') newState = update(state);
+    if (!newState || newState == state) {
       cb(state);
       return false;
     };
