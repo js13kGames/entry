@@ -42,7 +42,7 @@ function keySetUsed(keys) {
     if (!window.game.players.some(p => p.controls === keys)) {
         newPlayer(window.game, keys)
         window.game.unusedControls = window.game.unusedControls.replace(
-            '[' + keys + ']', ''
+            '(' + keys + ')', ''
         );
     }
 }

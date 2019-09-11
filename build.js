@@ -134,7 +134,7 @@ function minify() {
         mangle: {
             properties: {
                 keep_quoted: true,
-                reserved: [ 'game' ]
+                reserved: [ 'game' ],
             }
         },
         module: true,
@@ -154,12 +154,27 @@ function minify() {
     // Replace Collisions debug stuff
     code = code.replace(/if.*[\s]*throw.*Error.*[\s]*}/g, '');
 
+    // shorten some very specific names from the pre-minified code
+    code = code.replace(/'bullet'/g, "'b'");
+    code = code.replace(/'meteor'/g, "'m'");
+    code = code.replace(/'pickup'/g, "'p'");
+    code = code.replace(/'ship'/g, "'s'");
+
+    // Replace some "terser reserved words" from source before minifying
+    // These are VERY LIKELY to break things
+    code = code.replace(/\.rotation/g, '.rot');
+    code = code.replace(/\.padding/g, '.pad');
+    code = code.replace(/color/g, 'col');
+
     const result = terser.minify(code, options);
 
     if (result.error) {
         console.error('Terser minify failed: ', result.error.message);
         return false;
     }
+
+    // Remove a bit of dead Kontra init code
+    result.code = result.code.replace('document.getElementById(void 0)||', '');
 
     fs.writeFileSync('dist/main.min.js', result.code);
     if (result.map) {

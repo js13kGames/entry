@@ -66,6 +66,6 @@ window.onresize = () => {
     setSizing(game.supersample);
 }
 
-game.unusedControls = '[gamepad][wasd/zqsd][arrows]';
+game.unusedControls = '(gamepad)(wasd/zqsd)(arrows)';
 
 startMainMenu(game, scenes);

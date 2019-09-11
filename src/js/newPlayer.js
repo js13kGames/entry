@@ -51,7 +51,7 @@ export function newPlayer(game, controls, controllerId) {
 
     game.players.push(new Player({
         color: color,
-        shipType: Object.keys(ships)[0],
+        shipType: Math.floor(Math.random() * 4),
         controls: controls,
         gamepadId: controllerId,
         context: game.context,

@@ -182,7 +182,7 @@ const menuLoop = GameLoop({  // create the main game loop
             if (player.controls === 'ai') {
                 renderText({
                     alignBottom: true,
-                    text: '[m] remove',
+                    text: '(m) remove',
                     color: player.color,
                     size: .5,
                     x: x + 30,
@@ -229,7 +229,7 @@ const menuLoop = GameLoop({  // create the main game loop
             }
 
             renderText({
-                text: '[n] add new ai player',
+                text: '(n) add new ai player',
                 alignCenter: true,
                 size: .5,
                 x: x + game.width / 4,
