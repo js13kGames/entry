@@ -41,18 +41,100 @@ AFRAME.registerComponent("logic", {
     const findLink = (a, b) => world.links.find(l => l.nodes.includes(a.name) && l.nodes.includes(b.name));
     const filterLinks = a => world.links.filter(l => l.nodes.includes(a));
     
-    world.nodes.push({name: "startStar", x: 0, y: 0, size: 0.1, color: "yellow", scanned: true, fuel: true});
-    world.nodes.push({name: "nav-startStar", x: 0.3, y: 0.1, size: 0.02, color: "grey", scanned: true, fuel: false});
-    world.nodes.push({name: "star2", x: -0.5, y: -0.2, size: 0.04, color: "orange", scanned: false, fuel: false});
-    world.nodes.push({name: "nav-star2", x: -0.55, y: -0.1, size: 0.02, color: "grey", scanned: false, fuel: false});
-    world.nodes.push({name: "star3", x: -0.3, y: 0.2, size: 0.05, color: "yellow", scanned: false, fuel: false});
-    world.nodes.push({name: "nav-star3", x: -0.25, y: 0.1, size: 0.02, color: "grey", scanned: false, fuel: false});
+    const newN = (name, x, y, size, color, fuel, reveals) => world.nodes.push({
+      name: name, x: x, y: y, size: size, color: color, scanned: false, fuel: fuel, reveals: reveals});
 
-    world.links.push({nodes: ["startStar", "nav-startStar"], cost: 0.1});
-    world.links.push({nodes: ["startStar", "star2"], cost: 0.5});
-    world.links.push({nodes: ["star2", "nav-star2"], cost: 0.2});
-    world.links.push({nodes: ["star2", "star3"], cost: 0.2});
-    world.links.push({nodes: ["star3", "nav-star3"], cost: 0.2});
+    newN("start", 0, 0, 8, "yellow", true, []);
+    world.nodes[0].scanned = true;
+    newN("nav-start", 2, 2, 4, "grey", false, [2, 3, 4, 5]);
+    world.nodes[1].scanned = true;
+    newN("2", 3, -1, 4, "orange", false, []);
+    newN("3", 2, -3, 5, "yellow", true, []);
+    newN("4", 2.5, -6, 7, "yellow", true, []);
+    newN("nav-4", 3, -8, 4, "grey", false, [6, 7, 8, 21, 22, 23, 24, 25]);
+    newN("6", 0, -6.5, 3, "orange", false, []);
+    newN("7", 0, -10, 6, "yellow", true, []);
+    newN("nav-7", 1.5, -12, 4, "grey", false, [9, 10, 11, 12, 13]);
+    newN("9", -1.5, -14, 4, "orange", false, []);
+    newN("10", -5, -14, 8, "yellow", true, []);
+    newN("11", -3, -17, 6, "yellow", true, []);
+    newN("nav-11", -1, -19, 4, "grey", false, [14, 15]);
+    newN("13", 1, -16, 4, "orange", false, []);
+    newN("14", 6, -15, 9, "yellow", true, []);
+    newN("nav-14", 8, -14, 4, "grey", false, [16, 17, 18, 27, 28]);
+    newN("16", 10, -15.5, 3.5, "orange", false, []);
+    newN("17", 9, -18, 7, "yellow", true, []);
+    newN("nav-17", 11, -17.5, 4, "grey", false, [19, 20]);
+    newN("19", 13, -19, 4, "orange", false, []);
+    newN("finish", 16, -15, 3, "lightblue", false, []);
+    newN("21", 6.5, -3, 3, "orange", false, []);
+    newN("22", 7, -6, 5, "yellow", true, []);
+    newN("23", 9, -4.5, 4, "orange", false, []);
+    newN("24", 6, -9, 3.5, "orange", false, []);
+    newN("nav-24", 6, -10.5, 4, "grey", false, [7, 8, 26, 27, 28]);
+    newN("26", 10, -8, 7, "yellow", true, []);
+    newN("27", 8, -12, 5, "orange", false, []);
+    newN("nav-27", 9.5, -11.5, 4, "grey", false, [14, 15, 29, 30, 31]);
+    newN("29", 11, -12, 9, "yellow", true, []);
+    newN("30", 14, -10, 4, "orange", 2, []);
+    newN("nav-30", 14, -8, 4, "grey", false, [32, 20]);
+    newN("32", 17, -11, 7, "yellow", true, []);
+
+    const newL = (nodes, cost) => world.links.push({nodes: nodes, cost: cost});
+
+    newL(["start", "nav-start"], 0.1);
+    newL(["start", "2"], 0.4);
+    newL(["2", "3"], 0.3);
+    newL(["3", "4"], 0.4);
+    newL(["4", "nav-4"], 0.2);
+    newL(["4", "6"], 0.3);
+    newL(["6", "7"], 0.4);
+    newL(["7", "nav-7"], 0.15);
+    newL(["7", "9"], 0.5);
+    newL(["9", "10"], 0.2);
+    newL(["9", "11"], 0.4);
+    newL(["11", "13"], 0.3);
+    newL(["9", "13"], 0.3);
+    newL(["11", "nav-11"], 0.2);
+    newL(["13", "14"], 0.5);
+    newL(["14", "nav-14"], 0.05);
+    newL(["14", "16"], 0.3);
+    newL(["16", "17"], 0.3);
+    newL(["17", "nav-17"], 0.1);
+    newL(["17", "19"], 0.4);
+    newL(["19", "finish"], 0.4);
+    newL(["4", "22"], 0.4);
+    newL(["22", "21"], 0.3);
+    newL(["21", "23"], 0.3);
+    newL(["22", "23"], 0.3);
+    newL(["22", "24"], 0.35);
+    newL(["24", "nav-24"], 0.1);
+    newL(["24", "7"], 0.7);
+    newL(["24", "26"], 0.5);
+    newL(["24", "27"], 0.4);
+    newL(["26", "27"], 0.5);
+    newL(["27", "nav-27"], 0.1);
+    newL(["27", "14"], 0.4);
+    newL(["27", "29"], 0.3);
+    newL(["29", "30"], 0.3);
+    newL(["29", "16"], 0.5);
+    newL(["30", "nav-30"], 0.1);
+    newL(["30", "32"], 0.4);
+    newL(["32", "finish"], 0.6);
+
+    // world.nodes.push({name: "startStar", x: 0, y: 0, size: 10, color: "yellow", scanned: true, fuel: true});
+    // world.nodes.push({name: "nav-startStar", x: 3, y: 1, size: 4, color: "grey", scanned: true, fuel: false, reveals: [2, 3, 4, 5]});
+    // world.nodes.push({name: "star2", x: -5, y: -2, size: 4, color: "orange", scanned: false, fuel: false});
+    // world.nodes.push({name: "nav-star2", x: -5.5, y: -1, size: 4, color: "grey", scanned: false, fuel: false});
+    // world.nodes.push({name: "star3", x: -3, y: 2, size: 5, color: "yellow", scanned: false, fuel: false});
+    // world.nodes.push({name: "nav-star3", x: -2.5, y: 1, size: 4, color: "grey", scanned: false, fuel: false});
+    
+
+    // world.links.push({nodes: ["startStar", "nav-startStar"], cost: 0.1});
+    // world.links.push({nodes: ["startStar", "star2"], cost: 0.5});
+    // world.links.push({nodes: ["star2", "nav-star2"], cost: 0.2});
+    // world.links.push({nodes: ["star2", "star3"], cost: 0.2});
+    // world.links.push({nodes: ["star3", "nav-star3"], cost: 0.2});
 
     /*
       Ship
@@ -75,7 +157,7 @@ AFRAME.registerComponent("logic", {
       ship.location = node;
       changeTarget(null, 0);
       ship.fuel -= cost;
-      mapOffset = { x: -node.x, y: -node.y };
+      mapOffset = { x: -node.x / 10, y: -node.y / 10 };
       drawMap();
       drawLocation();
       drawTarget();
@@ -103,24 +185,14 @@ AFRAME.registerComponent("logic", {
 
     function scan() {
       const name = ship.location.name;
+      const reveals = findNode(name).reveals;
 
-      // If we are at the nav-beacon, scan nearby stars
-      // Else scan for the nav-beacon of this star
-      if (name.startsWith("nav")) {
-        const starName = name.split("nav-")[1];
-                      
-        const links = filterLinks(starName);
-        for (let link of links) {
-          for (let node of link.nodes) {
-            world.nodes[world.nodes.indexOf(findNode(node))].scanned = true;
-          }
-        }
-      } else {
-        const navName = `nav-${name}`;
-        if (findNode(navName)) {
-          world.nodes[world.nodes.indexOf(findNode(navName))].scanned = true;
+      if (reveals) {
+        for (let i of reveals) {
+          world.nodes[i].scanned = true;
         }
       }
+
       drawMap();
     }
 
@@ -183,10 +255,17 @@ AFRAME.registerComponent("logic", {
 
       for (let node of world.nodes) {
         if (node.scanned) {
-          const nodeEl = document.createElement("a-circle");
+          let nodeEl;
+          const s = node.size / 100;
+          if (node.name.startsWith("nav-")) {
+            nodeEl = document.createElement("a-triangle");
+            nodeEl.setAttribute("scale", {x: s * 1.5, y: s * 1.5, z: 1});
+          } else {
+            nodeEl = document.createElement("a-circle");
+            nodeEl.setAttribute("geometry", {radius: s});
+          }
           nodeEl.setAttribute("color", node.color);
-          nodeEl.setAttribute("geometry", {radius: node.size});
-          nodeEl.setAttribute("position", {x: node.x + mapOffset.x, y: node.y + mapOffset.y, z: 0.002});
+          nodeEl.setAttribute("position", {x: node.x / 10 + mapOffset.x, y: node.y / 10 + mapOffset.y, z: 0.002});
           nodeEl.className = "clickable";
           nodeEl.addEventListener("click", e => {
             const jumpLink = world.links.find(l => l.nodes.includes(node.name) && l.nodes.includes(ship.location.name));
@@ -197,6 +276,7 @@ AFRAME.registerComponent("logic", {
           nodeEl.addEventListener("loaded", e => {
             nodeEl.object3DMap.mesh.material.clippingPlanes = clipPlanes;
             nodeEl.object3DMap.mesh.material.clipIntersection = false;
+            nodeEl.object3DMap.mesh.material.clipShadows = true;
           });
           mapObjects.appendChild(nodeEl);
         }
@@ -208,19 +288,20 @@ AFRAME.registerComponent("logic", {
 
         if (start.scanned && end.scanned) {
           const linkEl = document.createElement("a-entity");
-          const aj = end.x - start.x;
-          const op = end.y - start.y;
+          const aj = (end.x - start.x) / 10;
+          const op = (end.y - start.y) / 10;
           linkEl.setAttribute("geometry", {
             primitive: "plane",
             width: 0.01,
             height: Math.sqrt(aj * aj + op * op)
           });
-          linkEl.object3D.position.set(start.x + aj/2 + mapOffset.x, start.y + op/2 + mapOffset.y, 0.001);
+          linkEl.object3D.position.set(start.x / 10 + aj/2 + mapOffset.x, start.y / 10 + op/2 + mapOffset.y, 0.001);
           linkEl.object3D.rotation.z = Math.atan2(op, aj) - Math.PI / 2;
           linkEl.setAttribute("material", { color: "#fff" });
           linkEl.addEventListener("loaded", e => {
             linkEl.object3DMap.mesh.material.clippingPlanes = clipPlanes;
             linkEl.object3DMap.mesh.material.clipIntersection = false;
+            linkEl.object3DMap.mesh.material.clipShadows = true;
           });
           mapObjects.appendChild(linkEl);
         }
@@ -230,10 +311,10 @@ AFRAME.registerComponent("logic", {
     function drawLocation() {
       const n = ship.location;
       if (n) {
-        locationEl.object3D.position.set(n.x, n.y, 0.003);
+        locationEl.object3D.position.set(n.x / 10, n.y / 10, 0.003);
         locationEl.object3D.visible = true;
 
-        const off = Math.max(n.size + 0.01, 0.03);
+        const off = Math.max(n.size / 100 + 0.01, 0.03);
         const a = off - 0.01;
 
         locationEl.children[0].object3D.position.set(a + mapOffset.x, off + mapOffset.y, 0);
@@ -255,10 +336,10 @@ AFRAME.registerComponent("logic", {
     function drawTarget() {
       const n = ship.target;
       if (n) {
-        targetEl.object3D.position.set(n.x, n.y, 0.003);
+        targetEl.object3D.position.set(n.x / 10, n.y / 10, 0.003);
         targetEl.object3D.visible = true;
 
-        const off = Math.max(n.size + 0.02, 0.03);
+        const off = Math.max(n.size / 100 + 0.02, 0.03);
         targetEl.children[0].object3D.position.set(0 + mapOffset.x, off + mapOffset.y, 0);
         targetEl.children[1].object3D.position.set(off + mapOffset.x, 0 + mapOffset.y, 0);
         targetEl.children[2].object3D.position.set(0 + mapOffset.x, -off + mapOffset.y, 0);
