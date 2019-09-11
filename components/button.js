@@ -5,37 +5,43 @@ AFRAME.registerComponent("button", {
   },
   
   init: function() {
+    const el = this.el;
+
     console.log("button init");
-    this.el.addEventListener("click", e => {
+    el.addEventListener("click", e => {
       // console.log("Click");
-      this.el.addState("pressed");
+      el.addState("pressed");
     });
       
-    this.el.addEventListener("stateadded", e => {
+    el.addEventListener("stateadded", e => {
       // console.log(`State added '${e.detail}'`);
       if (e.detail == "pressed") {
-        this.el.emit("in");
+        el.classList.remove("clickable");
+        el.emit("in");
         if (this.data.resetTime >= 0) {
-          setTimeout(() => this.el.removeState("pressed"), this.data.resetTime);  
+          setTimeout(() => el.removeState("pressed"), this.data.resetTime);  
         }
       }
     });
     
-    this.el.addEventListener("stateremoved", e => {
+    el.addEventListener("stateremoved", e => {
       // console.log(`State removed '${e.detail}'`);
       if (e.detail == "pressed") {
-        this.el.emit("out");
+        el.classList.add("clickable");
+        el.emit("out");
       }
     });
   },
   
   update: function() {
+    const el = this.el;
+
     console.log("button update");
     setTimeout(() => {
       if (this.data.pressed) {
-        this.el.addState("pressed");
+        el.addState("pressed");
       } else {
-        this.el.removeState("pressed");
+        el.removeState("pressed");
       }
     }, 0);
   }
