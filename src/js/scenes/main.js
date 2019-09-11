@@ -6,6 +6,7 @@ import { createMeteor } from '../meteor';
 import { Player } from '../player';
 import { colors } from '../colors';
 import { detectNewInput } from '../detectInput';
+import all from '../zzfx';
 
 var game;
 var mainMenu;
@@ -44,6 +45,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.prev();
+                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.up = 15;
             } else {
                 player.debounce.up = 0;
@@ -55,6 +57,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.next();
+                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.down = 15;
             } else {
                 player.debounce.down = 0;
