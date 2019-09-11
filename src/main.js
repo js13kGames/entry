@@ -349,12 +349,18 @@ addButton('Catch', () => catchit());
 addButton('Buy', () => buy());
 
 function move(dx, dy) {
-	model.x += dx + 10;
-	model.y += dy + 10;
-	model.x = Math.abs(model.x) % 10;
-	model.y = Math.abs(model.y) % 10;
-	land();
-	update();
+	disable(true);
+	message('Walking...');
+	document.getElementById("container").innerHTML = '';
+	setTimeout(() => {
+		model.x += dx + 10;
+		model.y += dy + 10;
+		model.x = Math.abs(model.x) % 10;
+		model.y = Math.abs(model.y) % 10;
+		land();
+		update();
+		disable(false);
+	}, 1000);
 }
 
 let currentMonster;
@@ -421,6 +427,14 @@ function backpack() {
 	} else {
 		update();
 	}
+}
+
+function disable(disable) {
+	var buttons = document.getElementsByTagName('button');
+	for (var i = 0; i < buttons.length; i++) {
+	    buttons[i].disabled = disable ? "disabled" : "";
+	}
+
 }
 
 land();
