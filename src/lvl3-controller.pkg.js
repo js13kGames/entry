@@ -31,7 +31,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
   const {
     initialKongState,
     initialTrexState,
-  } = initLevel3Model(25, 35);
+  } = initLevel3Model(25, 50);
 
   const {
     getState,
@@ -53,9 +53,9 @@ const initLevel3 = async (punchSound, nextLevel) => {
     if (newState[name].currentAction === DISABLED) {
       if (newState[name].health <= 0) {
         gameIsOver = true;
-        wait(name, 500, () => endGame(opponentOf[name]));
+        wait(name, 250, () => endGame(opponentOf[name]));
       } else {
-        wait(name, 1500, () => recoverFromAttack(name, cb))
+        wait(name, 750, () => recoverFromAttack(name, cb))
       }
     }
   };
@@ -188,12 +188,12 @@ const initLevel3 = async (punchSound, nextLevel) => {
       )(newState);
       wait(
         attacker,
-        500,
+        250,
         () => setToDisabled(
           attacker,
           () => wait(
             attacker,
-            1000,
+            500,
             () => recoverFromAttack(attacker, cb)
           )
         )
@@ -212,7 +212,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
           currentAction: PREPARING_ATTACK
         }
       };
-    }, () => wait(name, 500, () => attack(name, cb)));
+    }, () => wait(name, 250, () => attack(name, cb)));
   }
 
   // Only used by kong
@@ -259,10 +259,12 @@ const initLevel3 = async (punchSound, nextLevel) => {
   function trexAction () {
     const state = getState();
     if (state.trex.location - state.kong.location > 1) {
-      move('left', 'trex', trexLoop);
+      wait('trex', random() * 300 + 100, () => move(
+        'left', 'trex', trexLoop)
+      );
     } else if (random() < .5) {
       block('trex');
-      wait('trex', 1000, () => unblock('trex', trexLoop));
+      wait('trex', 500, () => unblock('trex', trexLoop));
     } else {
       startAttackSequence('trex', trexLoop);
     }
@@ -270,7 +272,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
 
   function trexLoop () {
     if (gameIsOver) return;
-    wait('trex', random() * 300 + 100, trexAction);
+    trexAction();
   };
 
   function endGame (winner) {
