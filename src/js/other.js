@@ -100,7 +100,6 @@ function generatePlanet(type, radiusScale, id, moon)
 		else
 		{
 			newPlanet.ore = rrg(55, radius * radius * 0.0114);
-			newPlanet.fuel = rrg(50, 100);
 		}
 	}
 	else if(type == 1)
@@ -134,7 +133,6 @@ function generatePlanet(type, radiusScale, id, moon)
 		else
 		{
 			newPlanet.ore = rrg(50, radius * radius * 0.004);
-			newPlanet.fuel = rrg(200, 500);
 		}
 	}
 	else if(type == 3)
@@ -150,7 +148,6 @@ function generatePlanet(type, radiusScale, id, moon)
 		nameSrc = gasNames;
 
 		newPlanet.ore = 0;
-		newPlanet.fuel = rrg(1000, 2000);
 	}
 	else if(type == 4)
 	{

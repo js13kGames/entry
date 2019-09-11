@@ -16,7 +16,7 @@ function createRing(center, minRadius, maxRadius, density)
 		var orbitRadius = rrg(minRadius, maxRadius);
 		var offset = rrg(-10000, 10000);
 
-		var size = rrg(5, 50);
+		var size = rrg(15, 50);
 
 		var color = randomColor(2, 0.6);
 

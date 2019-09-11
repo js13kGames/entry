@@ -50,7 +50,7 @@ function planetShop(key, release, ship, planet)
 					if(rrg(0, 1000) >= 980)
 					{
 						// Take some damage, play alarm
-						showEvent("Accident while mining", 1.0);
+						showEvent("Accident", 1.0);
 						ships[0].health -= rrg(1, 5);
 						zzfx(1,.1,50,.6,.5,.3,1,3.6,.03);
 					}

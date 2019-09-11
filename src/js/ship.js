@@ -128,19 +128,6 @@ function createShip(type, nseed, side, level)
 		h(-centerWidth / 2.0, waistLength);
 		h(-width / 2.0, 0.0);
 
-/*	ship.thrusters[0].t = xfw.a;
-	ship.thrusters[1].t = xfw.a;
-	ship.thrusters[2].t = xfw.b;
-	if(ship.type == 2)
-	{
-		ship.thrusters[7].t = xfw.b;
-	}
-	ship.thrusters[3].t = Math.max(xside.a, xrot.a);
-	ship.thrusters[4].t = Math.max(xside.b, xrot.b);
-	ship.thrusters[5].t = Math.max(xside.a, xrot.b);
-	ship.thrusters[6].t = Math.max(xside.b, xrot.a);
-	*/
-
 		// Forward
 		t(width / 2.2, 0.0, 14.0, 0.0);
 		t(-width / 2.2, 0.0, 14.0, 0.0);
@@ -662,7 +649,7 @@ function simulateShip(ship, dt)
 		var acc = gravity(point, -1.0);
 		ship.speed.x += acc.x * dt;
 		ship.speed.y += acc.y * dt;
-		ship.acc = acc;
+		//ship.acc = acc;
 
 
 	}
@@ -699,24 +686,3 @@ function simulateShip(ship, dt)
 	return false;
 }
 
-
-function drawShipMap(ship)
-{
-	if(ship.side == 0)
-	{
-		ctx.fillStyle = 'rgb(128, 255, 128)';
-	}
-	else if(ship.side == 1)
-	{
-		ctx.fillStyle = 'rgb(255, 128, 128)';
-	}
-	else 
-	{
-		ctx.fillStyle = 'rgb(255, 255, 255)';
-	}
-
-
-	ctx.beginPath();
-	ctx.arc(ship.x, ship.y, Math.min(5.0 / camera.zoom, 100.0), 0.0, Math.PI * 2.0);
-	ctx.fill();
-}

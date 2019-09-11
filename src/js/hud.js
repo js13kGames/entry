@@ -192,7 +192,7 @@ function drawShipHud(ship)
 	var retrograde = {x: -prograde.x, y: -prograde.y}
 	var normal = {x: -prograde.y, y: prograde.x};
 	var antinormal = {x: prograde.y, y: -prograde.x};
-	var planet = normalize(ship.acc.x, ship.acc.y);
+/*	var planet = normalize(ship.acc.x, ship.acc.y);*/
 
 	ctx.strokeStyle = 'rgb(255,214,117)';
 	ctx.beginPath();
@@ -218,10 +218,10 @@ function drawShipHud(ship)
 	ctx.stroke();
 
 	// Planet
-	ctx.fillStyle = 'rgb(187,128,255)';
+	/*ctx.fillStyle = 'rgb(187,128,255)';
 	ctx.beginPath();
 	ctx.arc(ship.x + planet.x * rsize, ship.y + planet.y * rsize, rsize / 15.0, 0.0, Math.PI * 2.0);
-	ctx.fill();
+	ctx.fill();*/
 
 	ctx.strokeStyle = 'white';
 	// Ship orientation
@@ -241,7 +241,7 @@ function drawGeneralHUD()
 		yoff += 16.0;
 	}
 
-	var green = 'rgba(166,255,128, 1.0)';
+	var green = 'rgb(166,255,128)';
 	// Bottom left, orbit info
 	var margin = 4.0;
 
@@ -324,7 +324,7 @@ function drawGeneralHUD()
 
 		if(at.warTime > 0.0)
 		{
-			drawText("Planet is at war", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
+			drawText("Planet at war", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
 			nl();
 			drawText(Math.floor(at.warTime) + " until peace", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
 		}
@@ -355,6 +355,14 @@ function drawGeneralHUD()
 	ctx.rect(br0x, br0y, 1000.0, 1000.0);
 	ctx.stroke();
 
+
+	function dtab(a, b, br0 = br0x)
+	{
+		xoff += drawText(a, br0 + margin + xoff, br0y + margin + yoff, 2.0, green);
+		xoff = tab;
+		xoff += drawText(b, br0 + margin + xoff, br0y + margin + yoff, 2.0, green);
+	}
+
 	var xoff = 0.0;
 	var yoff = 0.0;
 	var tab = 80;
@@ -362,7 +370,7 @@ function drawGeneralHUD()
 	xoff = tab;
 	if(ships[0].health < 0.0)
 	{
-		xoff += drawText("Destroyed", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
+		xoff += drawText("Dead", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
 	}
 	else 
 	{
@@ -376,13 +384,9 @@ function drawGeneralHUD()
 	xoff += drawText(plOre.toString() + "/", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
 	xoff += drawText(Math.floor(ships[0].stats.cargo).toString(), br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
 	nl();
-	xoff += drawText("Money ", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(plMoney.toString(), br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Money ", Math.floor(plMoney).toString());
 	nl();
-	xoff += drawText("Level ", br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(ships[0].level.toString(), br0x + margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Level ", ships[0].level.toString());
 
 	ctx.beginPath();
 	ctx.rect(-5.0, br0y, 180.0 + 5.0, 1000.0);
@@ -392,19 +396,11 @@ function drawGeneralHUD()
 	yoff = 0.0;
 	tab = 80;
 
-	xoff += drawText("Frame ", margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(planets[ships[0].frame].name, margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Frame ", planets[ships[0].frame].name, 0.0);
 	nl();
-	xoff += drawText("Speed ", margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(Math.floor(getFrameSpeed(ships[0])).toString(), margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Speed ", Math.floor(getFrameSpeed(ships[0])).toString(), 0.0);
 	nl();
-	xoff += drawText("Altitude ", margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(Math.floor(getAltitudeGround(ships[0])).toString(), margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Altitude ", Math.floor(getAltitudeGround(ships[0])).toString(), 0.0);
 	nl();
-	xoff += drawText("Total AI ", margin + xoff, br0y + margin + yoff, 2.0, green);
-	xoff = tab;
-	xoff += drawText(totalAI.toString(), margin + xoff, br0y + margin + yoff, 2.0, green);
+	dtab("Total AI ", totalAI.toString(), 0.0);
 }

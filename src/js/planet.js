@@ -22,7 +22,7 @@ function createPlanet(nspeed, nheight, radius, atmoRadius, colorInner, colorOute
 
 	return {x: 0, y: 0, radius:radius, atmoRadius: atmoRadius, 
 		colorInner:colorInner, colorOuter:colorOuter, colorDetail: colorDetail, colorAtmo: colorAtmo,
-		 heights: heights, bheights: bheights, isGasPlanet: false, cities: [], ore: 0, fuel: 0};
+		 heights: heights, bheights: bheights, isGasPlanet: false, cities: [], ore: 0};
 }
 
 function getMaxForces(planet)
@@ -31,13 +31,14 @@ function getMaxForces(planet)
 	var aiShips = 0;
 	for(var i = 0; i < planet.cities.length; i++)
 	{
+		var num = planet.cities[i].size / 20.0;
 		if(planet.cities[i].side == 0)
 		{
-			humanShips += planet.cities[i].size / 20.0;
+			humanShips += num;
 		}
 		else
 		{
-			aiShips += planet.cities[i].size / 20.0;
+			aiShips += num;
 		}
 		
 	}
@@ -70,9 +71,9 @@ function createForces(planet)
 
 	planet.maxForces = maxForces;
 	planet.deployed = [];
-	planet.warTime = 0.0;
-	planet.aiTime = 0.0;
-	planet.humanTime = 0.0;
+	planet.warTime = 0;
+	planet.aiTime = 0;
+	planet.humanTime = 0;
 }
 
 // efactor = 0 -> 50%  Enemies
@@ -125,6 +126,7 @@ function updateWar(planet, dt)
 			}
 
 			planet.deployed = [];
+			planet.firstWave = true;
 		}
 		else 
 		{
@@ -159,7 +161,7 @@ function updateWar(planet, dt)
 				}
 			}
 
-			if(planet.firstWave || planet.wave <= 0.0)
+			if(planet.firstWave)
 			{
 				var aiSpawn = rrg(1, planet.aiForces.length / 2.0);
 				var humanSpawn = aiSpawn * planet.humanAggro;

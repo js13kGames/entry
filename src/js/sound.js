@@ -4,13 +4,13 @@ function explosionSound(size, x, y, isShoot, volBoost = 0.6)
 	var dist = distance(camera.x, camera.y, x, y);
 	var factor = Math.min(Math.max(500.0 / (dist * 10.0), 0.005), 1.0);
 	var l = 0.05 + size * 1.7;
-	var freq = Math.min(100 / (Math.pow(size, 2.6) * 460.0), 500.0);
-
+	//var freq = Math.min(100 / (Math.pow(size, 2.6) * 460.0), 500.0);
+	freq = rrg(150 - size * 0.14, 280 - size * 0.14);
 
 	if(!isShoot)
 	{
 		l = 0.1 + size * 0.67;
-		freq = rrg(150 - size * 0.14, 280 - size * 0.14);
+
 		
 	}
 
@@ -27,29 +27,29 @@ function explosionSound(size, x, y, isShoot, volBoost = 0.6)
 	 // ZzFX 15338
 }
 
-var notes = 
+var ntable = 
 [
-	0.0,	// Silence
-	261.63,	//C4	1
-	392.00,	//G4	2
-	523.25,	//C5	3
-	739.99,	//F#5	4
-	932.33,	//A#5	5
-	783.99,	//G5	6
-	1046.50,//C6	7
-	622.25,	//D#5	8
-	415.30,	//G#4	9
-	293.66,	//D4	10
-	130.81,	//C3	11
-	185.00,	//F#3	12 
-	174.61,	//F3	13
-	349.23,	//F4 	14
-	369.99,	//F#4	15
-	466.16,	//A#4	16
-	196.00, //G3 	17
-	220.00,	//A3	18
-	246.94,	//B3 	19
-	311.13,	//D#4	20
+	0,
+	-9,
+	-2,
+	+3,
+	+9,
+	+13,
+	+10,
+	+15,
+	+6,
+	-1,
+	-7,
+	-21,
+	-15,
+	-16,
+	-4,
+	-3,
+	+1,
+	-14,
+	-12,
+	-10,
+	+6
 ]
 
 var spaceSong = 
@@ -188,11 +188,11 @@ function music(dt)
 			{
 				var noise = i == 3 ? 3.0 : 0.0;
 				var length = i == 3 ? musicTempo / 2.0 : musicTempo * 1.3;
-				length = i == 0 ? musicTempo * 2.1 : length;
-				var note = notes[song[musicPtr * 4 + i]];
+				var note = song[musicPtr * 4 + i];
 				if(note != 0)
 				{
-					zzfx(musicVol,0,note,length,0,0,noise,0.0,0);
+					var freq = 440.0 * Math.pow(1.05946, ntable[note]);
+					zzfx(musicVol,0,freq,length,0,0,noise,0.0,0);
 				}
 			}		
 		}

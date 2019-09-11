@@ -158,7 +158,7 @@ function update()
 			{
 				var planet = planets[ships[0].coll.planet];
 
-				if(planet.type == 0 || planet.type == 3 || planet.type == 4)
+				if(planet.type == 0 || planet.type >= 3)
 				{
 					selectSong = 1;	// Rocky
 				}
@@ -169,10 +169,6 @@ function update()
 				else if(planet.type == 1)
 				{
 					selectSong = 4;	// Terra
-				}
-				else 
-				{
-					selectSong = 1;
 				}
 			}
 		
@@ -241,7 +237,7 @@ function update()
 				}
 			}
 
-			time = time + dt;			
+			time += dt;			
 		}
 
 	}
@@ -385,7 +381,7 @@ function update()
 
 		if(!tutShown)
 		{
-			showEvent("Please read the manual, press F1 to show controls", 5.0);
+			showEvent("Read the manual", 5.0);
 			tutShown = true;
 		}
 
@@ -477,12 +473,6 @@ function render()
 				drawPlanetMap(planets[i]);
 			}
 
-			for(var i = 0; i < ships.length; i++)
-			{
-				drawShipMap(ships[i]);
-			}
-
-
 			ctx.globalAlpha = 1.0;
 		}
 
@@ -512,7 +502,7 @@ function render()
 			drawText(str, canvas.width / 2.0 - size / 2.0, 50.0, 2.0, 'white');
 		}
 
-		if(controls >= 0.0)
+		/*if(controls >= 0.0)
 		{
 			ctx.globalAlpha = controls;
 			var ctrls = [
@@ -537,7 +527,7 @@ function render()
 				drawText(ctrls[i + 1], 65.0, 100.0 + i * 10.0, 2.0, 'white');
 			}
 			ctx.globalAlpha = 1.0;
-		}
+		}*/
 
 		drawGeneralHUD();
 	}
@@ -655,12 +645,12 @@ function onkey(evt)
 			}
 		}
 
-		if(key == 'F1')
+		/*if(key == 'F1')
 		{
 			controls = 2.0;
 			evt.preventDefault();
 		}
-		else if(key == 'F2')
+		else*/ if(key == 'F2')
 		{
 			hideHud = !hideHud;
 			evt.preventDefault();
