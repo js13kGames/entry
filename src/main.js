@@ -1,3 +1,29 @@
+// 1993 Park-Miller LCG, https://gist.github.com/blixt/f17b47c62508be59987b
+function LCG(s) {
+  return function() {
+    s = Math.imul(16807, s) | 0 % 2147483647;
+    return (s & 2147483647) / 2147483648;
+  }
+}
+
+var seeded = LCG(13312);
+
+var rands = {
+  int: function(max) {
+    return seeded() * (max || 0xfffffff) | 0;
+  },
+  range: function(min, max) {
+    if (min === max) {
+      return min;
+    }
+    return this.int(max - min) + min;
+  }
+};
+
+function randof(array) {
+	return array[Math.round(Math.random()*(array.length - 1))];
+}
+
 var shapes = {
 	head: [
 		{
@@ -271,7 +297,7 @@ const eyeColors = [
 ]
 
 function randomColorf(colors) {
-	return '#' + colors[Math.round(Math.random()*(colors.length - 1))];
+	return '#' + randof(colors);
 }
 
 let anatomySeq = 0;
@@ -309,6 +335,23 @@ function randi(array) {
 const defs = [];
 for (let i = 0; i < 151; i++) {
 	defs.push(randomAnatomy());
+}
+
+const locs = {};
+
+function scatterDef(def) {
+	const x = rands.range(0, 9);
+	const y = rands.range(0, 9);
+	if (!locs[x+'.'+y]) {
+		locs[x+'.'+y] = [];
+	}
+	locs[x+'.'+y].push(def);
+}
+
+defs.forEach(def => scatterDef(def));
+
+for (let i = 0; i < 100; i++) {
+	scatterDef(defs[rands.range(0, defs.length - 1)]);
 }
 
 let model = localStorage.getItem("bpmSave");
@@ -395,15 +438,20 @@ function message(m) {
 }
 
 function land() {
-	if (true) {
-		currentMonster = getMonsterAtLocation();
+	currentMonster = getMonsterAtLocation();
+	if (currentMonster) {
 		message('There\'s a ' + currentMonster.name + ' here!');
 		update();
+	} else {
+		message('Nothing here.');
 	}
 }
 
 function getMonsterAtLocation() {
-	return defs[(model.x+model.y)%(defs.length - 1)];
+	const list = locs[model.x+'.'+ model.y];
+	if (!list)
+		return;
+	return randof(list);
 }
 
 let showingBackpack = false;
