@@ -65,9 +65,6 @@ const initModel = (height, width, foodCoveragePercent) => {
     [B, B]
   ];
 
-  // Container to hold sliced image cells
-  const buildingImageCells = {};
-
   // Create building styles
   function drawBuilding (color, type) {
     const [, ctx] = createCanvas('canvas');
@@ -225,9 +222,13 @@ const initModel = (height, width, foodCoveragePercent) => {
     ));
   }
 
-  buildingImageCells['2x4'] = sliceBuilding(building, drawBuilding('#01ADC4', 1));
-  buildingImageCells['2x4-2'] = sliceBuilding(building, drawBuilding('#700', 2));
-
+  // Container to hold sliced image cells
+  const buildingImageCells = [];
+  const buildingStyles = [1, 2];
+  const buildingColors = ['#01ADC4', '#700', '#6805F2', '#CB0036', '#F2E530'];
+  buildingColors.forEach(color => buildingStyles.forEach(style => buildingImageCells.push(
+    sliceBuilding(building, drawBuilding(color, style))
+  )));
 
   // Set map height and width
   // 1 = player can access, 0 = can't
@@ -262,7 +263,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     const b = building;
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
-        const bpx = buildingImageCells['2x4' + (random() < .5 ? '' : '-2')];
+        const bpx = buildingImageCells[(floor(random() * buildingImageCells.length))];
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
           addBuilding(map, row, column, b, bpx);
