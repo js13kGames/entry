@@ -10,6 +10,24 @@ AFRAME.registerComponent("logic", {
       navigator.vibrate(10);
     });
 
+    /*
+      Clipping plane
+    */
+    el.renderer.localClippingEnabled = true;
+
+    var clipPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 0, 1), 0.74),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.74),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.74),
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.77)
+    ];
+
+    // var helpers = new THREE.Group();
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[0], 2, 0xff0000));
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[1], 2, 0x00ff00));
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[2], 2, 0x0000ff));
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[3], 2, 0xffff00));
+    // el.object3D.add(helpers);
 
     /*
       World generation
@@ -182,6 +200,10 @@ AFRAME.registerComponent("logic", {
               changeTarget(node, jumpLink.cost);
             }
           });
+          nodeEl.addEventListener("loaded", e => {
+            nodeEl.object3DMap.mesh.material.clippingPlanes = clipPlanes;
+            nodeEl.object3DMap.mesh.material.clipIntersection = false;
+          });
           mapObjects.appendChild(nodeEl);
         }
       }
@@ -197,11 +219,15 @@ AFRAME.registerComponent("logic", {
           linkEl.setAttribute("geometry", {
             primitive: "plane",
             width: 0.01,
-            height: Math.sqrt(aj*aj + op*op)
+            height: Math.sqrt(aj * aj + op * op)
           });
           linkEl.object3D.position.set(start.x + aj/2 + mapOffset.x, start.y + op/2 + mapOffset.y, 0.001);
           linkEl.object3D.rotation.z = Math.atan2(op, aj) - Math.PI / 2;
-          linkEl.setAttribute("material", {color: "#fff"});
+          linkEl.setAttribute("material", { color: "#fff" });
+          linkEl.addEventListener("loaded", e => {
+            linkEl.object3DMap.mesh.material.clippingPlanes = clipPlanes;
+            linkEl.object3DMap.mesh.material.clipIntersection = false;
+          });
           mapObjects.appendChild(linkEl);
         }
       }
