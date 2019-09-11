@@ -1,5 +1,5 @@
 AFRAME.registerComponent("logic", {
-  init: function () {
+  init: function() {
     console.log("logic init");
 
     const el = this.el;
@@ -54,7 +54,6 @@ AFRAME.registerComponent("logic", {
     world.links.push({nodes: ["star2", "star3"], cost: 0.2});
     world.links.push({nodes: ["star3", "nav-star3"], cost: 0.2});
 
-
     /*
       Ship
     */
@@ -63,7 +62,7 @@ AFRAME.registerComponent("logic", {
       target: null,
       fuel: 0.8,
       scoopDeployed: false
-    }
+    };
 
     function changeTarget(node, cost) {
       ship.target = node;
@@ -76,7 +75,7 @@ AFRAME.registerComponent("logic", {
       ship.location = node;
       changeTarget(null, 0);
       ship.fuel -= cost;
-      mapOffset = {x: -node.x, y: -node.y};
+      mapOffset = { x: -node.x, y: -node.y };
       drawMap();
       drawLocation();
       drawTarget();
@@ -131,8 +130,7 @@ AFRAME.registerComponent("logic", {
         ship.fuel = Math.min(ship.fuel + change, 1);
         drawGuage(fuelGuage, ship.fuel);
       }
-    }
-
+    };
 
     /*
       Launch button
@@ -148,20 +146,17 @@ AFRAME.registerComponent("logic", {
       }
     }
 
-
     /*
       Fuel-scoop button
     */
     const scoopButton = $("#scoopButton");
     scoopButton.addEventListener("click", e => toggleScoop());
 
-
     /*
       Scan button
     */
     const scanButton = $("#scanButton");
     scanButton.addEventListener("click", e => scan());
-
 
     /*
       Fuel guages
@@ -175,14 +170,13 @@ AFRAME.registerComponent("logic", {
       guageEl.object3D.visible = percent > 0;
     }
 
-
     /*
       Map
     */
     const mapObjects = $("#mapObjects");
     const locationEl = $("#location");
     const targetEl = $("#target");
-    let mapOffset = {x: 0, y: 0};
+    let mapOffset = { x: 0, y: 0 };
 
     function drawMap() {
       mapObjects.innerHTML = "";
@@ -236,7 +230,7 @@ AFRAME.registerComponent("logic", {
     function drawLocation() {
       const n = ship.location;
       if (n) {
-        locationEl.object3D.position.set(n.x, n.y, .003);
+        locationEl.object3D.position.set(n.x, n.y, 0.003);
         locationEl.object3D.visible = true;
 
         const off = Math.max(n.size + 0.01, 0.03);
@@ -261,7 +255,7 @@ AFRAME.registerComponent("logic", {
     function drawTarget() {
       const n = ship.target;
       if (n) {
-        targetEl.object3D.position.set(n.x, n.y, .003);
+        targetEl.object3D.position.set(n.x, n.y, 0.003);
         targetEl.object3D.visible = true;
 
         const off = Math.max(n.size + 0.02, 0.03);
@@ -282,6 +276,6 @@ AFRAME.registerComponent("logic", {
   }, 
 
   tick: function(time, timeDelta) {
-    this.updateFuel(0.05 * timeDelta / 1000);
+    this.updateFuel((0.05 * timeDelta) / 1000);
   }
 });

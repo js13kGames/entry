@@ -9,7 +9,7 @@ AFRAME.registerComponent("stars", {
 
     const material = new THREE.PointsMaterial();
 
-    this.el.setObject3D('stars', new THREE.Points(stars, material));
+    this.el.setObject3D("stars", new THREE.Points(stars, material));
   },
 
   // Returns a random vector between the inner sphere
@@ -28,4 +28,4 @@ AFRAME.registerComponent("stars", {
     const z = radius * Math.cos(phi);
     return new THREE.Vector3(x, y, z);
   }
-})
+});
