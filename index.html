@@ -31,9 +31,10 @@
         <!-- Ceiling -->
         <a-plane position="0 3 1" rotation="90 0 0" width="10" height="10" color="#2D3748"></a-plane>
         <!-- Walls -->
-        <a-plane position=" 0 1.5 -4" rotation="0   0 0" width="10" height="3" color="#2D3748"></a-plane>
-        <a-plane position=" 0 1.5  6" rotation="0 180 0" width="10" height="3" color="#2D3748"></a-plane>
-        <a-plane position=" 5 1.5  1" rotation="0 -90 0" width="10" height="3" color="#2D3748"></a-plane>
+        <a-plane position=" 0 1.5 -4  " rotation="0   0 0" width="10" height="3" color="#2D3748"></a-plane>
+        <a-plane position=" 5 1.5  1  " rotation="0 -90 0" width="10" height="3" color="#2D3748"></a-plane>
+        <a-plane position=" 0 1.5  6  " rotation="0 180 0" width="10" height="3" color="#2D3748"></a-plane>
+        <a-text  position=" 0 1.5  5.9" rotation="0 180 0" width="10" height="3" color="#718096" wrapCount="20" id="wall-hint" align="center" value="hello there\n\n\n\n\n"></a-text>
         <a-plane position="-5 1.5  1" rotation="0  90 0" width="10" height="3" color="#2D3748"></a-plane>
         <!-- Range walls -->
         <a-box position="0 .5 .5" scale="10 1 .1" color="#2D3748"></a-box>
@@ -90,5 +91,6 @@
     </a-scene>
     <script src="./gunshot.js"></script>
     <script src="./game.js"></script>
+    <script src="./levels.js"></script>
   </body>
 </html>

@@ -1,18 +1,57 @@
-// TODO: Github
 // TODO: Levels
 // TODO: Posters
+// TODO: Level buttons
 // TODO: universal buttons: https://github.com/MicrosoftDocs/webvr/blob/master/webvr-docs/input.md
-(function GameContainer() {
-  const text = {
-    "table-text": "Welcome to Action Hero Training Week!\n\nToday's lesson is aiming and shooting behind your back. One day, you WILL be chasing a creepy and mysterious enemy through a mirror maze. After today, you'll be prepared.\n\nThe rear-view helmet you're wearing can be activated by the button on the wall. Once you've cleared the lesson, you'll be able to deactivate it and return to your normal view.\n\nThere is an emergency button at your feet but you'll need to retry that lesson. Good luck."
-  }
+const GameContainer = (function GameContainer() {
+  const sceneEl = document.querySelector("a-scene");
+  const world = document.getElementById("world").object3D;
+  const blueGun = document.getElementById("blue-gun");
+  const test = document.querySelector("a-cylinder");
+  const gunEls = [].slice.apply(document.querySelectorAll("[data-gun]"));
 
   const sound = new ProceduralSample();
+
+  function emit(name) {
+    var parameters = Array.from(arguments).slice(1); // capture additional arguments
+    if (parameters.length === 0) {
+      sceneEl.dispatchEvent(new Event(name));
+    } else {
+      var event = document.createEvent("CustomEvent");
+      // CustomEvent: name, canBubble, cancelable, detail
+      event.initCustomEvent(name, true, true, parameters);
+      sceneEl.dispatchEvent(event);
+    }
+  }
+
+  // Listen shortcut to put everyone on the same element
+  function listen(name, func) {
+    sceneEl.addEventListener(
+      name,
+      function listenPass(e) {
+        func.apply(null, e.detail);
+      },
+      false
+    );
+  }
+
+  function unlisten(name, func) {
+    sceneEl.removeEventListener(name, func);
+  }
 
   function setText(textObj) {
     for (let id in textObj) {
       document.getElementById(id).setAttribute("value", textObj[id]);
     }
+  }
+
+  function loadLevel() {
+  }
+
+  const LEVELS = [];
+  function setLevels(levels) {
+    LEVELS.splice(0, LEVELS.length); // gut
+    LEVELS.push(...levels); // set
+    emit("levels-set");
   }
 
   const logEl = document.getElementById("log");
@@ -153,13 +192,6 @@
     hand.addEventListener("triggerdown", _ => handleTrigger(hand), { passive: true });
   }
 
-  const sceneEl = document.querySelector("a-scene");
-  const world = document.getElementById("world").object3D;
-  const blueGun = document.getElementById("blue-gun");
-  const test = document.querySelector("a-cylinder");
-
-  const gunEls = [].slice.apply(document.querySelectorAll("[data-gun]"));
-
   function colorMatch(gun, target) {
     if (gun === target) {
       return true;
@@ -268,12 +300,15 @@
     lastFrame = now;
   }
 
-  (function setup() {
-    setText(text);
+  // Setup
+  listen("levels-set", function setup() {
+    setText(LEVELS[0].text);
     document.querySelectorAll("[oculus-touch-controls]").forEach(setupHand);
     document.querySelectorAll(".target").forEach(bindTarget);
     requestAnimationFrame(loop);
-  }());
+  });
+
+  return { setLevels, setText }
 })();
 
 // expand THREE.js Sphere to support collision tests vs Box3
