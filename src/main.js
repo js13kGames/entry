@@ -35,7 +35,6 @@ var shapes = {
 			h: 22,
 			w: 20,
 			path: "M.69.5,18.92,16.07S14.69,24.9,5.79,20.62,1.32,4.11,4,3.3",
-			f: "white",
 			p2: "M8.35,7.54S6,11.43,7.47,13.71s6.26-2.07,6.26-2.07",
 			f2: "black",
 			anchor: [10, 10]
@@ -48,7 +47,6 @@ var shapes = {
 			rx: 4,
 			ry: 9,
 			rotate: -10,
-			f: "black",
 			c2: {
 				cx: 4,
 				cy: 5,
@@ -61,7 +59,6 @@ var shapes = {
 			h: 22,
 			w: 20,
 			path: "M2.38,18.63c2.82,1.47,7.75.89,9.68-2.87S9.69-.44,4.8.56-.67,17,2.38,18.63Z",
-			f: "black",
 			c2: {
 				cx: 6,
 				cy: 5,
@@ -77,8 +74,6 @@ var shapes = {
 			cy: 6,
 			rx: 5,
 			ry: 5,
-			anchor: [6, 6],
-			f: "black",
 			c2: {
 				cx: 6,
 				cy: 4,
@@ -204,7 +199,7 @@ function createCircle(fillColor, bp) {
 }
 
 
-function createElement(bodyParts, colors, x, y, flip) {
+function createElement(bodyPartKey, bodyParts, colors, x, y, flip) {
 	if (!Array.isArray(bodyParts)) {
 		bodyParts = [bodyParts];
 	}
@@ -221,19 +216,17 @@ function createElement(bodyParts, colors, x, y, flip) {
 	}
 	const xAnchor = flip ? b.w - b.anchor[0] : b.anchor[0];
 	var svgContent = '<svg width = "'+b.w+'" height = "'+b.h+'" style = "position: absolute; left: ' + (x - xAnchor ) + '; top: ' + ( y - b.anchor[1]) + '"' + transform + '>';
-	if (!Array.isArray(colors)) {
-		colors = [colors];
-	}
+	const color = colors[bodyPartKey] || colors.default;
 	bodyParts.forEach((bodyPart, i) => {
 		if (bodyPart.path) {
-			svgContent += createPath(bodyPart.f || colors[i], bodyPart.path);
+			svgContent += createPath(bodyPart.f || color, bodyPart.path);
 		} else {
-			svgContent += createCircle(bodyPart.f || colors[i], bodyPart);
+			svgContent += createCircle(bodyPart.f || color, bodyPart);
 		}
 		if (bodyPart.p2)
-			svgContent += createPath(bodyPart.f2 || colors[i], bodyPart.p2);
+			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
 		if (bodyPart.c2)
-			svgContent += createCircle(bodyPart.c2.f || colors[i], bodyPart.c2);
+			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
 	});
 	svgContent += '</svg>';
 	container.innerHTML += svgContent;
@@ -260,19 +253,23 @@ const testAnatomy = {
 	mouth: 3
 }
 
-function buildMonster(anatomy, color, x, y) {
+function buildMonster(anatomy, x, y) {
 	Object.keys(anatomy.type).forEach(bodyPart => {
 		const xvar = anatomy.type[bodyPart][0];
 		const yvar = anatomy.type[bodyPart][1];
-		createElement(shapes[bodyPart][anatomy[bodyPart]], color, x - xvar, y + yvar);
+		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar);
 		if (xvar) {
-			createElement(shapes[bodyPart][anatomy[bodyPart]], color, x + xvar, y + yvar, true);
+			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true);
 		}
 	});
 }
 
-const colors = [
+const bodyColors = [
 	'bdacc5', '524a4a', 'a44a8b', '5ab4cd', 'de5239', 'eede10', 'f6deb4', '41b4ee', '7383d5', '62d5b4', 'ffeecd' 
+]
+
+const eyeColors = [
+	'da171d', '007976', '000000', '222222'
 ]
 
 function randomColor() {
@@ -280,20 +277,27 @@ function randomColor() {
 }
 
 
-function randomColorf() {
+function randomColorf(colors) {
 	return '#' + colors[Math.round(Math.random()*(colors.length - 1))];
 }
 
 function randomAnatomy() {
 	return {
 		type: skeleton1,
-		arm: randi(shapes.arm),
-		body: randi(shapes.body),
-		feet: randi(shapes.feet),
-		ear: randi(shapes.ear),
-		head: randi(shapes.head),
-		eye: randi(shapes.eye),
-		mouth: randi(shapes.mouth)
+		bps: {
+			arm: randi(shapes.arm),
+			body: randi(shapes.body),
+			feet: randi(shapes.feet),
+			ear: randi(shapes.ear),
+			head: randi(shapes.head),
+			eye: randi(shapes.eye),
+			mouth: randi(shapes.mouth)
+		},
+		colors: {
+			default: randomColorf(bodyColors),
+			eye: randomColorf(eyeColors)
+		}
+
 	}
 }
 
@@ -301,7 +305,7 @@ function randi(array) {
 	return Math.round(Math.random() * (array.length - 1));
 }
 
-buildMonster(randomAnatomy(), randomColorf(), 230, 100);
+buildMonster(randomAnatomy(), 230, 100);
 
 /*
 
