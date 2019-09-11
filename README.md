@@ -3,7 +3,7 @@
 Tanky McTankface is a [js13k](https://js13kgames.com/) game for the 2019 edition of the contest. The zipped game including all dependencies must at most 13kb in size.
 The deadline is 13:00 CEST, 13th September 2019.
 
-You take control of the tank and try to go as far as you can while fighting enemy turrets. You gather items along the way, but they are no applied instantly. Only when you are destroyed and start back at the beginning, the items will be applied and you will become more powerful. Compare Highscores to see how well you did.
+You take control of the tank and try to go as far as you can while fighting enemy turrets. You gather items along the way, but they are not applied instantly. Only when you are destroyed and start back at the beginning, the items will be applied and you will become more powerful. Not all enemies are created equal. Compare Highscores to see how well you did. Use cursor buttons to control the tank and space to charge a shot. You can change audio settings in the menu and get there with escape. From there you can start fresh (without items) or continue the current run.
 
 ## Latest version
 
@@ -69,13 +69,13 @@ Game will be accessible running at http://localhost:9000/
 - [x] Add enemy tanks to give more enemy variance
 - [x] Fix health very low number formatting bug
 - [x] Add more items if size allows, repeat
-- [ ] Final balance
+- [x] Final balance
 
 ## Libraries and Tools
 
 This project benefits from these great open source projects:
 
-* [Kontra.js](https://straker.github.io/kontra/)
+* [Kontra.js](https://straker.github.io/kontra/) - I created a very minimal typescript version for the functionality of kontra used in this game, see [this file](src/kontra/kontra.ts)
 * [TypeScript](https://www.typescriptlang.org/)
 * [webpack](https://webpack.js.org/)
 * [terser](https://terser.org/)
