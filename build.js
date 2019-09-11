@@ -128,8 +128,8 @@ function minify() {
             unsafe_arrows: true,
             unsafe_comps: true,
             unsafe_math: true,
-            // unsafe_proto: true, // ~ 3 bytes
-            // booleans_as_integers: true // ~ 20 bytes if really needed
+            unsafe_proto: true, // ~ 3 bytes
+            booleans_as_integers: true // ~ 20 bytes if really needed
         },
         mangle: {
             properties: {
