@@ -1,0 +1,29 @@
+{
+  "name": "tanky-mc-tankface",
+  "version": "0.3.0",
+  "description": "tank game for 13k contest and getting to know typescript",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No tests for now\"",
+    "start": "webpack-dev-server",
+    "build": "webpack --mode=production",
+    "build-dev": "webpack --mode=development"
+  },
+  "author": "Frederik Petersen",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "style-ext-html-webpack-plugin": "^4.1.2",
+    "style-loader": "^1.0.0",
+    "terser": "^4.2.1",
+    "terser-webpack-plugin": "^1.4.1",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
