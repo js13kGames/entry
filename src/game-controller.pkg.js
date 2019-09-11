@@ -14,8 +14,7 @@ const initGameController = () => {
     () => initIntro('credits'),
   ];
 
-  function next () {
+  (function next () {
     rAF(() => levelInitters[currentLevel++](next));
-  }
-  next();
+  })();
 };

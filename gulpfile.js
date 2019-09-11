@@ -57,6 +57,8 @@ function js () {
 
 function svg () {
   return src('src/assets/*.svg')
+    .pipe(inject.replace(`fill-rule="evenodd" `, ''))
+    .pipe(inject.replace(`clip-rule="evenodd" `, ''))
     .pipe(svgmin({
       plugins: [
         { cleanupNumericValues: { floatPrecision: 0, leadingZero: false } },
