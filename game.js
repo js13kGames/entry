@@ -16,7 +16,7 @@ const c_starttime = 60; //45; //Time is set to this after restarting game
 const c_startjackpot = 5; //How many seconds are already in the jackpot at the start of a flip?
 const c_timegainperblock = 0.2; //How many seconds are added for each touched block
 const c_horborder = 200; //How wide the playing field is.
-const c_yflipmargin = 60; //How much space is added between the lowest added block and the flip line.
+const c_yflipmargin = 100; //How much space is added between the lowest added block and the flip line.
 
 inputbuffer = ""; inputtime = 0; //Input buffer saves the last pressed key if an input does not result in a handled interaction. It's saved for the amount of frames in inputtime.
 
@@ -52,7 +52,7 @@ setInterval(e=>{ step(false) },(1/60)*1000);
 
 //Mobile input init
 onkeydown=e=>{
-    if (e.key == "ArrowLeft" || e.key == "ArrowRight" || e.key == " " || e.key == "Backspace")
+    if (e.key == "ArrowDown" || e.key == "ArrowUp" || e.key == " " || e.key == "Backspace")
     {
         e.preventDefault();
     }
@@ -219,9 +219,7 @@ function loadLevel() {
     else 
     {
         player.visible = true; trail.visible = true;
-        i1.style.visibility = V; 
-        i2.style.visibility = V; 
-        i3.style.visibility = V; 
+        vis(i1,V); vis(i2,V); vis(i3,V)
     }
 
     border.color = c[1]; flipline.color = c[1]; trail.translate.z = -200;
@@ -237,7 +235,7 @@ function loadLevel() {
     obstacle.length = 0; visobstacle.length = 0;
     trail.path.length = 0;
     flipped = 1; flipvisual = 1; bgcolor = c[0]; 
-    player.translate.x = 0; player.translate.y = -50; playermovex = 0; 
+    player.translate.x = 0; player.translate.y = -100; playermovex = 0; 
     if (state == 1) {playermovey = c_fallspeed;}
     else {playermovey = c_fallspeed/2;}
 
@@ -248,7 +246,7 @@ function loadLevel() {
         obstaclestogenerate = 10;
     } else {
         obstaclestogenerate = 1 + (4 * level);
-        timeleft = 12 + (8*level);
+        timeleft = 12 + (8.5*level);
     }
 
     illo.rotate = {x: -(TAU/16), y: TAU/16};
@@ -628,7 +626,7 @@ function step(framestep) {
                 yy = visobstacle[i].translate.y+6;
                 zz = visobstacle[i].translate.z;
                 w = visobstacle[i].width; aw = visobstacle[i].width*1.2; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
-                h = visobstacle[i].height-4;
+                h = visobstacle[i].height-3;
 
                 if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - aw && player.translate.x < xx + aw && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
@@ -736,13 +734,12 @@ function input(key) {
         if (key == " " && canstartgame) {
             l1.style.animation = "gamestart-top 1s ease-in";
             l2.style.animation = "gamestart-bottom 1s ease-in";
-            not.style.visibility = H;
+            vis(not,H)
             sound([1,,0.08,,0.50,0.26,,0.43,,,,,,,,0.68,,,1,,,,,0.15]);
             setTimeout(function(){
-                l1.style.visibility = H;
-                l2.style.visibility = H;
+                vis(l1,H); vis(l2,H);
             }, 975);
-            if (hiscore == 0) {state = 1; level = 1; loadLevel(level); l3.style.visibility = H; }
+            if (hiscore == 0) {state = 1; level = 1; loadLevel(level); vis(l3,H)}
             else {state = 2; level == M.min(hiscore,11); switchPalette(palette); updateLevelSelect();}
             return;
         }
@@ -774,11 +771,7 @@ function input(key) {
             state = 1;
             loadLevel(level);
             sound([3,,0.22,0.49,0.40,0.15,,-0.39,,,,-0.68,0.69,,,,,,1,,,,,0.25]);
-            d.style.visibility = H;
-            d3.style.visibility = H;
-            d4.style.visibility = H;
-            k.style.visibility = H;
-            l3.style.visibility = H; 
+            vis(d,H); vis(d3,H); vis(d4,H); vis(k,H); vis(l3,H);
         }
     }
     else if (state == 1) //Gameplay
@@ -792,12 +785,12 @@ function input(key) {
         if (paused && key == "Backspace") {
             if (l3.style.visibility == H)
             {
-                l3.style.visibility = V; 
+                vis(l3,V);
                 l3.innerHTML = "Confirm with [Backspace]";
             }
             else
             {
-                l3.style.visibility = H;
+                vis(l3,H);
                 pause(-1);
                 gameOver();
             }
@@ -821,7 +814,7 @@ function input(key) {
         if (key == "ArrowLeft" || key == "a" || key == "q") {delta = -1}
         if (key == "ArrowRight" || key == "d") {delta = 1}
 
-        if (delta != 0 && playermovex == 0)
+        if (delta != 0 && playermovex == 0 && !(delta < 0 && player.translate.x == -c_horborder) && !(delta > 0 && player.translate.x == c_horborder))
         {
             playermovex = c_startverticalspeed*delta;
             playermovey = 0;
@@ -880,7 +873,7 @@ function gameWin() {
     if (level-1 == hiscore && level != 11) 
     {
         hiscore = level; level = hiscore+1;
-        not.style.visibility = V;
+        vis(not,V);
         if (hiscore != 10)
         {
              not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!<br>Progress saved.";
@@ -909,7 +902,8 @@ function gameOver() {
         {
             if (hiscore > 0)
             {
-                not.style.visibility = V; not.innerHTML = "Congrats!<br>You broke the old highscore of<br>"+hiscore.toString()+" with a new score of <b>"+score.toString()+"</b>!";
+                vis(not,V);
+                not.innerHTML = "Congrats!<br>You broke the old highscore of<br>"+hiscore.toString()+" with a new score of <b>"+score.toString()+"</b>!";
                 hiscore = score;
                 setCookie('backflipped_level',hiscore)
             }
@@ -926,12 +920,11 @@ function gameEnd() {
     playermovey = 0.5*flipped;
     canstartgame = false;
 
-    i1.style.visibility = H; i2.style.visibility = H; i3.style.visibility = H;
+    vis(i1,H); vis(i2,H); vis(i3,H);
 
     l1.style.animation = ""; //Reset animations
     l2.style.animation = "";
-    l1.style.visibility = V;
-    l2.style.visibility = V;
+    vis(l1,V); vis(l2,V);
     l1.style.color = c[0]; l2.style.textShadow = "-2px -5px "+c[0];
     l2.style.color = c[1]; l2.style.textShadow = "-2px -5px "+c[1];
 
@@ -939,22 +932,21 @@ function gameEnd() {
 
     setTimeout(function(){
         canstartgame = true;
-        l3.style.visibility = V; 
+        vis(l3,V);
     }, 1000);
 }
 
 //Utility functions and features
 
 function updateLevelSelect() {
-    d.style.visibility=V;
-    k.style.visibility=V;
+    vis(d,V); vis(k,V);
 
     if (level <= 10) {d2.innerHTML = level.toString() + "/10";}
     else { d2.innerHTML = "∞ Endless"; }
-    if (level == 1) {d3.style.visibility=H}
-    else { d3.style.visibility=V }
-    if (level == hiscore+1 || level == 11) {d4.style.visibility=H}
-    else { d4.style.visibility=V }
+    if (level == 1) {vis(d3,H);}
+    else { vis(d3,V); }
+    if (level == hiscore+1 || level == 11) {vis(d4,H);}
+    else { vis(d4,V); }
 
     k1.innerHTML = "Colors ("+(palette+1).toString()+"/7)";
     k2.innerHTML = palettename;
@@ -999,13 +991,12 @@ function pause(toggle) {
     else if (paused != toggle) {paused = toggle} else {return;}
 
     if (paused) {
-        not.style.visibility = V; n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br>[Backspace] to give up";
-        i1.style.visibility = H; i2.style.visibility = H; i3.style.visibility = H;
+        vis(not,V); vis(i1,H); vis(i2,H); vis(i3,H);
+        n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br>[Backspace] to give up";
     }
     else {
-        not.style.visibility = H;
-        i1.style.visibility = V; i2.style.visibility = V; i3.style.visibility = V;
-        l3.style.visibility = H;
+        vis(not,H);
+        vis(i1,V); vis(i2,V); vis(i3,V); vis(l3,H);
     }
 }
 
@@ -1049,6 +1040,10 @@ function HtmlLoaded() {
 
 function id(n) {
     return(document.getElementById(n));
+}
+
+function vis(id,s) {
+    id.style.visibility = s;
 }
 
 function isOdd(num) { return num % 2;}
