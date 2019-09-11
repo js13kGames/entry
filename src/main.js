@@ -242,7 +242,28 @@ function buildMonster(anatomy, color, x, y) {
 	});
 }
 
-buildMonster(testAnatomy, '#4a90d6', 230, 100);
+function randomColor() {
+	return '#' + ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
+}
+
+function randomAnatomy() {
+	return {
+		type: skeleton1,
+		arm: randi(shapes.arm),
+		body: randi(shapes.body),
+		feet: randi(shapes.feet),
+		ear: randi(shapes.ear),
+		head: randi(shapes.head),
+		eye: randi(shapes.eye),
+		mouth: randi(shapes.mouth)
+	}
+}
+
+function randi(array) {
+	return Math.floor(Math.random() * (array.length - 1));
+}
+
+buildMonster(randomAnatomy(), randomColor(), 230, 100);
 
 /*
 
@@ -258,3 +279,4 @@ createElement(eyes[0], '#FFFFFF', 210, 60);
 createElement(eyes[0], '#FFFFFF', 250, 60, true);
 createElement(mouths[0], '#4a90d6', 230, 80);
 */
+
