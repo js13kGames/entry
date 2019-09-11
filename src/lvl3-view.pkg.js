@@ -23,21 +23,22 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     kongRight
   ] = images
 
-  const keydown = addEventListener(
+  const cleanupListeners = []
+  cleanupListeners.push(addEventListener(
     window,
     'keydown',
     (e) => onKeydown(e.which)
-  );
-  const keyup = addEventListener(
+  ));
+  cleanupListeners.push(addEventListener(
     window,
     'keyup',
     (e) => onKeyup(e.which)
-  );
-  const click = addEventListener(
+  ));
+  cleanupListeners.push(addEventListener(
     window,
     'click',
     (e) => onClick(e)
-  );
+  ));
 
   function renderMap (canvasHeight, canvasWidth, cellWidth, kong, trex) {
     ctx.fillStyle = 'green';
@@ -103,31 +104,23 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
   }
 
   function render (mapWidth, kong, trex) {
-    return new Promise((resolve, reject) => {
-      try {
-        // regardless of screen size, show 12 "cells" wide viewport
-        const cellWidth = 100;
-        canvas.height = body.clientHeight;
-        canvas.width = cellWidth * mapWidth;
-        ctx.fillStyle = '#7E8390';
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
-        renderMap(canvas.height, canvas.width, cellWidth, kong, trex);
-        showHealth(kong, trex);
+    return new Promise((resolve) => {
+      const cellWidth = 100;
+      canvas.height = body.clientHeight;
+      canvas.width = cellWidth * mapWidth;
+      ctx.fillStyle = '#7E8390';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+      ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
+      renderMap(canvas.height, canvas.width, cellWidth, kong, trex);
+      showHealth(kong, trex);
 
-        resolve();
-      } catch (e) {
-        console.error(e);
-        reject();
-      }
+      resolve();
     })
   }
 
   return {
     cleanUp: () => {
-      keydown();
-      keyup();
-      click();
+      cleanupListeners.forEach(remove => remove());
       root.removeChild(canvas);
       root.removeChild(progressWrapper);
     },
