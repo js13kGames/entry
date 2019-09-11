@@ -23,12 +23,12 @@ AFRAME.registerComponent("logic", {
     const findLink = (a, b) => world.links.find(l => l.nodes.includes(a.name) && l.nodes.includes(b.name));
     const filterLinks = a => world.links.filter(l => l.nodes.includes(a));
     
-    world.nodes.push({name: "startStar", x: 0, y: 0, size: 0.1, color: "yellow", scanned: true});
-    world.nodes.push({name: "nav-startStar", x: 0.3, y: 0.1, size: 0.02, color: "grey", scanned: true});
-    world.nodes.push({name: "star2", x: -0.5, y: -0.2, size: 0.04, color: "orange", scanned: false});
-    world.nodes.push({name: "nav-star2", x: -0.55, y: -0.1, size: 0.02, color: "grey", scanned: false});
-    world.nodes.push({name: "star3", x: -0.3, y: 0.2, size: 0.05, color: "yellow", scanned: false});
-    world.nodes.push({name: "nav-star3", x: -0.25, y: 0.1, size: 0.02, color: "grey", scanned: false});
+    world.nodes.push({name: "startStar", x: 0, y: 0, size: 0.1, color: "yellow", scanned: true, fuel: true});
+    world.nodes.push({name: "nav-startStar", x: 0.3, y: 0.1, size: 0.02, color: "grey", scanned: true, fuel: false});
+    world.nodes.push({name: "star2", x: -0.5, y: -0.2, size: 0.04, color: "orange", scanned: false, fuel: false});
+    world.nodes.push({name: "nav-star2", x: -0.55, y: -0.1, size: 0.02, color: "grey", scanned: false, fuel: false});
+    world.nodes.push({name: "star3", x: -0.3, y: 0.2, size: 0.05, color: "yellow", scanned: false, fuel: false});
+    world.nodes.push({name: "nav-star3", x: -0.25, y: 0.1, size: 0.02, color: "grey", scanned: false, fuel: false});
 
     world.links.push({nodes: ["startStar", "nav-startStar"], cost: 0.1});
     world.links.push({nodes: ["startStar", "star2"], cost: 0.5});
@@ -41,7 +41,7 @@ AFRAME.registerComponent("logic", {
       Ship
     */
     const ship = {
-      location: world.nodes[1],
+      location: world.nodes[0],
       target: null,
       fuel: 0.8,
       scoopDeployed: false
@@ -72,7 +72,7 @@ AFRAME.registerComponent("logic", {
 
     function toggleScoop() {
       ship.scoopDeployed = !ship.scoopDeployed;
-      fuelGuage.setAttribute("color", ship.scoopDeployed ? "yellow" : "green");
+      fuelGuage.setAttribute("color", ship.scoopDeployed ? (ship.location.fuel ? "yellow" : "red") : "green");
       checkLaunchReady();
     }
 
@@ -109,7 +109,7 @@ AFRAME.registerComponent("logic", {
 
     // On the object so it can be accessed from the tick function
     this.updateFuel = change => {
-      if (ship.scoopDeployed) {
+      if (ship.scoopDeployed && ship.location.fuel) {
         ship.fuel = Math.min(ship.fuel + change, 1);
         drawGuage(fuelGuage, ship.fuel);
       }
