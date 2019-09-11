@@ -1,1 +1,12 @@
 .DS_Store
+node_modules
+.jest-cache
+env
+node_modules
+.jest-cache
+env
+yarn-error.log
+node_modules
+tools/
+zip/
+dist/
