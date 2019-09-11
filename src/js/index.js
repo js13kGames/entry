@@ -68,6 +68,7 @@ AFRAME.registerComponent('screen-manager', {
   onShotFired: function(evt) {
     if (!this.shotsFired) {
       this.startButtonEl.setAttribute('visible', false);
+      this.startButtonEl.object3D.position.y -= 100;
     }
     this.shotsFired += 1;
     this.shotsEl.setAttribute('value', `shots\n${this.shotsFired}`);

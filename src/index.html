@@ -13,7 +13,7 @@
       <!-- game title -->
       <a-entity
         id="title"
-        position="0 2 -6"
+        position="0 2.7 -6"
       >
         <a-text
           align="center"
@@ -45,6 +45,7 @@
         geometry="primitive:plane; width: 3"
         material="opacity: 0"
         value="Oh boy, you looked back!\nNow the outlaws are after you.\nI sure hope you're a fast gun, cowboy!"
+        visible="true"
       ></a-text>
 
       <!-- cowboy player -->
@@ -97,8 +98,8 @@
       <!-- chicken practice targets -->
       <a-entity
         class="chicken one"
-        position="-2.5 0.5 -4.5"
-        rotation="0 40 0"
+        position="-2 0.5 -4.5"
+        rotation="0 35 0"
         target="revive: .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       >
@@ -112,8 +113,8 @@
       </a-entity>
       <a-entity
         class="chicken three"
-        position="2.5 0.5 -4.5"
-        rotation="0 -40 0"
+        position="2 0.5 -4.5"
+        rotation="0 -35 0"
         target="revive: .chicken.one, .chicken.two; texture: #chicken_texture; width: 1.2; height: 1.2"
         visible="true"
       ></a-entity>
@@ -121,59 +122,101 @@
       <!-- enemy outlaws -->
       <a-entity
         class="outlaw one"
-        position="-1.6 -100.5 -5.5"
+        position="-1.1 -100.5 -4.5"
         rotation="0 14 0"
-        target="revive: .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        target="revive: .outlaw.two, .outlaw.three; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       >
       </a-entity>
       <a-entity
         class="outlaw two"
-        position="3 -100.5 -5.5"
-        rotation="0 -25 0"
-        target="revive: .outlaw.six; texture: #outlaw2_texture; width: 1.2; height: 1.8"
-        visible="true"
+        position="1.4 -100.5 -5"
+        rotation="0 -16 0"
+        target="texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        visible="false"
       ></a-entity>
       <a-entity
         class="outlaw three"
-        position="5.5 -100.5 0.5"
-        rotation="0 -90 0"
-        target="revive: .outlaw.one, .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        position="3.1 -100.5 -2.5"
+        rotation="0 -52 0"
+        target="revive: .outlaw.two; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
       <a-entity
         class="outlaw four"
-        position="6.5 -100.5 6.5"
-        rotation="0 -135 0"
+        position="8.5 -100.5 -1.5"
+        rotation="0 -75 0"
         target="revive: .outlaw.three, .outlaw.five; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
       <a-entity
         class="outlaw five"
-        position="-6.5 -100.5 6.5"
-        rotation="0 135 0"
-        target="revive: .outlaw.three; texture: #outlaw2_texture; width: 1.2; height: 1.8"
-        visible="false"
-      ></a-entity>
-      <a-entity
-        class="outlaw six"
-        position="-8.5 -100.5 0.5"
-        rotation="0 90 0"
+        position="5 -100.5 2"
+        rotation="0 -110 0"
         target="texture: #outlaw2_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
       <a-entity
-        class="outlaw seven coil"
-        position="-3.5 -100.5 -2"
-        rotation="0 60 0"
+        class="outlaw fourteen coil"
+        position="10 -100.5 8.5"
+        rotation="0 -135 0"
         target="revive: .outlaw.one, .outlaw.six; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
       <a-entity
-        class="outlaw eight coil"
-        position="3.5 -100.5 6"
-        rotation="0 -155 0"
-        target="revive: .outlaw.four, .outlaw.seven;texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        class="outlaw six"
+        position="2.5 -100.5 3.5"
+        rotation="0 -145 0"
+        target="revive: .outlaw.four, .outlaw.five; texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw seven"
+        position="0.5 -100.5 10"
+        rotation="0 180 0"
+        target="texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw eight"
+        position="-3 -100.5 5.5"
+        rotation="0 155 0"
+        target="revive: .outlaw.seven, .outlaw.nine; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw nine"
+        position="-6.5 -100.5 4.5"
+        rotation="0 125 0"
+        target="revive: .outlaw.seven, .outlaw.ten; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw ten"
+        position="-3.5 -100.5 1"
+        rotation="0 105 0"
+        target="texture: #outlaw2_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw eleven"
+        position="-6 -100.5 -0.5"
+        rotation="0 85 0"
+        target="revive: .outlaw.ten; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw thirteen coil"
+        position="-8 -100.5 -3.5"
+        rotation="0 65 0"
+        target="revive: .outlaw.six, .outlaw.twelve; texture: #outlaw1_texture; width: 1.2; height: 1.8"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        class="outlaw twelve"
+        position="-3 -100.5 -3"
+        rotation="0 45 0"
+        target="revive: .outlaw.ten, .outlaw.eleven; texture: #outlaw1_texture; width: 1.2; height: 1.8"
         visible="false"
       ></a-entity>
 
@@ -193,10 +236,18 @@
       ></a-icosahedron>
       <a-icosahedron
         color="#FF926B"
-        position="8 0.15 -1"
+        position="7.8 0.15 -1"
         rotation="25 60 0"
         radius="1"
-      ></a-icosahedron>
+      >
+        <a-icosahedron
+          color="#FF926B"
+          position="0.5 0 0.2"
+          rotation="45 15 0"
+          scale="1.7 1.2 1"
+          radius="1"
+        ></a-icosahedron>
+      </a-icosahedron>
       <a-icosahedron
         color="#FF926B"
         position="-12 0.3 6"
