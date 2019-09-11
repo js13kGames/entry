@@ -35,6 +35,9 @@ var shapes = {
 			h: 22,
 			w: 20,
 			path: "M.69.5,18.92,16.07S14.69,24.9,5.79,20.62,1.32,4.11,4,3.3",
+			f: "white",
+			p2: "M8.35,7.54S6,11.43,7.47,13.71s6.26-2.07,6.26-2.07",
+			f2: "black",
 			anchor: [10, 10]
 		},
 		{
@@ -45,13 +48,27 @@ var shapes = {
 			rx: 4,
 			ry: 9,
 			rotate: -10,
-			anchor: [5, 10]
+			f: "black",
+			c2: {
+				cx: 4,
+				cy: 5,
+				rx: 2,
+				ry: 2,
+				f: 'white'
+			}
 		},
 		{
-			h: 20,
-			w: 14,
+			h: 22,
+			w: 20,
 			path: "M2.38,18.63c2.82,1.47,7.75.89,9.68-2.87S9.69-.44,4.8.56-.67,17,2.38,18.63Z",
-			anchor: [7, 10]
+			f: "black",
+			c2: {
+				cx: 6,
+				cy: 5,
+				rx: 2,
+				ry: 3,
+				f: 'white'
+			}
 		},
 		{
 			h: 12,
@@ -60,7 +77,15 @@ var shapes = {
 			cy: 6,
 			rx: 5,
 			ry: 5,
-			anchor: [6, 6]
+			anchor: [6, 6],
+			f: "black",
+			c2: {
+				cx: 6,
+				cy: 4,
+				rx: 2,
+				ry: 2,
+				f: 'white'
+			}
 		}
 	],
 	body: [
@@ -150,12 +175,12 @@ var shapes = {
 			path: "M8.49,29.84c8.45,4.14,14.86,5,20.51.24s4.51-10,1-20.94C26.91-.35,13.8-2.15,5.62,4.38S-.46,25.45,8.49,29.84Z",
 			anchor: [16, 16]
 		},
-		{
+		/*{ Not matching very well
 			h: 25,
 			w: 32,
 			path: "M.65.5S-1.82,20.12,13,23.75s17.69-12.5,17.69-12.5",
 			anchor: [16, 19]
-		},
+		},*/
 		{
 			h: 26,
 			w: 22,
@@ -201,10 +226,14 @@ function createElement(bodyParts, colors, x, y, flip) {
 	}
 	bodyParts.forEach((bodyPart, i) => {
 		if (bodyPart.path) {
-			svgContent += createPath(colors[i], bodyPart.path);
+			svgContent += createPath(bodyPart.f || colors[i], bodyPart.path);
 		} else {
-			svgContent += createCircle(colors[i], bodyPart);
+			svgContent += createCircle(bodyPart.f || colors[i], bodyPart);
 		}
+		if (bodyPart.p2)
+			svgContent += createPath(bodyPart.f2 || colors[i], bodyPart.p2);
+		if (bodyPart.c2)
+			svgContent += createCircle(bodyPart.c2.f || colors[i], bodyPart.c2);
 	});
 	svgContent += '</svg>';
 	container.innerHTML += svgContent;
@@ -214,9 +243,9 @@ const skeleton1 = {
 	arm: [20, 0],
 	body: [0, 0],
 	feet: [20, 20],
-	ear: [30, -60],
+	ear: [25, -60],
 	head: [0, -40],
-	eye: [20, -40],
+	eye: [15, -40],
 	mouth: [0, -20]
 }
 
@@ -242,8 +271,17 @@ function buildMonster(anatomy, color, x, y) {
 	});
 }
 
+const colors = [
+	'bdacc5', '524a4a', 'a44a8b', '5ab4cd', 'de5239', 'eede10', 'f6deb4', '41b4ee', '7383d5', '62d5b4', 'ffeecd' 
+]
+
 function randomColor() {
 	return '#' + ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
+}
+
+
+function randomColorf() {
+	return '#' + colors[Math.round(Math.random()*(colors.length - 1))];
 }
 
 function randomAnatomy() {
@@ -260,10 +298,10 @@ function randomAnatomy() {
 }
 
 function randi(array) {
-	return Math.floor(Math.random() * (array.length - 1));
+	return Math.round(Math.random() * (array.length - 1));
 }
 
-buildMonster(randomAnatomy(), randomColor(), 230, 100);
+buildMonster(randomAnatomy(), randomColorf(), 230, 100);
 
 /*
 
