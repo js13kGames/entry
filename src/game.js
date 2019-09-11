@@ -38,7 +38,7 @@ export default class Game {
     this.GRENADE_THROW_DURATION = 0.5
     this.GRENADE_BLAST_RANGE = this.WIDTH / 4
     this.GRENADE_BLAST_DURATION = 0.2
-    this.GRENADE_COOLDOWN = 0.1
+    this.GRENADE_COOLDOWN = 0.2
     this.GRENADE_REGENERATE = 2
     this.GRENADE_ATTACK = 100
     this.GRENADE_PROGRESS = 2
@@ -49,8 +49,9 @@ export default class Game {
     this.MINE_COLOR = 'rgba(255, 255, 255, 1)'
     this.MINE_BLAST_RANGE = this.WIDTH / 3
     this.MINE_BLAST_DURATION = 0.5
+    this.MINE_COOLDOWN = 0.5
     this.MINE_REGENERATE = 5
-    this.MINE_ATTACK = 200
+    this.MINE_ATTACK = 150
     this.MINE_PROGRESS = 4
     this.MINE_CAPACITY = 1
 
@@ -60,7 +61,9 @@ export default class Game {
     this.ENEMY_HEIGHT_MAX = this.PLAYER_HEIGHT * 2
     this.ENEMY_COLOR_LIGHT = 'rgba(230, 230, 230, 1)'
     this.ENEMY_SPEED = this.WIDTH / 400
-    this.ENEMY_ATTACK = 15
+    this.ENEMY_ATTACK = 30
+    this.WAVE_ENEMY_COUNT = 10
+    this.WAVE_INTERVAL = 3000
 
     this.UI_FONT_SIZE = this.WIDTH / 60
     this.TREE_MIN_WIDTH = this.WIDTH / 10
@@ -118,6 +121,7 @@ export default class Game {
         weight: 15
       }
     ]
+    this.UPGRADE_KILL_INTERVAL = 15
 
     // globals
     this.gameProgress = 0
@@ -139,13 +143,14 @@ export default class Game {
 
     this.grenades = this.GRENADE_CAPACITY
     this.grenadeCD = this.GRENADE_COOLDOWN
-    this.grenadeReg = this.GRENADE_REGENERATE
+    this.grenadeReg = 0
     this.grenadePool = Pool({
       create: Sprite
     })
 
     this.mines = this.MINE_CAPACITY
-    this.mineReg = this.MINE_REGENERATE
+    this.mineCD = this.MINE_COOLDOWN
+    this.mineReg = 0
     this.minePool = Pool({
       create: Sprite
     })
@@ -238,8 +243,12 @@ export default class Game {
             this.mineReg = 0
           }
         }
+        this.mineCD += dt
         if (keyPressed('x')) {
-          this.makeMine()
+          if (this.mineCD >= this.MINE_COOLDOWN) {
+            this.makeMine()
+            this.mineCD = 0
+          }
         }
 
         // collisions
@@ -253,7 +262,7 @@ export default class Game {
               if (enemy.hp <= 0) {
                 enemy.ttl = 0
                 this.kills++
-                if (this.kills % 10 === 0) {
+                if (this.kills % this.UPGRADE_KILL_INTERVAL === 0) {
                   this.randomUpgrade()
                 }
               }
@@ -308,8 +317,8 @@ export default class Game {
 
   start() {
     this.enemyInterval = setInterval(() => {
-      this.makeEnemies(8)
-    }, 3000)
+      this.makeEnemies(this.WAVE_ENEMY_COUNT)
+    }, this.WAVE_INTERVAL)
     this.loop.start()
   }
 
@@ -372,7 +381,15 @@ export default class Game {
         vx: this.ENEMY_SPEED,
         vy: -1.5,
         itsColor: color,
-        hp: hp
+        hp: hp,
+
+        render: function() {
+          const ctx = this.context
+          ctx.fillStyle = this.color
+          ctx.fillRect(this.x - this.width / 2, this.y - this.height, this.width, this.height);
+          ctx.fillStyle = 'rgba(255, 0, 0, 1)'
+          ctx.fillRect(this.x, this.y - this.height * 0.8, this.width * 0.4, this.width * 0.1)
+        }
       })
     }
   }
@@ -399,7 +416,7 @@ export default class Game {
   }
 
   makeGrenade() {
-    if (this.grenades <= 1) return
+    if (this.grenades < 1) return
     this.grenadePool.get({
       anchor: {
         x: 0.5,

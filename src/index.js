@@ -33,7 +33,7 @@ function checkStartKey(ev) {
       })
     }
     game.onGameBeaten = () => {
-      splashFade(gameBeatenSplash, true, Sound.gameOver, () => {
+      splashFade(gameBeatenSplash, true, Sound.gameStartAndBeaten, () => {
         game = null
         document.addEventListener('keypress', checkStartKey)
       })
