@@ -307,18 +307,45 @@ function randi(array) {
 
 buildMonster(randomAnatomy(), 230, 100);
 
-/*
 
-createElement(arms[1], '#4a90d6', 210, 100);
-createElement(arms[0], '#4a90d6', 245, 100, true);
-createElement(bodies[0], '#4a90d6', 230, 100);
-createElement(feet[0], '#4a90d6', 210, 120);
-createElement(feet[0], '#4a90d6', 245, 120, true);
-createElement(ears[0], '#4a90d6', 200, 40);
-createElement(ears[0], '#4a90d6', 260, 40, true);
-createElement(heads[0], '#4a90d6', 230, 60);
-createElement(eyes[0], '#FFFFFF', 210, 60);
-createElement(eyes[0], '#FFFFFF', 250, 60, true);
-createElement(mouths[0], '#4a90d6', 230, 80);
-*/
+let model = localStorage.getItem("bpmSave");
+if (model) {
+	try {
+		model = JSON.parse(model);
+	} catch (e) {}
+}
 
+if (!model) {
+	model = { x: 5, y: 5, p: 5, c: 5 };
+}
+
+function update () {
+	var status = 'X ' + model.x + ' Y ' + model.y + 
+	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
+	document.getElementById("location").innerHTML = status;
+}
+
+update();
+
+const buttonsContainer = document.getElementById('buttons');
+function addButton(label, cb) {
+	var button = document.createElement("button");
+	button.innerHTML = label;
+	buttonsContainer.appendChild(button);
+	button.addEventListener("click", cb);
+}
+
+addButton('North', () => move(0, -1));
+addButton('South', () => move(0, 1));
+addButton('West', () => move(-1, 0));
+addButton('East', () => move(1, 0));
+addButton('Catch', () => catchit());
+addButton('Buy', () => buy());
+
+function move(dx, dy) {
+	model.x += dx + 10;
+	model.y += dy + 10;
+	model.x = Math.abs(model.x) % 10;
+	model.y = Math.abs(model.y) % 10;
+	update();
+}
