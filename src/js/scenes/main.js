@@ -6,7 +6,7 @@ import { createMeteor } from '../meteor';
 import { Player } from '../player';
 import { colors } from '../colors';
 import { detectNewInput } from '../detectInput';
-import all from '../zzfx';
+import zzfx from '../zzfx';
 
 var game;
 var mainMenu;

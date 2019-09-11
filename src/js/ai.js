@@ -60,11 +60,11 @@ function maybeRewind(ai) {
 }
 
 export function update(ai) {
-    //var otherPlayers = ai.game.players.filter(p => p !== ai);
 
     // Currently the AI will only fight player 1 and look for pickup 1
-    var player = game.players[0];
+    var player = game.players[0].ship;
     var pickup = game.pickups[0];
+    var distToPlayer, distToPickup, target, angleToTarget;
 
     if (!ai.ship || !ai.ship.isAlive || ai.game.over) {
         return;
@@ -116,49 +116,49 @@ export function update(ai) {
         return;
     }
 
-    if (player.ship && player.ship.isAlive) {
-        ai.distToPlayer = getDist(ai, player.ship);
+    if (player && player.isAlive) {
+        distToPlayer = getDist(ai, player);
     } else {
-        ai.distToPlayer = null;
+        distToPlayer = null;
     }
 
     if (pickup) {
-        ai.distToPickup = getDist(ai, pickup);
+        distToPickup = getDist(ai, pickup);
     } else {
-        ai.distToPickup = null;
+        distToPickup = null;
     }
 
-    if (ai.distToPlayer !== null && ai.distToPickup !== null) {
-        ai.target = ai.distToPlayer < ai.distToPickup ? player.ship : pickup;
-    } else if (player.ship && player.ship.isAlive) {
-        ai.target = player.ship;
+    if (distToPlayer !== null && distToPickup !== null) {
+        target = distToPlayer < distToPickup ? player : pickup;
+    } else if (player && player.isAlive) {
+        target = player;
     } else if (pickup) {
-        ai.target = pickup;
+        target = pickup;
     } else {
-        ai.target = null;
+        target = null;
     }
 
-    if (!ai.target) {
+    if (!target) {
         return;
     }
 
     // Get the angle to the target (player or pickup), but if the target
     // is rainbowy, get the angle away from. RUN AWAY!
-    ai.angleToTarget = getAngle(ai, ai.target, !ai.target.rainbow);
+    angleToTarget = getAngle(ai, target, !target.rainbow);
 
-    if (ai.angleToTarget < -.1) {
+    if (angleToTarget < -.1) {
         ai.ship.turnRight();
-    } else if (ai.angleToTarget > .1) {
+    } else if (angleToTarget > .1) {
         ai.ship.turnLeft();
     } else {
         // If the target is rainbowy, just run away,
         // or if we are, go TOWARDS target
-        if (ai.target.rainbow || ai.ship.rainbow) {
+        if (target.rainbow || ai.ship.rainbow) {
             ai.ship.engineOn();
         // Otherwise...
         } else {
             // If target is nearby player, randomly-ish shoot and toggle engine
-            if (ai.target === player.ship && ai.distToPlayer < 100) {
+            if (target === player && distToPlayer < 100) {
                 if (Math.random() < .1) { ai.ship.fire(); }
                 if (Math.random() < .01) { ai.ship.engineOff(); }
                 if (Math.random() < .01) { ai.ship.engineOn(); }
@@ -168,21 +168,4 @@ export function update(ai) {
             }
         }
     }
-
-
-    // if (Math.abs(ai.angleToTarget % (Math.PI * 2) - Math.PI ) < .01) {
-    //     ai.ship.fire();
-    // }
-
-    // var playerDistances = otherPlayers.map((player) => {
-    //     if (!player.ship.isAlive) {
-    //         return null;
-    //     }
-    //     return Math.abs(vec.dotProduct(
-    //         { x: ai.ship.x, y: ai.ship.y },
-    //         { x: player.ship.x, y: player.ship.y }
-    //     ));
-    // });
-    //
-    // console.log(playerDistances);
 }
