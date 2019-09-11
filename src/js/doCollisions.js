@@ -207,7 +207,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 return;
             }
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
-                if (sprite1.rainbow && !sprite1.invuln) {
+                if (sprite1.rainbow && !sprite2.invuln) {
                     if (sprite1.shield) {
                         sprite2.x += cResult.overlap * cResult.overlap_x;
                         sprite2.y += cResult.overlap * cResult.overlap_y;
