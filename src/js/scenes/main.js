@@ -45,7 +45,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.prev();
-                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.up = 15;
             } else {
                 player.debounce.up = 0;
@@ -57,7 +57,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.next();
-                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.down = 15;
             } else {
                 player.debounce.down = 0;
@@ -68,7 +68,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     player.debounce.accept--;
                     return;
                 }
-
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 mainMenuLoop.stop()
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
                     scenes.startShipSelect(game, scenes);

@@ -1,6 +1,7 @@
 import { createMeteor } from './meteor';
 import { bounce } from './bounce';
 import * as util from './utility';
+import zzfx from './zzfx';
 
 function doCollision(sprite1, sprite2, cResult, sprites) {
 
@@ -34,6 +35,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
 
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
                 sprite2.ttl = 0;
+                zzfx(.4,0,1000,.1,.1,.4,3,0,.55); // ZzFX 46683
 
                 if (sprite1.mass < 1e4 && sprite1.radius > 8) {
 
@@ -136,6 +138,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
 
                 sprite1.explode(sprites);
                 sprite2.owner.player.scoreInc();
+                zzfx(.3,0,1993,.3,.1,.1,0,0,.8); // ZzFX 38591
             }
             return;
         }
@@ -169,12 +172,14 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                                 game: sprite2.game
                             });
                         }
-                        sprite2.ttl = 0
+                        sprite2.ttl = 0;
+                        zzfx(1,.1,585,.7,.03,0,1.6,0,.55); // ZzFX 63814
                     } else if (sprite2.radius > 60) {
                         sprite1.x -= cResult.overlap * cResult.overlap_x;
                         sprite1.y -= cResult.overlap * cResult.overlap_y;
                     } else {
                         sprite2.explode(sprites);
+                        zzfx(1,.1,585,.7,.03,0,1.6,0,.55); // ZzFX 63814
                     }
                     return;
                 }
@@ -221,6 +226,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                     }
                     sprite2.explode();
                     sprite1.player.scoreInc();
+                    zzfx(.3,0,1993,.3,.1,.1,0,0,.8); // ZzFX 38591
                     return;
                 }
 

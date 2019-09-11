@@ -50,7 +50,7 @@ function maybeRewind(ai) {
     //  - that way the AI is more likely to "extend" it's duration with rewind
     // Only does it is at least half way through rainbow-ing
     if (ai.ship.rainbow && ai.ship.rainbow < 4) {
-        maybeRewind += 6;
+        maybeRewind += 4;
     }
 
     if (Math.random() * 100 < maybeRewind) {
@@ -59,6 +59,13 @@ function maybeRewind(ai) {
     }
 }
 
+/**
+ * Makes the AI do stuff.
+ * Ideally for performance it would check for stuff one update,
+ * then act upon it another, but that would take up more B, and
+ * it's difficult to judge exactly what hits performance.
+ * @param  {object} ai An AI player
+ */
 export function update(ai) {
 
     // Currently the AI will only fight player 1 and look for pickup 1
@@ -77,7 +84,9 @@ export function update(ai) {
     var avoidingMeteor = false;
 
     game.meteors.forEach((meteor, i) => {
-        if (getDist(ai, meteor) > meteor.radius + 40) {
+        var dist = getDist(ai, meteor)
+
+        if (dist > meteor.radius + 40) {
             return;
         }
 
@@ -92,6 +101,17 @@ export function update(ai) {
             if (angleToMeteor < -2) {
                 ai.ship.turnRight();
             } else if (angleToMeteor > 2) {
+                ai.ship.turnLeft();
+            }
+
+        // If it's the don't turn quite as much as it's stationary
+        } else if (i === 0 && dist > 20) {
+            avoidingMeteor = true;
+
+            ai.ship.engineOn();
+            if (angleToMeteor < - Math.PI / 2) {
+                ai.ship.turnRight();
+            } else if (angleToMeteor > Math.PI / 2) {
                 ai.ship.turnLeft();
             }
 
@@ -160,7 +180,7 @@ export function update(ai) {
             // If target is nearby player, randomly-ish shoot and toggle engine
             if (target === player && distToPlayer < 100) {
                 if (Math.random() < .1) { ai.ship.fire(); }
-                if (Math.random() < .01) { ai.ship.engineOff(); }
+                if (Math.random() < .02) { ai.ship.engineOff(); }
                 if (Math.random() < .01) { ai.ship.engineOn(); }
             // Else target is power up, just go towards it
             } else {
