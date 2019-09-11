@@ -1,7 +1,7 @@
 const initGameController = () => {
   let currentLevel = 0;
-  if (DEBUG) currentLevel = 2;
-  const { playMusic, pizzaSound, punchSound } = initMusic();
+  if (DEBUG) currentLevel = 5;
+  const { playMusic, pizzaSound, punchSound, blockSound } = initMusic();
 
   const levelInitters = [
     (next) => initIntro('intro', next),
@@ -10,7 +10,7 @@ const initGameController = () => {
     (next) => initIntro('pre-lvl-2', next),
     // initLevel2,
     (next) => initIntro('pre-lvl-3', next),
-    (next) => initLevel3(punchSound, next),
+    (next) => initLevel3(punchSound, blockSound, next),
     () => initIntro('credits'),
   ];
 

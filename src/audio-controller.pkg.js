@@ -6,7 +6,7 @@ function initMusic () {
     synth: 1
   }
 
-  function makeSound(startTime, wave, sweepLength, freq, endFreq) {
+  function makeSound(startTime, wave, sweepLength, freq, endFreq, maxVol = 0.5) {
     var oscillator = audioCtx.createOscillator();
     oscillator.type = wave;
 
@@ -14,7 +14,7 @@ function initMusic () {
     sweepEnv.gain.cancelScheduledValues(startTime);
     sweepEnv.gain.setValueAtTime(0, startTime);
     // set our attack
-    sweepEnv.gain.linearRampToValueAtTime(0.5, startTime + 0.01);
+    sweepEnv.gain.linearRampToValueAtTime(maxVol, startTime + 0.01);
     // set our release
     sweepEnv.gain.linearRampToValueAtTime(0, startTime + sweepLength);
 
@@ -84,6 +84,14 @@ function initMusic () {
         masterGain.gain.value = 0;
       }
       makeSound(audioCtx.currentTime, 'square', 0.15, 200, 100);
+    },
+    blockSound () {
+      if (DEBUG && !audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0;
+      }
+      makeSound(audioCtx.currentTime, 'triangle', 0.5, 100, 50, 5);
     }
   };
 }
