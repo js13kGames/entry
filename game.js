@@ -407,25 +407,28 @@ function step(framestep) {
     }
 
     //Update interface
-    i1.innerHTML = "Time: " +timeleft.toFixed(2).toString();
-    if (timeleft < 10)
+    if (state == 1)
     {
-        i1.style.color = "#F08080";
-    } else {
-        i1.style.color = "white";
-    }
+        i1.innerHTML = "Time: " +timeleft.toFixed(2).toString();
+        if (timeleft < 10)
+        {
+            i1.style.color = "#F08080";
+        } else {
+            i1.style.color = "white";
+        }
 
-    if (level == 11)
-    {
-        i2.innerHTML = "All clear: +" +timejackpot.toString() + "";
-        var ypercent = (player.translate.y - (fliptop-c_yflipmargin)) / ((flipbottom + c_yflipmargin) - (fliptop - c_yflipmargin)) * 9.25; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
-        if (flipped == -1) {ypercent = (9.45-ypercent)}
-        ypercent = M.max(0,ypercent); //To avoid interface displaying -0 in some cases
-        i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
-    } else {
-        i2.innerHTML = activated.toString() + " of "+activategoal.toString();
-        
-        i3.innerHTML = "Level:\n" +level.toString();
+        if (level == 11)
+        {
+            i2.innerHTML = "All clear: +" +timejackpot.toString() + "";
+            var ypercent = (player.translate.y - (fliptop-c_yflipmargin)) / ((flipbottom + c_yflipmargin) - (fliptop - c_yflipmargin)) * 9.25; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
+            if (flipped == -1) {ypercent = (9.45-ypercent)}
+            ypercent = M.max(0,ypercent); //To avoid interface displaying -0 in some cases
+            i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
+        } else {
+            i2.innerHTML = activated.toString() + " of "+activategoal.toString();
+            
+            i3.innerHTML = "Level:\n" +level.toString();
+        }
     }
 
     if (paused && framestep == false) {return;}
