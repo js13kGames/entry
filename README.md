@@ -4,9 +4,10 @@
 
 ## Thank You
 
-- [js13k](https://2019.js13kgames.com/), of course.
-- [Mozilla's AFrame](https://aframe.io).
-- and my wife for getting me a DK1 all those years ago.
+- [js13k](https://2019.js13kgames.com/), of course
+- [Mozilla's AFrame](https://aframe.io)
+- [Three.js](https://threejs.org) for your tutorials
+- and my wife for getting me a DK1 all those years ago 💜.
 
 ## Plan
 
