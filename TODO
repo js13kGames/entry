@@ -5,11 +5,14 @@ Thu: game system for hiding/showing main game elements
 Fri: pixelart assets (cowboy + chicken)
 Sat: track time/shots fired
 Sun: 3D scene (target + background)
-Mon: music (compose + integrate)
-Tue: bugs / check Oculus Go
+Mon: Coil + music (compose -> scrap music)
+Tue: gameplay tuning / check Oculus Go
 Wed: screenshots + desc
 Thu: submit
 Fri Sep13: unmovable deadline
 
 BUGS:
 - can't listen for stateremoved events of the outlaws' entities from the a-scene (remove hack when solved)
+
+intro music mellow: https://sb.bitsnbites.eu/?data=U0JveAwC7dihCsMwFIXhP-lkzPRM_V6kvrKiYi8yBiMURunoA28RsfWF_J853KOOvtc7BPrAtMP8TJAYgMclxB_0Y3eLIb54k0ubWfmUXOq98mXj_I7255qSJEmSJEmS2uWPUJLa9Ac
+8bit https://sb.bitsnbites.eu/?data=U0JveAwC7dgxCoNQFETR-wz8Po22Yus6LLMSdyHIRwhisgmXYZYWC1t7wXua4U019Xu2ENQRvy-xTT2ksgG6R0S1Ur8SKYqBkby3mZn3ntNxz3xYuL6z_flISZIkSZIkSfflj1CS7ukP
