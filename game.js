@@ -1,4 +1,7 @@
 x=game.getContext`2d`;
+const M=Math;
+const V="visible";
+const H="hidden";
 
 //Global variables
 const TAU = Zdog.TAU;
@@ -32,10 +35,7 @@ timeleft = c_starttime; timejackpot = c_startjackpot; score = 0; hiscore = 0; //
 activated = 0; activategoal = 0; //For the normal levels.
 level = 5;
 
-const times = []; let fps; //Used to display FPS during debugging.
-
 seed = 200; //Randomness seed for level generation.
-lasttimestamp = performance.now();
 
 palette = 0; palletename = "";
 c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
@@ -66,20 +66,6 @@ let touchstartX = 0;
 let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
-
-const limit = Math.tan(45 * 1.5 / 180 * Math.PI);
-const gestureZone = document.getElementById('game');
-
-gestureZone.addEventListener('touchstart', function(event) {
-    touchstartX = event.changedTouches[0].screenX;
-    touchstartY = event.changedTouches[0].screenY;
-}, false);
-
-gestureZone.addEventListener('touchend', function(event) {
-    touchendX = event.changedTouches[0].screenX;
-    touchendY = event.changedTouches[0].screenY;
-    handleGesture(event);
-}, false);
 
 function initGame() {
 
@@ -141,7 +127,7 @@ function initGame() {
         addTo: illo,
         stroke: 8,
         color: c[1],
-        path: [ //QQQ Don't make them so long but move with either player or camera
+        path: [
             { x: -c_horborder-10, y: -700 },          // start at top left
             { x: -c_horborder-10, y: 700 },          // line to top right
             { move: { x: c_horborder+10, y: -700 } }, // move to bottom left
@@ -185,7 +171,7 @@ function initGame() {
     });
 
     for (var i = 0; i != 100; i += 1) {
-        var size = (Math.round(random()*10)/10);
+        var size = (M.round(random()*10)/10);
         var append = "bb"; //Transperancy for colors
         if (size > 4) {append = "88"}
         if (size > 7) {append = "44"}
@@ -233,16 +219,16 @@ function loadLevel() {
     else 
     {
         player.visible = true; trail.visible = true;
-        i1.style.visibility = "visible"; 
-        i2.style.visibility = "visible"; 
-        i3.style.visibility = "visible"; 
+        i1.style.visibility = V; 
+        i2.style.visibility = V; 
+        i3.style.visibility = V; 
     }
 
     border.color = c[1]; flipline.color = c[1]; trail.translate.z = -200;
 
     if (level == 11)
     {
-        seed = (Math.random() * 1000000) + 10000;
+        seed = (M.random() * 1000000) + 10000;
     } else {
         seed = level*1000;
     }
@@ -271,7 +257,7 @@ function loadLevel() {
 
     if (level != 11) {
         activated = 0;
-        activategoal = Math.round( obstacle.length * (1.6 + (level * 0.08)))
+        activategoal = M.round( obstacle.length * (1.6 + (level * 0.08)))
     }
 
     flipline.translate.y = flipy;
@@ -284,8 +270,8 @@ function generateObstacles(amount,position,direction) {
     var prevrand = -1;
     for (var i = 0; i != amount; i++)
     {
-        var rand = Math.round(random()*10);
-        if (rand == prevrand) {rand = Math.round(random()*10);} //Reroll once if equal to last added part
+        var rand = M.round(random()*10);
+        if (rand == prevrand) {rand = M.round(random()*10);} //Reroll once if equal to last added part
         var width = 0; var height = 0;
         var obstaclex = 0; var obstacley = 0;
         var front = (random() >= 0.1); if (flipped == -1) {front = !front;}
@@ -293,16 +279,16 @@ function generateObstacles(amount,position,direction) {
         switch(rand)
         {
             case 0: //Two tall platforms at same height
-                height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = (((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.5;
+                height = 40+((M.round(random()*10)/10)*100);
+                obstaclex = (((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.5;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(24), height, front);
                 obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(24), height, front);
                 break;
             case 1: //Two tall platforms, one lower than the other
-                height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
+                height = 40+((M.round(random()*10)/10)*100);
+                obstaclex = ((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front);
@@ -312,7 +298,7 @@ function generateObstacles(amount,position,direction) {
                 off += 50*direction;
                 break;
             case 2: //Funnel
-                obstaclex = ((((Math.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
+                obstaclex = ((((M.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
                 obstacley = off;
                 height = 30;
 
@@ -324,7 +310,7 @@ function generateObstacles(amount,position,direction) {
                 break;
             case 3: //Three tall platforms at same height
                 height = 80;
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                obstaclex = ((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.4),obstacley,24, height, front);
@@ -333,8 +319,8 @@ function generateObstacles(amount,position,direction) {
                 off += 50*direction;
                 break;
             case 4: //Three tall platforms at descending heights
-                height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                height = 40+((M.round(random()*10)/10)*100);
+                obstaclex = ((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16+(24), height, front);
@@ -347,8 +333,8 @@ function generateObstacles(amount,position,direction) {
                 break;
 
             case 5: //Enclosed box
-                height = 80+((Math.round(random()*10)/10)*40); var width = height;
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
+                height = 80+((M.round(random()*10)/10)*40); var width = height;
+                obstaclex = ((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width*0.75, 8, front);
@@ -362,7 +348,7 @@ function generateObstacles(amount,position,direction) {
                 break;
                 
             case 6: //Wide platform
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.1;
+                obstaclex = ((M.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.1;
                 obstacley = off+(40*direction);
                 height = 16;
 
@@ -371,8 +357,8 @@ function generateObstacles(amount,position,direction) {
                 off += 80*direction;
                 break;
             default: //Other chances, just generate one long platform
-                height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = ((((Math.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
+                height = 40+((M.round(random()*10)/10)*100);
+                obstaclex = ((((M.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
                 obstacley = off;
 
                 obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front);
@@ -423,16 +409,6 @@ function step(framestep) {
     }
 
     //Update interface
-
-    const now = performance.now();
-    while (times.length > 0 && times[0] <= now - 1000) {
-        times.shift();
-    }
-    times.push(now);
-    fps = times.length;
-
-    document.getElementById("fps-display").innerHTML = fps.toString() + " fps";
-
     i1.innerHTML = "Time: " +timeleft.toFixed(2).toString();
     if (timeleft < 10)
     {
@@ -446,7 +422,7 @@ function step(framestep) {
         i2.innerHTML = "All clear: +" +timejackpot.toString() + "";
         var ypercent = (player.translate.y - (fliptop-c_yflipmargin)) / ((flipbottom + c_yflipmargin) - (fliptop - c_yflipmargin)) * 9.25; //9.45 instead of 10 so the number never gets rounded up to 10 in the interface
         if (flipped == -1) {ypercent = (9.45-ypercent)}
-        ypercent = Math.max(0,ypercent); //To avoid interface displaying -0 in some cases
+        ypercent = M.max(0,ypercent); //To avoid interface displaying -0 in some cases
         i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
     } else {
         i2.innerHTML = activated.toString() + " of "+activategoal.toString();
@@ -468,12 +444,12 @@ function step(framestep) {
 
     if (playermovex != 0)
     {
-        playermovex += c_addverticalspeed*Math.sign(playermovex)
+        playermovex += c_addverticalspeed*M.sign(playermovex)
     }
     
     if (( (playermovey <= -c_dropspeed && flipped == -1) || (playermovey >= c_dropspeed && flipped == 1) ) && state == 1 && playermovex == 0)
     {
-        playermovey += c_adddropspeed*Math.sign(playermovey)
+        playermovey += c_adddropspeed*M.sign(playermovey)
     } else if (( (flipped == 1 && playermovey < 1) || (flipped == -1 && playermovey > -1) ) && playermovex == 0) { //If falling against gravity direction
         playermovey += c_addjumpspeed*flipped
     }
@@ -619,7 +595,7 @@ function step(framestep) {
                 obstacle[i].translate.z = -25;
                 obstacle[i].zspeed = 0;
             } else {
-                obstacle[i].translate.z += 5*Math.sign(obstacle[i].zspeed)
+                obstacle[i].translate.z += 5*M.sign(obstacle[i].zspeed)
             }
         }
 
@@ -726,9 +702,9 @@ function pushObstacleToFlipside(obstacle){
 function handleGesture(e) { //Source: https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d#gistcomment-2577818
     let x = touchendX - touchstartX;
     let y = touchendY - touchstartY;
-    let xy = Math.abs(x / y);
-    let yx = Math.abs(y / x);
-    if (Math.abs(x) > treshold || Math.abs(y) > treshold) {
+    let xy = M.abs(x / y);
+    let yx = M.abs(y / x);
+    if (M.abs(x) > treshold || M.abs(y) > treshold) {
         if (yx <= limit) {
             if (x < 0) {
                 input("ArrowLeft");
@@ -760,14 +736,14 @@ function input(key) {
         if (key == " " && canstartgame) {
             l1.style.animation = "gamestart-top 1s ease-in";
             l2.style.animation = "gamestart-bottom 1s ease-in";
-            not.style.visibility = "hidden";
+            not.style.visibility = H;
             sound([1,,0.08,,0.50,0.26,,0.43,,,,,,,,0.68,,,1,,,,,0.15]);
             setTimeout(function(){
-                l1.style.visibility = "hidden";
-                l2.style.visibility = "hidden";
+                l1.style.visibility = H;
+                l2.style.visibility = H;
             }, 975);
-            if (hiscore == 0) {state = 1; level = 1; loadLevel(level); l3.style.visibility = "hidden"; }
-            else {state = 2; level == Math.min(hiscore,11); switchPalette(palette); updateLevelSelect();}
+            if (hiscore == 0) {state = 1; level = 1; loadLevel(level); l3.style.visibility = H; }
+            else {state = 2; level == M.min(hiscore,11); switchPalette(palette); updateLevelSelect();}
             return;
         }
     }
@@ -798,11 +774,11 @@ function input(key) {
             state = 1;
             loadLevel(level);
             sound([3,,0.22,0.49,0.40,0.15,,-0.39,,,,-0.68,0.69,,,,,,1,,,,,0.25]);
-            d.style.visibility = "hidden";
-            d3.style.visibility = "hidden";
-            d4.style.visibility = "hidden";
-            k.style.visibility = "hidden";
-            l3.style.visibility = "hidden"; 
+            d.style.visibility = H;
+            d3.style.visibility = H;
+            d4.style.visibility = H;
+            k.style.visibility = H;
+            l3.style.visibility = H; 
         }
     }
     else if (state == 1) //Gameplay
@@ -814,14 +790,14 @@ function input(key) {
         }
 
         if (paused && key == "Backspace") {
-            if (l3.style.visibility == "hidden")
+            if (l3.style.visibility == H)
             {
-                l3.style.visibility = "visible"; 
+                l3.style.visibility = V; 
                 l3.innerHTML = "Confirm with [Backspace]";
             }
             else
             {
-                l3.style.visibility = "hidden";
+                l3.style.visibility = H;
                 pause(-1);
                 gameOver();
             }
@@ -851,7 +827,7 @@ function input(key) {
             playermovey = 0;
             sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15]);
             return;
-        } else if ((key == "ArrowUp" || key == "w" || key == "z") && (Math.sign(playermovey) == flipped || Math.sign(playermovey) == 0))
+        } else if ((key == "ArrowUp" || key == "w" || key == "z") && (M.sign(playermovey) == flipped || M.sign(playermovey) == 0))
         {
             playermovex = 0;
             playermovey = -c_jumpspeed*flipped;
@@ -904,7 +880,7 @@ function gameWin() {
     if (level-1 == hiscore && level != 11) 
     {
         hiscore = level; level = hiscore+1;
-        not.style.visibility = "visible";
+        not.style.visibility = V;
         if (hiscore != 10)
         {
              not.innerHTML = "You unlocked level "+(hiscore+1).toString()+"!<br>Progress saved.";
@@ -933,7 +909,7 @@ function gameOver() {
         {
             if (hiscore > 0)
             {
-                not.style.visibility = "visible"; not.innerHTML = "Congrats!<br>You broke the old highscore of<br>"+hiscore.toString()+" with a new score of <b>"+score.toString()+"</b>!";
+                not.style.visibility = V; not.innerHTML = "Congrats!<br>You broke the old highscore of<br>"+hiscore.toString()+" with a new score of <b>"+score.toString()+"</b>!";
                 hiscore = score;
                 setCookie('backflipped_level',hiscore)
             }
@@ -950,12 +926,12 @@ function gameEnd() {
     playermovey = 0.5*flipped;
     canstartgame = false;
 
-    i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
+    i1.style.visibility = H; i2.style.visibility = H; i3.style.visibility = H;
 
     l1.style.animation = ""; //Reset animations
     l2.style.animation = "";
-    l1.style.visibility = "visible";
-    l2.style.visibility = "visible";
+    l1.style.visibility = V;
+    l2.style.visibility = V;
     l1.style.color = c[0]; l2.style.textShadow = "-2px -5px "+c[0];
     l2.style.color = c[1]; l2.style.textShadow = "-2px -5px "+c[1];
 
@@ -963,22 +939,22 @@ function gameEnd() {
 
     setTimeout(function(){
         canstartgame = true;
-        l3.style.visibility = "visible"; 
+        l3.style.visibility = V; 
     }, 1000);
 }
 
 //Utility functions and features
 
 function updateLevelSelect() {
-    d.style.visibility="visible";
-    k.style.visibility="visible";
+    d.style.visibility=V;
+    k.style.visibility=V;
 
     if (level <= 10) {d2.innerHTML = level.toString() + "/10";}
     else { d2.innerHTML = "∞ Endless"; }
-    if (level == 1) {d3.style.visibility="hidden"}
-    else { d3.style.visibility="visible" }
-    if (level == hiscore+1 || level == 11) {d4.style.visibility="hidden"}
-    else { d4.style.visibility="visible" }
+    if (level == 1) {d3.style.visibility=H}
+    else { d3.style.visibility=V }
+    if (level == hiscore+1 || level == 11) {d4.style.visibility=H}
+    else { d4.style.visibility=V }
 
     k1.innerHTML = "Colors ("+(palette+1).toString()+"/7)";
     k2.innerHTML = palettename;
@@ -987,8 +963,8 @@ function updateLevelSelect() {
 //Taken from https://stackoverflow.com/a/19303725
 
 function random() {
-    var x = Math.sin(seed++) * 10000;
-    return x - Math.floor(x);
+    var x = M.sin(seed++) * 10000;
+    return x - M.floor(x);
 }
 
 window.addEventListener("resize", function() {
@@ -1023,38 +999,56 @@ function pause(toggle) {
     else if (paused != toggle) {paused = toggle} else {return;}
 
     if (paused) {
-        not.style.visibility = "visible"; n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br>[Backspace] to give up";
-        i1.style.visibility = "hidden"; i2.style.visibility = "hidden"; i3.style.visibility = "hidden";
+        not.style.visibility = V; n.innerHTML = "PAUSED, [Space] or [Tap] to resume<br>[Backspace] to give up";
+        i1.style.visibility = H; i2.style.visibility = H; i3.style.visibility = H;
     }
     else {
-        not.style.visibility = "hidden";
-        i1.style.visibility = "visible"; i2.style.visibility = "visible"; i3.style.visibility = "visible";
-        l3.style.visibility = "hidden";
+        not.style.visibility = H;
+        i1.style.visibility = V; i2.style.visibility = V; i3.style.visibility = V;
+        l3.style.visibility = H;
     }
 }
 
 function HtmlLoaded() {
     //Caching all references to HTML elements*/
-    l1 = document.getElementById("l1");
-    l2 = document.getElementById("l2");
-    l3 = document.getElementById("l3");
-    i1 = document.getElementById("i1");
-    i2 = document.getElementById("i2");
-    i3 = document.getElementById("i3");
-    d = document.getElementById("d");
-    d1 = document.getElementById("d1");
-    d2 = document.getElementById("d2");
-    d3 = document.getElementById("d3");
-    d4 = document.getElementById("d4");
-    k = document.getElementById("k");
-    k1 = document.getElementById("k1");
-    k2 = document.getElementById("k2");
-    k3 = document.getElementById("k3");
-    k4 = document.getElementById("k4");
-    n = document.getElementById("not");
+    l1 = id("l1");
+    l2 = id("l2");
+    l3 = id("l3");
+    i1 = id("i1");
+    i2 = id("i2");
+    i3 = id("i3");
+    d = id("d");
+    d1 = id("d1");
+    d2 = id("d2");
+    d3 = id("d3");
+    d4 = id("d4");
+    k = id("k");
+    k1 = id("k1");
+    k2 = id("k2");
+    k3 = id("k3");
+    k4 = id("k4");
+    n = id("not");
     canstartgame = true;
 
-    document.getElementById("game").focus();
+    id("game").focus();
+
+    const limit = M.tan(45 * 1.5 / 180 * M.PI);
+    const gestureZone = id('game');
+
+    gestureZone.addEventListener('touchstart', function(event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    gestureZone.addEventListener('touchend', function(event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        handleGesture(event);
+    }, false);
+}
+
+function id(n) {
+    return(document.getElementById(n));
 }
 
 function isOdd(num) { return num % 2;}
@@ -1119,7 +1113,7 @@ function checkCookie() {
     var savedscore = getCookie("backflipped_level");
     if (savedscore != "noone") 
     {
-        hiscore = savedscore; level = Math.min(11,hiscore+1); //Set level id, and load it
+        hiscore = savedscore; level = M.min(11,hiscore+1); //Set level id, and load it
     } 
     else 
     {

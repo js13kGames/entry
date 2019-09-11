@@ -23,22 +23,6 @@ html, body {
   left: 50%;
 }
 
-.debug {
-  position: absolute;
-  top: 0%;
-  background-color: #ccccccBB;
-  font-size: 12px;
-  /*visibility: hidden; /*QQQ*/
-}
-
-.stats {
-  position: absolute;
-  bottom: 5%;
-  background-color: #ccccccBB;
-  font-size: 12px;
-  /*visibility: hidden; /*QQQ*/
-}
-
 .top {
   font-size: 70px;
   color: #223e32;
@@ -61,11 +45,7 @@ html, body {
   -webkit-text-stroke-width: 0px;
   text-shadow: 3px -3px #000000;
   transform: translate(-50%,300%);
-  animation-name: gamestart-start;
-  animation-duration: 1s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+  animation: gamestart-start 1s ease-in-out infinite alternate;
 }
 
 .notification {
@@ -105,7 +85,7 @@ html, body {
 
 .jackpot {
   font-size: 20px;
-  transform: translate(25%,100%) rotate(-10deg);
+  transform: translate(0%,100%) rotate(-10deg);
   width: 200px;
   color: black;
   background-color: white;
@@ -179,43 +159,43 @@ html, body {
 
 @keyframes jackpot-gain-1 {
   from {
-    transform: translate(25%,80%) rotate(-10deg);
+    transform: translate(0%,80%) rotate(-10deg);
   }
   to {
-    transform: translate(25%,100%) rotate(-10deg);
+    transform: translate(0%,100%) rotate(-10deg);
   }
 }
 
 @keyframes jackpot-gain-2 {
   from {
-    transform: translate(25%,80%) rotate(-10deg);
+    transform: translate(0%,80%) rotate(-10deg);
   }
   to {
-    transform: translate(25%,100%) rotate(-10deg);
+    transform: translate(0%,100%) rotate(-10deg);
   }
 }
 
 @keyframes jackpot-claim-1 {
   0% {
-    transform: translate(25%,100%) rotate(-10deg);
+    transform: translate(0%,100%) rotate(-10deg);
   }
   50% {
-    transform: translate(25%,100%) rotate(-190deg);
+    transform: translate(0%,100%) rotate(-190deg);
   }
   100% {
-    transform: translate(25%,100%) rotate(-370deg);
+    transform: translate(0%,100%) rotate(-370deg);
   }
 }
 
 @keyframes jackpot-claim-2 {
   0% {
-    transform: translate(25%,100%) rotate(-10deg);
+    transform: translate(0%,100%) rotate(-10deg);
   }
   50% {
-    transform: translate(25%,100%) rotate(-190deg);
+    transform: translate(0%,100%) rotate(-190deg);
   }
   100% {
-    transform: translate(25%,100%) rotate(-370deg);
+    transform: translate(0%,100%) rotate(-370deg);
   }
 }
 

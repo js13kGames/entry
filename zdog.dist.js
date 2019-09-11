@@ -538,20 +538,6 @@
   // messes up if multiple pointers/touches
   
   // event support, default to mouse events
-  /*var downEvent = 'mousedown';
-  var moveEvent = 'mousemove';
-  var upEvent = 'mouseup';
-  if ( window.PointerEvent ) {
-    // PointerEvent, Chrome
-    downEvent = 'pointerdown';
-    moveEvent = 'pointermove';
-    upEvent = 'pointerup';
-  } else if ( 'ontouchstart' in window ) {
-    // Touch Events, iOS Safari
-    downEvent = 'touchstart';
-    moveEvent = 'touchmove';
-    upEvent = 'touchend';
-  }*/
   
   function noop() {}
   
@@ -560,22 +546,7 @@
   }
   
   Dragger.prototype.create = function( options ) {
-    /*this.onDragStart = options.onDragStart || noop;
-    this.onDragMove = options.onDragMove || noop;
-    this.onDragEnd = options.onDragEnd || noop;
-  
-    this.bindDrag( options.startElement );*/
   };
-  
-  // Dragger.prototype.bindDrag = function( element ) {
-  //   element = this.getQueryElement( element );
-  //   if ( !element ) {
-  //     return;
-  //   }
-  //   // disable browser gestures #53
-  //   element.style.touchAction = 'none';
-  //   element.addEventListener( downEvent, this );
-  // };
   
   Dragger.prototype.getQueryElement = function( element ) {
     if ( typeof element == 'string' ) {
@@ -584,57 +555,6 @@
     }
     return element;
   };
-  
-  // Dragger.prototype.handleEvent = function( event ) {
-  //   var method = this[ 'on' + event.type ];
-  //   if ( method ) {
-  //     method.call( this, event );
-  //   }
-  // };
-  
-  // Dragger.prototype.onmousedown =
-  // Dragger.prototype.onpointerdown = function( event ) {
-  //   this.dragStart( event, event );
-  // };
-  
-  // Dragger.prototype.ontouchstart = function( event ) {
-  //   this.dragStart( event, event.changedTouches[0] );
-  // };
-  
-  // Dragger.prototype.dragStart = function( event, pointer ) {
-  //   event.preventDefault();
-  //   this.dragStartX = pointer.pageX;
-  //   this.dragStartY = pointer.pageY;
-  //   window.addEventListener( moveEvent, this );
-  //   window.addEventListener( upEvent, this );
-  //   this.onDragStart( pointer );
-  // };
-  
-  // Dragger.prototype.ontouchmove = function( event ) {
-  //   // HACK, moved touch may not be first
-  //   this.dragMove( event, event.changedTouches[0] );
-  // };
-  
-  // Dragger.prototype.onmousemove =
-  // Dragger.prototype.onpointermove = function( event ) {
-  //   this.dragMove( event, event );
-  // };
-  
-  // Dragger.prototype.dragMove = function( event, pointer ) {
-  //   event.preventDefault();
-  //   var moveX = pointer.pageX - this.dragStartX;
-  //   var moveY = pointer.pageY - this.dragStartY;
-  //   this.onDragMove( pointer, moveX, moveY );
-  // };
-  
-  // Dragger.prototype.onmouseup =
-  // Dragger.prototype.onpointerup =
-  // Dragger.prototype.ontouchend =
-  // Dragger.prototype.dragEnd = function(/* event */) {
-  //   window.removeEventListener( moveEvent, this );
-  //   window.removeEventListener( upEvent, this );
-  //   this.onDragEnd();
-  // };
   
   return Dragger;
   
@@ -804,47 +724,11 @@
   
   // ----- svg ----- //
   
-  // Illustration.prototype.setSvg = function( element ) {
-  //   this.element = element;
-  //   this.isSvg = true;
-  //   this.pixelRatio = 1;
-  //   // set initial size from width & height attributes
-  //   var width = element.getAttribute('width');
-  //   var height = element.getAttribute('height');
-  //   this.setSizeSvg( width, height );
-  // };
-  
-  // Illustration.prototype.setSizeSvg = function( width, height ) {
-  //   this.width = width;
-  //   this.height = height;
-  //   var viewWidth = width / this.zoom;
-  //   var viewHeight = height / this.zoom;
-  //   var viewX = this.centered ? -viewWidth/2 : 0;
-  //   var viewY = this.centered ? -viewHeight/2 : 0;
-  //   this.element.setAttribute( 'viewBox', viewX + ' ' + viewY + ' ' +
-  //     viewWidth + ' ' + viewHeight );
-  //   if ( this.resize ) {
-  //     // remove size attributes, let size be determined by viewbox
-  //     this.element.removeAttribute('width');
-  //     this.element.removeAttribute('height');
-  //   } else {
-  //     this.element.setAttribute( 'width', width );
-  //     this.element.setAttribute( 'height', height );
+  // function empty( element ) {
+  //   while ( element.firstChild ) {
+  //     element.removeChild( element.firstChild );
   //   }
-  // };
-  
-  // Illustration.prototype.renderGraphSvg = function( item ) {
-  //   item = item || this;
-  //   empty( this.element );
-  //   this.onPrerender( this.element );
-  //   Anchor.prototype.renderGraphSvg.call( item, this.element );
-  // };
-  
-  function empty( element ) {
-    while ( element.firstChild ) {
-      element.removeChild( element.firstChild );
-    }
-  }
+  // }
   
   // ----- drag ----- //
   
@@ -859,23 +743,7 @@
   
     this.bindDrag( this.element );
   };
-  
-  Illustration.prototype.dragStart = function(/* event, pointer */) {
-    this.dragStartRX = this.dragRotate.rotate.x;
-    this.dragStartRY = this.dragRotate.rotate.y;
-    Dragger.prototype.dragStart.apply( this, arguments );
-  };
-  
-  Illustration.prototype.dragMove = function( event, pointer ) {
-    var moveX = pointer.pageX - this.dragStartX;
-    var moveY = pointer.pageY - this.dragStartY;
-    var displaySize = Math.min( this.width, this.height );
-    var moveRY = moveX / displaySize * TAU;
-    var moveRX = moveY / displaySize * TAU;
-    this.dragRotate.rotate.x = this.dragStartRX - moveRX;
-    this.dragRotate.rotate.y = this.dragStartRY - moveRY;
-    Dragger.prototype.dragMove.apply( this, arguments );
-  };
+
   
   return Illustration;
   
@@ -898,9 +766,9 @@
     this.endRenderPoint = this.renderPoints[ this.renderPoints.length - 1 ];
     // arc actions come with previous point & corner point
     // but require bezier control points
-    if ( method == 'arc' ) {
-      this.controlPoints = [ new Vector(), new Vector() ];
-    }
+    // if ( method == 'arc' ) {
+    //   this.controlPoints = [ new Vector(), new Vector() ];
+    // }
   }
   
   function mapVectorPoint( point ) {
@@ -942,26 +810,6 @@
     return renderer.line( ctx, elem, this.renderPoints[0] );
   };
   
-  PathCommand.prototype.bezier = function( ctx, elem, renderer ) {
-    var cp0 = this.renderPoints[0];
-    var cp1 = this.renderPoints[1];
-    var end = this.renderPoints[2];
-    return renderer.bezier( ctx, elem, cp0, cp1, end );
-  };
-  
-  var arcHandleLength = 9/16;
-  
-  PathCommand.prototype.arc = function( ctx, elem, renderer ) {
-    var prev = this.previousPoint;
-    var corner = this.renderPoints[0];
-    var end = this.renderPoints[1];
-    var cp0 = this.controlPoints[0];
-    var cp1 = this.controlPoints[1];
-    cp0.set( prev ).lerp( corner, arcHandleLength );
-    cp1.set( end ).lerp( corner, arcHandleLength );
-    return renderer.bezier( ctx, elem, cp0, cp1, end );
-  };
-  
   return PathCommand;
   
   }));
@@ -998,8 +846,6 @@
   var actionNames = [
     'move',
     'line',
-    'bezier',
-    'arc',
   ];
   
   Shape.prototype.updatePath = function() {
@@ -1162,12 +1008,6 @@
     if ( !renderer.isSvg ) {
       return;
     }
-    // if ( !this.svgElement ) {
-    //   // create svgElement
-    //   this.svgElement = document.createElementNS( svgURI, 'path');
-    //   this.svgElement.setAttribute( 'stroke-linecap', 'round' );
-    //   this.svgElement.setAttribute( 'stroke-linejoin', 'round' );
-    // }
     return this.svgElement;
   };
   
