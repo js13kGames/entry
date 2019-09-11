@@ -103,7 +103,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     // glow
     begin();
     fillStyle('#DFD8C1');
-    ctx.ellipse(16, 390, 12, 4, 0, 0, 2*Math.PI)
+    ctx.ellipse(16, 390, 12, 4, 0, 0, PI2)
     fill();
     // pole
     begin();
@@ -112,7 +112,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     // lamp
     begin();
     fillStyle('#FE8');
-    ctx.arc(16, 372, 4, 0, 2*Math.PI);
+    ctx.arc(16, 372, 4, 0, PI2);
     fill();
 
     // Building
@@ -129,7 +129,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     fill();
     // shadow
     begin();
-    fillStyle('rgba(0, 0, 0, 0.3)');
+    fillStyle('rgba(0,0,0,0.3)');
     moveTo(8, 10);
     lineTo(48, 0);
     lineTo(48, 391);
@@ -184,22 +184,22 @@ const initModel = (height, width, foodCoveragePercent) => {
       ctx.fillRect(x, y+10, 40, 12);
 
       // car white section
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#fff';
       ctx.fillRect(x + 12, y+10, 17, 12);
 
       // front wheel
-      ctx.fillStyle = 'darkgray';
-      ctx.arc(x+8, y+22, 5, 0, 2*Math.PI);
+      ctx.fillStyle = '#bbb';
+      ctx.arc(x+8, y+22, 5, 0, PI2);
       ctx.fill();
 
       // back wheel
-      ctx.arc(x+31, y+22, 5, 0, 2*Math.PI);
+      ctx.arc(x+31, y+22, 5, 0, PI2);
       ctx.fill();
 
       // light
       ctx.beginPath();
-      ctx.fillStyle = 'yellow';
-      ctx.arc(x+3, y+13, 2, 0, 2*Math.PI);
+      ctx.fillStyle = '#ff0'; // yellow
+      ctx.arc(x+3, y+13, 2, 0, PI2);
       ctx.fill();
       ctx.closePath();
     }
@@ -262,7 +262,7 @@ const initModel = (height, width, foodCoveragePercent) => {
     const b = building;
     for (let row = 0; row < map.length; row += (b.length + 1)) {
       for (let column = 0; column < map[0].length; column += (b[0].length + 1)) {
-        const bpx = buildingImageCells['2x4' + (Math.random() < .5 ? '' : '-2')];
+        const bpx = buildingImageCells['2x4' + (random() < .5 ? '' : '-2')];
         // iterating building with plus one street space
         if (map[row][column].canEnter) {
           addBuilding(map, row, column, b, bpx);
@@ -274,7 +274,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   function dealShuffled (arr, draw) {
     let shuffled = [...arr];
     for (let i = 0; i < draw; i++) {
-      const swap = Math.floor(random() * arr.length);
+      const swap = floor(random() * arr.length);
       [shuffled[i], shuffled[swap]] = [shuffled[swap], shuffled[i]];
     }
     return shuffled.slice(0, draw);
@@ -295,7 +295,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   // init
   initMap(height, width);
   addBuildings();
-  
+
   const openForPolice = getOpenSquares();
   const policeLocations = [0, 10, 48, 75, 100, 125, 156, 175, 200, 225, 250, 275, 300, 315, 325, 350, 375, 400, 425, 450, 455, 475, 500, 525, 528, 550, 575, 595, 625, 655, 675];
   for (let i = 0; i < policeLocations.length; i++) {

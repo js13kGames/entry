@@ -17,7 +17,7 @@ const initState = () => {
     if (typeof update === 'function') newState = update(state);
     if (!newState || newState === state) {
       cb(state);
-      return false
+      return false;
     };
     if (newState) {
       Object.assign(state, newState);

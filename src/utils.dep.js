@@ -10,6 +10,7 @@ const addEventListener = (target, event, handler) => {
   target.addEventListener(event, handler);
   return () => target.removeEventListener(event, handler);
 }
+const PI2 = Math.PI * 2;
 const rAF = window.requestAnimationFrame;
 const cancelAF = window.cancelAnimationFrame;
 const noop = () => null;
