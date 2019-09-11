@@ -188,8 +188,6 @@ var shapes = {
 	]
 };
 
-var container = document.getElementById("container");
-
 function createPath(fillColor, pathCommands) {
 	return '<path fill="'+fillColor+'" stroke="#222222" stroke-width="2" d="'+pathCommands+'"/>';
 }
@@ -229,7 +227,7 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip) {
 			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
 	});
 	svgContent += '</svg>';
-	container.innerHTML += svgContent;
+	document.getElementById("container").innerHTML += svgContent;
 }
 
 const skeleton1 = {
@@ -253,7 +251,7 @@ const testAnatomy = {
 	mouth: 3
 }
 
-function buildMonster(anatomy, x, y) {
+function showMonster(anatomy, x, y) {
 	Object.keys(anatomy.type).forEach(bodyPart => {
 		const xvar = anatomy.type[bodyPart][0];
 		const yvar = anatomy.type[bodyPart][1];
@@ -272,17 +270,15 @@ const eyeColors = [
 	'da171d', '007976', '000000', '222222'
 ]
 
-function randomColor() {
-	return '#' + ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
-}
-
-
 function randomColorf(colors) {
 	return '#' + colors[Math.round(Math.random()*(colors.length - 1))];
 }
 
+let anatomySeq = 0;
 function randomAnatomy() {
 	return {
+		id: anatomySeq++,
+		name: randomName(),
 		type: skeleton1,
 		bps: {
 			arm: randi(shapes.arm),
@@ -301,12 +297,19 @@ function randomAnatomy() {
 	}
 }
 
+function randomName() {
+	return 'Ochurus';
+}
+
 function randi(array) {
 	return Math.round(Math.random() * (array.length - 1));
 }
 
-buildMonster(randomAnatomy(), 230, 100);
-
+//TODO: Seed
+const defs = [];
+for (let i = 0; i < 151; i++) {
+	defs.push(randomAnatomy());
+}
 
 let model = localStorage.getItem("bpmSave");
 if (model) {
@@ -316,16 +319,18 @@ if (model) {
 }
 
 if (!model) {
-	model = { x: 5, y: 5, p: 5, c: 5 };
+	model = { x: 5, y: 5, p: 5, c: 5, m: {} };
 }
 
 function update () {
 	var status = 'X ' + model.x + ' Y ' + model.y + 
 	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
 	document.getElementById("location").innerHTML = status;
+	document.getElementById("container").innerHTML = '';
+	if (currentMonster) {
+		showMonster(currentMonster, 100, 100);
+	}
 }
-
-update();
 
 const buttonsContainer = document.getElementById('buttons');
 function addButton(label, cb) {
@@ -335,6 +340,7 @@ function addButton(label, cb) {
 	button.addEventListener("click", cb);
 }
 
+addButton('Backpack', () => backpack());
 addButton('North', () => move(0, -1));
 addButton('South', () => move(0, 1));
 addButton('West', () => move(-1, 0));
@@ -347,5 +353,52 @@ function move(dx, dy) {
 	model.y += dy + 10;
 	model.x = Math.abs(model.x) % 10;
 	model.y = Math.abs(model.y) % 10;
+	land();
 	update();
 }
+
+let currentMonster;
+
+function catchit() {
+	if (!currentMonster) {
+		message('Nothing to catch!');
+		return;
+	}
+	if (model.c <= 0) {
+		message('Not enough catchers!');
+		return;
+	}
+	if (model.m[currentMonster.id]) {
+		message('You already have it.');
+		return;
+	}
+	model.m[currentMonster.id] = true;
+	message('You catch the ' + currentMonster.name);
+	currentMonster = false;
+	save();
+	update();
+}
+
+function save() {
+	localStorage.setItem("bpmSave", JSON.stringify(model));
+}
+
+function message(m) {
+	document.getElementById("message").innerHTML = m;
+}
+
+function land() {
+	if (true) {
+		currentMonster = getMonsterAtLocation();
+		message('There\'s a ' + currentMonster.name + ' here!');
+		update();
+	}
+}
+
+function getMonsterAtLocation() {
+	return defs[(model.x+model.y)%(defs.length - 1)];
+}
+
+land();
+
+update();
