@@ -1,4 +1,4 @@
-const initLevel3 = async (punchSound, nextLevel) => {
+const initLevel3 = async (punchSound, blockSound, nextLevel) => {
   const MAP_WIDTH = 50;
   let gameIsOver = false;
   const opponentOf = {
@@ -55,6 +55,7 @@ const initLevel3 = async (punchSound, nextLevel) => {
         gameIsOver = true;
         wait(name, 250, () => endGame(opponentOf[name]));
       } else {
+        punchSound();
         wait(name, 750, () => recoverFromAttack(name, cb))
       }
     }
@@ -113,7 +114,10 @@ const initLevel3 = async (punchSound, nextLevel) => {
     const attackerName = opponentOf[name];
     const attackerState = state[attackerName];
     if (attackerState.currentAction !== ATTACKING) return state;
-    if (object.currentAction == BLOCKING) return state;
+    if (object.currentAction == BLOCKING) {
+      blockSound();
+      return state;
+    }
 
     const attackLocation = attackerState.location + (attackerState.direction == LEFT ? -1 : 1);
     if (object.location !== attackLocation) return state;
@@ -171,7 +175,6 @@ const initLevel3 = async (punchSound, nextLevel) => {
   }
 
   function attack (attacker, cb = noop) {
-    punchSound();
     // both will need to recover after the attack
     setState(state => {
       return checkIfUnderAttack(opponentOf[attacker], {
