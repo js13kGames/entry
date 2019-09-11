@@ -197,7 +197,7 @@ function createCircle(fillColor, bp) {
 }
 
 
-function createElement(bodyPartKey, bodyParts, colors, x, y, flip) {
+function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 	if (!Array.isArray(bodyParts)) {
 		bodyParts = [bodyParts];
 	}
@@ -227,7 +227,7 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip) {
 			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
 	});
 	svgContent += '</svg>';
-	document.getElementById("container").innerHTML += svgContent;
+	container.innerHTML += svgContent;
 }
 
 const skeleton1 = {
@@ -251,13 +251,13 @@ const testAnatomy = {
 	mouth: 3
 }
 
-function showMonster(anatomy, x, y) {
+function showMonster(anatomy, x, y, container, scale) {
 	Object.keys(anatomy.type).forEach(bodyPart => {
 		const xvar = anatomy.type[bodyPart][0];
 		const yvar = anatomy.type[bodyPart][1];
-		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar);
+		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar, false, container);
 		if (xvar) {
-			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true);
+			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true, container);
 		}
 	});
 }
@@ -328,7 +328,7 @@ function update () {
 	document.getElementById("location").innerHTML = status;
 	document.getElementById("container").innerHTML = '';
 	if (currentMonster) {
-		showMonster(currentMonster, 100, 100);
+		showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
 	}
 }
 
@@ -373,6 +373,7 @@ function catchit() {
 		return;
 	}
 	model.m[currentMonster.id] = true;
+	model.c--;
 	message('You catch the ' + currentMonster.name);
 	currentMonster = false;
 	save();
@@ -397,6 +398,29 @@ function land() {
 
 function getMonsterAtLocation() {
 	return defs[(model.x+model.y)%(defs.length - 1)];
+}
+
+let showingBackpack = false;
+function backpack() {
+	showingBackpack = !showingBackpack;
+	if (showingBackpack) {
+		document.getElementById("container").innerHTML = '';
+		Object.keys(model.m).forEach(key => {
+			if (!defs[key]) return;
+			var div = document.createElement("div");
+			div.style.position = 'relative';
+			div.style.display = 'inline-block';
+			div.style.width = '100px';
+			div.style.height = '150px';
+			showMonster(defs[key], 50, 100, div, 1);
+			var label = document.createElement("p");
+			label.innerHTML = defs[key].name;
+			div.appendChild(label);
+			document.getElementById("container").appendChild(div);
+		});
+	} else {
+		update();
+	}
 }
 
 land();
