@@ -6,8 +6,13 @@ Fri: pixelart assets (cowboy + chicken)
 Sat: track time/shots fired
 Sun: 3D scene (target + background)
 Mon: Coil + music (compose -> scrap music)
-Tue: gameplay tuning / check Oculus Go
-Wed: screenshots + desc
+Tue: gameplay tuning
+Wed: screenshots + desc / check Oculus Go
+  - lower start button text and increase the height of its touchzone so it catches going below the text
+  - move the outlaw being the start text to the left
+  - put a rock in place of outlaw?
+  - scale down the 2nd cactus to avoid copy paste feeling
+  - 3rd cowboy texture?
 Thu: submit
 Fri Sep13: unmovable deadline
 
@@ -16,3 +21,30 @@ BUGS:
 
 intro music mellow: https://sb.bitsnbites.eu/?data=U0JveAwC7dihCsMwFIXhP-lkzPRM_V6kvrKiYi8yBiMURunoA28RsfWF_J853KOOvtc7BPrAtMP8TJAYgMclxB_0Y3eLIb54k0ubWfmUXOq98mXj_I7255qSJEmSJEmS2uWPUJLa9Ac
 8bit https://sb.bitsnbites.eu/?data=U0JveAwC7dgxCoNQFETR-wz8Po22Yus6LLMSdyHIRwhisgmXYZYWC1t7wXua4U019Xu2ENQRvy-xTT2ksgG6R0S1Ur8SKYqBkby3mZn3ntNxz3xYuL6z_flISZIkSZIkSfflj1CS7ukP
+
+
+Submission text:
+
+Enjoy the stunning beauty of the Wild West, but beware of outlaws lurking around: They'll keep coming back to pester you more than you can imagine...
+
+Don't Look Back is a short WebXR game made with A-Frame, inspired by carnival shooting galleries and my love for pixelart.
+
+Controls:
+---------
+Don't Look Back supports all 3DoF devices; no controller is required to play the game.
+Shoot chickens and outlaws by gazing at them. Chickens act as a safe playground for you to experiment with the game mechanics before your curiosity kills the cat and starts the game...
+
+Web monetization:
+-----------------
+Coil subscribers get 20% more outlaws to shoot at and get addressed as "Cowboy Coil"!
+
+Tested on:
+- Chrome & Firefox, Google Cardboard and Oculus Go (I never managed to enable VR mode on Google DayDream)
+- thanks to JulienK for testing Coil subscribers add-ons.
+
+Things that didn't make the cut:
+--------------------------------
+I started halfway through the competition this year and I ran out of time to add the following:
+- idle/death sprite animations for outlaws and chickens,
+- Western ambient music,
+- aiming/shooting with 3DoF controllers (Oculus Go, DayDream) if present
