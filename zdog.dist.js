@@ -1410,574 +1410,574 @@
   return Rect;
   
   }));
-  /**
-   * RoundedRect
-   */
+  // /**
+  //  * RoundedRect
+  //  */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./shape') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.RoundedRect = factory( Zdog.Shape );
-    }
-  }( this, function factory( Shape ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./shape') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.RoundedRect = factory( Zdog.Shape );
+  //   }
+  // }( this, function factory( Shape ) {
   
-  var RoundedRect = Shape.subclass({
-    width: 1,
-    height: 1,
-    cornerRadius: 0.25,
-    closed: false,
-  });
+  // var RoundedRect = Shape.subclass({
+  //   width: 1,
+  //   height: 1,
+  //   cornerRadius: 0.25,
+  //   closed: false,
+  // });
   
-  RoundedRect.prototype.setPath = function() {
-    /* eslint
-       id-length: [ "error", { "min": 2, "exceptions": [ "x", "y" ] }],
-       key-spacing: "off" */
-    var xA = this.width / 2;
-    var yA = this.height / 2;
-    var shortSide = Math.min( xA, yA );
-    var cornerRadius = Math.min( this.cornerRadius, shortSide );
-    var xB = xA - cornerRadius;
-    var yB = yA - cornerRadius;
-    var path = [
-      // top right corner
-      { x: xB, y: -yA },
-      { arc: [
-        { x: xA, y: -yA },
-        { x: xA, y: -yB },
-      ]},
-    ];
-    // bottom right corner
-    if ( yB ) {
-      path.push({ x: xA, y: yB });
-    }
-    path.push({ arc: [
-      { x: xA, y:  yA },
-      { x: xB, y:  yA },
-    ]});
-    // bottom left corner
-    if ( xB ) {
-      path.push({ x: -xB, y: yA });
-    }
-    path.push({ arc: [
-      { x: -xA, y:  yA },
-      { x: -xA, y:  yB },
-    ]});
-    // top left corner
-    if ( yB ) {
-      path.push({ x: -xA, y: -yB });
-    }
-    path.push({ arc: [
-      { x: -xA, y: -yA },
-      { x: -xB, y: -yA },
-    ]});
+  // RoundedRect.prototype.setPath = function() {
+  //   /* eslint
+  //      id-length: [ "error", { "min": 2, "exceptions": [ "x", "y" ] }],
+  //      key-spacing: "off" */
+  //   var xA = this.width / 2;
+  //   var yA = this.height / 2;
+  //   var shortSide = Math.min( xA, yA );
+  //   var cornerRadius = Math.min( this.cornerRadius, shortSide );
+  //   var xB = xA - cornerRadius;
+  //   var yB = yA - cornerRadius;
+  //   var path = [
+  //     // top right corner
+  //     { x: xB, y: -yA },
+  //     { arc: [
+  //       { x: xA, y: -yA },
+  //       { x: xA, y: -yB },
+  //     ]},
+  //   ];
+  //   // bottom right corner
+  //   if ( yB ) {
+  //     path.push({ x: xA, y: yB });
+  //   }
+  //   path.push({ arc: [
+  //     { x: xA, y:  yA },
+  //     { x: xB, y:  yA },
+  //   ]});
+  //   // bottom left corner
+  //   if ( xB ) {
+  //     path.push({ x: -xB, y: yA });
+  //   }
+  //   path.push({ arc: [
+  //     { x: -xA, y:  yA },
+  //     { x: -xA, y:  yB },
+  //   ]});
+  //   // top left corner
+  //   if ( yB ) {
+  //     path.push({ x: -xA, y: -yB });
+  //   }
+  //   path.push({ arc: [
+  //     { x: -xA, y: -yA },
+  //     { x: -xB, y: -yA },
+  //   ]});
   
-    // back to top right corner
-    if ( xB ) {
-      path.push({ x: xB, y: -yA });
-    }
+  //   // back to top right corner
+  //   if ( xB ) {
+  //     path.push({ x: xB, y: -yA });
+  //   }
   
-    this.path = path;
-  };
+  //   this.path = path;
+  // };
   
-  return RoundedRect;
+  // return RoundedRect;
   
-  }));
-  /**
-   * Ellipse
-   */
+  // }));
+  // /**
+  //  * Ellipse
+  //  */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./shape') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.Ellipse = factory( Zdog.Shape );
-    }
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./shape') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.Ellipse = factory( Zdog.Shape );
+  //   }
   
-  }( this, function factory( Shape ) {
+  // }( this, function factory( Shape ) {
   
-  var Ellipse = Shape.subclass({
-    diameter: 1,
-    width: undefined,
-    height: undefined,
-    quarters: 4,
-    closed: false,
-  });
+  // var Ellipse = Shape.subclass({
+  //   diameter: 1,
+  //   width: undefined,
+  //   height: undefined,
+  //   quarters: 4,
+  //   closed: false,
+  // });
   
-  Ellipse.prototype.setPath = function() {
-    var width = this.width != undefined ? this.width : this.diameter;
-    var height = this.height != undefined ? this.height : this.diameter;
-    var x = width / 2;
-    var y = height / 2;
-    this.path = [
-      { x: 0, y: -y },
-      { arc: [ // top right
-        { x: x, y: -y },
-        { x: x, y: 0 },
-      ]},
-    ];
-    // bottom right
-    if ( this.quarters > 1 ) {
-      this.path.push({ arc: [
-        { x: x, y: y },
-        { x: 0, y: y },
-      ]});
-    }
-    // bottom left
-    if ( this.quarters > 2 ) {
-      this.path.push({ arc: [
-        { x: -x, y: y },
-        { x: -x, y: 0 },
-      ]});
-    }
-    // top left
-    if ( this.quarters > 3 ) {
-      this.path.push({ arc: [
-        { x: -x, y: -y },
-        { x: 0, y: -y },
-      ]});
-    }
-  };
+  // Ellipse.prototype.setPath = function() {
+  //   var width = this.width != undefined ? this.width : this.diameter;
+  //   var height = this.height != undefined ? this.height : this.diameter;
+  //   var x = width / 2;
+  //   var y = height / 2;
+  //   this.path = [
+  //     { x: 0, y: -y },
+  //     { arc: [ // top right
+  //       { x: x, y: -y },
+  //       { x: x, y: 0 },
+  //     ]},
+  //   ];
+  //   // bottom right
+  //   if ( this.quarters > 1 ) {
+  //     this.path.push({ arc: [
+  //       { x: x, y: y },
+  //       { x: 0, y: y },
+  //     ]});
+  //   }
+  //   // bottom left
+  //   if ( this.quarters > 2 ) {
+  //     this.path.push({ arc: [
+  //       { x: -x, y: y },
+  //       { x: -x, y: 0 },
+  //     ]});
+  //   }
+  //   // top left
+  //   if ( this.quarters > 3 ) {
+  //     this.path.push({ arc: [
+  //       { x: -x, y: -y },
+  //       { x: 0, y: -y },
+  //     ]});
+  //   }
+  // };
   
-  return Ellipse;
+  // return Ellipse;
   
-  }));
+  // }));
   /**
    * Shape
    */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./boilerplate'), require('./shape') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.Polygon = factory( Zdog, Zdog.Shape );
-    }
-  }( this, function factory( utils, Shape ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./boilerplate'), require('./shape') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.Polygon = factory( Zdog, Zdog.Shape );
+  //   }
+  // }( this, function factory( utils, Shape ) {
   
-  var Polygon = Shape.subclass({
-    sides: 3,
-    radius: 0.5,
-  });
+  // var Polygon = Shape.subclass({
+  //   sides: 3,
+  //   radius: 0.5,
+  // });
   
-  var TAU = utils.TAU;
+  // var TAU = utils.TAU;
   
-  Polygon.prototype.setPath = function() {
-    this.path = [];
-    for ( var i=0; i < this.sides; i++ ) {
-      var theta = i/this.sides * TAU - TAU/4;
-      var x = Math.cos( theta ) * this.radius;
-      var y = Math.sin( theta ) * this.radius;
-      this.path.push({ x: x, y: y });
-    }
-  };
+  // Polygon.prototype.setPath = function() {
+  //   this.path = [];
+  //   for ( var i=0; i < this.sides; i++ ) {
+  //     var theta = i/this.sides * TAU - TAU/4;
+  //     var x = Math.cos( theta ) * this.radius;
+  //     var y = Math.sin( theta ) * this.radius;
+  //     this.path.push({ x: x, y: y });
+  //   }
+  // };
   
-  return Polygon;
+  // return Polygon;
   
-  }));
-  /**
-   * Hemisphere composite shape
-   */
+  // }));
+  // /**
+  //  * Hemisphere composite shape
+  //  */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./boilerplate'), require('./vector'),
-          require('./anchor'), require('./ellipse') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.Hemisphere = factory( Zdog, Zdog.Vector, Zdog.Anchor, Zdog.Ellipse );
-    }
-  }( this, function factory( utils, Vector, Anchor, Ellipse ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./boilerplate'), require('./vector'),
+  //         require('./anchor'), require('./ellipse') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.Hemisphere = factory( Zdog, Zdog.Vector, Zdog.Anchor, Zdog.Ellipse );
+  //   }
+  // }( this, function factory( utils, Vector, Anchor, Ellipse ) {
   
-  var Hemisphere = Ellipse.subclass({
-    fill: true,
-  });
+  // var Hemisphere = Ellipse.subclass({
+  //   fill: true,
+  // });
   
-  var TAU = utils.TAU;
+  // var TAU = utils.TAU;
   
-  Hemisphere.prototype.create = function(/* options */) {
-    // call super
-    Ellipse.prototype.create.apply( this, arguments );
-    // composite shape, create child shapes
-    this.apex = new Anchor({
-      addTo: this,
-      translate: { z: this.diameter/2 },
-    });
-    // vector used for calculation
-    this.renderCentroid = new Vector();
-  };
+  // Hemisphere.prototype.create = function(/* options */) {
+  //   // call super
+  //   Ellipse.prototype.create.apply( this, arguments );
+  //   // composite shape, create child shapes
+  //   this.apex = new Anchor({
+  //     addTo: this,
+  //     translate: { z: this.diameter/2 },
+  //   });
+  //   // vector used for calculation
+  //   this.renderCentroid = new Vector();
+  // };
   
-  Hemisphere.prototype.updateSortValue = function() {
-    // centroid of hemisphere is 3/8 between origin and apex
-    this.renderCentroid.set( this.renderOrigin )
-      .lerp( this.apex.renderOrigin, 3/8 );
-    this.sortValue = this.renderCentroid.z;
-  };
+  // Hemisphere.prototype.updateSortValue = function() {
+  //   // centroid of hemisphere is 3/8 between origin and apex
+  //   this.renderCentroid.set( this.renderOrigin )
+  //     .lerp( this.apex.renderOrigin, 3/8 );
+  //   this.sortValue = this.renderCentroid.z;
+  // };
   
-  Hemisphere.prototype.render = function( ctx, renderer ) {
-    this.renderDome( ctx, renderer );
-    // call super
-    Ellipse.prototype.render.apply( this, arguments );
-  };
+  // Hemisphere.prototype.render = function( ctx, renderer ) {
+  //   this.renderDome( ctx, renderer );
+  //   // call super
+  //   Ellipse.prototype.render.apply( this, arguments );
+  // };
   
-  Hemisphere.prototype.renderDome = function( ctx, renderer ) {
-    if ( !this.visible ) {
-      return;
-    }
-    var elem = this.getDomeRenderElement( ctx, renderer );
-    var contourAngle = Math.atan2( this.renderNormal.y, this.renderNormal.x );
-    var domeRadius = this.diameter/2 * this.renderNormal.magnitude();
-    var x = this.renderOrigin.x;
-    var y = this.renderOrigin.y;
+  // Hemisphere.prototype.renderDome = function( ctx, renderer ) {
+  //   if ( !this.visible ) {
+  //     return;
+  //   }
+  //   var elem = this.getDomeRenderElement( ctx, renderer );
+  //   var contourAngle = Math.atan2( this.renderNormal.y, this.renderNormal.x );
+  //   var domeRadius = this.diameter/2 * this.renderNormal.magnitude();
+  //   var x = this.renderOrigin.x;
+  //   var y = this.renderOrigin.y;
   
-    if ( renderer.isCanvas ) {
-      // canvas
-      var startAngle = contourAngle + TAU/4;
-      var endAngle = contourAngle - TAU/4;
-      ctx.beginPath();
-      ctx.arc( x, y, domeRadius, startAngle, endAngle );
-    } else if ( renderer.isSvg ) {
-      // svg
-      contourAngle = (contourAngle - TAU/4) / TAU * 360;
-      this.domeSvgElement.setAttribute( 'd', 'M ' + -domeRadius + ',0 A ' +
-          domeRadius + ',' + domeRadius + ' 0 0 1 ' + domeRadius + ',0' );
-      this.domeSvgElement.setAttribute( 'transform',
-          'translate(' + x + ',' + y + ' ) rotate(' + contourAngle + ')' );
-    }
+  //   if ( renderer.isCanvas ) {
+  //     // canvas
+  //     var startAngle = contourAngle + TAU/4;
+  //     var endAngle = contourAngle - TAU/4;
+  //     ctx.beginPath();
+  //     ctx.arc( x, y, domeRadius, startAngle, endAngle );
+  //   } else if ( renderer.isSvg ) {
+  //     // svg
+  //     contourAngle = (contourAngle - TAU/4) / TAU * 360;
+  //     this.domeSvgElement.setAttribute( 'd', 'M ' + -domeRadius + ',0 A ' +
+  //         domeRadius + ',' + domeRadius + ' 0 0 1 ' + domeRadius + ',0' );
+  //     this.domeSvgElement.setAttribute( 'transform',
+  //         'translate(' + x + ',' + y + ' ) rotate(' + contourAngle + ')' );
+  //   }
   
-    renderer.stroke( ctx, elem, this.stroke, this.color, this.getLineWidth() );
-    renderer.fill( ctx, elem, this.fill, this.color );
-    renderer.end( ctx, elem );
-  };
+  //   renderer.stroke( ctx, elem, this.stroke, this.color, this.getLineWidth() );
+  //   renderer.fill( ctx, elem, this.fill, this.color );
+  //   renderer.end( ctx, elem );
+  // };
   
-  var svgURI = 'http://www.w3.org/2000/svg';
+  // var svgURI = 'http://www.w3.org/2000/svg';
   
-  Hemisphere.prototype.getDomeRenderElement = function( ctx, renderer ) {
-    if ( !renderer.isSvg ) {
-      return;
-    }
-    if ( !this.domeSvgElement ) {
-      // create svgElement
-      this.domeSvgElement = document.createElementNS( svgURI, 'path');
-      this.domeSvgElement.setAttribute( 'stroke-linecap', 'round' );
-      this.domeSvgElement.setAttribute( 'stroke-linejoin', 'round' );
-    }
-    return this.domeSvgElement;
-  };
+  // Hemisphere.prototype.getDomeRenderElement = function( ctx, renderer ) {
+  //   if ( !renderer.isSvg ) {
+  //     return;
+  //   }
+  //   if ( !this.domeSvgElement ) {
+  //     // create svgElement
+  //     this.domeSvgElement = document.createElementNS( svgURI, 'path');
+  //     this.domeSvgElement.setAttribute( 'stroke-linecap', 'round' );
+  //     this.domeSvgElement.setAttribute( 'stroke-linejoin', 'round' );
+  //   }
+  //   return this.domeSvgElement;
+  // };
   
-  return Hemisphere;
+  // return Hemisphere;
   
-  }));
-  /**
-   * Cylinder composite shape
-   */
+  // }));
+  // /**
+  //  * Cylinder composite shape
+  //  */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./boilerplate'),
-          require('./path-command'), require('./shape'), require('./group'),
-          require('./ellipse') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.Cylinder = factory( Zdog, Zdog.PathCommand, Zdog.Shape,
-          Zdog.Group, Zdog.Ellipse );
-    }
-  }( this, function factory( utils, PathCommand, Shape, Group, Ellipse ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./boilerplate'),
+  //         require('./path-command'), require('./shape'), require('./group'),
+  //         require('./ellipse') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.Cylinder = factory( Zdog, Zdog.PathCommand, Zdog.Shape,
+  //         Zdog.Group, Zdog.Ellipse );
+  //   }
+  // }( this, function factory( utils, PathCommand, Shape, Group, Ellipse ) {
   
-  function noop() {}
+  // function noop() {}
   
-  // ----- CylinderGroup ----- //
+  // // ----- CylinderGroup ----- //
   
-  var CylinderGroup = Group.subclass({
-    color: '#333',
-    updateSort: true,
-  });
+  // var CylinderGroup = Group.subclass({
+  //   color: '#333',
+  //   updateSort: true,
+  // });
   
-  CylinderGroup.prototype.create = function() {
-    Group.prototype.create.apply( this, arguments );
-    this.pathCommands = [
-      new PathCommand( 'move', [ {} ] ),
-      new PathCommand( 'line', [ {} ] ),
-    ];
-  };
+  // CylinderGroup.prototype.create = function() {
+  //   Group.prototype.create.apply( this, arguments );
+  //   this.pathCommands = [
+  //     new PathCommand( 'move', [ {} ] ),
+  //     new PathCommand( 'line', [ {} ] ),
+  //   ];
+  // };
   
-  CylinderGroup.prototype.render = function( ctx, renderer ) {
-    this.renderCylinderSurface( ctx, renderer );
-    Group.prototype.render.apply( this, arguments );
-  };
+  // CylinderGroup.prototype.render = function( ctx, renderer ) {
+  //   this.renderCylinderSurface( ctx, renderer );
+  //   Group.prototype.render.apply( this, arguments );
+  // };
   
-  CylinderGroup.prototype.renderCylinderSurface = function( ctx, renderer ) {
-    if ( !this.visible ) {
-      return;
-    }
-    // render cylinder surface
-    var elem = this.getRenderElement( ctx, renderer );
-    var frontBase = this.frontBase;
-    var rearBase = this.rearBase;
-    var scale = frontBase.renderNormal.magnitude();
-    var strokeWidth = frontBase.diameter * scale + frontBase.getLineWidth();
-    // set path command render points
-    this.pathCommands[0].renderPoints[0].set( frontBase.renderOrigin );
-    this.pathCommands[1].renderPoints[0].set( rearBase.renderOrigin );
+  // CylinderGroup.prototype.renderCylinderSurface = function( ctx, renderer ) {
+  //   if ( !this.visible ) {
+  //     return;
+  //   }
+  //   // render cylinder surface
+  //   var elem = this.getRenderElement( ctx, renderer );
+  //   var frontBase = this.frontBase;
+  //   var rearBase = this.rearBase;
+  //   var scale = frontBase.renderNormal.magnitude();
+  //   var strokeWidth = frontBase.diameter * scale + frontBase.getLineWidth();
+  //   // set path command render points
+  //   this.pathCommands[0].renderPoints[0].set( frontBase.renderOrigin );
+  //   this.pathCommands[1].renderPoints[0].set( rearBase.renderOrigin );
   
-    if ( renderer.isCanvas ) {
-      ctx.lineCap = 'butt'; // nice
-    }
-    renderer.renderPath( ctx, elem, this.pathCommands );
-    renderer.stroke( ctx, elem, true, this.color, strokeWidth );
-    renderer.end( ctx, elem );
+  //   if ( renderer.isCanvas ) {
+  //     ctx.lineCap = 'butt'; // nice
+  //   }
+  //   renderer.renderPath( ctx, elem, this.pathCommands );
+  //   renderer.stroke( ctx, elem, true, this.color, strokeWidth );
+  //   renderer.end( ctx, elem );
   
-    if ( renderer.isCanvas ) {
-      ctx.lineCap = 'round'; // reset
-    }
-  };
+  //   if ( renderer.isCanvas ) {
+  //     ctx.lineCap = 'round'; // reset
+  //   }
+  // };
   
-  var svgURI = 'http://www.w3.org/2000/svg';
+  // var svgURI = 'http://www.w3.org/2000/svg';
   
-  CylinderGroup.prototype.getRenderElement = function( ctx, renderer ) {
-    if ( !renderer.isSvg ) {
-      return;
-    }
-    if ( !this.svgElement ) {
-      // create svgElement
-      this.svgElement = document.createElementNS( svgURI, 'path');
-    }
-    return this.svgElement;
-  };
+  // CylinderGroup.prototype.getRenderElement = function( ctx, renderer ) {
+  //   if ( !renderer.isSvg ) {
+  //     return;
+  //   }
+  //   if ( !this.svgElement ) {
+  //     // create svgElement
+  //     this.svgElement = document.createElementNS( svgURI, 'path');
+  //   }
+  //   return this.svgElement;
+  // };
   
-  // prevent double-creation in parent.copyGraph()
-  // only create in Cylinder.create()
-  CylinderGroup.prototype.copyGraph = noop;
+  // // prevent double-creation in parent.copyGraph()
+  // // only create in Cylinder.create()
+  // CylinderGroup.prototype.copyGraph = noop;
   
-  // ----- CylinderEllipse ----- //
+  // // ----- CylinderEllipse ----- //
   
-  var CylinderEllipse = Ellipse.subclass();
+  // var CylinderEllipse = Ellipse.subclass();
   
-  CylinderEllipse.prototype.copyGraph = noop;
+  // CylinderEllipse.prototype.copyGraph = noop;
   
-  // ----- Cylinder ----- //
+  // // ----- Cylinder ----- //
   
-  var Cylinder = Shape.subclass({
-    diameter: 1,
-    length: 1,
-    frontFace: undefined,
-    fill: true,
-  });
+  // var Cylinder = Shape.subclass({
+  //   diameter: 1,
+  //   length: 1,
+  //   frontFace: undefined,
+  //   fill: true,
+  // });
   
-  var TAU = utils.TAU;
+  // var TAU = utils.TAU;
   
-  Cylinder.prototype.create = function(/* options */) {
-    // call super
-    Shape.prototype.create.apply( this, arguments );
-    // composite shape, create child shapes
-    // CylinderGroup to render cylinder surface then bases
-    this.group = new CylinderGroup({
-      addTo: this,
-      color: this.color,
-      visible: this.visible,
-    });
-    var baseZ = this.length/2;
-    var baseColor = this.backface || true;
-    // front outside base
-    this.frontBase = this.group.frontBase = new Ellipse({
-      addTo: this.group,
-      diameter: this.diameter,
-      translate: { z: baseZ },
-      rotate: { y: TAU/2 },
-      color: this.color,
-      stroke: this.stroke,
-      fill: this.fill,
-      backface: this.frontFace || baseColor,
-      visible: this.visible,
-    });
-    // back outside base
-    this.rearBase = this.group.rearBase = this.frontBase.copy({
-      translate: { z: -baseZ },
-      rotate: { y: 0 },
-      backface: baseColor,
-    });
-  };
+  // Cylinder.prototype.create = function(/* options */) {
+  //   // call super
+  //   Shape.prototype.create.apply( this, arguments );
+  //   // composite shape, create child shapes
+  //   // CylinderGroup to render cylinder surface then bases
+  //   this.group = new CylinderGroup({
+  //     addTo: this,
+  //     color: this.color,
+  //     visible: this.visible,
+  //   });
+  //   var baseZ = this.length/2;
+  //   var baseColor = this.backface || true;
+  //   // front outside base
+  //   this.frontBase = this.group.frontBase = new Ellipse({
+  //     addTo: this.group,
+  //     diameter: this.diameter,
+  //     translate: { z: baseZ },
+  //     rotate: { y: TAU/2 },
+  //     color: this.color,
+  //     stroke: this.stroke,
+  //     fill: this.fill,
+  //     backface: this.frontFace || baseColor,
+  //     visible: this.visible,
+  //   });
+  //   // back outside base
+  //   this.rearBase = this.group.rearBase = this.frontBase.copy({
+  //     translate: { z: -baseZ },
+  //     rotate: { y: 0 },
+  //     backface: baseColor,
+  //   });
+  // };
   
-  // Cylinder shape does not render anything
-  Cylinder.prototype.render = function() {};
+  // // Cylinder shape does not render anything
+  // Cylinder.prototype.render = function() {};
   
-  // ----- set child properties ----- //
+  // // ----- set child properties ----- //
   
-  var childProperties = [ 'stroke', 'fill', 'color', 'visible' ];
-  childProperties.forEach( function( property ) {
-    // use proxy property for custom getter & setter
-    var _prop = '_' + property;
-    Object.defineProperty( Cylinder.prototype, property, {
-      get: function() {
-        return this[ _prop ];
-      },
-      set: function( value ) {
-        this[ _prop ] = value;
-        // set property on children
-        if ( this.frontBase ) {
-          this.frontBase[ property ] = value;
-          this.rearBase[ property ] = value;
-          this.group[ property ] = value;
-        }
-      },
-    });
-  });
+  // var childProperties = [ 'stroke', 'fill', 'color', 'visible' ];
+  // childProperties.forEach( function( property ) {
+  //   // use proxy property for custom getter & setter
+  //   var _prop = '_' + property;
+  //   Object.defineProperty( Cylinder.prototype, property, {
+  //     get: function() {
+  //       return this[ _prop ];
+  //     },
+  //     set: function( value ) {
+  //       this[ _prop ] = value;
+  //       // set property on children
+  //       if ( this.frontBase ) {
+  //         this.frontBase[ property ] = value;
+  //         this.rearBase[ property ] = value;
+  //         this.group[ property ] = value;
+  //       }
+  //     },
+  //   });
+  // });
   
-  // TODO child property setter for backface, frontBaseColor, & rearBaseColor
+  // // TODO child property setter for backface, frontBaseColor, & rearBaseColor
   
-  return Cylinder;
+  // return Cylinder;
   
-  }));
-  /**
-   * Cone composite shape
-   */
+  // }));
+  // /**
+  //  * Cone composite shape
+  //  */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory( require('./boilerplate'), require('./vector'),
-          require('./path-command'), require('./anchor'), require('./ellipse') );
-    } else {
-      // browser global
-      var Zdog = root.Zdog;
-      Zdog.Cone = factory( Zdog, Zdog.Vector, Zdog.PathCommand,
-          Zdog.Anchor, Zdog.Ellipse );
-    }
-  }( this, function factory( utils, Vector, PathCommand, Anchor, Ellipse ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory( require('./boilerplate'), require('./vector'),
+  //         require('./path-command'), require('./anchor'), require('./ellipse') );
+  //   } else {
+  //     // browser global
+  //     var Zdog = root.Zdog;
+  //     Zdog.Cone = factory( Zdog, Zdog.Vector, Zdog.PathCommand,
+  //         Zdog.Anchor, Zdog.Ellipse );
+  //   }
+  // }( this, function factory( utils, Vector, PathCommand, Anchor, Ellipse ) {
   
-  var Cone = Ellipse.subclass({
-    length: 1,
-    fill: true,
-  });
+  // var Cone = Ellipse.subclass({
+  //   length: 1,
+  //   fill: true,
+  // });
   
-  var TAU = utils.TAU;
+  // var TAU = utils.TAU;
   
-  Cone.prototype.create = function(/* options */) {
-    // call super
-    Ellipse.prototype.create.apply( this, arguments );
-    // composite shape, create child shapes
-    this.apex = new Anchor({
-      addTo: this,
-      translate: { z: this.length },
-    });
+  // Cone.prototype.create = function(/* options */) {
+  //   // call super
+  //   Ellipse.prototype.create.apply( this, arguments );
+  //   // composite shape, create child shapes
+  //   this.apex = new Anchor({
+  //     addTo: this,
+  //     translate: { z: this.length },
+  //   });
   
-    // vectors used for calculation
-    this.renderApex = new Vector();
-    this.renderCentroid = new Vector();
-    this.tangentA = new Vector();
-    this.tangentB = new Vector();
+  //   // vectors used for calculation
+  //   this.renderApex = new Vector();
+  //   this.renderCentroid = new Vector();
+  //   this.tangentA = new Vector();
+  //   this.tangentB = new Vector();
   
-    this.surfacePathCommands = [
-      new PathCommand( 'move', [ {} ] ), // points set in renderConeSurface
-      new PathCommand( 'line', [ {} ] ),
-      new PathCommand( 'line', [ {} ] ),
-    ];
-  };
+  //   this.surfacePathCommands = [
+  //     new PathCommand( 'move', [ {} ] ), // points set in renderConeSurface
+  //     new PathCommand( 'line', [ {} ] ),
+  //     new PathCommand( 'line', [ {} ] ),
+  //   ];
+  // };
   
-  Cone.prototype.updateSortValue = function() {
-    // center of cone is one third of its length
-    this.renderCentroid.set( this.renderOrigin )
-      .lerp( this.apex.renderOrigin, 1/3 );
-    this.sortValue = this.renderCentroid.z;
-  };
+  // Cone.prototype.updateSortValue = function() {
+  //   // center of cone is one third of its length
+  //   this.renderCentroid.set( this.renderOrigin )
+  //     .lerp( this.apex.renderOrigin, 1/3 );
+  //   this.sortValue = this.renderCentroid.z;
+  // };
   
-  Cone.prototype.render = function( ctx, renderer ) {
-    this.renderConeSurface( ctx, renderer );
-    Ellipse.prototype.render.apply( this, arguments );
-  };
+  // Cone.prototype.render = function( ctx, renderer ) {
+  //   this.renderConeSurface( ctx, renderer );
+  //   Ellipse.prototype.render.apply( this, arguments );
+  // };
   
-  Cone.prototype.renderConeSurface = function( ctx, renderer ) {
-    if ( !this.visible ) {
-      return;
-    }
-    this.renderApex.set( this.apex.renderOrigin )
-      .subtract( this.renderOrigin );
+  // Cone.prototype.renderConeSurface = function( ctx, renderer ) {
+  //   if ( !this.visible ) {
+  //     return;
+  //   }
+  //   this.renderApex.set( this.apex.renderOrigin )
+  //     .subtract( this.renderOrigin );
   
-    var scale = this.renderNormal.magnitude();
-    var apexDistance = this.renderApex.magnitude2d();
-    var normalDistance = this.renderNormal.magnitude2d();
-    // eccentricity
-    var eccenAngle = Math.acos( normalDistance / scale );
-    var eccen = Math.sin( eccenAngle );
-    var radius = this.diameter/2 * scale;
-    // does apex extend beyond eclipse of face
-    var isApexVisible = radius * eccen < apexDistance;
-    if ( !isApexVisible ) {
-      return;
-    }
-    // update tangents
-    var apexAngle = Math.atan2( this.renderNormal.y, this.renderNormal.x ) +
-        TAU/2;
-    var projectLength = apexDistance / eccen;
-    var projectAngle = Math.acos( radius / projectLength );
-    // set tangent points
-    var tangentA = this.tangentA;
-    var tangentB = this.tangentB;
+  //   var scale = this.renderNormal.magnitude();
+  //   var apexDistance = this.renderApex.magnitude2d();
+  //   var normalDistance = this.renderNormal.magnitude2d();
+  //   // eccentricity
+  //   var eccenAngle = Math.acos( normalDistance / scale );
+  //   var eccen = Math.sin( eccenAngle );
+  //   var radius = this.diameter/2 * scale;
+  //   // does apex extend beyond eclipse of face
+  //   var isApexVisible = radius * eccen < apexDistance;
+  //   if ( !isApexVisible ) {
+  //     return;
+  //   }
+  //   // update tangents
+  //   var apexAngle = Math.atan2( this.renderNormal.y, this.renderNormal.x ) +
+  //       TAU/2;
+  //   var projectLength = apexDistance / eccen;
+  //   var projectAngle = Math.acos( radius / projectLength );
+  //   // set tangent points
+  //   var tangentA = this.tangentA;
+  //   var tangentB = this.tangentB;
   
-    tangentA.x = Math.cos( projectAngle ) * radius * eccen;
-    tangentA.y = Math.sin( projectAngle ) * radius;
+  //   tangentA.x = Math.cos( projectAngle ) * radius * eccen;
+  //   tangentA.y = Math.sin( projectAngle ) * radius;
   
-    tangentB.set( this.tangentA );
-    tangentB.y *= -1;
+  //   tangentB.set( this.tangentA );
+  //   tangentB.y *= -1;
   
-    tangentA.rotateZ( apexAngle );
-    tangentB.rotateZ( apexAngle );
-    tangentA.add( this.renderOrigin );
-    tangentB.add( this.renderOrigin );
+  //   tangentA.rotateZ( apexAngle );
+  //   tangentB.rotateZ( apexAngle );
+  //   tangentA.add( this.renderOrigin );
+  //   tangentB.add( this.renderOrigin );
   
-    this.setSurfaceRenderPoint( 0, tangentA );
-    this.setSurfaceRenderPoint( 1, this.apex.renderOrigin );
-    this.setSurfaceRenderPoint( 2, tangentB );
+  //   this.setSurfaceRenderPoint( 0, tangentA );
+  //   this.setSurfaceRenderPoint( 1, this.apex.renderOrigin );
+  //   this.setSurfaceRenderPoint( 2, tangentB );
   
-    // render
-    var elem = this.getSurfaceRenderElement( ctx, renderer );
-    renderer.renderPath( ctx, elem, this.surfacePathCommands );
-    renderer.stroke( ctx, elem, this.stroke, this.color, this.getLineWidth() );
-    renderer.fill( ctx, elem, this.fill, this.color );
-    renderer.end( ctx, elem );
-  };
+  //   // render
+  //   var elem = this.getSurfaceRenderElement( ctx, renderer );
+  //   renderer.renderPath( ctx, elem, this.surfacePathCommands );
+  //   renderer.stroke( ctx, elem, this.stroke, this.color, this.getLineWidth() );
+  //   renderer.fill( ctx, elem, this.fill, this.color );
+  //   renderer.end( ctx, elem );
+  // };
   
-  var svgURI = 'http://www.w3.org/2000/svg';
+  // var svgURI = 'http://www.w3.org/2000/svg';
   
-  Cone.prototype.getSurfaceRenderElement = function( ctx, renderer ) {
-    if ( !renderer.isSvg ) {
-      return;
-    }
-    if ( !this.surfaceSvgElement ) {
-      // create svgElement
-      this.surfaceSvgElement = document.createElementNS( svgURI, 'path');
-      this.surfaceSvgElement.setAttribute( 'stroke-linecap', 'round' );
-      this.surfaceSvgElement.setAttribute( 'stroke-linejoin', 'round' );
-    }
-    return this.surfaceSvgElement;
-  };
+  // Cone.prototype.getSurfaceRenderElement = function( ctx, renderer ) {
+  //   if ( !renderer.isSvg ) {
+  //     return;
+  //   }
+  //   if ( !this.surfaceSvgElement ) {
+  //     // create svgElement
+  //     this.surfaceSvgElement = document.createElementNS( svgURI, 'path');
+  //     this.surfaceSvgElement.setAttribute( 'stroke-linecap', 'round' );
+  //     this.surfaceSvgElement.setAttribute( 'stroke-linejoin', 'round' );
+  //   }
+  //   return this.surfaceSvgElement;
+  // };
   
-  Cone.prototype.setSurfaceRenderPoint = function( index, point ) {
-    var renderPoint = this.surfacePathCommands[ index ].renderPoints[0];
-    renderPoint.set( point );
-  };
+  // Cone.prototype.setSurfaceRenderPoint = function( index, point ) {
+  //   var renderPoint = this.surfacePathCommands[ index ].renderPoints[0];
+  //   renderPoint.set( point );
+  // };
   
-  return Cone;
+  // return Cone;
   
-  }));
+  // }));
   /**
    * Box composite shape
    */
@@ -2150,56 +2150,56 @@
    * Index
    */
   
-  ( function( root, factory ) {
-    // module definition
-    if ( typeof module == 'object' && module.exports ) {
-      // CommonJS
-      module.exports = factory(
-          require('./boilerplate'),
-          require('./canvas-renderer'),
-          require('./svg-renderer'),
-          require('./vector'),
-          require('./anchor'),
-          require('./dragger'),
-          require('./illustration'),
-          require('./path-command'),
-          require('./shape'),
-          require('./group'),
-          require('./rect'),
-          require('./rounded-rect'),
-          require('./ellipse'),
-          require('./polygon'),
-          require('./hemisphere'),
-          require('./cylinder'),
-          require('./cone'),
-          require('./box')
-      );
-    } else if ( typeof define == 'function' && define.amd ) {
-      /* globals define */ // AMD
-      define( 'zdog', [], root.Zdog );
-    }
-  })( this, function factory( Zdog, CanvasRenderer, SvgRenderer, Vector, Anchor,
-      Dragger, Illustration, PathCommand, Shape, Group, Rect, RoundedRect,
-      Ellipse, Polygon, Hemisphere, Cylinder, Cone, Box ) {
+  // ( function( root, factory ) {
+  //   // module definition
+  //   if ( typeof module == 'object' && module.exports ) {
+  //     // CommonJS
+  //     module.exports = factory(
+  //         require('./boilerplate'),
+  //         require('./canvas-renderer'),
+  //         require('./svg-renderer'),
+  //         require('./vector'),
+  //         require('./anchor'),
+  //         require('./dragger'),
+  //         require('./illustration'),
+  //         require('./path-command'),
+  //         require('./shape'),
+  //         require('./group'),
+  //         require('./rect'),
+  //         require('./rounded-rect'),
+  //         require('./ellipse'),
+  //         require('./polygon'),
+  //         require('./hemisphere'),
+  //         require('./cylinder'),
+  //         require('./cone'),
+  //         require('./box')
+  //     );
+  //   } else if ( typeof define == 'function' && define.amd ) {
+  //     /* globals define */ // AMD
+  //     define( 'zdog', [], root.Zdog );
+  //   }
+  // })( this, function factory( Zdog, CanvasRenderer, SvgRenderer, Vector, Anchor,
+  //     Dragger, Illustration, PathCommand, Shape, Group, Rect, RoundedRect,
+  //     Ellipse, Polygon, Hemisphere, Cylinder, Cone, Box ) {
   
-        Zdog.CanvasRenderer = CanvasRenderer;
-        Zdog.SvgRenderer = SvgRenderer;
-        Zdog.Vector = Vector;
-        Zdog.Anchor = Anchor;
-        Zdog.Dragger = Dragger;
-        Zdog.Illustration = Illustration;
-        Zdog.PathCommand = PathCommand;
-        Zdog.Shape = Shape;
-        Zdog.Group = Group;
-        Zdog.Rect = Rect;
-        Zdog.RoundedRect = RoundedRect;
-        Zdog.Ellipse = Ellipse;
-        Zdog.Polygon = Polygon;
-        Zdog.Hemisphere = Hemisphere;
-        Zdog.Cylinder = Cylinder;
-        Zdog.Cone = Cone;
-        Zdog.Box = Box;
+  //       Zdog.CanvasRenderer = CanvasRenderer;
+  //       Zdog.SvgRenderer = SvgRenderer;
+  //       Zdog.Vector = Vector;
+  //       Zdog.Anchor = Anchor;
+  //       Zdog.Dragger = Dragger;
+  //       Zdog.Illustration = Illustration;
+  //       Zdog.PathCommand = PathCommand;
+  //       Zdog.Shape = Shape;
+  //       Zdog.Group = Group;
+  //       Zdog.Rect = Rect;
+  //       Zdog.RoundedRect = RoundedRect;
+  //       Zdog.Ellipse = Ellipse;
+  //       Zdog.Polygon = Polygon;
+  //       Zdog.Hemisphere = Hemisphere;
+  //       Zdog.Cylinder = Cylinder;
+  //       Zdog.Cone = Cone;
+  //       Zdog.Box = Box;
   
-        return Zdog;
-  });
+  //       return Zdog;
+  // });
   

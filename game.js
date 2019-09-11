@@ -9,11 +9,11 @@ c_dropspeed = 5; //Starting falling speed when dropping down
 const c_adddropspeed = 0.025; //Drop speed that gets added each frame while the player is dropping and not touching anything
 const c_jumpspeed = 5; //Force for jumping upwards
 const c_addjumpspeed = 0.1; //Force pulling you back after jumping
-const c_starttime = 60 //45; //Time is set to this after restarting game
+const c_starttime = 60; //45; //Time is set to this after restarting game
 const c_startjackpot = 5; //How many seconds are already in the jackpot at the start of a flip?
 const c_timegainperblock = 0.2; //How many seconds are added for each touched block
 const c_horborder = 200; //How wide the playing field is.
-const c_yflipmargin = 60 //How much space is added between the lowest added block and the flip line.
+const c_yflipmargin = 60; //How much space is added between the lowest added block and the flip line.
 
 inputbuffer = ""; inputtime = 0; //Input buffer saves the last pressed key if an input does not result in a handled interaction. It's saved for the amount of frames in inputtime.
 
@@ -27,7 +27,7 @@ cameray = 0; //This controls where the camera is currently looking at.
 shakex = 0; shakey = 0; shakeduration = 0; //Control screen shake.
 obstacle = []; //All obstacle blocks that the player can collide with 
 visobstacle = []; //Optimalization array that only holds the blocks that are currently visible.
-dots = [] //Decorational stuff
+dots = []; //Decorational stuff
 timeleft = c_starttime; timejackpot = c_startjackpot; score = 0; hiscore = 0; //timeleft ticks down, but gets refilled with the jackpot upon flipping.
 activated = 0; activategoal = 0; //For the normal levels.
 level = 5;
@@ -39,14 +39,14 @@ lasttimestamp = performance.now();
 
 palette = 0; palletename = "";
 c = []; //0 is first bg color, 1 is second bg color, 2 is front block color, 3 is back block color, and 4 is hero color.
-c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; c[5] = "#ffffff"; palettename = "Default Colors"
+c[0] = "#223e32" ; c[1] = "#A7C06D"; c[2] = "#b3dd52"; c[3] = "#015d00"; c[4] = "#04bf00"; c[5] = "#ffffff"; palettename = "Default Colors";
 bgcolor = c[0]; //Each time before the zdog illustration is updated, this color gets applied to the background.
 
 document.addEventListener("DOMContentLoaded", HtmlLoaded);
 
 initGame();
 
-switchPalette(palette)
+switchPalette(palette);
 
 setInterval(e=>{ step(false) },(1/60)*1000);
 
@@ -58,7 +58,7 @@ onkeydown=e=>{
     }
 
      input(e.key);
-}
+};
 
 let pageWidth = window.innerWidth || document.body.clientWidth;
 let treshold = 10;
@@ -186,7 +186,7 @@ function initGame() {
 
     for (var i = 0; i != 100; i += 1) {
         var size = (Math.round(random()*10)/10);
-        var append = "bb" //Transperancy for colors
+        var append = "bb"; //Transperancy for colors
         if (size > 4) {append = "88"}
         if (size > 7) {append = "44"}
         dots[i] = new Zdog.Shape({
@@ -259,15 +259,15 @@ function loadLevel() {
     if (level == 11)
     {
         timeleft = c_starttime; timejackpot = c_startjackpot; score = 0;
-        obstaclestogenerate = 10
+        obstaclestogenerate = 10;
     } else {
-        obstaclestogenerate = 1 + (4 * level)
-        timeleft = 12 + (6*level)
+        obstaclestogenerate = 1 + (4 * level);
+        timeleft = 12 + (8*level);
     }
 
     illo.rotate = {x: -(TAU/16), y: TAU/16};
 
-    flipy = generateObstacles(obstaclestogenerate,100,flipped) + c_yflipmargin
+    flipy = generateObstacles(obstaclestogenerate,100,flipped) + c_yflipmargin;
 
     if (level != 11) {
         activated = 0;
@@ -284,30 +284,30 @@ function generateObstacles(amount,position,direction) {
     var prevrand = -1;
     for (var i = 0; i != amount; i++)
     {
-        var rand = Math.round(random()*10)
-        if (rand == prevrand) {rand = Math.round(random()*10)} //Reroll once if equal to last added part
+        var rand = Math.round(random()*10);
+        if (rand == prevrand) {rand = Math.round(random()*10);} //Reroll once if equal to last added part
         var width = 0; var height = 0;
         var obstaclex = 0; var obstacley = 0;
-        var front = (random() >= 0.1); if (flipped == -1) {front = !front}
+        var front = (random() >= 0.1); if (flipped == -1) {front = !front;}
 
         switch(rand)
         {
             case 0: //Two tall platforms at same height
                 height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = (((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.6;
+                obstaclex = (((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.5;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(24), height, front)
-                obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.5),obstacley,16+(24), height, front);
+                obstacle[obstacle.length] = addObstacle(-obstaclex-(c_horborder*0.5),obstacley,16+(24), height, front);
                 break;
             case 1: //Two tall platforms, one lower than the other
                 height = 40+((Math.round(random()*10)/10)*100);
-                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.8;
+                obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.7;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front);
                 obstacley += 50*direction;
-                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(-obstaclex,obstacley,16+(24), height, front);
 
                 off += 50*direction;
                 break;
@@ -327,9 +327,9 @@ function generateObstacles(amount,position,direction) {
                 obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.4),obstacley,24, height, front)
-                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,24, height, front)
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.4),obstacley,24, height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.4),obstacley,24, height, front);
+                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,24, height, front);
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.4),obstacley,24, height, front);
                 off += 50*direction;
                 break;
             case 4: //Three tall platforms at descending heights
@@ -337,11 +337,11 @@ function generateObstacles(amount,position,direction) {
                 obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16+(24), height, front);
                 obstacley += 50*direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex                 ,obstacley,16+(24), height, front);
                 obstacley += 50*direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16+(24), height, front);
 
                 off += 150*direction;
                 break;
@@ -351,12 +351,12 @@ function generateObstacles(amount,position,direction) {
                 obstaclex = ((Math.round(random()*10)/10) * (c_horborder - -c_horborder) + -c_horborder) * 0.25;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width*0.75, 8, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width*0.75, 8, front);
                 obstacley += (height/2)*direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16, height, front)
-                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16, height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex-(c_horborder*0.35),obstacley,16, height, front);
+                obstacle[obstacle.length] = addObstacle(obstaclex+(c_horborder*0.35),obstacley,16, height, front);
                 obstacley += (height/2) * direction;
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width*0.9, 8, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,width*0.9, 8, front);
 
                 off += 100*direction;
                 break;
@@ -375,7 +375,7 @@ function generateObstacles(amount,position,direction) {
                 obstaclex = ((((Math.round(random()*10))/10) * (c_horborder - -c_horborder) + -c_horborder)) * 0.8;
                 obstacley = off;
 
-                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front)
+                obstacle[obstacle.length] = addObstacle(obstaclex,obstacley,16+(24), height, front);
         }
 
         off += (40+height)*direction;
@@ -408,8 +408,8 @@ function step(framestep) {
 
     if (inputtime >= 2 && inputbuffer != "")
     {
-        inputtime -= 1
-        input(inputbuffer)
+        inputtime -= 1;
+        input(inputbuffer);
         if (inputtime == 1) {inputtime = 0; inputbuffer = ""}
     }
 
@@ -449,9 +449,7 @@ function step(framestep) {
         ypercent = Math.max(0,ypercent); //To avoid interface displaying -0 in some cases
         i3.innerHTML = "Flips: " +score.toString() + "." + ypercent.toFixed(0).toString();
     } else {
-        if (activategoal >= 100)
-        { i2.innerHTML = activated.toString() + " / "+activategoal.toString(); }
-        else { i2.innerHTML = activated.toString() + " of "+activategoal.toString(); }
+        i2.innerHTML = activated.toString() + " of "+activategoal.toString();
         
         i3.innerHTML = "Level:\n" +level.toString();
     }
@@ -500,6 +498,23 @@ function step(framestep) {
     {
         player.translate.y = flipy;
         flipped = -flipped;
+
+        //We're gonna move the player back to y=0, because camera rotation only rotates perfectly around its axis when it looks at it's origin
+        var prevplayery = player.translate.y;
+        player.translate.y = 0;
+        for (var i = 0; i != obstacle.length; i += 1)
+        {
+            obstacle[i].translate.y -= prevplayery;
+        }
+
+        for (var i = 0; i != trail.path.length; i += 1)
+        {
+            trail.path[i].y -= prevplayery;
+        }
+
+        fliptop -= prevplayery;
+        flipbottom -= prevplayery;
+        dotanchor.translate.y -= prevplayery;
         
         if (level == 11) 
         {
@@ -527,7 +542,7 @@ function step(framestep) {
                     }
                 }
 
-                flipbottom = generateObstacles(1,flipbottom-50,flipped)
+                flipbottom = generateObstacles(1,flipbottom-50,flipped);
                 flipy = flipbottom+c_yflipmargin;
             }
             else
@@ -540,13 +555,13 @@ function step(framestep) {
                     }
                 }
 
-                fliptop = generateObstacles(1,fliptop+50,flipped)
+                fliptop = generateObstacles(1,fliptop+50,flipped);
                 flipy = fliptop-c_yflipmargin;
             }
         
             if (allclear) 
             {
-                if (i2.style.animation = "1s ease-in-out 0s 1 normal none running jackpot-claim-2")
+                if (i2.style.animationName != "jackpot-claim-2")
                 {
                     i2.style.animation = "jackpot-claim-2 1s ease-in-out";
                 }
@@ -555,7 +570,7 @@ function step(framestep) {
                     i2.style.animation = "jackpot-claim-1 1s ease-in-out";
                 }
                 timeleft += timejackpot;
-                sound([0,,0.07,0.57,0.24,0.75,,,,,,,,,,,,,1,,,,,0.2])
+                sound([0,,0.07,0.57,0.24,0.75,,,,,,,,,,,,,1,,,,,0.2]);
             }
         }
         else
@@ -573,7 +588,7 @@ function step(framestep) {
         timejackpot = c_startjackpot; //We empty the jackpot in both modes because the jackpot value is used to trigger some animations
 
         if (state == 1) //Otherwise we don't have audio permission yet
-            {sound([0,,,,0.39,0.39,,0.13,,,,,,0.57,,0.44,,,1,,,,,0.15])}
+            {sound([0,,,,0.39,0.39,,0.13,,,,,,0.57,,0.44,,,1,,,,,0.15]);}
 
         if (flipped == -1)
         {
@@ -637,7 +652,7 @@ function step(framestep) {
                 yy = visobstacle[i].translate.y+6;
                 zz = visobstacle[i].translate.z;
                 w = visobstacle[i].width; aw = visobstacle[i].width*1.2; //w is collision width, aw is activation width, where the player is not effected but the block is marked as collided.
-                h = visobstacle[i].height-6;
+                h = visobstacle[i].height-4;
 
                 if ( ((flipped == 1 && zz == 25) || (flipped == -1 && zz == -25)) && player.translate.x > xx - aw && player.translate.x < xx + aw && player.translate.y > yy - h && player.translate.y < yy + h)
                 {
@@ -665,8 +680,8 @@ function step(framestep) {
 
                     if (collided)
                     {
-                        pushObstacleToFlipside(visobstacle[i])
-                        sound([0,,0.035,,0.15+(random()*0.5),0.49,,-0.53,,,,,,0.03,,,,,1,,,,,0.15])
+                        pushObstacleToFlipside(visobstacle[i]);
+                        sound([0,,0.035,,0.15+(random()*0.5),0.49,,-0.53,,,,,,0.03,,,,,1,,,,,0.15]);
                     }
                 }
             }
@@ -688,11 +703,19 @@ function pushObstacleToFlipside(obstacle){
     if (level == 11)
     {
         timeleft += c_timegainperblock;
-    }
-
-    if (level != 11)
+    } 
+    else
     {
-        activated += 1
+        if (i2.style.animationName != "jackpot-gain-2")
+        {
+            i2.style.animation = "jackpot-gain-2 1s";
+        }
+        else
+        {
+            i2.style.animation = "jackpot-gain-1 1s";
+        }
+
+        activated += 1;
         if (activated >= activategoal)
         {
             gameWin();
@@ -762,19 +785,19 @@ function input(key) {
         else if (key == "ArrowUp" || key == "w" || key == "z") {
             palette -= 1; 
             if (palette == -1) {palette = 6}; 
-            switchPalette(palette)
+            switchPalette(palette);
             updateLevelSelect();
         }
         else if (key == "ArrowDown" || key == "s") {
             palette += 1; 
             if (palette == 7) {palette = 0}; 
-            switchPalette(palette)
+            switchPalette(palette);
             updateLevelSelect();
         }
         else if (key == " ") {
             state = 1;
             loadLevel(level);
-            sound([3,,0.22,0.49,0.40,0.15,,-0.39,,,,-0.68,0.69,,,,,,1,,,,,0.25])
+            sound([3,,0.22,0.49,0.40,0.15,,-0.39,,,,-0.68,0.69,,,,,,1,,,,,0.25]);
             d.style.visibility = "hidden";
             d3.style.visibility = "hidden";
             d4.style.visibility = "hidden";
@@ -786,7 +809,7 @@ function input(key) {
     {
         if (key == "Escape")
         {
-            pause(-1)
+            pause(-1);
             return;
         }
 
@@ -806,7 +829,7 @@ function input(key) {
 
         if (key == " ")
         {
-            pause(false)
+            pause(false);
             return;
         }
         
@@ -826,19 +849,19 @@ function input(key) {
         {
             playermovex = c_startverticalspeed*delta;
             playermovey = 0;
-            sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15])
+            sound([1,,0.22,0.26,0.11,0.41+(random()*0.3),0.21,-0.30,,0.06,0.02,,,0.43,0.19,,,,1,-0.04,,0.18,0.01,0.15]);
             return;
         } else if ((key == "ArrowUp" || key == "w" || key == "z") && (Math.sign(playermovey) == flipped || Math.sign(playermovey) == 0))
         {
             playermovex = 0;
             playermovey = -c_jumpspeed*flipped;
-            sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15])
+            sound([0,,0.05,,0.18,0.38+(random()*0.3),0.02,0.24,0.04,,0.05,,,0.31,0.07,0.06,,0.08,0.9,-0.03,0.02,0.15,0.03,0.15]);
             return;
         } else if (((key == "ArrowDown" || key == " ") || key == "s") && ((playermovey < c_dropspeed && flipped == 1) || (playermovey > -c_dropspeed && flipped == -1)) )
         {
             playermovex = 0;
             playermovey = c_dropspeed*flipped;
-            sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15])
+            sound([1,,0.25,0.01,,0.43+(random()*0.2),0.27,-0.25,,,,,,0.79,-0.66,,0.20,-0.18,1,,,,,0.15]);
             return;
         }
 
@@ -857,9 +880,9 @@ function draw() {
         yoff = ((TAU/4)*flipvisual)+((TAU/4)*3)
         //Some fancy numbers to make the player rotate smoothly while flipping screen
     }
-    player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipvisual)+yoff} //x and y swap here
+    player.rotate = { y: -(playermovex)*0.08, x: -(playermovey*0.15*flipvisual)+yoff}; //x and y swap here
     dotanchor.translate.y = -((player.translate.y/20)+500+(playermovey));
-    border.translate.y = player.translate.y
+    border.translate.y = player.translate.y;
 
     if (player.visible && trail.visible)
     {
@@ -894,7 +917,7 @@ function gameWin() {
         }
     }
 
-    sound([0,,0.3,,0.5,0.3,,0.1,,0.23,0.4,,,0.1,,,,,1,,,,,0.26])
+    sound([0,,0.3,,0.5,0.3,,0.1,,0.23,0.4,,,0.1,,,,,1,,,,,0.26]);
 
     gameEnd();
 }
@@ -917,7 +940,7 @@ function gameOver() {
         }
     } 
 
-    sound([3,,0.18,0.23,0.18,0.15,,-0.23,,,,,,,,0.58,,,1,,,,,0.26])
+    sound([3,,0.18,0.23,0.18,0.15,,-0.23,,,,,,,,0.58,,,1,,,,,0.26]);
     gameEnd();
 }
 
@@ -933,8 +956,10 @@ function gameEnd() {
     l2.style.animation = "";
     l1.style.visibility = "visible";
     l2.style.visibility = "visible";
+    l1.style.color = c[0]; l2.style.textShadow = "-2px -5px "+c[0];
+    l2.style.color = c[1]; l2.style.textShadow = "-2px -5px "+c[1];
 
-    sound([0,,0.021,,0.28,0.38,,-0.40,,,,,,0.12,,,,,1,,,,,0.16])
+    sound([0,,0.021,,0.28,0.38,,-0.40,,,,,,0.12,,,,,1,,,,,0.16]);
 
     setTimeout(function(){
         canstartgame = true;
@@ -955,7 +980,7 @@ function updateLevelSelect() {
     if (level == hiscore+1 || level == 11) {d4.style.visibility="hidden"}
     else { d4.style.visibility="visible" }
 
-    k1.innerHTML = "Colors ("+(palette+1).toString()+"/7)"
+    k1.innerHTML = "Colors ("+(palette+1).toString()+"/7)";
     k2.innerHTML = palettename;
 }
 
@@ -1009,7 +1034,7 @@ function pause(toggle) {
 }
 
 function HtmlLoaded() {
-    //Caching all references to HTML elements
+    //Caching all references to HTML elements*/
     l1 = document.getElementById("l1");
     l2 = document.getElementById("l2");
     l3 = document.getElementById("l3");
@@ -1051,7 +1076,7 @@ function switchPalette(id) {
         case 4: c[0] = "#dddddd" ; c[1] = "#222222"; c[2] = "#444444" ; c[3] = "#bbbbbb"; c[4] = "#888888"; c[5] = "#ffffff"; palettename = "Stylish Monochrome"; break;
         case 5: c[0] = "#0F5FA4" ; c[1] = "#9CC6EC"; c[2] = "#BBD6E7" ; c[3] = "#4087C9"; c[4] = "#ffffff"; c[5] = "#000000"; palettename = "Coil Exclusive: Beau Blueprint"; break;
         case 6: c[0] = "#FE875C" ; c[1] = "#8A320A"; c[2] = "#522313" ; c[3] = "#955857"; c[4] = "#F7FF57"; c[5] = "#444444"; palettename = "Coil Exclusive: Dawnbreak"; break;
-        //case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;
+        /*case 2: c[0]= "#fff"; c[1] = "#fff"; c[2] = "#fff"; c[3] = "#fff"; c[4] = "#fff"; palletename = "Debug" break;*/
     }
 
     if (flipped == 1) {
@@ -1072,12 +1097,10 @@ function switchPalette(id) {
     head.color = c[4]; legs.color = c[4];
 
     eyes.color = c[5]; trail.color = c[5]+"44";
-
 }
 
 function setCookie(cname, cvalue) {
     localStorage.setItem(cname, cvalue);
-    console.log("BackFlipped: Cookie "+cname+" set to "+cvalue.toString())
 }
 
 function getCookie(cname) {
@@ -1096,12 +1119,10 @@ function checkCookie() {
     var savedscore = getCookie("backflipped_level");
     if (savedscore != "noone") 
     {
-        hiscore = savedscore; level = Math.min(11,hiscore+1) //Set level id, and load it
-        console.log('BackFlipped: Loaded save, starting on level ' + savedscore)
+        hiscore = savedscore; level = Math.min(11,hiscore+1); //Set level id, and load it
     } 
     else 
     {
-        setCookie('backflipped_level', 0)
-        console.log('BackFlipped: New save')
+        setCookie('backflipped_level', 0);
     }
 }

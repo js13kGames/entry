@@ -1,51 +1,27 @@
 {
-    "nodejs": true,
-    "main": "Early Build\\index.html",
-    "webkit": {
-        "page-cache": false,
-        "plugin": false,
-        "java": false
-    },
-    "additional_trust_anchors": [],
-    "version": "1.0.0",
-    "name": "backflipped",
-    "window": {
-        "visible": true,
-        "title": "js13k-2019",
-        "show_in_taskbar": true,
-        "show": true,
-        "resizable": true,
-        "always_on_top": false,
-        "fullscreen": false,
-        "transparent": false,
-        "min_width": 200,
-        "frame": true,
-        "kiosk": false,
-        "as_desktop": false,
-        "kiosk_emulation": false,
-        "width": 640,
-        "exe_icon": "Early Build\\favicon64.png",
-        "icon": "Early Build\\favicon64.png",
-        "toolbar": false,
-        "height": 480,
-        "min_height": 300
-    },
-    "single-instance": true,
-    "webexe_settings": {
-        "uncompressed_folder": true,
-        "nw_compression_level": 0,
-        "mac-x64": true,
-        "custom_script": "",
-        "export_dir": "output",
-        "sdk_build": false,
-        "linux-x64": false,
-        "linux-x32": false,
-        "download_dir": "D:\\Downloads\\DEVTOOLS\\Web2ExeWin-v0.4.8b\\Web2ExeWin\\downloads",
-        "mac-x32": false,
-        "windows-x32": true,
-        "windows-x64": true,
-        "force_download": false,
-        "nw_version": "0.14.7"
-    },
-    "app_name": "Backflipped"
+  "name": "js13kgames-parcel-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {},
+  "scripts": {
+    "serve": "yarn parcel index.html --no-hmr",
+    "check-file-size": "yarn node ./scripts/check-file-size.js",
+    "delete-dist": "yarn rimraf ./dist",
+    "create-dist": "yarn mkdirp ./dist/inlined ./dist/zipped",
+    "parcel-build": "yarn parcel build index.html -d ./dist/bundled --no-source-maps",
+    "inline-build": "html-inline -i ./dist/bundled/index.html -o ./dist/inlined/index.html",
+    "build": "yarn run delete-dist && yarn run create-dist && yarn run parcel-build && yarn run inline-build",
+    "build-zipped": "yarn run build && yarn node ./scripts/zip-file.js",
+    "party": "yarn run build-zipped && yarn run check-file-size"
+  },
+  "devDependencies": {
+    "archiver": "^2.1.1",
+    "chalk": "^2.4.1",
+    "cssnano": "^4.0.3",
+    "html-inline": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "parcel-bundler": "^1.9.7",
+    "rimraf": "^2.6.2"
+  }
 }
