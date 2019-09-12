@@ -134,7 +134,7 @@ const initLevel3 = async (punchSound, blockSound, nextLevel) => {
     } else {
       newLocation = object.location - 1;
     }
-    object.health -= 10;
+    object.health -= 5;
     object.location = isLocationValid(newLocation, name, state) ? newLocation : object.location;
     object.currentAction = DISABLED
 
