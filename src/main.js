@@ -378,7 +378,7 @@ var song = {
       0 // FX_DELAY_TIME
       ],
       // Patterns
-      p: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      p: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       // Columns
       c: [
         {n: [135,,,,,,,,135,,,,,,,,135,,,,,,,,135],
@@ -417,7 +417,7 @@ var song = {
       4 // FX_DELAY_TIME
       ],
       // Patterns
-      p: [1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2],
+      p: [1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,2],
       // Columns
       c: [
         {n: [111,,,,111,,,,111,,,,111,,,,111,,,,111,,,,111,,,,111],
@@ -458,7 +458,7 @@ var song = {
       6 // FX_DELAY_TIME
       ],
       // Patterns
-      p: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      p: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       // Columns
       c: [
         {n: [,,,,,,,,147,,,,,,,,,,,,,,,,147],
@@ -497,7 +497,7 @@ var song = {
       4 // FX_DELAY_TIME
       ],
       // Patterns
-      p: [1,2,3,4,1,2,3,4,1,,,,1,,3,,1,2,3,4],
+      p: [1,2,3,4,1,2,3,4,1,,,,1,,3,,1,2,3,,,,,,,,,,1,2,3,4],
       // Columns
       c: [
         {n: [147,,,,,,,,,,,,154],
@@ -554,9 +554,10 @@ var song = {
   ],
   rowLen: 2363,   // In sample lengths
   patternLen: 32,  // Rows per pattern
-  endPattern: 19,  // End pattern
+  endPattern: 31,  // End pattern
   numChannels: 5  // Number of channels
 };
+
 
 // --- Initialization
 
@@ -577,8 +578,7 @@ setInterval(function () {
     themeAudio.loop=true;
     themeAudio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
     document.getElementById('loading').style.display = 'none';
-	document.getElementById('intro').style.display = 'block';
-	themeAudio.play();
+    document.getElementById('intro').style.display = 'block';
   }
 }, 100);
 
@@ -1234,6 +1234,7 @@ function start() {
 	setInterval(() => recoverMP(), 1000);
 	document.getElementById('intro').style.display = 'none';
 	document.getElementById('game').style.display = 'block';
+  themeAudio.play();
 	land();
 }
 
