@@ -14,7 +14,7 @@ AFRAME.registerComponent('screen-manager', {
     this.onGameStart = AFRAME.utils.bind(this.onGameStart, this);
     this.onStateRemoved = AFRAME.utils.bind(this.onStateRemoved, this);
     this.onShotFired = AFRAME.utils.bind(this.onShotFired, this);
-    this.onMonetizationStart = AFRAME.utils.bind(this.onMonetizationStart, this);
+    this.addExtraContent = AFRAME.utils.bind(this.addExtraContent, this);
 
     this.startButtonEl.addEventListener('mouseenter', this.onGameStart);
     this.outlawEls.forEach(function(outlawEl) {
@@ -23,9 +23,9 @@ AFRAME.registerComponent('screen-manager', {
 
     if (document.monetization) {
       if (document.monetization.state === 'started') {
-        this.onMonetizationStart();
+        this.addExtraContent();
       } else if (document.monetization.state === 'pending') {
-        document.monetization.addEventListener('monetizationstart', this.onMonetizationStart);
+        document.monetization.addEventListener('monetizationstart', this.addExtraContent);
       }
     }
   },
@@ -73,7 +73,7 @@ AFRAME.registerComponent('screen-manager', {
     this.shotsFired += 1;
     this.shotsEl.setAttribute('value', `shots\n${this.shotsFired}`);
   },
-  onMonetizationStart: function() {
+  addExtraContent: function() {
     // include the 2 extra outlaws for Coil subscriber
     this.outlawEls = Array.from(this.el.querySelectorAll('.outlaw'));
     // customize messages
