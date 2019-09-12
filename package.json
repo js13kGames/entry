@@ -1,0 +1,40 @@
+{
+  "name": "regresso",
+  "version": "1.0.0",
+  "description": "Regresso",
+  "main": "index.html",
+  "scripts": {
+    "clean": "rm -rf build dist",
+    "watch": "gulp build-dev; gulp --silent watch",
+    "build": "gulp build-dev",
+    "prod": "gulp build-prod",
+    "gulp": "gulp",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lopis/regresso"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "4",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-concat-css": "^3.1.0",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-watch": "^5.0.1",
+    "gulp-zip": "^5.0.0",
+    "mkdirp": "^0.5.1"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.5.5",
+    "@babel/types": "^7.5.5",
+    "eval": "^0.1.4",
+    "gulp-inject": "^5.0.4",
+    "gulp-typescript": "^5.0.1",
+    "typescript": "^3.5.3"
+  }
+}

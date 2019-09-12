@@ -1,0 +1,86 @@
+#logs {
+  display: flex;
+  overflow: hidden;
+  flex-grow: 1;
+  max-width: 1600px;
+  margin: auto;
+  width: 100%;
+}
+
+.log {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 2;
+  flex-basis: 0;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.log::-webkit-scrollbar {
+  display: none;
+}
+#tasks {
+	flex-grow: 1;
+}
+
+.log p {
+  margin: 0;
+  transition: margin-top 0.3s, height 0.3s 0.2s, font-size 0.3s 0.2s;
+  height: 60px;
+  padding: 0 10px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 12px solid transparent;
+  background-clip: padding-box;
+  border-radius: 20px;
+  line-height: 1;
+}
+.log p.new {
+  margin-top: -120px;
+  transition: margin-top 0s, height 0.3s 0.2s, font-size 0.3s 0.2s;
+  line-height: 1.5;
+}
+.log p:first-child {
+  height: 120px;
+  font-size: 120%;
+}
+.log p:first-child .icon {
+	font-size: 250%;
+}
+.log p.red {
+  background-color: var(--red);
+}
+.log p.green {
+  background-color: var(--green);
+}
+.log p.blue {
+  background-color: var(--blue);
+}
+
+.closed #requirements {
+  display: none;
+}
+#requirements {
+	position: absolute;
+	top: -20px;
+	width: 50%;
+	left: 25%;
+	text-align: center;
+	color: white;
+	background: #ae5555;
+	border-radius: 5px;
+	padding: 15px 0;
+	box-shadow: 0 5px 5px 0 rgba(0,0,0,.2);
+	transition: opacity 0.1s ease-in-out, top 0.1s ease-in-out;
+}
+#requirements:empty {
+	opacity: 0;
+	top: -30px;
+}
+p.restart:hover:not(:active) {
+	transform: translateY(-2px);
+	transition: transform 100ms ease-in-out, background 100ms ease-in-out;
+	cursor: pointer;
+}

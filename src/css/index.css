@@ -1,0 +1,323 @@
+html {
+  background: linear-gradient(9deg,#2d2020,#624739);
+  height: 100%;
+  min-width: 1024px;
+  min-height: 768px;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  --red: #c62929;
+  --green: #4b9d4b;
+  --blue: #2a7ec1;
+}
+
+.rs {
+  display: flex;
+  padding: 5px 7px;
+}
+
+.r {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background: #222;
+  color: white;
+  line-height: 1.4em;
+  margin: 0 2px;
+  padding: 7px;
+  border-radius: 5px;
+  transition: background-color 1s;
+}
+.r.green {
+  background: var(--green);
+  transition: background-color 100ms;
+}
+.r.red {
+  background: var(--red);
+  transition: background-color 100ms;
+}
+.r-grp {
+  display: flex;
+  background: #222;
+  border-radius: 5px;
+  margin: 0 2px;
+}
+.r-grp .r {
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  border-radius: 3px;
+  font-size: 20px;
+  padding: 0.6em 0.3em;
+  border: 1px solid #929031;
+  background: #d4d259;
+  cursor: pointer;
+  color: #333;
+  width: 200px;
+}
+
+.actions {
+  flex-shrink: 0;
+  padding: 8px;
+  text-align: center;
+  background: linear-gradient(2deg, #99ae43, #d7d45a)
+}
+.actions button {
+  visibility: hidden;
+  vertical-align: middle;
+  top: 0;
+  transition: transform 300ms ease-out, top 100ms ease-out, background 100ms ease-out;
+}
+.actions button small {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: -5px;
+}
+
+button:disabled {
+	background: rgba(0,0,0,0.1);
+	color: #333;
+	border-color: transparent;
+}
+button:hover:not(:disabled) {
+  background: #fffd8f;
+}
+button:hover:not(:active):not(:disabled) {
+	top: -3px;
+	position: relative;
+}
+
+.blink {
+  transform: scale(1.8);
+}
+
+#main-image {
+	flex-shrink: 0;
+}
+#main-image svg {
+	width: 100%;
+	height: auto;
+	box-shadow: 0 3px 15px -5px black;
+}
+#main-image svg:hover {
+  transition: transform 200ms cubic-bezier(.22,.61,.36,1) 200ms;
+}
+
+.trail {
+  transition: stroke-dasharray 3s linear;
+  stroke-dasharray: 0,0%,1,100%;
+}
+#huntTrail {
+  display: none;
+}
+.huntTrail {
+  stroke-dasharray: 0,0,0.5px,2px,0.5px,100%;
+}
+.forageTrail {
+  transform-origin: 39% 50%;
+  transition-duration: 1.5s;
+}
+#fishTrail {
+  transition-duration: 0.5s;
+}
+#boatTrail {
+  visibility: hidden;
+  transition-duration: 2s;
+  stroke-dasharray: 0,0%,2,100%;
+}
+
+svg {
+  transition: filter 1s linear;
+}
+
+svg {
+  filter: brightness(1.0) contrast(1.0);
+}
+svg.night {
+  filter: brightness(0.9) contrast(1.2) saturate(0.7);
+}
+#sky {
+  fill: #a4dff5;
+  transition: fill 1s ease-in-out;
+}
+svg.night #sky {
+  fill: #000005;
+}
+
+#sy, #fh, #st, #cp, #score-board {
+  visibility: hidden;
+}
+
+.modal {
+	position: fixed;
+	background: #222;
+	color: #fff;
+	top: 10%;
+	left: calc(50% - 400px);
+	z-index: 3;
+	font-size: 150%;
+	width: 800px;
+	padding: 2em;
+	box-sizing: border-box;
+  transform: scale(1);
+  text-align: justify;
+}
+.popup::before {
+	content: "";
+	display: block;
+	position: fixed;
+	background: rgba(0,0,0,0.5);
+	top: 0px;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 2;
+}
+.modal small {
+	font-size: 60%;
+	float: right;
+	margin-top: 2em;
+}
+.dismiss {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 200%;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+}
+li + li {
+	margin-top: 0.5em;
+}
+
+#intro ~ div {
+  filter: none;
+  transition: filter 500ms;
+}
+.blured #intro ~ div {
+  filter: blur(10px) brightness(1.5);
+}
+.popup.closed .modal {
+  top: -200%;
+  transform: scale(1.5);
+  opacity: 0;
+  transition: top 0s ease 0.3s, opacity 0.3s ease, transform 0.3s linear;
+}
+.popup.closed::before {
+  content: unset;
+}
+.caps, button {
+  text-transform: capitalize;
+  font-variant: small-caps;
+}
+.content {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+.content span {
+  margin-bottom: 1em;
+  padding: 0 2em;
+}
+.content :nth-child(2n) {
+	text-align: right;
+}
+#score-board p {
+	font-size: 130%;
+	margin-top: 0;
+	color: #c5d680;
+  font-weight: bold;
+  text-align: center;
+}
+.modal button {
+  display: block;
+  margin: auto;
+}
+
+body {
+  --v: 0;
+}
+.v {
+	opacity: var(--v);
+  transition: opacity .1s ease-out;
+}
+
+.logo {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+	margin: 10px auto;
+	display: block;
+  width: calc(70px * 4);
+}
+.modal .logo {
+	width: calc(70px * 7);
+}
+footer {
+  opacity: 0.4;
+}
+
+#ship.new {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+#ship.go {
+  transition: left 7s cubic-bezier(.5,0,1,1), top 7s cubic-bezier(.5,0,1,1);
+  top: 30px;
+  left: -100px;
+}
+
+/* Stupid hack for stupid Chrome */
+@supports (not (-moz-appearance:none))
+{ 
+  #ship.new {
+    transform: translate(0%, 0%);
+  }
+  #ship.go {
+    transition: transform 7s cubic-bezier(.5,0,1,1);
+    /* top: 30px;
+    left: -100px; */
+    transform: translate(-20%, 60%)
+  }
+}
+
+.ppl {
+	display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+.ppl .icon {
+	margin: -1px 1px -4px 1px;
+	font-size: 25px;
+	height: 1.1em;
+	width: 1.1em;
+	line-height: 1.1em;
+  background: none;
+  overflow: visible;
+}
+.ppl .dead {
+  opacity: 0.5;
+  filter: saturate(0);
+}
+.ppl .icon:nth-child(n+9) {
+	position: relative;
+	left: 14px;
+}
+
+@media (max-width: 1268px) {
+  .ppl {
+    display: none;
+  }
+  .actions button {
+    font-size: 16px;
+    width: 150px;
+  }
+}
