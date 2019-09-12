@@ -1,7 +1,7 @@
-var rockNames = ["Lygkos", "Lithos", "Guamedo", "Eadu", "Anoth", "Dikti", "Big Iron", "Impetu"]
-var terraNames = ["Delphi", "Trapani", "Erytrae", "Gaia", "Boston", "Jericho", "Nile", "New London"];
-var gasNames = ["Bespin", "Nuvo", "New Jupiter", "Vol", "Lightbulb", "Big Boy"];
-var desertNames = ["Rhodes", "New Jairo", "Jakku", "Savareen", "Arrakis", "New Sahara"]
+var rockNames = ["Lygkos", "Lithos", "Guamedo", "Eadu", "Anoth", "Dikti", "Big Iron"]
+var terraNames = ["Delphi", "Trapani", "Erytrae", "Gaia", "Boston", "Jericho", "Nile"];
+var gasNames = ["Bespin", "Nuvo", "Jupiter", "Vol", "Lightbulb", "Big Boy"];
+var desertNames = ["Rhodes", "Jairo", "Jakku", "Savareen", "Arrakis", "Sahara"]
 
 
 // Init
@@ -74,7 +74,7 @@ generateStarfield();
 generateBright();
 generate();
 
-sun.name = "The Sun";
+sun.name = "Sun";
 
 // Find terra planet
 var terra = 1;
@@ -83,9 +83,9 @@ for(var i = 0; i < planets.length; i++)
 	if(planets[i].type == 1)
 	{
 		terra = i;
-		planets[i].name = "New Earth";
+		planets[i].name = "Earth";
 		planets[i].cities = [];
-		createCities(planets[i], 0.5, 0);
+		createCities(planets[i], 0.3, 0);
 		break;
 	}
 }
@@ -112,6 +112,8 @@ var tutShown = false;
 var hideHud = false;
 
 timestep = 0.0;
+
+var slowdown = false;
 
 
 function update()
@@ -148,11 +150,11 @@ function update()
 
 		if(anyAtWar)
 		{
-			selectSong = 2;
+			song = combatSong;
 		}
 		else 
 		{
-			selectSong = 0;
+			song = spaceSong;
 
 			if(ships[0] != undefined && ships[0].landed)
 			{
@@ -160,15 +162,15 @@ function update()
 
 				if(planet.type == 0 || planet.type >= 3)
 				{
-					selectSong = 1;	// Rocky
+					song = rockyPlanetSong;	// Rocky
 				}
 				else if(planet.type == 2)
 				{
-					selectSong = 3;	// Desert
+					song = desertPlanetSong;	// Desert
 				}
 				else if(planet.type == 1)
 				{
-					selectSong = 4;	// Terra
+					song = terraPlanetSong;	// Terra
 				}
 			}
 		
@@ -189,6 +191,10 @@ function update()
 					}
 					else 
 					{
+						if(slowdown != 0.0)
+						{
+							ships[0].angspeed -= ships[0].angspeed * ships[0].stats.maneouver * 0.6 * dt;
+						}
 						aimShipGuns(ship, aimPoint, dt);
 					}
 
@@ -244,6 +250,16 @@ function update()
 	
 	if(dtval > 0.0)
 	{
+		if(ships[0].thrust.fw != 0.0 || ships[0].thrust.side != 0.0)
+		{
+			zzfx(0.25,.1,12,.1,.5,0,1.9,79.5,.75); // ZzFX 28022
+		}
+
+		if(ships[0].thrust.rot != 0.0)
+		{
+			zzfx(0.03,.1,45,.1,.5,0,4.0,79.5,.75); // ZzFX 28022
+		}
+
 		aimPoint = {x: mousePos.x, y: mousePos.y};
 		aimPoint.x -= canvas.width / 2.0;
 		aimPoint.y -= canvas.height / 2.0;
@@ -595,6 +611,11 @@ function onkey(evt)
 		thrust.side = val;
 	}
 
+	if(key == 'Space')
+	{
+		slowdown = val;
+	}
+
 	if(timestep > 2.0)
 	{
 		thrust.fw = 0.0; thrust.rot = 0.0; thrust.side = 0.0;
@@ -643,6 +664,11 @@ function onkey(evt)
 				timestep = timestepVals[timestepVal];
 				showEvent(timestep.toString() + "x Timewarp", 2.0);
 			}
+		}
+
+		if(key == 'KeyF')
+		{
+			camFocus = -1;
 		}
 
 		/*if(key == 'F1')

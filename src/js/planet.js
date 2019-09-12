@@ -56,10 +56,10 @@ function createForces(planet)
 	planet.humanForces = [];
 	planet.aiForces = [];
 
-	for(var i = 0; i < maxForces.human / 2.0 + maxForces.ai; i++)
+	for(var i = 0; i < maxForces.human + maxForces.ai; i++)
 	{
 
-		if(i < maxForces.human / 2.0)
+		if(i < maxForces.human)
 		{
 			planet.humanForces.push(randomShip(0));
 		}
@@ -294,7 +294,9 @@ function drawPlanet(planet)
 
 		// Outer circle
 		ctx.fillStyle = planet.colorOuter;
+
 		drawPlanetHeights(planet, planet.heights);
+
 	}
 
 	
@@ -361,13 +363,14 @@ function drawPlanetOver(planet)
 		// Draw heights
 		ctx.fillStyle = planet.colorInner;
 		drawPlanetHeights(planet, planet.bheights);
-
 		// Draw inner circle
 		// TODO: Could be removed
 		ctx.fillStyle = planet.colorDetail;
 		ctx.beginPath();
 		ctx.arc(planet.x, planet.y, planet.radius, 0.0, 2.0 * Math.PI);
 		ctx.fill();
+
+
 	}
 
 	if(planet.atmoRadius >= 0.0)

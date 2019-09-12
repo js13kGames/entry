@@ -177,14 +177,14 @@ function collidesWithShip(point, side = -1, extraRadius = 1.0)
 	{
 		if(isEnemy(ships[i].side, side) || side == -1)
 		{
-			var size = 5.0;
+			var size = 8.0;
 			if(ships[i].type == 1)
 			{
-				size = 14.0;
+				size = 16.0;
 			}
 			else if(ships[i].type == 2)
 			{
-				size = 28.0;
+				size = 32.0;
 			}
 
 			if(distance(point.x, point.y, ships[i].x, ships[i].y) <= size * extraRadius)

@@ -21,7 +21,7 @@ function upgradePrice()
 
 function orePrice()
 {
-	return 8.0 * plOre;
+	return 15.0 * plOre;
 }
 
 var holdingUpgrade = false;
@@ -43,7 +43,7 @@ function planetShop(key, release, ship, planet)
 		{
 			if(key == 'KeyM')
 			{
-				if(plOre < ships[0].stats.cargo - 1 && mineTimer <= 0.0 && planet.ore > 0)
+				if(plOre < ships[0].stats.cargo && mineTimer <= 0.0 && planet.ore > 0)
 				{
 					plOre++;
 					planet.ore--;
@@ -56,7 +56,7 @@ function planetShop(key, release, ship, planet)
 					}
 					else 
 					{
-						zzfx(1,.1,rrg(220, 320), rrg(8, 17) * 0.01,.66,.3,0,3.6,.03);
+						zzfx(0.5,.1,rrg(220, 320), rrg(8, 17) * 0.01,.66,.3,0,3.6,.03);
 					}
 					mineTimer = rrg(15, 60) * 0.01;
 

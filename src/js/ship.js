@@ -16,9 +16,9 @@ function createShip(type, nseed, side, level)
 
 	let shipValues = [
 		// Maneouver, Speed, Armor, Fuel, Cargo
-		2.0, 		12.0, 	50.0, 	100.0, 50.0, 	// Fighter
-		1.0, 		9.0, 	100.0, 	200.0, 150.0, 	// Freighter
-		0.8, 		9.0, 	400.0, 	250.0, 80.0];	// Destroyer
+		2.4, 		13.0, 	80.0, 	100.0, 50.0, 	// Fighter
+		1.0, 		9.0, 	180.0, 	200.0, 160.0, 	// Freighter
+		0.6, 		9.0, 	500.0, 	250.0, 60.0];	// Destroyer
 
 	seed = nseed;
 
@@ -64,8 +64,8 @@ function createShip(type, nseed, side, level)
 		var lPos = rrg(60, 90) * length * 0.01;
 		var weaponOff = lPos * slope * 0.5;
 
-		weapons.push({x: weaponOff, y: lPos, dir: 0, size: 6.0, angle: Math.PI / 2.5, speed: 8.0, ftime: 0.07, ftimer: 0.0});
-		weapons.push({x: -weaponOff, y: lPos, dir: 0, size: 6.0, angle: Math.PI / 2.5, speed: 8.0, ftime: 0.07, ftimer: 0.0});
+		weapons.push({x: weaponOff, y: lPos, dir: 0, size: 6.0, angle: Math.PI / 2.5, speed: 8.0, ftime: 0.08, ftimer: 0.0});
+		weapons.push({x: -weaponOff, y: lPos, dir: 0, size: 6.0, angle: Math.PI / 2.5, speed: 8.0, ftime: 0.08, ftimer: 0.0});
 
 	}
 	else if(type == 1)
@@ -153,11 +153,11 @@ function createShip(type, nseed, side, level)
 		weapons.push({x: -centerWidth / 2.2, y: waistLength * 1.8, dir: Math.PI / 2.5, size: 20.0, angle: Math.PI / 2.0, speed: 2.0, ftime: 0.4, ftimer: 0.0});
 
 		// Two front
-		weapons.push({x: centerWidth / 1.8, y: length * 0.95, dir: 0, size: 12.0, angle: Math.PI / 2.5, speed: 4.0, ftime: 0.1, ftimer: 0.0});
-		weapons.push({x: -centerWidth / 1.8, y: length * 0.95, dir: 0, size: 12.0, angle: Math.PI / 2.5, speed: 4.0, ftime: 0.1, ftimer: 0.0});
+		weapons.push({x: centerWidth / 1.8, y: length * 0.95, dir: 0, size: 15.0, angle: Math.PI / 2.5, speed: 4.0, ftime: 0.1, ftimer: 0.0});
+		weapons.push({x: -centerWidth / 1.8, y: length * 0.95, dir: 0, size: 15.0, angle: Math.PI / 2.5, speed: 4.0, ftime: 0.1, ftimer: 0.0});
 	}
 
-	var levelScale = 1.0 + (level * 0.11);
+	var levelScale = 1.0 + ((level - 1) * 0.11);
 
 	stats.maneouver = shipValues[type * 5 + 0] * levelScale;
 	stats.speed = shipValues[type * 5 + 1] * levelScale;
@@ -612,7 +612,7 @@ function simulateShip(ship, dt)
 		var point = {x: ship.x, y: ship.y};
 		
 		var coll = collidesWithPlanet(point, time);
-		if(coll != null)
+		if(coll != null && coll.planet != 0)
 		{
 			var planet = planets[coll.planet];
 			var speed = orbitVelocity(planet.center, planet.mass, planet.orbitRadius, time, planet.orbitOffset);

@@ -12,7 +12,7 @@ function updateBullet(bullet, dt)
 	bullet.vx += acc.x * dt;
 	bullet.vy += acc.y * dt;
 
-	var damage = bullet.size;
+	var damage = Math.pow(bullet.size, 2.5);
 
 	var collAll = collidesWithAny(bullet, time, bullet.side);
 
