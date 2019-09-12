@@ -28,6 +28,9 @@ export class Player {
 
             // Assign gamepadId & Remove misc characters before 'Joy-Con'
             this.gamepadId = props.gamepadId.replace(/.*(?=Joy-)/g, '');
+            if (this.gamepadId.indexOf('Xbox') > 0) {
+                this.gamepadId = 'Xbox Controller';
+            }
         } else if (this.controls) {
             this.keys = getKeys(this.controls);
         }

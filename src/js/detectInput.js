@@ -20,6 +20,7 @@ function setupGamepad(e) {
         axes: {}
     };
     // if (pad.id.indexOf('Joy-Con') > -1) {
+    console.log(pad.id);
     if (pad.id.indexOf('-Con') > -1) {
         window.gamepads[pad.index].buttonMap = {
             'a': 1,
@@ -35,16 +36,16 @@ function setupGamepad(e) {
         };
     } else {
         window.gamepads[pad.index].buttonMap = {
-            'a': 1,
-            'b': 0,
+            'a': 0,
+            'b': 1,
             'x': 3,
             'y': 2,
-            'l': 4,
-            'r': 5
+            'l': 6,
+            'r': 7
         };
         window.gamepads[pad.index].axesMap = {
-            'x': 4,
-            'y': 5
+            'x': 0,
+            'y': 1
         };
     }
 
