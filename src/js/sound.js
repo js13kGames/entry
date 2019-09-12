@@ -2,7 +2,7 @@
 function explosionSound(size, x, y, isShoot, volBoost = 0.6)
 {
 	var dist = distance(camera.x, camera.y, x, y);
-	var factor = Math.min(Math.max(800.0 / (dist * 10.0), 0.005), 1.0);
+	var factor = Math.min(Math.max(700.0 / (dist * 10.0), 0.005), 1.0);
 	var l = 0.05 + size * 1.7;
 	//var freq = Math.min(100 / (Math.pow(size, 2.6) * 460.0), 500.0);
 	freq = rrg(150 - size * 0.14, 280 - size * 0.14);
@@ -155,9 +155,15 @@ var musicTempo = 1.0 / 4.0;
 var musicPtr = 0;
 var musicVol = 0.10;
 var song = spaceSong;
+var muteMusic = false;
 
 function music(dt)
 {	
+	if(muteMusic)
+	{
+		return;
+	}
+
 	musicVol = 0.07;
 	musicTimer -= dt;
 

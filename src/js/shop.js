@@ -21,12 +21,12 @@ function upgradePrice()
 
 function orePrice()
 {
-	return 15.0 * plOre;
+	return 16.0 * plOre;
 }
 
 var holdingUpgrade = false;
 
-function planetShop(key, release, ship, planet)
+function planetShop(key, release, planet)
 {
 	if(release)
 	{
@@ -118,7 +118,7 @@ function planetShop(key, release, ship, planet)
 					zzfx(1,.1,836,.2,.01,0,.3,1.3,.78); // ZzFX 18945
 				}
 
-				planet.humanAggro += plOre * 0.001 * 0.20;
+				planet.humanAggro += plOre * 0.0013;
 				planet.humanAggro = Math.min(planet.humanAggro, 1.0);
 
 				plOre = 0;

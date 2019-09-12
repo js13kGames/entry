@@ -250,14 +250,17 @@ function update()
 	
 	if(dtval > 0.0)
 	{
-		if(ships[0].thrust.fw != 0.0 || ships[0].thrust.side != 0.0)
+		if(timestep > 0.0)
 		{
-			zzfx(0.25,.1,12,.1,.5,0,1.9,79.5,.75); // ZzFX 28022
-		}
+			if(ships[0].thrust.fw != 0.0 || ships[0].thrust.side != 0.0)
+			{
+				zzfx(0.25,.1,12,.1,.5,0,1.9,79.5,.75); // ZzFX 28022
+			}
 
-		if(ships[0].thrust.rot != 0.0)
-		{
-			zzfx(0.03,.1,45,.1,.5,0,4.0,79.5,.75); // ZzFX 28022
+			if(ships[0].thrust.rot != 0.0)
+			{
+				zzfx(0.03,.1,45,.1,.5,0,4.0,79.5,.75); // ZzFX 28022
+			}
 		}
 
 		aimPoint = {x: mousePos.x, y: mousePos.y};
@@ -435,7 +438,7 @@ function render()
 		drawRing(rings[i], time);
 	}
 
-	drawBright(0, 0, 125, 1.0);
+	drawBright(0, 0, 85, 1.0);
 
 	for(var i = 1; i < planets.length; i++)
 	{
@@ -679,6 +682,12 @@ function onkey(evt)
 		else*/ if(key == 'F2')
 		{
 			hideHud = !hideHud;
+			evt.preventDefault();
+		}
+
+		if(key == 'F3')
+		{
+			muteMusic = !muteMusic;
 			evt.preventDefault();
 		}
 	}

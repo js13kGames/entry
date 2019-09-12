@@ -87,7 +87,7 @@ function generatePlanet(type, radiusScale, id, moon)
 	if(type == 0)
 	{
 		// Rocky planet
-		var radius = rrg(250, 850) * radiusScale;
+		var radius = rrg(350, 1000) * radiusScale;
 		newPlanet = createPlanet(rrg(25, 60), rrg(140, 150), radius, 0.0, 
 		randomColor(0, 1.0), randomColor(0, 0.5), randomColor(0, 1.0),
 		'0, 0, 0', rrg(0, 10000), 64);
@@ -99,7 +99,7 @@ function generatePlanet(type, radiusScale, id, moon)
 		}
 		else
 		{
-			newPlanet.ore = rrg(55, radius * radius * 0.0114);
+			newPlanet.ore = rrg(100, radius * radius * 0.007);
 		}
 	}
 	else if(type == 1)
@@ -132,7 +132,7 @@ function generatePlanet(type, radiusScale, id, moon)
 		}
 		else
 		{
-			newPlanet.ore = rrg(50, radius * radius * 0.004);
+			newPlanet.ore = rrg(100, radius * radius * 0.015);
 		}
 	}
 	else if(type == 3)
@@ -158,7 +158,7 @@ function generatePlanet(type, radiusScale, id, moon)
 		'0, 0, 0', rrg(0, 10000), 64);
 		nameSrc = rockNames;
 
-		newPlanet.ore = rrg(35, radius * radius * 0.14);
+		newPlanet.ore = rrg(35, radius * radius * 0.3);
 	}
 
 	newPlanet.mass = 4.0 * Math.PI * newPlanet.radius * newPlanet.radius;
@@ -281,7 +281,7 @@ function generate()
 				if(j != i)
 				{
 					var dist = distance(planets[i].x, planets[i].y, planets[j].x, planets[j].y);
-					if(dist <= 9000.0)
+					if(dist <= 20000.0)
 					{
 						minDist = true;
 					}
@@ -293,6 +293,7 @@ function generate()
 	if(foundTerra == false || foundDesert == false || rings.length <= 1 || minDist)
 	{
 		planets = [];
+		rings = [];
 		seed += rrg(1, 5000);
 		generate();
 	}

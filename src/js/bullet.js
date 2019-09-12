@@ -20,7 +20,6 @@ function updateBullet(bullet, dt)
 	{
 		explode(bullet.x, bullet.y, collAll.ship.speed.x, collAll.ship.speed.y, bullet.size * 17.0, 2.4, 0.4, true, false);
 		collAll.ship.health -= damage;
-		collAll.ship.health = Math.floor(collAll.ship.health);
 		
 		return true;
 	}
