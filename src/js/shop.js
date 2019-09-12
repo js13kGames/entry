@@ -38,7 +38,6 @@ function planetShop(key, release, planet)
 
 	if(!release)
 	{
-
 		if(planet.cities.length == 0)
 		{
 			if(key == 'KeyM')

@@ -433,16 +433,16 @@ function render()
 
 	doCameraTransform();
 
-	for(var i = 0; i < rings.length; i++)
-	{
-		drawRing(rings[i], time);
-	}
-
 	drawBright(0, 0, 85, 1.0);
 
 	for(var i = 1; i < planets.length; i++)
 	{
 		drawPlanet(planets[i]);
+	}
+
+	for(var i = 0; i < rings.length; i++)
+	{
+		drawRing(rings[i], time);
 	}
 
 	for(var i = 0; i < ships.length; i++)
@@ -694,7 +694,7 @@ function onkey(evt)
 
 	if(ships[0].landed)
 	{
-		planetShop(key, release, ships[0], planets[ships[0].coll.planet]);
+		planetShop(key, release, planets[ships[0].coll.planet]);
 	}
 }
 
