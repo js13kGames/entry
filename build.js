@@ -63,7 +63,6 @@ const preMangle = {
       'entities',
       'maps',
       'rotation',
-      'duration',
     ]) {
       code = code.replace(new RegExp(`\\b${word}\\b`, 'g'), 'M' + word)
     }

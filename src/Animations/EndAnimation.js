@@ -61,7 +61,7 @@ export class EndAnimation extends AnimationBase {
         drawSprite(TextsSprite, center, 112, 8, scale, scale)
       }
 
-      if (this.t >= this.duration && (this.t - this.duration) % 60 < 30) {
+      if (this.t >= this.tLimit && (this.t - this.tLimit) % 60 < 30) {
         drawTextCentered('PRESS ANY BUTTON', center, 160)
         drawTextCentered('TO START A NEW GAME', center, 167)
       }
