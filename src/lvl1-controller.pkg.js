@@ -16,7 +16,6 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
   } = initModel(40, 38, .1);
 
   const {
-    getState,
     getSnapshot,
     isUpdated,
     setState: modelSetState

@@ -24,10 +24,33 @@ const initModel = (height, width, foodCoveragePercent) => {
     }
   }
 
+  const water = (() => {
+    const [, ctx] = createCanvas('canvas');
+    ctx.canvas.width = ctx.canvas.height = 100;
+    ctx.fillStyle = '#154364';
+    ctx.fillRect(0, 0, 100, 100);
+    const starts = [[-7, 86, '#0987A3'], [-3, 50, '#38B2CC'], [-13, 17, '#388ECC']];
+    ctx.lineWidth = 2;
+    starts.forEach(start => {
+      let x = start[0];
+      let y = start[1];
+      ctx.strokeStyle = start[2];
+      while (x < 100) {
+        ctx.beginPath();
+        // ctx.moveTo(x, y);
+        ctx.ellipse(x+10, y, 10, 10, 0, 0, Math.PI);
+        x += 20;
+        ctx.stroke();
+      }
+    });
+
+    return ctx.getImageData(0, 0, 200, 400);
+  })()
+
   // 2D slice of map matrix
   function sliceMap (startRow, endRow, startCol, endCol) {
     const slice = [];
-    const oob = makeMapCell(OUT_OF_BOUNDS);
+    const oob = makeMapCell(OUT_OF_BOUNDS, water);
     for (var row = startRow; row <= endRow; row++) {
       slice[row - startRow] = [];
       for (var col = startCol; col <= endCol; col++) {

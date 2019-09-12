@@ -12,12 +12,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
   ] = images
   window.kongRight = kongRightImg;
   const cellStyles = {
-    [OUT_OF_BOUNDS]: 'lightblue',
-    [BLOCKED]: 'transparent',
-    [BUILDING_2X4]: 'brown',
-    // [OUT_OF_BOUNDS_CUTOFF]:
     [STREET]: colorStreet,
-    [PIZZA]: 'yellow',
     [EXIT]: 'green'
   };
 
@@ -34,7 +29,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
     for (let y = 0; y < mapView.length; y++) {
       for (let x = 0; x < mapView[0].length; x++) {
         const cell = mapView[y][x]
-        ctx.fillStyle = cellStyles[cell.displayId];
+        if (cellStyles[cell.displayId]) ctx.fillStyle = cellStyles[cell.displayId];
         ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
         if (cell.displayId < OUT_OF_BOUNDS_CUTOFF && cell.imgData) {
           ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
