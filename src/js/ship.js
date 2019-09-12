@@ -304,6 +304,7 @@ export class Ship extends Sprite.class {
         }
 
         zzfx(.5,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+        zzfx(1,.1,44,.8,0,.2,2,0,.65); // ZzFX 265
 
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
