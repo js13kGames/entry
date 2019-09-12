@@ -1,14 +1,13 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "ROW",
+  "description": "Row row row your boat,\nquickly back up stream,\nfrantically frantically,\nfrantically frantically,\nLife will end downstream...\n____________________________\n\nROW is an infinite scroller.\n\nWhile enjoying a leisurely day on the river, you come to the unfortunate realization that a log jam is blocking your path downstream. See how far back upstream you can get!\n\nAvoid rocks and trees, and be sure to pick up the orange buoys for extra lives.\n\nThis game is designed for touch controls, but there are keyboard inputs as well. The tutorial shows the relevant left & right oar controls for both touch and keyboard.\n\nCoil subscribers! Enjoy more frequent life buoys and a slower difficulty ramp-up.\n\nNo libraries were used in the making of this game.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "image_large.png",
+    "image_thumbnail": "image_thumbnail.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Ben Fox",
+    "website": "https://www.benfox.info"
   }
 }

@@ -1,0 +1,43 @@
+{
+  "extends": "airbnb",
+  "env": {
+      "jest": true,
+      "browser": true,
+  },
+  "globals": {
+    "document": true,
+    "window": true,
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "experimentalObjectRestSpread": true,
+    },
+  },
+  "rules": {
+    "semi": [2, "never"],
+    "brace-style": [2, "stroustrup"],
+    "arrow-parens": [2, "always"],
+    "no-console": ["error", { "allow": ["debug", "warn", "error", "log"]}],
+    "camelcase": [0, {"properties":"never", "ignoreDestructuring": true} ],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "import/no-named-as-default": 0,
+    "padding-line-between-statements":[
+      "error",
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+  },
+  "plugins": [
+    "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": { "config": "./webpack.common.js" }
+    }
+  }
+}
