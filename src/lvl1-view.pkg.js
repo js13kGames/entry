@@ -38,7 +38,6 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
           if (cell.itemId == PIZZA) ctx.drawImage(pizzaImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
           if (cell.itemId == HOTDOG) ctx.drawImage(hotdogImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
-        if (cell.displayId === EXIT) console.log(!!cell.imgData)
         if (cell.displayId === EXIT) ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
       }
     }
