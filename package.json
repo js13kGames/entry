@@ -24,6 +24,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
-    "hyperapp": "^1.2.0"
+    "hyperapp": "^1.2.0",
+    "picostyle": "^2.2.0"
   }
 }
