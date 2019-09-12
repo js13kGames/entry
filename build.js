@@ -95,7 +95,7 @@ const outputOptions = {
 
 function advZip () {
   return new Promise((resolve, reject) => {
-    execFile(advzip, ['-4', '-a', './dist/dist.zip', './dist/index.html'], err => {
+    execFile(advzip, ['-4', '-i', 1000, '-a', './dist/dist.zip', './dist/index.html'], err => {
       if (err) { return reject(err) }
       resolve()
     })
