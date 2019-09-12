@@ -105,7 +105,7 @@ const initLevel1 = async (pizzaSound, nextLevel) => {
 
   // init
   modelSetState({
-    position: {row: 10, col: 10 },
+    position: {row: 9, col: 10 },
     facing: 'down',
     remainingFoods: numFoods,
     canExit: false,
