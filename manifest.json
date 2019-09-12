@@ -1,8 +1,11 @@
 {
   "name": "Watch Your Back!",
   "description": "Use the robot to light the place. Use the player to shoot. Survive.",
+  "categories": [
+    "Desktop"
+  ],
   "images" : {
-    "image_large": "./bigThumb.png",
-    "image_thumbnail": "./smallThumb.png"
+    "image_large": "bigThumb.png",
+    "image_thumbnail": "smallThumb.png"
   }
 }
