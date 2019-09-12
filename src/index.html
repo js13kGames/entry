@@ -7,14 +7,15 @@
             }
 
             canvas {
-                width: 800px;
-                height: 500px;
+                width: 810px;
+                height: 570px;
                 position: relative;
                 /* background: #528258; */
                 margin: 20px 0;
             }
 
             #score-panel {
+                visibility: hidden;
                 font-size: 24px;
                 color: #d1c4af;
             }
@@ -30,6 +31,23 @@
                 text-align: center;
                 color: #585356;
             }
+
+            #main {
+                background: #d1c4af;
+                /* opacity: 0.5; */
+            }
+
+            #start {
+                display: none;
+                position: absolute;
+                top: 310px;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #585356;
+                font-weight: 700;
+                font-size: 60px;
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -41,8 +59,8 @@
             </div>
         </div>
         <div id="count-down"></div>
-
         <canvas id="main"></canvas>
+        <div id="start">START</div>
 
         <script src="util.js"></script>
         <script src="snake.js"></script>
