@@ -69,5 +69,5 @@ export function drawTextCentered (text, x, y, scale = 1) {
 }
 
 export function drawBoldTextCentered (text, x, y, scale = 1) {
-  drawBoldText(text, x - getBoldTextWidth(text) / 2, y, scale)
+  drawBoldText(text, x - (0|(getBoldTextWidth(text) / 2)), y, scale)
 }
