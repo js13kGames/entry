@@ -341,7 +341,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   }
 
   const openSquaresForPizzas = getOpenSquares();
-  const numFoods = 1 ;
+  const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
   dealShuffled(openSquaresForPizzas, numFoods)
     .forEach(square => { square.itemId = random() < .5 ? PIZZA : HOTDOG; });
 
