@@ -7,7 +7,7 @@ export default () => {
         // radius: 8,
         mass: 4,
         thrust: 8,
-        ammo: 4,
+        ammo: 5,
         maxSpeed: 8,
         lines: {
             body: [

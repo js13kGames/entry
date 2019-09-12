@@ -229,7 +229,7 @@ const menuLoop = GameLoop({  // create the main game loop
             }
 
             renderText({
-                text: '(n) add new ai player',
+                text: '(n) add ai player',
                 alignCenter: true,
                 size: .5,
                 x: x + game.width / 4,
@@ -239,7 +239,7 @@ const menuLoop = GameLoop({  // create the main game loop
             });
 
             renderText({
-                text: game.unusedControls + ' add new player',
+                text: game.unusedControls + ' add player',
                 alignCenter: true,
                 size: .5,
                 x: x + game.width / 4,
