@@ -767,11 +767,15 @@ var shapes = {
 			path: "M.5.5S7.61,5.66,21.88,5.66,43.3.52,43.3.52",
 			line: true
 		},
-		{ // TODO: Add polyline fangs
+		{
 			h: 11,
 			w: 35,
 			path: "M.5,10.12a57.31,57.31,0,0,1,34,0",
-			line: true
+			line: true,
+      polys: [
+        "2.73 9.5 3.92 0.93 9.13 8.19",
+        "25.64 8 29.95 0.5 32.06 9.18"
+      ]
 		},
 		{
 			h: 5,
@@ -1099,6 +1103,10 @@ function createCircle(fillColor, bp) {
 	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="1" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
 }
 
+function createPoly(points) {
+  return '<polyline points="'+points+'" fill="white" stroke="#222222" stroke-width="1"/>';
+}
+
 function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 	if (!Array.isArray(bodyParts)) {
 		bodyParts = [bodyParts];
@@ -1136,6 +1144,7 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
 		if (bodyPart.c2)
 			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
+    if (bodyPart.polys) bodyPart.polys.forEach(poly => svgContent += createPoly(poly));
 	});
 	svgContent += '</svg>';
 	container.innerHTML += svgContent;
