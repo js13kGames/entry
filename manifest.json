@@ -1,6 +1,6 @@
 {
   "name": "Playback",
-  "description": "Playback is an ordered platformer game.\nPress the playback button to see (and hear) how the level must be played, and play it back.\nKeyboard and gamepads are supported.\nThe freeplay mode lets you play some music with your keyboard. Some song examples (QWERTY) are included. Feel free to share your own !",
+  "description": "Playback is an ordered platformer game.\nPress the playback button to see (and hear) how the level must be played, and play it back.\nKeyboard and gamepads are supported.\nThe freeplay mode lets you play some music with your keyboard. Some song examples (QWERTY) are included. Feel free to share your own !\nTips:\n-Press Space, Triangle or Y for level playback\n-You can stick to walls",
   "images" : {
     "image_large": "big.jpg",
     "image_thumbnail": "small.jpg"
