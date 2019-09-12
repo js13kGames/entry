@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+  "name": "Backstabber Hero",
+  "description": "This is the story of the mysterious backstabber hero. While most people carry on living their carefree lives our backstabbing hero is taking care of the worlds' backstabbing chores. Play through 20 levels on desktop or mobile. Subscribe to COIL to be able to customize your favourite backstabbing suit. Try to catch as many knifes as possible to impress your backstabbing rivals.<br><br>The game support touch screens or keyboard: arrowkeys for moving, crouching and jumping (space is also ok for jumping). Press Z or Ctrl to stab. Try to observe your stab-subjects to find winning strategies, like hiding in barrels or crouching behind a block.<br><br>Good luck! 🗡️",
+  "images": {
+    "image_large": "400x250.png",
+    "image_thumbnail": "160x160.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+  "categories": ["Desktop", "Mobile", "Web Monetization"],
+  "user": {
+    "name": "nkholski",
+    "website": "https://github.com/nkholski",
+    "twitter": "nikbrg"
   }
 }
