@@ -278,14 +278,9 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   // Make sure there is space on the map to add one building
   function addBuilding(map, row, column, building, pxs) {
-    try {
-      const start = map[row][column];
-      const end = map[row + building.length - 1][column + building[0].length - 1];
-      if (!start || !end) return;
-    } catch (e) {
-      console.error(e);
-      return;
-    }
+    const start = map[row][column];
+    const end = map[row + building.length - 1][column + building[0].length - 1];
+    if (!start || !end) return;
     building.forEach((buildingRow, rowIndex) => {
       buildingRow.forEach((cell, colIndex) => {
         map[row + rowIndex][column + colIndex] = makeMapCell(cell, pxs[rowIndex][colIndex]);
