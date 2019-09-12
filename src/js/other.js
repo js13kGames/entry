@@ -295,7 +295,9 @@ function generate()
 		planets = [];
 		rings = [];
 		seed += rrg(1, 5000);
-		generate();
+		return false;
 	}
+
+	return true;
 
 }

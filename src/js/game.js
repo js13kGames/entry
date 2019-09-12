@@ -72,7 +72,9 @@ var controls = 0.0;
 
 generateStarfield();
 generateBright();
-generate();
+while(!generate())
+{
+}
 
 sun.name = "Sun";
 

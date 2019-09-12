@@ -15,10 +15,10 @@ function createShip(type, nseed, side, level)
 	}
 
 	let shipValues = [
-		// Maneouver, Speed, Armor, Fuel, Cargo
-		2.4, 		13.0, 	80.0, 	100.0, 50.0, 	// Fighter
-		1.0, 		9.0, 	180.0, 	200.0, 160.0, 	// Freighter
-		0.6, 		9.0, 	500.0, 	250.0, 60.0];	// Destroyer
+		// Maneouver, Speed, Armor, Cargo
+		2.4, 		13.0, 	80.0, 50.0, 	// Fighter
+		1.0, 		9.0, 	180.0, 160.0, 	// Freighter
+		0.6, 		9.0, 	500.0, 60.0];	// Destroyer
 
 	seed = nseed;
 
@@ -159,11 +159,10 @@ function createShip(type, nseed, side, level)
 
 	var levelScale = 1.0 + ((level - 1) * 0.11);
 
-	stats.maneouver = shipValues[type * 5 + 0] * levelScale;
-	stats.speed = shipValues[type * 5 + 1] * levelScale;
-	stats.armor = shipValues[type * 5 + 2] * levelScale;
-	stats.fuel = shipValues[type * 5 + 3] * levelScale;
-	stats.cargo = shipValues[type * 5 + 4] * levelScale;
+	stats.maneouver = shipValues[type * 4 + 0] * levelScale;
+	stats.speed = shipValues[type * 4 + 1] * levelScale;
+	stats.armor = shipValues[type * 4 + 2] * levelScale;
+	stats.cargo = shipValues[type * 4 + 3] * levelScale * levelScale;
 
 	var health = stats.armor;
 
@@ -180,7 +179,7 @@ function createShip(type, nseed, side, level)
 
 	return {level: level, health: health, destroyed:false, type: type, stats: stats, hull: hull, weapons: weapons, thrusters: thrusters, width: width, length: length, 
 		x: 0.0, y: 0.0, rot: Math.PI, angspeed: 0.0, speed: {x: 0.0, y: 0.0}, thrust: thrust, acc: {x: 0.0, y: 0.0}, landed: false,
-	scale: scale, firing: false, side: side, color: color, ai: {acc: rrg(5, 22), task: null, obj: null, beh: null, level: level, target: -1, targetTimer: 0.0}};
+	scale: scale, firing: false, side: side, color: color, ai: {acc: rrg(5, 22), task: null, obj: null, beh: null, level: level, target: -1, targetTimer: 0.0}, nograv: 0.0};
 }
 
 function drawShipLow(ship)
@@ -530,6 +529,8 @@ function getFrameSpeed(ship)
 
 function simulateShip(ship, dt)
 {
+	ship.nograv -= dt;
+
 	if(rrg(0, 1000) >= (ship.health / ship.stats.armor) * 2000.0)
 	{
 		burn(ship.x + rrg(-10, 10), ship.y + rrg(-10, 10), ship.speed.x + rrg(-10, 10), ship.speed.y + rrg(-10, 10), rrg(4, 15), rrg(100, 200) * 0.005);
@@ -586,10 +587,11 @@ function simulateShip(ship, dt)
 		if(fwt > 0.0)
 		{
 			ship.landed = false;
-			ship.speed.x = ship.coll.nx * 100.0 + speed.x;
-			ship.speed.y = ship.coll.ny * 100.0 + speed.y;
+			ship.speed.x = ship.coll.nx * 20.0 + speed.x;
+			ship.speed.y = ship.coll.ny * 20.0 + speed.y;
 			ship.x += ship.speed.x * dt;
 			ship.y += ship.speed.y * dt;
+			ship.nograv = 1.0;
 		}
 
 		if(landedPlanet.warTime != undefined && landedPlanet.warTime < 0.0)
@@ -646,11 +648,14 @@ function simulateShip(ship, dt)
 		ship.y += ship.speed.y * dt;
 		ship.rot += ship.angspeed * dt;
 
-		var acc = gravity(point, -1.0);
-		ship.speed.x += acc.x * dt;
-		ship.speed.y += acc.y * dt;
-		//ship.acc = acc;
 
+		if(ship.nograv <= 0.0)
+		{
+			var acc = gravity(point, -1.0);
+			ship.speed.x += acc.x * dt;
+			ship.speed.y += acc.y * dt;
+			//ship.acc = acc;
+		}
 
 	}
 
