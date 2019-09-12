@@ -2,8 +2,8 @@
   "name": "Don't Look Back!",
   "description": "Don't Look Back is a short WebXR game of cowboys and chickens made with A-Frame, inspired by carnival shooting galleries and my love for pixelart.",
   "images" : {
-    "image_large": "./dont-look-back-large.png",
-    "image_thumbnail": "./dont-look-back-thumbnail.png"
+    "image_large": "dont-look-back-large.png",
+    "image_thumbnail": "dont-look-back-thumbnail.png"
   },
   "categories": ["Web Monetization", "WebXR"],
   "user" : {
