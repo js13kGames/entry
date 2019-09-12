@@ -1,11 +1,11 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Dawn Breaker",
+  "description": "You are a wanderer in the dark, persued by unnamable hordes, use your arsenal of light to eliminate enemies and dawn the world.\nControls: press [Z] to throw back flash bangs, press [X] to deploy flash mines.\nEach blast will draw the dawn nearer and when the dawn breaks you beat the game.\nGood luck !",
   "images" : {
     "image_large": "image-big.jpg",
     "image_thumbnail": "image-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
     "name": "optional",
     "website": "optional",

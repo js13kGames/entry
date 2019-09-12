@@ -124,6 +124,7 @@ export default class Game {
     this.UPGRADE_KILL_INTERVAL = 15
 
     // globals
+    this.timeInMill = 0
     this.gameProgress = 0
     this.message = ''
     this.messageDuration = 0
@@ -180,6 +181,8 @@ export default class Game {
           this.onGameOver()
           return
         }
+
+        this.timeInMill = Math.round(this.timeInMill + dt * 1000)
 
         // update
         this.updateTrees()
@@ -530,6 +533,10 @@ export default class Game {
           let msgWidth = ctx.measureText(self.message).width
           ctx.fillText(self.message, self.WIDTH - msgWidth - self.WIDTH * 0.05, self.FLOOR + self.UI_FONT_SIZE * 2)
         }
+        // game time
+        const timeStr = self.formatTime(self.timeInMill)
+        let strWidth = ctx.measureText(timeStr).width
+        ctx.fillText(timeStr, self.WIDTH - strWidth - self.WIDTH * 0.05, self.UI_FONT_SIZE * 2)
       }
     })
 
@@ -596,6 +603,13 @@ export default class Game {
   showMessage(msg) {
     this.message = msg
     this.messageDuration = 3
+  }
+
+  formatTime(timeInMill) {
+    const ms = timeInMill % 1000
+    const s = (timeInMill - ms) / 1000 % 60
+    const m = Math.floor((timeInMill - ms) / 1000 / 60)
+    return `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}:${['00', '0', ''][Math.floor(Math.log10(ms))] + ms}`
   }
 
   onGameOver() { }

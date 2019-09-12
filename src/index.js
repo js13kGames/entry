@@ -34,8 +34,10 @@ function checkStartKey(ev) {
     }
     game.onGameBeaten = () => {
       splashFade(gameBeatenSplash, true, Sound.gameStartAndBeaten, () => {
+        showRankList(game.timeInMill)
         game = null
         document.addEventListener('keypress', checkStartKey)
+        
       })
     }
 
@@ -57,4 +59,35 @@ function splashFade(splash, fadeIn, onBefore, onAfter) {
       onAfter()
     }
   }, 100)
+}
+
+function showRankList(time) {
+  const rankList = JSON.parse(localStorage.getItem('dawn-breaker-rank')) || []
+  rankList.push({
+    name: '',
+    time: time
+  })
+  rankList.sort((a, b) => {
+    return a.time < b.time ? 1 : -1
+  })
+  if (rankList.length > 5) {
+    rankList.shift()
+  }
+  let inRank = false
+  rankList.map(rank => {
+    if (rank.name === '') {
+      inRank = true
+    }
+  })
+  if (inRank) {
+    let name = ''
+    while (name === '') {
+      name = prompt('High Score!\nEnter your name to show in rank list:')
+    }
+    rankList.map(rank => { rank.name = rank.name === '' ? name : rank.name })
+    localStorage.setItem('dawn-breaker-rank', JSON.stringify(rankList))
+    const listStr = rankList.map(rank => `${rank.name}\t${rank.time}`).join('\n')
+    alert(listStr)
+    // TODO: polish
+  }
 }
