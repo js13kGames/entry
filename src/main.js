@@ -158,22 +158,26 @@ var shapes = {
 			h: 8,
 			w: 46,
 			path: "M.5.8S3.85,6.11,13.25,4.39c3.62-.67,7.79,3.12,9.93,3.12,3.37,0,6-3.57,10.07-3.28,6.88.49,10.5-.46,12.22-3.73",
-			anchor: [22, 4]
+			anchor: [22, 4],
+			line: true
 		},
 		{
 			h: 7,
 			w: 44,
 			path: "M.5.5S7.61,5.66,21.88,5.66,43.3.52,43.3.52",
+			line: true
 		},
 		{ // TODO: Add polyline fangs
 			h: 11,
 			w: 35,
 			path: "M.5,10.12a57.31,57.31,0,0,1,34,0",
+			line: true
 		},
-		{ // TODO: Add polyline fangs
+		{
 			h: 5,
 			w: 34,
 			path: "M.5.5q8,7.41,16,0c5.47,5,11,4.87,16.63,0",
+			line: true
 		}
 	],
 	arm: [
@@ -212,7 +216,7 @@ var shapes = {
 			w: 37,
 			path: "M36.09,29.6C31.23,15.79,10.69-6,2.22,2.36c-8.64,8.55,17.67,32.09,25.26,33.78",
 			anchor: [28, 7],
-e			shpath: "m 35.70637,29.950083 a 27.34,27.34 0 0 0 -2.19,-5 c -2.1,-3.91 -8.87,-8.66 -13,-5.39 -4.13,3.27 -2.8,10.42 1.42,13.2 4.89,3.22 6.11,3.11 6.11,3.11 z"
+			shpath: "m 35.70637,29.950083 a 27.34,27.34 0 0 0 -2.19,-5 c -2.1,-3.91 -8.87,-8.66 -13,-5.39 -4.13,3.27 -2.8,10.42 1.42,13.2 4.89,3.22 6.11,3.11 6.11,3.11 z"
 		}
 	],
 	feet: [
@@ -311,8 +315,8 @@ function randomAnatomy() {
 		bps: {
 			arm: randi(shapes.arm),
 			body: randi(shapes.body),
-			feet: randi(shapes.feet),,
-			ear: randi(shapes.ear),,
+			feet: randi(shapes.feet),
+			ear: randi(shapes.ear),
 			head: randi(shapes.head),
 			eye: randi(shapes.eye),
 			mouth: randi(shapes.mouth)
@@ -448,6 +452,10 @@ function pPath(fillColor, pathCommands) {
 	return '<path fill="'+fillColor+'" d="'+pathCommands+'"/>';
 }
 
+function sPath(pathCommands) {
+	return '<path fill="none" stroke="#222222" stroke-width="1" d="'+pathCommands+'"/>';
+}
+
 function createCircle(fillColor, bp) {
 	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="1" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
 }
@@ -472,7 +480,11 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 	const color = colors[bodyPartKey] || colors.default;
 	bodyParts.forEach((bodyPart, i) => {
 		if (bodyPart.path) {
-			svgContent += createPath(bodyPart.f || color, bodyPart.path);
+			if (bodyPart.line) {
+				svgContent += sPath(bodyPart.path);
+			} else {
+				svgContent += createPath(bodyPart.f || color, bodyPart.path);
+			}
 		} else {
 			svgContent += createCircle(bodyPart.f || color, bodyPart);
 		}
