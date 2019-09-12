@@ -17,12 +17,26 @@ var rands = {
       return min;
     }
     return this.int(max - min) + min;
+  },
+  of(array) {
+  	return array[this.int(array.length - 1)];
   }
 };
 
-function randof(array) {
-	return array[Math.round(Math.random()*(array.length - 1))];
-}
+var rand = {
+  int: function(max) {
+    return Math.round(Math.random() * max);
+  },
+  range: function(min, max) {
+    if (min === max) {
+      return min;
+    }
+    return this.int(max - min) + min;
+  },
+  of(array) {
+  	return array[this.int(array.length - 1)];
+  }
+};
 
 var shapes = {
 	head: [
@@ -297,7 +311,23 @@ const eyeColors = [
 ]
 
 function randomColorf(colors) {
-	return '#' + randof(colors);
+	return '#' + rand.of(colors);
+}
+
+const vow = 'aeiou';
+const con = 'bcdfgjklmnprstx';
+
+function randomName() {
+	const syl = rands.range(2, 4);
+	let name = '';
+	for (let i = 0; i < syl; i++) {
+		name += rSyl();
+	}
+	return name.charAt(0).toUpperCase() + name.substring(1); 
+}
+
+function rSyl() {
+	return rands.of(con) + rands.of(vow) + ((rands.int(100) > 50) ? rands.of(con) : '');
 }
 
 let anatomySeq = 0;
@@ -321,10 +351,6 @@ function randomAnatomy() {
 		}
 
 	}
-}
-
-function randomName() {
-	return 'Ochurus';
 }
 
 function randi(array) {
@@ -401,7 +427,6 @@ function move(dx, dy) {
 		model.x = Math.abs(model.x) % 10;
 		model.y = Math.abs(model.y) % 10;
 		land();
-		update();
 		disable(false);
 	}, 1000);
 }
@@ -441,17 +466,17 @@ function land() {
 	currentMonster = getMonsterAtLocation();
 	if (currentMonster) {
 		message('There\'s a ' + currentMonster.name + ' here!');
-		update();
 	} else {
 		message('Nothing here.');
 	}
+	update();
 }
 
 function getMonsterAtLocation() {
 	const list = locs[model.x+'.'+ model.y];
 	if (!list)
 		return;
-	return randof(list);
+	return rand.of(list);
 }
 
 let showingBackpack = false;
@@ -485,6 +510,6 @@ function disable(disable) {
 
 }
 
-land();
 
-update();
+
+land();
