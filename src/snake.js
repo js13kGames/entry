@@ -29,8 +29,6 @@ Snake.prototype.tick = function () {
         return false;
     }
 
-    console.log('tick');
-
     var head = this.body[0];
     var food = this.food;
 
@@ -74,11 +72,9 @@ Snake.prototype.tick = function () {
     }
 
     this.body.splice(0, 0, newPos);
-    console.log(this.body[0]);
 
     if (!this._growNextTick) {
         this.body.splice(this.body.length - 1, 1);
-        console.log(this.body[0]);
     }
     this._growNextTick = false;
 

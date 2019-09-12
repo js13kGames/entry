@@ -35,8 +35,7 @@ window.game = Object.assign({
 
     mainEl: document.getElementById('main'),
     startEl: document.getElementById('start'),
-    scoreEl: document.getElementById('score-panel'),
-    loadingEl: document.getElementById('loading'),
+    scoreEl: document.getElementById('score-panel')
 }, initialState);
 
 game.gridWidth = game.width / game.gridSize;
@@ -103,6 +102,7 @@ function gameOver() {
     setTimeout(function () {
         game.scoreEl.style.visibility = 'hidden';
         game.startEl.style.display = 'block';
+        game.mainEl.style.opacity = 0.5;
         game.demo = true;
         var historySnakes = game.historySnakes;
         newGame();
@@ -145,7 +145,6 @@ function tick() {
         else {
             if (game.heartScore <= 0) {
                 game.demoReady = true;
-                game.loadingEl.style.display = 'none';
                 game.startEl.style.display = 'block';
                 var historySnakes = game.historySnakes;
                 newGame();
