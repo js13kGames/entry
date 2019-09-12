@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Playback",
+  "description": "Playback is an ordered platformer game.\nPress the playback button to see (and hear) how the level must be played, and play it back.\nKeyboard and gamepads are supported.\nThe freeplay mode lets you play some music with your keyboard. Some song examples (QWERTY) are included. Feel free to share your own !",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "big.jpg",
+    "image_thumbnail": "small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Adrian Lissot",
+    "website": "https://harmades.github.io",
+    "twitter": "adrianlissot"
   }
 }
