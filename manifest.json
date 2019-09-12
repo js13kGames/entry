@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
-  },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
-  }
+    "name": "Backcountry",
+    "description": "Kill or be killed in this hack and slash set in the Wild West.",
+    "images" : {
+        "image_large": "image_large.png",
+        "image_thumbnail": "image_thumbnail.png"
+    },
+    "categories": ["Desktop", "Mobile", "Web Monetization"],
+    "user" : {
+        "name": "Piesku",
+        "website": "https://piesku.com",
+        "twitter": "@pieskucom"
+    }
 }
