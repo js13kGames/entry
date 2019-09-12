@@ -25,14 +25,8 @@ export class Player {
         // Set control scheme
         if (this.controls === 'gamepad') {
             this.keys = getKeys(this.controls, gamepadIndex++);
-
-            console.log(props.gamepadId);
-
             // Assign gamepadId & Remove misc characters before 'Joy-Con'
             this.gamepadId = props.gamepadId.replace(/.*(?=Joy-)/g, '');
-
-            console.log(props.gamepadId);
-
             if (this.gamepadId.indexOf('Xbox') > -1) {
                 this.gamepadId = 'Xbox Controller';
             }

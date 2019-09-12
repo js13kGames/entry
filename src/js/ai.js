@@ -50,7 +50,7 @@ function maybeRewind(ai) {
     //  - that way the AI is more likely to "extend" it's duration with rewind
     // Only does it is at least half way through rainbow-ing
     if (ai.ship.rainbow && ai.ship.rainbow < 4) {
-        maybeRewind += 4;
+        maybeRewind += 2;
     }
 
     if (Math.random() * 100 < maybeRewind) {
@@ -170,7 +170,9 @@ export function update(ai) {
         ai.ship.turnRight();
     } else if (angleToTarget > .05) {
         ai.ship.turnLeft();
-    } else {
+    }
+
+    if (angleToTarget > -.1 && angleToTarget < .1) {
         // If the target is rainbowy, just run away,
         // or if we are, go TOWARDS target
         if (target.rainbow || ai.ship.rainbow) {
@@ -178,7 +180,7 @@ export function update(ai) {
         // Otherwise...
         } else {
             // If target is nearby player, randomly-ish shoot and toggle engine
-            if (target === player && distToPlayer < 120) {
+            if (target === player && distToPlayer < 140) {
                 if (Math.random() < .1) { ai.ship.fire(); }
                 if (Math.random() < .02) { ai.ship.engineOff(); }
                 if (Math.random() < .01) { ai.ship.engineOn(); }

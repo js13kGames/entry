@@ -74,7 +74,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
                     mainMenuLoop.stop()
                     scenes.startShipSelect(game, scenes);
-                } else if (mainMenu.items[mainMenu.focus].text.startsWith('scale')) {
+                } else if (mainMenu.items[mainMenu.focus].text[0] = 's') {
                     game.size += .25;
                     if (game.size === 1.5) {
                         game.size = .75;
