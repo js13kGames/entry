@@ -12,6 +12,7 @@ import zzfx from '../zzfx';
 var game;
 var mainMenu;
 var scenes;
+var noSpace;
 
 let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
@@ -73,8 +74,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
                     mainMenuLoop.stop()
                     scenes.startShipSelect(game, scenes);
-                }
-                if (mainMenu.items[mainMenu.focus].text.startsWith('scale')) {
+                } else if (mainMenu.items[mainMenu.focus].text.startsWith('scale')) {
                     game.size += .25;
                     if (game.size === 1.5) {
                         game.size = .75;
@@ -93,9 +93,8 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                         noCollision: true,
                         game: game
                     });
-                }
-                if (mainMenu.items[mainMenu.focus].text === 'credits') {
-                    alert("No space!");
+                } else {
+                    mainMenu.items[mainMenu.focus].text = 'credits - no room!'
                 }
                 player.debounce.accept = 15;
 

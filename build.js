@@ -184,6 +184,9 @@ function minify() {
     // Remove a bit of dead Kontra init code
     result.code = result.code.replace('document.getElementById(void 0)||', '');
 
+    // Pull the last semi-colon
+    // result.code = result.code.replace(/;$/, '');
+
     fs.writeFileSync('dist/main.min.js', result.code);
     if (result.map) {
         fs.writeFileSync('dist/main.min.js.map', result.map);

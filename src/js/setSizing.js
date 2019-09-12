@@ -8,14 +8,21 @@
  * by using a small "game board" like this.
  * @param {[type]} ss supersampling multiplier
  */
-export function setSizing(game, ss, size) {
+export function setSizing(game) {
     // "SuperSample" variable for rending the game e.g. 2x display size
-    game.ss = game.ss || 1;
+    // game.ss = game.ss || 1;
+    // game.size = game.size || 1;
+    // game.width = 720 * game.size;
+    // game.scale = (window.innerWidth * game.ss) / game.width;
+    // game.height = (window.innerHeight * game.ss) / game.scale;
+    // game.canvas.width = window.innerWidth * game.ss;
+    // game.canvas.height = window.innerHeight * game.ss;
+    // Supersampling removed to fit under 13k :(
     game.size = game.size || 1;
     game.width = 720 * game.size;
-    game.scale = (window.innerWidth * game.ss) / game.width;
-    game.height = (window.innerHeight * game.ss) / game.scale;
-    game.canvas.width = window.innerWidth * game.ss;
-    game.canvas.height = window.innerHeight * game.ss;
+    game.scale = window.innerWidth / game.width;
+    game.height = window.innerHeight / game.scale;
+    game.canvas.width = window.innerWidth;
+    game.canvas.height = window.innerHeight;
     // TODO: Rescale the game map like the big asteroid
 }
