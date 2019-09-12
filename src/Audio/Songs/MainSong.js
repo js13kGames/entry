@@ -21,9 +21,9 @@ export default async function createSong () {
 
   return new Song(
     [
-      { buffer: bufferLead, volume: decibelsToAmplitude(-16), sendToReverb: 0.25 },
-      { buffer: bufferPluck, volume: decibelsToAmplitude(-20), sendToReverb: 0.5 },
-      { buffer: bufferBass, volume: decibelsToAmplitude(-20) },
+      { buffer: bufferLead, sendToReverb: 0.25 },
+      { buffer: bufferPluck, sendToReverb: 0.5 },
+      { buffer: bufferBass },
     ],
     { start: loopStart }
   )

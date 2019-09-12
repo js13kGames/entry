@@ -2,7 +2,7 @@ import { generateSound, bandPassFilter, applyEnvelope, sampleNoise } from '../So
 
 export function createLandSound () {
   const volumeEnvelope = [
-    [0, 0.5, 0.2],
+    [0, 0.3, 0.2],
     [1, 0]
   ]
 

@@ -125,7 +125,6 @@ export class Song {
 
     this.channels = channelConfigs.map(config => {
       let gainNode = TheAudioContext.createGain()
-      gainNode.gain.value = config.volume
 
       gainNode.connect(master)
 
@@ -151,7 +150,7 @@ export class Song {
 
   stop () {
     this.channels.forEach(channel => {
-      channel.source.disconnect()
+      if (channel.source) channel.source.disconnect()
       channel.source = null
     })
   }
@@ -189,7 +188,7 @@ export class Song {
       sourceNode.connect(channel.sourceTarget)
       sourceNode.start()
       channel.source = sourceNode
-      channel.volumeParam.setValueAtTime(channel.volume, TheAudioContext.currentTime)
+      channel.volumeParam.setValueAtTime(1, TheAudioContext.currentTime)
     })
   }
 }

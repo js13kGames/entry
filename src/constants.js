@@ -45,7 +45,8 @@ export const GRAY_COLORS = [
 
 export const TILE_SIZE = 16
 
-export const GOAL = 250
+export const GOAL = 200
+export const MAX_LEVEL = Math.ceil(GOAL / 10)
 export const AUTO_SHIFT_DELAY = 12
 export const AUTO_REPEAT_DELAY = 2
 export const LOCK_DELAY = 30

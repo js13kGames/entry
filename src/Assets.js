@@ -13,7 +13,7 @@ import {
 } from './Audio/Samples/LineClears'
 import { createHardDropSound } from './Audio/Samples/HardDrop'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
-import createHoldSound from './Audio/Samples/Hold'
+import { createHoldSound } from './Audio/Samples/Hold'
 import { createTSpinSound } from './Audio/Samples/TSpin'
 import createMainSong from './Audio/Songs/MainSong'
 import createVictorySong from './Audio/Songs/VictorySong'

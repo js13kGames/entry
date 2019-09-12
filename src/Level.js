@@ -1,7 +1,7 @@
 import { Graphics, Canvas, drawSprite, drawAt, resetTransform, fillAndStrokeRectangle } from "./Graphics"
 import { TetrominoT } from './Tetrominoes/TetrominoT'
 import { TetrominoController } from './TetrominoController'
-import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR, PAUSE, GOAL, COLORS, GRAY_COLORS } from './constants'
+import { TILE_SIZE, HOLD, ACTION_ROTATE, T_SPIN_MINI, T_SPIN, ALL_CLEAR, SINGLE_CLEAR, PAUSE, GOAL, COLORS, GRAY_COLORS, MAX_LEVEL } from './constants'
 import { ClearAnimation } from './Animations/ClearAnimation'
 import { Input } from './Input'
 import { Board } from './Board'
@@ -67,6 +67,7 @@ export class Level {
   step () {
     if (!this.started) {
       this.started = true
+      VictorySong.fadeOut(0.1)
       MainSong.play()
     }
 
@@ -216,7 +217,7 @@ export class Level {
     drawText(`TIME:`, -17, 27 * 7)
     drawBoldText(this.getTimeText(), -17, 28 * 7)
     drawText(`LEVEL:`, -17, 30 * 7)
-    drawBoldText(zeroPad(currentLevel, 2), -17, 31 * 7)
+    drawBoldText(zeroPad(Math.min(MAX_LEVEL, currentLevel), 2), -17, 31 * 7)
     drawText(`LINES:`, -17, 33 * 7)
     drawBoldText(zeroPad(lineClears, 4), -17, 34 * 7)
 
