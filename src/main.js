@@ -311,7 +311,7 @@ const eyeColors = [
 ]
 
 function randomColorf(colors) {
-	return '#' + rand.of(colors);
+	return '#' + rands.of(colors);
 }
 
 const vow = 'aeiou';
@@ -354,10 +354,9 @@ function randomAnatomy() {
 }
 
 function randi(array) {
-	return Math.round(Math.random() * (array.length - 1));
+	return rands.int(array.length - 1);
 }
 
-//TODO: Seed
 const defs = [];
 for (let i = 0; i < 151; i++) {
 	defs.push(randomAnatomy());
@@ -491,8 +490,9 @@ function backpack() {
 			div.style.display = 'inline-block';
 			div.style.width = '100px';
 			div.style.height = '150px';
-			showMonster(defs[key], 50, 100, div, 1);
+			showMonster(defs[key], 50, 110, div, 1);
 			var label = document.createElement("p");
+			label.style.textAlign = 'center';
 			label.innerHTML = defs[key].name;
 			div.appendChild(label);
 			document.getElementById("container").appendChild(div);
