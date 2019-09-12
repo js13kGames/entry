@@ -1,11 +1,11 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Slipstream 13k zip test",
+  "description": "test",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "image.png",
+    "image_thumbnail": "image.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Server"],
   "user" : {
     "name": "optional",
     "website": "optional",
