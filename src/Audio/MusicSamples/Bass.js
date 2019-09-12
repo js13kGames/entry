@@ -24,8 +24,8 @@ export default function createBassSound (frequency, length) {
   ]
 
   const volumeEnvelope = [
-    [0, 0.07],
-    [1, 0.07 * Math.max(0, 1 - length / 3)]
+    [0, 0.055],
+    [1, 0.055 * Math.max(0, 1 - length / 3)]
   ]
 
   const pitchEnvelope = [
