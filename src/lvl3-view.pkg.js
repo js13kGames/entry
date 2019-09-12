@@ -10,6 +10,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
   progressWrapper.appendChild(kongProgressBar);
   progressWrapper.appendChild(trexProgressBar);
   root.appendChild(progressWrapper);
+  const winWindow = createElement('div');
 
   const [
     kongAttack,
@@ -127,7 +128,6 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
   }
 
   function renderWinner (winner) {
-    const winWindow = document.createElement('div');
     const winHead = document.createElement('h2');
     const winText = document.createElement('p');
     const img = winner === 'kong' ? kongRight : trexRight;
@@ -148,10 +148,7 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
       cleanupListeners.forEach(remove => remove());
       root.removeChild(canvas);
       root.removeChild(progressWrapper);
-      const wins = root.getElementsByClassName('win');
-      for (let i = 0; i < wins.length; i++) {
-        root.removeChild(wins[i]);
-      }
+      root.removeChild(winWindow);
     },
     render
   }
