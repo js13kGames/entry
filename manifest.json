@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Letchworth Village",
+  "description": "Send demons back to hell in this 2D top-down button masher. As an immortal demon hunter possessed by a cursed sword,\nyou awaken in Letchworth Village, an abandoned mental hospital in the midst of an ongoing demon invasion. Drown your\nsword in demon blood and close the portal to hell for good!\n\nHOW TO PLAY:\n\nKill demons. Avoid damage. When your sword glows yellow, use your super to finish your mission.\n\n- Move using arrow keys or gamepad left stick\n- X / Square: Attack\n- Z / Triangle: Deflect/Counter\n- C / Cross: Dash\n- SPACEBAR / Circle: Super/Finisher (only when fully charged)\n\n- M: toggle mute\n\nCOMPATIBILITY:\n\n- Playable on desktop Chrome, Firefox, and Safari.\n- :bug: Safari audio is questionable (be prepared to mute).\n- :bug: If using a gamepad on Firefox, face buttons may be swapped.\n\nTIPS/TRICKS (SPOILERS!)\n\nThe difficulty level is set pretty high, if you want to beat the game and you're having trouble,\nfollow the link to the game on GitHub and read the Tips & Tricks section.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "screenshot-400x250.jpg",
+    "image_thumbnail": "screenshot-160x160.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Elliot Nelson",
+    "website": "https://7tonshark.com",
+    "twitter": "7tonshark"
   }
 }
