@@ -739,6 +739,9 @@ var shapes = {
 		}
 	],
 	mouth: [
+    {
+      none: true
+    },
 		{
 			h: 8,
 			w: 46,
@@ -766,6 +769,9 @@ var shapes = {
 		}
 	],
 	arm: [
+    {
+      none: true
+    },
 		{
 			h: 25,
 			w: 28,
@@ -789,6 +795,9 @@ var shapes = {
 		}
 	],
 	ear: [
+    {
+      none: true
+    },
 		{
 			h: 20,
 			w: 25,
@@ -805,6 +814,9 @@ var shapes = {
 		}
 	],
 	feet: [
+    {
+      none: true
+    },
 		{
 			h: 34,
 			w: 34,
@@ -1062,6 +1074,9 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 		bodyParts = [bodyParts];
 	}
 	const b = bodyParts[0];
+  if (b.none) {
+    return;
+  }
 	const baseTransform = b.transform; 
 	const flipTransform = flip ? 'scale(-1,1)' : false;
 	const rotateTransform = b.rotate ? 'rotate(' + (flip ? -b.rotate : b.rotate) + ')' : false;
