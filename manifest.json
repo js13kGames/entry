@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Back from Kooky Island",
+  "description": "While lost at sea you discover a mysterious island. Can you find a way to get back home? Use the Arrow Keys to move, Space to jump, and Enter to interact with objects.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "screenshot2-400x250.png",
+    "image_thumbnail": "screenshot2-160x160.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Alexander Curtis",
+    "website": "http://alexandercurtis.net",
+    "twitter": "@AlexOnCode"
   }
 }
