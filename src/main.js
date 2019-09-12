@@ -1,3 +1,5 @@
+// pRNG
+
 // 1993 Park-Miller LCG, https://gist.github.com/blixt/f17b47c62508be59987b
 function LCG(s) {
   return function() {
@@ -37,6 +39,8 @@ var rand = {
   	return array[this.int(array.length - 1)];
   }
 };
+
+// Monsters Model
 
 var shapes = {
 	head: [
@@ -228,48 +232,6 @@ var shapes = {
 	]
 };
 
-function createPath(fillColor, pathCommands) {
-	return '<path fill="'+fillColor+'" stroke="#222222" stroke-width="2" d="'+pathCommands+'"/>';
-}
-
-function createCircle(fillColor, bp) {
-	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="2" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
-}
-
-
-function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
-	if (!Array.isArray(bodyParts)) {
-		bodyParts = [bodyParts];
-	}
-	const b = bodyParts[0];
-	const baseTransform = b.transform; 
-	const flipTransform = flip ? 'scale(-1,1)' : false;
-	const rotateTransform = b.rotate ? 'rotate(' + (flip ? -b.rotate : b.rotate) + ')' : false;
-	let transform = '';
-	if (rotateTransform || flipTransform) {
-		transform = ' transform="' + (rotateTransform ? rotateTransform : '') + ' ' + (flipTransform ? flipTransform : '') + '" ';
-	}
-	if (!b.anchor) {
-		b.anchor = [b.w / 2, b.h / 2];
-	}
-	const xAnchor = flip ? b.w - b.anchor[0] : b.anchor[0];
-	var svgContent = '<svg width = "'+b.w+'" height = "'+b.h+'" style = "position: absolute; left: ' + (x - xAnchor ) + '; top: ' + ( y - b.anchor[1]) + '"' + transform + '>';
-	const color = colors[bodyPartKey] || colors.default;
-	bodyParts.forEach((bodyPart, i) => {
-		if (bodyPart.path) {
-			svgContent += createPath(bodyPart.f || color, bodyPart.path);
-		} else {
-			svgContent += createCircle(bodyPart.f || color, bodyPart);
-		}
-		if (bodyPart.p2)
-			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
-		if (bodyPart.c2)
-			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
-	});
-	svgContent += '</svg>';
-	container.innerHTML += svgContent;
-}
-
 const skeleton1 = {
 	arm: [20, 0],
 	body: [0, 0],
@@ -278,28 +240,6 @@ const skeleton1 = {
 	head: [0, -40],
 	eye: [15, -40],
 	mouth: [0, -20]
-}
-
-const testAnatomy = {
-	type: skeleton1,
-	arm: 2,
-	body: 0,
-	feet: 2,
-	ear: 1,
-	head: 3,
-	eye: 3,
-	mouth: 3
-}
-
-function showMonster(anatomy, x, y, container, scale) {
-	Object.keys(anatomy.type).forEach(bodyPart => {
-		const xvar = anatomy.type[bodyPart][0];
-		const yvar = anatomy.type[bodyPart][1];
-		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar, false, container);
-		if (xvar) {
-			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true, container);
-		}
-	});
 }
 
 const bodyColors = [
@@ -362,6 +302,9 @@ for (let i = 0; i < 151; i++) {
 	defs.push(randomAnatomy());
 }
 
+
+// Worlds model
+
 const locs = {};
 
 function scatterDef(def) {
@@ -379,26 +322,8 @@ for (let i = 0; i < 100; i++) {
 	scatterDef(defs[rands.range(0, defs.length - 1)]);
 }
 
-let model = localStorage.getItem("bpmSave");
-if (model) {
-	try {
-		model = JSON.parse(model);
-	} catch (e) {}
-}
 
-if (!model) {
-	model = { x: 5, y: 5, p: 5, c: 5, m: {} };
-}
-
-function update () {
-	var status = 'X ' + model.x + ' Y ' + model.y + 
-	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
-	document.getElementById("location").innerHTML = status;
-	document.getElementById("container").innerHTML = '';
-	if (currentMonster) {
-		showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
-	}
-}
+// UI setup
 
 const buttonsContainer = document.getElementById('buttons');
 function addButton(label, cb) {
@@ -453,29 +378,73 @@ function catchit() {
 	update();
 }
 
-function save() {
-	localStorage.setItem("bpmSave", JSON.stringify(model));
+
+// Display
+
+function createPath(fillColor, pathCommands) {
+	return '<path fill="'+fillColor+'" stroke="#222222" stroke-width="2" d="'+pathCommands+'"/>';
+}
+
+function createCircle(fillColor, bp) {
+	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="2" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
+}
+
+function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
+	if (!Array.isArray(bodyParts)) {
+		bodyParts = [bodyParts];
+	}
+	const b = bodyParts[0];
+	const baseTransform = b.transform; 
+	const flipTransform = flip ? 'scale(-1,1)' : false;
+	const rotateTransform = b.rotate ? 'rotate(' + (flip ? -b.rotate : b.rotate) + ')' : false;
+	let transform = '';
+	if (rotateTransform || flipTransform) {
+		transform = ' transform="' + (rotateTransform ? rotateTransform : '') + ' ' + (flipTransform ? flipTransform : '') + '" ';
+	}
+	if (!b.anchor) {
+		b.anchor = [b.w / 2, b.h / 2];
+	}
+	const xAnchor = flip ? b.w - b.anchor[0] : b.anchor[0];
+	var svgContent = '<svg width = "'+b.w+'" height = "'+b.h+'" style = "position: absolute; left: ' + (x - xAnchor ) + '; top: ' + ( y - b.anchor[1]) + '"' + transform + '>';
+	const color = colors[bodyPartKey] || colors.default;
+	bodyParts.forEach((bodyPart, i) => {
+		if (bodyPart.path) {
+			svgContent += createPath(bodyPart.f || color, bodyPart.path);
+		} else {
+			svgContent += createCircle(bodyPart.f || color, bodyPart);
+		}
+		if (bodyPart.p2)
+			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
+		if (bodyPart.c2)
+			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
+	});
+	svgContent += '</svg>';
+	container.innerHTML += svgContent;
+}
+
+function showMonster(anatomy, x, y, container, scale) {
+	Object.keys(anatomy.type).forEach(bodyPart => {
+		const xvar = anatomy.type[bodyPart][0];
+		const yvar = anatomy.type[bodyPart][1];
+		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar, false, container);
+		if (xvar) {
+			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true, container);
+		}
+	});
+}
+
+function update () {
+	var status = 'X ' + model.x + ' Y ' + model.y + 
+	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
+	document.getElementById("location").innerHTML = status;
+	document.getElementById("container").innerHTML = '';
+	if (currentMonster) {
+		showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
+	}
 }
 
 function message(m) {
 	document.getElementById("message").innerHTML = m;
-}
-
-function land() {
-	currentMonster = getMonsterAtLocation();
-	if (currentMonster) {
-		message('There\'s a ' + currentMonster.name + ' here!');
-	} else {
-		message('Nothing here.');
-	}
-	update();
-}
-
-function getMonsterAtLocation() {
-	const list = locs[model.x+'.'+ model.y];
-	if (!list)
-		return;
-	return rand.of(list);
 }
 
 let showingBackpack = false;
@@ -510,6 +479,45 @@ function disable(disable) {
 
 }
 
+// Restore Game
 
+let model = localStorage.getItem("bpmSave");
+if (model) {
+	try {
+		model = JSON.parse(model);
+	} catch (e) {}
+}
+
+if (!model) {
+	model = { x: 5, y: 5, p: 5, c: 5, m: {} };
+}
+
+function save() {
+	localStorage.setItem("bpmSave", JSON.stringify(model));
+}
+
+// In game functions
+
+
+
+function land() {
+	currentMonster = getMonsterAtLocation();
+	if (currentMonster) {
+		message('There\'s a ' + currentMonster.name + ' here!');
+	} else {
+		message('Nothing here.');
+	}
+	update();
+}
+
+function getMonsterAtLocation() {
+	const list = locs[model.x+'.'+ model.y];
+	if (!list)
+		return;
+	return rand.of(list);
+}
+
+
+// Start game
 
 land();
