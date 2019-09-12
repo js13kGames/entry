@@ -44,8 +44,21 @@ const initModel = (height, width, foodCoveragePercent) => {
       }
     });
 
-    return ctx.getImageData(0, 0, 200, 400);
-  })()
+    return ctx.getImageData(0, 0, 100, 100);
+  })();
+
+  const pier = (() => {
+    const [, ctx] = createCanvas('canvas');
+    ctx.canvas.width = ctx.canvas.height = 100;
+    ctx.fillStyle = '#154364';
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = '#630';
+    for (let y = 0; y < 100; y += 20) {
+      ctx.fillRect(10, y, 80, 18);
+    }
+    return ctx.getImageData(0, 0, 100, 100);
+  })();
+
 
   // 2D slice of map matrix
   function sliceMap (startRow, endRow, startCol, endCol) {
@@ -76,8 +89,7 @@ const initModel = (height, width, foodCoveragePercent) => {
 
   // Add the exit cell
   function enableExit () {
-    const newCell = makeMapCell(EXIT);
-    map.push([newCell]);
+    map.push([makeMapCell(EXIT, pier)]);
   }
 
   // Building size
@@ -329,7 +341,7 @@ const initModel = (height, width, foodCoveragePercent) => {
   }
 
   const openSquaresForPizzas = getOpenSquares();
-  const numFoods = floor(openSquaresForPizzas.length * foodCoveragePercent);
+  const numFoods = 1 ;
   dealShuffled(openSquaresForPizzas, numFoods)
     .forEach(square => { square.itemId = random() < .5 ? PIZZA : HOTDOG; });
 

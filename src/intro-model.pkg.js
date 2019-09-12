@@ -4,7 +4,7 @@ const initIntroModel = (level) => {
       buttonText: 'Start!',
       title: 'Back to Skull Island',
       description: `<p>What if King Kong survived the fall off the Empire State Building? All he wants is to get back home to Skull Island.</p><p>The journey is long, and he's tired and hungry. The first thing to do is eat as much food as he can find. Then get off the island of Manhattan.</p>`,
-      directions: `<p>Use the <b>arrow keys</b> or <b>WASD</b> to navigate. Fill up your health meter by eating food. Avoid police cars, and when you are done eating, find the Southern Port.</p>`
+      directions: `<p>Use the <b>arrow keys</b> or <b>WASD</b> to navigate. Fill up your health meter by eating food. Avoid police cars, and when you are done eating, find the Southern Pier.</p>`
     },
     'pre-lvl-2': {
       buttonText: 'Hitch a Ride!',

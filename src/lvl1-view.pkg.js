@@ -13,7 +13,7 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
   window.kongRight = kongRightImg;
   const cellStyles = {
     [STREET]: colorStreet,
-    [EXIT]: 'green'
+    // [EXIT]: 'green'
   };
 
   const [progressBar, pizzaSpan] = createProgressBar('Pizzas Eaten');
@@ -31,13 +31,15 @@ const initLevel1View = (setState, { onWindowResize, onKeyDown }, numFoods, image
         const cell = mapView[y][x]
         if (cellStyles[cell.displayId]) ctx.fillStyle = cellStyles[cell.displayId];
         ctx.fillRect((viewXStart + x * tileWidth), (viewYStart + y * tileHeight), tileWidth, tileHeight);
-        if (cell.displayId < OUT_OF_BOUNDS_CUTOFF && cell.imgData) {
+        if ((cell.displayId < OUT_OF_BOUNDS_CUTOFF && cell.imgData)) {
           ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
         if (cell.itemId) {
           if (cell.itemId == PIZZA) ctx.drawImage(pizzaImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
           if (cell.itemId == HOTDOG) ctx.drawImage(hotdogImg, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
         }
+        if (cell.displayId === EXIT) console.log(!!cell.imgData)
+        if (cell.displayId === EXIT) ctx.putImageData(cell.imgData, (viewXStart + x * tileWidth), (viewYStart + y * tileHeight));
       }
     }
   }
