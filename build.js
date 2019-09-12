@@ -159,9 +159,15 @@ function minify() {
     code = code.replace(/'meteor'/g, "'m'");
     code = code.replace(/'pickup'/g, "'p'");
     code = code.replace(/'ship'/g, "'s'");
+    code = code.replace(/'shrapnel'/g, "'sh'");
 
     // Replace some "terser reserved words" from source before minifying
     // These are VERY LIKELY to break things
+    code = code.replace(/\.acceleration/g, '.accel');
+    code = code.replace(/focus/g, 'hocus');
+    code = code.replace(/history/g, 'hist');
+    // code = code.replace(/\.controls/g, '.cntrls'); // Breaks things
+    code = code.replace(/\.position/g, '.pos');
     code = code.replace(/\.rotation/g, '.rot');
     code = code.replace(/\.padding/g, '.pad');
     code = code.replace(/color/g, 'col');

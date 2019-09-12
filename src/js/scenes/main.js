@@ -1,4 +1,5 @@
 import { initKeys, GameLoop } from 'kontra';
+import { setSizing } from '../setSizing';
 import { pollGamepads } from '../gamepad';
 import { renderText } from '../text';
 import { Menu } from '../menu';
@@ -69,9 +70,29 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
-                mainMenuLoop.stop()
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
+                    mainMenuLoop.stop()
                     scenes.startShipSelect(game, scenes);
+                }
+                if (mainMenu.items[mainMenu.focus].text.startsWith('scale')) {
+                    game.size += .25;
+                    if (game.size === 1.5) {
+                        game.size = .75;
+                    }
+                    setSizing(game);
+                    mainMenu.items[mainMenu.focus].text = 'scale ' + game.size * 100 + '%';
+                    game.sprites.splice(0, 1);
+                    // Big asteroid in the middle (dioretsa)
+                    createMeteor({
+                        x: game.width * .4,
+                        y: game.height * .8,
+                        radius: Math.min(game.width / 2, game.height / 2),
+                        dx: 0,
+                        dy: 0,
+                        dr: .05,
+                        noCollision: true,
+                        game: game
+                    });
                 }
                 player.debounce.accept = 15;
 
@@ -125,7 +146,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
         renderText({
             alignRight: true,
             text: '20461 Dioretsa',
-            size: 2,
+            size: 2 * game.size,
             x: game.width - 30,
             y: 30,
             scale: game.scale,
@@ -151,7 +172,7 @@ export function startMainMenu(newGame, otherScenes) {
         y: 30,
         items: [
             { text: 'play' },
-            { text: 'settings' },
+            { text: 'scale 100%' }, // All the code calls this size uhhh
             { text: 'credits' }
         ]
     });
@@ -161,7 +182,6 @@ export function startMainMenu(newGame, otherScenes) {
         x: game.width * .4,
         y: game.height * .8,
         radius: Math.min(game.width / 2, game.height / 2),
-        mass: 100000,
         dx: 0,
         dy: 0,
         dr: .05,

@@ -45,6 +45,12 @@ function pickColor(players, controllerId) {
 }
 
 export function newPlayer(game, controls, controllerId) {
+
+    if (game.players.length === 4) {
+        //Console.warn('Game does not support more than 4 players yet');
+        return;
+    }
+
     var color = pickColor(game.players, controllerId);
 
     zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665

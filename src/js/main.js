@@ -1,4 +1,5 @@
 import { init, initKeys } from 'kontra';
+import { setSizing } from './setSizing';
 
 // Import all the scenes because we're somehow going to handle changing
 // between them here... to stop circular dependencies getting in the way
@@ -40,30 +41,10 @@ initKeys();
 
 canvas.style = 'width:100%;background:#000';
 
-/**
- * Sets the canvas size, and the game options variables for scaling the game.
- *
- * All the game's positioning & calculations are done on a 360 x ### grid, but
- * then scaled up to fit on a variable size canvas. That way if a ship hitbox
- * is e.g. 10x10, it'll be the correct size for calcs no matter the scale.
- * Most numbers used in calcs are floats, so we don't lose much precision
- * by using a small "game board" like this.
- * @param {[type]} ss supersampling multiplier
- */
-function setSizing(ss) {
-    game.supersample = ss;
-    game.width = 720;
-    game.scale = (window.innerWidth * ss) / game.width;
-    game.height = (window.innerHeight * ss) / game.scale;
-    canvas.width = window.innerWidth * ss;
-    canvas.height = window.innerHeight * ss;
-    // TODO: Rescale the game map like the big asteroid
-}
-
-setSizing(1);
+setSizing(game);
 
 window.onresize = () => {
-    setSizing(game.supersample);
+    setSizing(game);
 }
 
 game.unusedControls = '(gamepad)(wasd/zqsd)(arrows)';
