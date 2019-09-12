@@ -20,7 +20,7 @@ export default async function createSong () {
 
   return new Song(
     [
-      { buffer: bufferLead, sendToReverb: 0.25 },
+      { buffer: bufferLead, sendToReverb: 0.5 },
       { buffer: bufferPluck, sendToReverb: 0.5 },
       { buffer: bufferBass },
     ]

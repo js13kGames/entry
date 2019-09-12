@@ -29,6 +29,20 @@ export function createTempBuffer (noteCount, bpm) {
   return new Float32Array(Math.ceil(contextSampleRate * noteCount * 60 / bpm))
 }
 
+export function makeNotesFromBars (notes) {
+  let globalOffset = 0
+  let result = []
+  let lastOffset = 0
+  notes.forEach(([offset, ...args]) => {
+    if (offset < lastOffset) {
+      globalOffset += 4
+    }
+    lastOffset = offset
+    result.push([globalOffset + offset, ...args])
+  })
+  return result
+}
+
 export function addNotes (notes, output, instrument, bpm, mono = false) {
   const bufferCache = {}
   notes.forEach(note => {

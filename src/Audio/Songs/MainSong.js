@@ -4,7 +4,6 @@ import { createLeadTrack } from './MainSong/Lead'
 import { createPluckTrack } from './MainSong/Pluck'
 import { createBassTrack } from './MainSong/Bass'
 
-import { decibelsToAmplitude } from '../Utility'
 import { createAudioBuffer } from '../SoundGeneration'
 import { loopStart } from './MainSong/common'
 
@@ -21,7 +20,7 @@ export default async function createSong () {
 
   return new Song(
     [
-      { buffer: bufferLead, sendToReverb: 0.25 },
+      { buffer: bufferLead, sendToReverb: 0.5 },
       { buffer: bufferPluck, sendToReverb: 0.5 },
       { buffer: bufferBass },
     ],
