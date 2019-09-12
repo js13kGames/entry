@@ -1013,7 +1013,6 @@ function setupUI() {
 	addButton('West', () => move(-1, 0));
 	addButton('East', () => move(1, 0));
 	addButton('Catch', () => catchit());
-	addButton('Buy', () => buy());
 }
 
 function move(dx, dy) {
@@ -1152,7 +1151,7 @@ function update () {
 	if (!showingBackpack) {
 		document.getElementById("container").innerHTML = '';
 		if (currentMonster) {
-			showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
+			showMonster(currentMonster, 0, 100, document.getElementById("container"), 1);
 		}
 	}
 }
@@ -1172,12 +1171,16 @@ function backpack() {
 			var div = document.createElement("div");
 			div.style.position = 'relative';
 			div.style.display = 'inline-block';
-			div.style.width = '100px';
-			div.style.height = '150px';
-			showMonster(defs[key], 50, 110, div, 1);
+			div.style.width = '120px';
+			div.style.height = '180px';
+      div.style.border = '1px solid #333';
+      div.style.borderRadius = '10px';
+      div.style.margin = '5px';
+      div.style.verticalAlign = 'top';
+			showMonster(defs[key], 60, 140, div, 1);
 			var label = document.createElement("p");
 			label.style.textAlign = 'center';
-			label.innerHTML = defs[key].name;
+			label.innerHTML = '#'+defs[key].id+' - '+defs[key].name;
 			div.appendChild(label);
 			document.getElementById("container").appendChild(div);
 			count++;
