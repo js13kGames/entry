@@ -134,7 +134,7 @@ function minify() {
         mangle: {
             properties: {
                 keep_quoted: true,
-                reserved: [ 'game' ]
+                reserved: [ 'game' ],
             }
         },
         module: true,
@@ -154,12 +154,38 @@ function minify() {
     // Replace Collisions debug stuff
     code = code.replace(/if.*[\s]*throw.*Error.*[\s]*}/g, '');
 
+    // shorten some very specific names from the pre-minified code
+    code = code.replace(/'bullet'/g, "'b'");
+    code = code.replace(/'meteor'/g, "'m'");
+    code = code.replace(/'pickup'/g, "'p'");
+    code = code.replace(/'ship'/g, "'s'");
+    code = code.replace(/'shrapnel'/g, "'sh'");
+
+    // Replace some "terser reserved words" from source before minifying
+    // These are VERY LIKELY to break things
+    code = code.replace(/acceleration/g, 'accel');
+    code = code.replace(/detail/g, 'd');
+    code = code.replace(/focus/g, 'hocus');
+    code = code.replace(/history/g, 'hist');
+    code = code.replace(/update/g, 'updoot');
+    // code = code.replace(/\.controls/g, '.cntrls'); // Breaks things
+    code = code.replace(/\.position/g, '.pos');
+    code = code.replace(/\.rotation/g, '.rot');
+    code = code.replace(/\.padding/g, '.pad');
+    code = code.replace(/color/g, 'col');
+
     const result = terser.minify(code, options);
 
     if (result.error) {
         console.error('Terser minify failed: ', result.error.message);
         return false;
     }
+
+    // Remove a bit of dead Kontra init code
+    result.code = result.code.replace('document.getElementById(void 0)||', '');
+
+    // Pull the last semi-colon
+    // result.code = result.code.replace(/;$/, '');
 
     fs.writeFileSync('dist/main.min.js', result.code);
     if (result.map) {

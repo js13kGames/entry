@@ -1,4 +1,5 @@
 import { initKeys, GameLoop } from 'kontra';
+import { setSizing } from '../setSizing';
 import { pollGamepads } from '../gamepad';
 import { renderText } from '../text';
 import { Menu } from '../menu';
@@ -11,6 +12,7 @@ import zzfx from '../zzfx';
 var game;
 var mainMenu;
 var scenes;
+var noSpace;
 
 let mainMenuLoop = GameLoop({  // create the main game loop
     update() { // update the game state
@@ -30,7 +32,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 player.debounce.back--;
                 if (player.debounce.back <= 0) {
                     if (player.controls !== 'gamepad') {
-                        game.unusedControls += '[' + player.controls + ']'
+                        game.unusedControls += '(' + player.controls + ')'
                     }
                     game.players.splice(i, 1);
                     return;
@@ -45,7 +47,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.prev();
-                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.up = 15;
             } else {
                 player.debounce.up = 0;
@@ -57,7 +59,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     return;
                 }
                 mainMenu.next();
-                zzfx(.3,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.down = 15;
             } else {
                 player.debounce.down = 0;
@@ -68,10 +70,31 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     player.debounce.accept--;
                     return;
                 }
-
-                mainMenuLoop.stop()
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 if (mainMenu.items[mainMenu.focus].text === 'play') {
+                    mainMenuLoop.stop()
                     scenes.startShipSelect(game, scenes);
+                } else if (mainMenu.items[mainMenu.focus].text.startsWith('scale')) {
+                    game.size += .25;
+                    if (game.size === 1.5) {
+                        game.size = .75;
+                    }
+                    setSizing(game);
+                    mainMenu.items[mainMenu.focus].text = 'scale ' + game.size * 100 + '%';
+                    game.sprites.splice(0, 1);
+                    // Big asteroid in the middle (dioretsa)
+                    createMeteor({
+                        x: game.width * .4,
+                        y: game.height * .8,
+                        radius: Math.min(game.width / 2, game.height / 2),
+                        dx: 0,
+                        dy: 0,
+                        dr: .05,
+                        noCollision: true,
+                        game: game
+                    });
+                } else {
+                    mainMenu.items[mainMenu.focus].text = 'credits - no room!'
                 }
                 player.debounce.accept = 15;
 
@@ -125,7 +148,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
         renderText({
             alignRight: true,
             text: '20461 Dioretsa',
-            size: 2,
+            size: 2 * game.size,
             x: game.width - 30,
             y: 30,
             scale: game.scale,
@@ -151,7 +174,8 @@ export function startMainMenu(newGame, otherScenes) {
         y: 30,
         items: [
             { text: 'play' },
-            { text: 'settings' },
+            // All the code calls this size uhhh
+            { text: 'scale ' + game.size * 100 + '%' },
             { text: 'credits' }
         ]
     });
@@ -161,7 +185,6 @@ export function startMainMenu(newGame, otherScenes) {
         x: game.width * .4,
         y: game.height * .8,
         radius: Math.min(game.width / 2, game.height / 2),
-        mass: 100000,
         dx: 0,
         dy: 0,
         dr: .05,

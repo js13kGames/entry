@@ -4,6 +4,7 @@ import * as util from './utility';
 import ships from './ships/import';
 import { createBullet } from './bullet';
 import { createShrapnel } from './shrapnel';
+import zzfx from './zzfx';
 
 export class Ship extends Sprite.class {
 
@@ -35,10 +36,10 @@ export class Ship extends Sprite.class {
 
         // Modify these values defined in shipData specs to make less crazy
         this.rof = shipData.rof;
-        this.ror = shipData.ror;
+        this.ror = 4; // shipData.ror; // All same to save 8 B sigh
         this.ammo = shipData.ammo;
         this.mass = shipData.mass + 11;
-        this.radius = shipData.radius;
+        this.radius = 7; // shipData.radius; // All same to save 2 B
         this.rof = 1 / this.rof;
         this.thrust = shipData.thrust + 6;
         this.turnRate = (shipData.turnRate + 11) / 4; // 3 -> 5 degrees/s
@@ -127,6 +128,8 @@ export class Ship extends Sprite.class {
         const cos = Math.cos(util.degToRad(this.rotation));
         const sin = Math.sin(util.degToRad(this.rotation));
 
+        zzfx(.4,0,1300,.1,.3,6.1,0,15.9,.88); // ZzFX 95732
+
         this.fireDt = 0;
         this.ammoCurrent--;
         this.player.shotsFired++;
@@ -162,6 +165,10 @@ export class Ship extends Sprite.class {
         const cos = Math.cos(util.degToRad(this.rotation));
         const sin = Math.sin(util.degToRad(this.rotation));
 
+        if (Math.random() < .05) {
+            zzfx(.1,.1,68,1,.07,0,3.6,0,.7); // ZzFX 78097
+        }
+
         // a = F / m (Newton's 2nd law of motion)
         this.ddx = cos * .1 * this.thrust / this.mass;
         this.ddy = sin * .1 * this.thrust / this.mass;
@@ -186,6 +193,7 @@ export class Ship extends Sprite.class {
             return false;
         }
 
+        zzfx(1,.1,11,.9,.5,2.5,.9,.4,.88); // ZzFX 82235
         this.rewindDt = 0;
         this.rewinding = this.history.length;
     }
@@ -221,6 +229,9 @@ export class Ship extends Sprite.class {
 
         if (this.rainbow > 0) {
             this.rainbow -= 1 / 60;
+            if (Math.floor(this.rainbow * 12) % 2) { // every 15 frames
+                zzfx(.3,.8,900,.1,.1,1.4,0,0,.7); // ZzFX 1820
+            }
             if (this.rainbow <= 0) {
                 this.maxSpeed = (this.shipData.maxSpeed + 6) / 12;
                 this.rainbow = 0;
@@ -291,6 +302,9 @@ export class Ship extends Sprite.class {
         if (this.player) {
             this.player.deaths++;
         }
+
+        zzfx(.5,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+        zzfx(1,.1,44,.8,0,.2,2,0,.65); // ZzFX 265
 
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {

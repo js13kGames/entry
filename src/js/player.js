@@ -3,6 +3,7 @@ import { Ship } from './ship';
 import { renderText } from './text';
 import * as ai from './ai';
 import getKeys from './controls';
+import zzfx from './zzfx';
 
 let gamepadIndex = 0;
 
@@ -144,6 +145,8 @@ export class Player {
         });
 
         this.game.sprites.push(this.ship);
+
+        zzfx(.2,0,250,1,.7,0,0,38,.5); // ZzFX 14035
 
         this.ship.invuln = 3; // Invulnerability for 3 seconds while respawning
     }

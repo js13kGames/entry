@@ -1,6 +1,7 @@
 import { Player } from './player';
 import { colors } from './colors';
 import ships from './ships/import/';
+import zzfx from './zzfx';
 
 /**
  * Pick random not-currently-used color. Based on:
@@ -44,11 +45,19 @@ function pickColor(players, controllerId) {
 }
 
 export function newPlayer(game, controls, controllerId) {
+
+    if (game.players.length === 4) {
+        //Console.warn('Game does not support more than 4 players yet');
+        return;
+    }
+
     var color = pickColor(game.players, controllerId);
+
+    zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
 
     game.players.push(new Player({
         color: color,
-        shipType: Object.keys(ships)[0],
+        shipType: Math.floor(Math.random() * 4),
         controls: controls,
         gamepadId: controllerId,
         context: game.context,

@@ -42,7 +42,7 @@ function keySetUsed(keys) {
     if (!window.game.players.some(p => p.controls === keys)) {
         newPlayer(window.game, keys)
         window.game.unusedControls = window.game.unusedControls.replace(
-            '[' + keys + ']', ''
+            '(' + keys + ')', ''
         );
     }
 }
@@ -65,7 +65,7 @@ export function detectNewInput() {
     });
 
     bindKeys(['m'], function(e) {
-        var lastAiIndex;
+        var lastAiIndex = null;
         window.game.players.forEach((player, i) => {
             if (player.controls === 'ai') {
                 lastAiIndex = i;
@@ -73,7 +73,7 @@ export function detectNewInput() {
         });
 
         // Explodes if the AI was at index - 0 but that shouldn't happen!
-        if (lastAiIndex) {
+        if (lastAiIndex !== null) {
             window.game.players.splice(lastAiIndex, 1);
         }
     });

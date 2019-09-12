@@ -12,14 +12,6 @@ export function dot(v1, v2) {
     return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
-export function angleBetween(v1, v2) {
-    console.log("Doing angleBetween vectors:");
-    console.log(v1);
-    console.log(v2);
-    console.log(Math.atan2(v2.x, v2.y) - Math.atan2(v1.x, v1.y));
-    return Math.atan2(v2.x, v2.y) - Math.atan2(v1.x, v1.y);
-}
-
 export function normalise(vec) {
     return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
 }
@@ -108,6 +100,22 @@ export function objKeyNext(obj, current) {
         return keys[0];
     } else {
         return keys[i];
+    }
+}
+
+export function arrayPrev(array, i) {
+    if (--i < 0) {
+        return array[array.length - 1];
+    } else {
+        return array[i];
+    }
+}
+
+export function arrayNext(array, i) {
+    if (i++ === array.length - 1) {
+        return array[0];
+    } else {
+        return array[i];
     }
 }
 

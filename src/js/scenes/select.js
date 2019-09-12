@@ -4,6 +4,7 @@ import { renderText } from '../text';
 import { colors } from '../colors';
 import ships from '../ships/import';
 import * as util from '../utility';
+import zzfx from '../zzfx';
 
 var game;
 var scenes;
@@ -27,6 +28,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 player.debounce.accept--;
                 if (player.debounce.accept <= 0) {
                     player.ready = !player.ready;
+                    zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                     player.debounce.accept = 15;
                 }
             } else {
@@ -38,6 +40,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 if (player.debounce.back <= 0) {
                     menuLoop.stop();
                     scenes.startMainMenu(game, scenes);
+                    zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                     player.debounce.back = 15;
                 }
             } else {
@@ -63,6 +66,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 }
 
                 game.players[i].ship.color = player.color;
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.up = 15;
             } else {
                 player.debounce.up = 0;
@@ -81,6 +85,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 }
 
                 game.players[i].ship.color = player.color;
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.down = 15;
             } else {
                 player.debounce.down = 0;
@@ -93,6 +98,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 }
                 player.shipType = util.objKeyPrev(ships, player.shipType);
                 player.pseudoSpawn();
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.left = 15;
             } else {
                 player.debounce.left = 0;
@@ -105,6 +111,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 }
                 player.shipType = util.objKeyNext(ships, player.shipType);
                 player.pseudoSpawn();
+                zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
                 player.debounce.right = 15;
             } else {
                 player.debounce.right = 0;
@@ -175,7 +182,7 @@ const menuLoop = GameLoop({  // create the main game loop
             if (player.controls === 'ai') {
                 renderText({
                     alignBottom: true,
-                    text: '[m] remove',
+                    text: '(m) remove',
                     color: player.color,
                     size: .5,
                     x: x + 30,
@@ -222,7 +229,7 @@ const menuLoop = GameLoop({  // create the main game loop
             }
 
             renderText({
-                text: '[n] add new ai player',
+                text: '(n) add new ai player',
                 alignCenter: true,
                 size: .5,
                 x: x + game.width / 4,
