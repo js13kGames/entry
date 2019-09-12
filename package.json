@@ -1,0 +1,51 @@
+{
+  "name": "project-name",
+  "author": {
+    "name": "David Brad",
+    "email": "davidbrad.015@gmail.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "serve": "gulp serve",
+    "serve-prod": "set NODE_ENV=production && gulp serve",
+    "delete-dist": "yarn rimraf ./dist",
+    "create-dist": "yarn mkdirp ./dist/inlined ./dist/zipped",
+    "inline-build": "html-inline -i ./build/release/index.html -o ./dist/inlined/index.html",
+    "build": "set NODE_ENV=production && yarn run delete-dist && yarn run create-dist && gulp build && yarn run inline-build",
+    "build-zipped": "yarn run build && yarn node ./scripts/zip-file.js",
+    "file-size": "yarn node ./scripts/check-file-size.js",
+    "dist": "yarn run build-zipped && yarn run file-size"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.2",
+    "advzip-bin": "^1.1.0",
+    "archiver": "^3.0.0",
+    "chalk": "^2.4.2",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5",
+    "typescript-tslint-plugin": "^0.4.0"
+  },
+  "dependencies": {
+    "cssnano": "^4.1.10",
+    "express": "^4.17.1",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-json-minify": "^1.2.2",
+    "gulp-minify-html": "^1.0.6",
+    "gulp-preprocess": "^3.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-terser": "^1.2.0",
+    "gulp-typescript": "^5.0.1",
+    "html-inline": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.4.5"
+  },
+  "browserslist": [
+    "last 3 Chrome version"
+  ]
+}
