@@ -42,11 +42,16 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
 
   function renderMap (canvasHeight, canvasWidth, cellWidth, kong, trex) {
     ctx.fillStyle = 'green';
-    ctx.fillRect(kong.location * -cellWidth + 300, canvasHeight - cellWidth, canvasWidth, cellWidth);
+    ctx.fillRect(kong.location * -cellWidth + 300, canvasHeight - 110, canvasWidth, 110);
+    renderBackground(kong.location);
     renderCharacter('kong', kong, cellWidth);
     renderCharacter('trex', trex, cellWidth, kong.location * -cellWidth + 300);
   }
 
+  function renderBackground (kongLocation) {
+    const bgHeight = background.height / background.width * body.clientWidth
+    ctx.drawImage(background, (50 - kongLocation) * 50 - 1500, body.clientHeight - 110 - bgHeight, body.clientWidth, bgHeight);
+  }
   function renderCharacter (charName, charState, charSize, mapStart) {
     let img;
     let multiplier = 1;
@@ -110,7 +115,6 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
       canvas.width = cellWidth * mapWidth;
       ctx.fillStyle = '#7E8390';
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-      ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
       renderMap(canvas.height, canvas.width, cellWidth, kong, trex);
       showHealth(kong, trex);
 
