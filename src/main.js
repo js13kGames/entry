@@ -630,7 +630,10 @@ var shapes = {
 			cy: 31,
 			rx: 35,
 			ry: 30,
-			shpath: "M37,51 a 39.81,39.81 0 0 0 34.47,-19.46 c 0,15.84 -15.43,28.69 -34.47,28.69 -19.04,0 -34.48,-12.85 -34.48,-28.69 a 39.74,39.74 0 0 0 34.48,19.46 z"
+			shpath: "M37,51 a 39.81,39.81 0 0 0 34.47,-19.46 c 0,15.84 -15.43,28.69 -34.47,28.69 -19.04,0 -34.48,-12.85 -34.48,-28.69 a 39.74,39.74 0 0 0 34.48,19.46 z",
+      anchors: {
+        ear: [20, -25]
+      }
 		},
 		{
 			h: 60,
@@ -639,13 +642,19 @@ var shapes = {
 			cy: 30,
 			rx: 28,
 			ry: 29,
-			shpath: "m 28.215001,49.78733 c 19.18,0 27.16,-19.82 27.16,-19.82 0,15.66 -12.16,28.35 -27.16,28.35 -15,0 -27.1200004,-12.69 -27.1200004,-28.35 0,0 7.82,19.82 27.1200004,19.82 z"
+			shpath: "m 28.215001,49.78733 c 19.18,0 27.16,-19.82 27.16,-19.82 0,15.66 -12.16,28.35 -27.16,28.35 -15,0 -27.1200004,-12.69 -27.1200004,-28.35 0,0 7.82,19.82 27.1200004,19.82 z",
+      anchors: {
+        ear: [15, -25]
+      }
 		},
 		{
 			h: 57,
 			w: 83,
 			path: "M81.26,26.49c4.36,13.72,2.56,29.92-39.91,29.92S-1.19,40.62,1.43,26.49C4.37,10.69,26,.5,41.35.5S76.05,10.12,81.26,26.49Z",
-			shpath: "m 80.65,26.5 c 4.51,13.89 2.56,29.38 -39.32,29.38 -41.88,0 -42,-15.11 -39.3,-29.38 0,0 3,20 39.3,20 36.5,0 39.32,-20 39.32,-20 z"
+			shpath: "m 80.65,26.5 c 4.51,13.89 2.56,29.38 -39.32,29.38 -41.88,0 -42,-15.11 -39.3,-29.38 0,0 3,20 39.3,20 36.5,0 39.32,-20 39.32,-20 z",
+      anchors: {
+        ear: [25, -25]
+      }
 		},
 		{
 			h: 54,
@@ -654,7 +663,10 @@ var shapes = {
 			cy: 27,
 			rx: 30,
 			ry: 26,
-			shpath: "m 30.4,44.88 a 32.68,32.68 0 0 0 29.38,-17.1 c 0,14 -13.15,25.32 -29.38,25.32 -16.23,0 -29.38,-11.34 -29.38,-25.32 a 32.75,32.75 0 0 0 29.38,17.1 z"
+			shpath: "m 30.4,44.88 a 32.68,32.68 0 0 0 29.38,-17.1 c 0,14 -13.15,25.32 -29.38,25.32 -16.23,0 -29.38,-11.34 -29.38,-25.32 a 32.75,32.75 0 0 0 29.38,17.1 z",
+      anchors: {
+        ear: [21, -21]
+      }
 		},
 	],
 	eye: [
@@ -802,14 +814,14 @@ var shapes = {
 			h: 20,
 			w: 25,
 			path: "M3.62,19.15S-4.44,6.63,5.35,1.34c7.32-4,14.52,7.51,19,5.92",
-			anchor: [13, 6],
+			anchor: [9, 9],
 			shpath: "m 4.1,18.8 19.2,-11 a 8.59,8.59 0 0 1 -4.1,-1.61 l -16.6,9.7 a 20.49,20.49 0 0 0 1.54,2.91 z"
 		},
 		{
 			h: 37,
 			w: 37,
 			path: "M36.09,29.6C31.23,15.79,10.69-6,2.22,2.36c-8.64,8.55,17.67,32.09,25.26,33.78",
-			anchor: [28, 7],
+			anchor: [28, 30],
 			shpath: "m 35.70637,29.950083 a 27.34,27.34 0 0 0 -2.19,-5 c -2.1,-3.91 -8.87,-8.66 -13,-5.39 -4.13,3.27 -2.8,10.42 1.42,13.2 4.89,3.22 6.11,3.11 6.11,3.11 z"
 		}
 	],
@@ -1113,10 +1125,20 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 	container.innerHTML += svgContent;
 }
 
+
+const locRefs = {
+  ear: 'head'
+}
+
 function showMonster(anatomy, x, y, container, scale) {
 	Object.keys(anatomy.type).forEach(bodyPart => {
-		const xvar = anatomy.type[bodyPart][0];
-		const yvar = anatomy.type[bodyPart][1]; 
+		let xvar = anatomy.type[bodyPart][0];
+		let yvar = anatomy.type[bodyPart][1]; 
+    if (locRefs[bodyPart]) {
+      const anchorBP = shapes[locRefs[bodyPart]][anatomy.bps[locRefs[bodyPart]]];
+      xvar = anatomy.type[locRefs[bodyPart]][0] + anchorBP.anchors[bodyPart][0];
+      yvar = anatomy.type[locRefs[bodyPart]][1] + anchorBP.anchors[bodyPart][1];
+    }
 		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar, false, container);
 		if (xvar) {
 			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true, container);
