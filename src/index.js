@@ -1,12 +1,4 @@
-window.game = {
-    /*
-     * 0: waiting for new game start
-     * 1: in game
-     * 2: waiting for new round start
-     * 3: game over
-     */
-    status: 0,
-
+var initialState = {
     round: 0,
     snake: null,
     historySnakes: [],
@@ -14,6 +6,19 @@ window.game = {
     gameScore: 0,
     heartScore: 3,
     maxHeartScore: 9,
+}
+
+window.game = Object.assign({
+    demo: true,
+    demoReady: false,
+
+    /*
+     * 0: waiting for new game start
+     * 1: in game
+     * 2: waiting for new round start
+     * 3: game over
+     */
+    status: 0,
 
     ctx: null,
     width: 800,
@@ -26,8 +31,14 @@ window.game = {
     colorGrass: '#d1c4af',
     colorSnake: '#786f69',
     colorSnakeDead: '#b2a699',
-    colorFood: '#504a4b'
-};
+    colorFood: '#504a4b',
+
+    mainEl: document.getElementById('main'),
+    startEl: document.getElementById('start'),
+    scoreEl: document.getElementById('score-panel'),
+    loadingEl: document.getElementById('loading'),
+}, initialState);
+
 game.gridWidth = game.width / game.gridSize;
 game.gridHeight = game.height / game.gridSize;
 game.insideWidth = game.width - game.marginGrids * game.gridSize * 2;
@@ -47,17 +58,20 @@ function init() {
         game.insideWidth, game.insideHeight);
 
     document.addEventListener('keydown', onKeydown);
+    game.startEl.addEventListener('click', start);
 
-    countDown();
-    setTimeout(function () {
-        newGame();
-    }, 3000);
+    newGame();
 }
 
 function newGame() {
-    game.gameScore = 0;
+    resetGameState();
     game.status = 1;
     newRound();
+}
+
+function resetGameState() {
+    Object.assign(game, initialState);
+    game.historySnakes = [];
 }
 
 function newRound() {
@@ -68,7 +82,8 @@ function newRound() {
     updateScore();
 
     var pos = getRandomPos(4);
-    game.snake = new Snake(pos[0], pos[1], 3, 0.05, game);
+    var speed = game.demo ? 0.4 : 0.05;
+    game.snake = new Snake(pos[0], pos[1], 3, speed, game);
     setFood(true);
 
     game.status = 1;
@@ -76,8 +91,23 @@ function newRound() {
     tick();
 }
 
+function newDemoHistorySnake() {
+    var pos = getRandomPos(4);
+    var snake = new Snake(pos[0], pos[1], 3, 0.05, game);
+    snake.food = getRandomPos();
+    return snake;
+}
+
 function gameOver() {
     console.log('game over');
+    setTimeout(function () {
+        game.scoreEl.style.visibility = 'hidden';
+        game.startEl.style.display = 'block';
+        game.demo = true;
+        var historySnakes = game.historySnakes;
+        newGame();
+        game.historySnakes = historySnakes;
+    }, 1500);
 }
 
 function tick() {
@@ -103,20 +133,39 @@ function tick() {
         --game.heartScore;
         updateScore();
 
-        if (game.heartScore === 0) {
-            gameOver();
-            return;
+        if (!game.demo) {
+            if (game.heartScore === 0) {
+                gameOver();
+                return;
+            }
+            else {
+                countDown();
+            }
         }
         else {
-            countDown();
+            if (game.heartScore <= 0) {
+                game.demoReady = true;
+                game.loadingEl.style.display = 'none';
+                game.startEl.style.display = 'block';
+                var historySnakes = game.historySnakes;
+                newGame();
+                game.heartScore = 0;
+                game.historySnakes = historySnakes;
+                return;
+            }
         }
 
         game.historySnakes.push(game.snake.getHistory());
 
-        setTimeout(function () {
+        if (game.demo) {
             newRound();
-        }, 3000);
-
+        }
+        else {
+            setTimeout(function () {
+                newRound();
+            }, 3000);
+        }
+    
         return;
     }
 
@@ -134,9 +183,13 @@ function tick() {
         updateScore();
     }
 
-    render();
-
-    requestAnimationFrame(tick);
+    if (!game.demo || game.demoReady) {
+        render();
+        requestAnimationFrame(tick);
+    }
+    else {
+        tick();
+    }
 }
 
 function render() {
@@ -177,6 +230,12 @@ function renderHistorySnakes() {
 }
 
 function onKeydown(event) {
+    if (game.demo) {
+        if (event.keyCode === 32 || event.keyCode === 13) { // space or reture
+            start();
+        }
+        return;
+    }
     var direction;
     if (event.keyCode > 36 && event.keyCode < 41) {
         // left, top, right, bottom
@@ -191,12 +250,20 @@ function onKeydown(event) {
     else if (event.keyCode === 68) { // d
         direction = 2;
     }
-    else if (event.keyCode === 88) { // s
+    else if (event.keyCode === 83) { // s
         direction = 3;
     }
     if (direction != null && Math.abs(direction - game.snake.direction) !== 2) {
         game.snake.direction = direction;
     }
+}
+
+function start() {
+    game.demo = false;
+    game.mainEl.style.opacity = 1;
+    game.scoreEl.style.visibility = 'visible';
+    game.startEl.style.display = 'none';
+    newGame();
 }
 
 function setFood(clearHeart) {

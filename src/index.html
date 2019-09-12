@@ -15,6 +15,7 @@
             }
 
             #score-panel {
+                visibility: hidden;
                 font-size: 24px;
                 color: #d1c4af;
             }
@@ -30,6 +31,30 @@
                 text-align: center;
                 color: #585356;
             }
+
+            #main {
+                background: #d1c4af;
+                opacity: 0.5;
+            }
+
+            #loading, #start {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #585356;
+                font-weight: 700;
+            }
+
+            #loading {
+                top: 310px;
+                font-size: 40px;
+            }
+
+            #start {
+                display: none;
+                top: 310px;
+                font-size: 60px;
+            }
         </style>
     </head>
 
@@ -41,8 +66,9 @@
             </div>
         </div>
         <div id="count-down"></div>
-
         <canvas id="main"></canvas>
+        <div id="loading">Loading...</div>
+        <div id="start">START</div>
 
         <script src="util.js"></script>
         <script src="snake.js"></script>

@@ -30,7 +30,35 @@ Snake.prototype.tick = function () {
     }
 
     console.log('tick');
+
     var head = this.body[0];
+    var food = this.food;
+
+    if (game.demo) {
+        if (head[0] !== food[0]) {
+            if (head[0] < food[0] && this.direction !== 0) {
+                this.direction = 2;
+            }
+            else if (head[0] > food[0] && this.direction != 2) {
+                this.direction = 0;
+            }
+            else {
+                this.direction = 3;
+            }
+        }
+        else if (head[1] !== food[1]) {
+            if (head[1] < food[1] && this.direction !== 1) {
+                this.direction = 3;
+            }
+            else if (head[1] > food[1] && this.direction != 3) {
+                this.direction = 1;
+            }
+            else {
+                this.direction = 0;
+            }
+        }
+    }
+
     var newPos;
     if (this.direction === 1) {
         newPos = [head[0], head[1] - 1];
@@ -138,7 +166,7 @@ Snake.prototype.checkCollision = function () {
 };
 
 Snake.prototype.speedUp = function (speed) {
-    this._skipFramePeriod *= 0.8;
+    this._skipFramePeriod *= 0.9;
 };
 
 Snake.prototype._recordHistory = function () {
