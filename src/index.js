@@ -417,6 +417,9 @@
       ScreenType[ScreenType["GUIDE"] = 0] = "GUIDE";
       ScreenType[ScreenType["PLAY"] = 1] = "PLAY";
   })(ScreenType || (ScreenType = {}));
+  var isMainGameScreen = function (level) {
+      return level.screenType === ScreenType.PLAY;
+  };
   var screens = [
       {
           screenType: ScreenType.GUIDE,
@@ -739,6 +742,59 @@
       }; }
   };
 
+  function createCommonjsModule(fn, module) {
+  	return module = { exports: {} }, fn(module, module.exports), module.exports;
+  }
+
+  var classnames = createCommonjsModule(function (module) {
+  /*!
+    Copyright (c) 2017 Jed Watson.
+    Licensed under the MIT License (MIT), see
+    http://jedwatson.github.io/classnames
+  */
+  /* global define */
+
+  (function () {
+
+  	var hasOwn = {}.hasOwnProperty;
+
+  	function classNames () {
+  		var classes = [];
+
+  		for (var i = 0; i < arguments.length; i++) {
+  			var arg = arguments[i];
+  			if (!arg) continue;
+
+  			var argType = typeof arg;
+
+  			if (argType === 'string' || argType === 'number') {
+  				classes.push(arg);
+  			} else if (Array.isArray(arg) && arg.length) {
+  				var inner = classNames.apply(null, arg);
+  				if (inner) {
+  					classes.push(inner);
+  				}
+  			} else if (argType === 'object') {
+  				for (var key in arg) {
+  					if (hasOwn.call(arg, key) && arg[key]) {
+  						classes.push(key);
+  					}
+  				}
+  			}
+  		}
+
+  		return classes.join(' ');
+  	}
+
+  	if ( module.exports) {
+  		classNames.default = classNames;
+  		module.exports = classNames;
+  	} else {
+  		window.classNames = classNames;
+  	}
+  }());
+  });
+
   var _id = 0;
   var sheet = document.head.appendChild(document.createElement("style")).sheet;
 
@@ -819,6 +875,198 @@
 
   var pageBackgroundColor = "#3a405a";
   var wrapperColor = "#e4dccf";
+  // Display
+  var displayBgColor = "#373c40";
+  var displaySolarPanelShdwColor = "#4c2c29";
+  var displaySolarPanelBgColor = "#643933";
+  var displayBodyShdwColor = "#8a9984";
+  var displayBodyBgColor = "#a6b8a2";
+  var displayBgDarkColor = "#3d3d3d";
+  var displayFgLightColor = "#a6b8a2";
+
+  var display = css({
+      flex: 1,
+      padding: "48px"
+  });
+  var displayWrapper = css({
+      backgroundColor: displayBgColor,
+      borderRadius: "25px",
+      height: "100%",
+      padding: "16px"
+  });
+  /**
+   * Display Headers
+   */
+  var displayHeader = css({
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: "12px",
+      padding: "4px"
+  });
+  var displayLevel = css({
+      fontSize: "28px",
+      padding: "8px",
+      color: "white",
+      fontFamily: "sans-serif"
+  });
+  var displaySolarPanel = css({
+      boxShadow: "inset 0px 4px 0px 0px " + displaySolarPanelShdwColor,
+      borderRadius: "4px",
+      border: "2px solid #000",
+      backgroundColor: displaySolarPanelBgColor,
+      width: "120px"
+  });
+  var displaySolarPanelElement = css({
+      borderRight: "2px solid #70453f",
+      width: "28px",
+      height: "100%",
+      display: "inline-block"
+  });
+  /**
+   * Display Body
+   */
+  var displayBody = css({
+      boxShadow: "inset 0px 10px 0px 0px " + displayBodyShdwColor,
+      backgroundColor: displayBodyBgColor,
+      borderRadius: "12px",
+      height: "300px",
+      margin: "8px",
+      padding: "8px"
+  });
+  var displayBodyTitle = css({
+      height: "75px",
+      display: "flex",
+      marginTop: "8px"
+  });
+  var displayBodyTitleElement = css({
+      borderRadius: "8px",
+      flex: "1",
+      margin: "10px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      fontFamily: "sans-serif",
+      fontSize: "16px"
+  });
+  var displayBodyTitleElementEmoji = css({
+      color: displayBgDarkColor,
+      fontWeight: "bolder",
+      fontSize: "20px",
+      borderRadius: "20px"
+  });
+  var displayBodyTitleElementCounter = css({
+      backgroundColor: displayBgDarkColor,
+      color: displayFgLightColor
+  });
+  var displayBodyContent = css({
+      color: displayBgDarkColor,
+      height: "200px",
+      fontFamily: "digits",
+      position: "relative"
+  });
+  var displayBodyContentBackground = css({
+      color: "#a1b29f",
+      display: "flex",
+      fontSize: "125px",
+      justifyContent: "center",
+      alignItems: "center"
+  });
+  var displayBodyContentMain = css({
+      color: displayBgDarkColor,
+      zIndex: "2",
+      position: "absolute",
+      top: "0px"
+  });
+  var fontSizeNormal = css({
+      fontSize: "125px"
+  });
+  var fontSizeMini = css({
+      fontSize: "40px"
+  });
+
+  var Display = function () { return function (state, action) {
+      var _a;
+      var screens = state.screens, screenPointer = state.screenPointer, remainingMove = state.remainingMove, displayMsg = state.displayMsg, gameState = state.gameState;
+      var currScreen = screens[screenPointer];
+      var isMainGameScreen$1 = isMainGameScreen(currScreen);
+      var getEmoji = function (gameState) {
+          switch (gameState) {
+              case GameState.WIN:
+                  return "~(\u02D8\u25BE\u02D8~)";
+              case GameState.LOSE:
+                  return "(\u2565\uFE4F\u2565)";
+              case GameState.IDDLE:
+                  return "o(\uFFE3\u02C7\uFFE3)o";
+              default:
+                  return "\uFF08\u2312\u25BD\u2312\uFF09";
+          }
+      };
+      // return (
+      //   <div>
+      //     <h1>Level: {isMainGameScreen && (currScreen as MainGameScreen).level}</h1>
+      //     <h2>Moves: {isMainGameScreen && remainingMove}</h2>
+      //     <h2>Goals: {isMainGameScreen && (currScreen as MainGameScreen).goal}</h2>
+      //     <h2>
+      //       Status : {GameState[gameState]} {}
+      //     </h2>
+      //     <pre>Value: {displayMsg}</pre>
+      //   </div>
+      // );
+      return (h("div", { "class": display },
+          h("div", { "class": displayWrapper },
+              h("div", { "class": displayHeader },
+                  h("div", { "class": displayLevel },
+                      "Level : ",
+                      currScreen.level),
+                  h("div", { "class": displaySolarPanel },
+                      h("div", { "class": displaySolarPanelElement }),
+                      h("div", { "class": displaySolarPanelElement }),
+                      h("div", { "class": displaySolarPanelElement }))),
+              h("div", { "class": displayBody },
+                  h("div", { "class": displayBodyTitle },
+                      h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementEmoji) }, getEmoji(gameState)),
+                      h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementCounter) }, "MOVES: 4"),
+                      h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementCounter) }, "GOALS: 200")),
+                  h("div", { "class": displayBodyContent },
+                      h("div", { "class": displayBodyContentBackground }, "888888"),
+                      h("div", { "class": classnames((_a = {}, _a[displayBodyContentMain] = true, _a[fontSizeNormal] = isMainGameScreen$1, _a[fontSizeMini] = !isMainGameScreen$1, _a)) }, "the quick brown fox jumps over the lazy dog. 01234567890"))))));
+  }; };
+
+  var getActionToInvoke = function (type) {
+      switch (type) {
+          case ChoiceType.ADDITION:
+              return "addOperator";
+          case ChoiceType.MULTIPLY:
+              return "multiplyOperator";
+          case ChoiceType.DIVISION:
+              return "divisionOperator";
+          case ChoiceType.DELETE:
+              return "deleteOperator";
+          default:
+              // cuma biar lolos typechecking
+              return "addOperator";
+      }
+  };
+
+  var Numpad = function () { return function (state, action) {
+      var screens = state.screens, screenPointer = state.screenPointer, gameState = state.gameState;
+      var currScreen = screens[screenPointer];
+      var _isMainGameScreen = isMainGameScreen(currScreen);
+      var isCompleted = screenPointer === screens.length - 1;
+      return (h("div", null,
+          _isMainGameScreen &&
+              currScreen.choices.map(function (choice) {
+                  var fnName = getActionToInvoke(choice.type);
+                  return (h("button", { onclick: function () { return action[fnName].apply(action, choice.params); } }, choice.label));
+              }),
+          !isCompleted &&
+              _isMainGameScreen &&
+              (gameState === GameState.PLAYING || gameState === GameState.LOSE) && (h("button", { onclick: function () { return action.restartOperator(); } }, "CLR")),
+          !isCompleted && _isMainGameScreen && gameState === GameState.WIN && (h("button", { onclick: function () { return action.loadNextScreen(); } }, "OK")),
+          !isCompleted && !_isMainGameScreen && (h("button", { onclick: function () {
+                  action.confirmOperator();
+              } }, "OK"))));
+  }; };
 
   var container = css({
       backgroundColor: pageBackgroundColor,
@@ -827,8 +1075,6 @@
       justifyContent: "center",
       alignItems: "center"
   });
-  // export const container = 'container';
-  // export const wrapper = 'wrapper'
   var wrapper = css({
       width: "576px",
       height: "900px",
@@ -841,7 +1087,9 @@
   var Container = (function (state, actions) {
       return (h("div", { "class": container, oncreate: actions.initScreen },
           h("div", { "class": wrapper },
-              h("h1", null, "test "))));
+              h("h1", null, "test "),
+              h(Display, null),
+              h(Numpad, null))));
   });
 
   app(state, actions, Container, document.body);

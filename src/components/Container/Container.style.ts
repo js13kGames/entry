@@ -9,8 +9,6 @@ export const container = css({
   alignItems: "center",
 });
 
-// export const container = 'container';
-// export const wrapper = 'wrapper'
 export const wrapper = css({
   width: "576px",
   height: "900px",

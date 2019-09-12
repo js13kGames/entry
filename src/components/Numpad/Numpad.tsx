@@ -1,8 +1,8 @@
 import { h, Component } from "hyperapp";
-import { State, GameState } from "../states/state";
-import { Action } from "../actions/actions";
-import { isMainGameScreen, MainGameScreen } from "../states/screen";
-import { getActionToInvoke } from "../utils/actionMapping";
+import { State, GameState } from "../../states/state";
+import { Action } from "../../actions/actions";
+import { isMainGameScreen, MainGameScreen } from "../../states/screen";
+import { getActionToInvoke } from "../../utils/actionMapping";
 
 export type NumpadProps = {};
 

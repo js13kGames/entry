@@ -14,6 +14,7 @@
   "author": "fawwaz.muhammad@gmail.com",
   "license": "ISC",
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "html-minifier": "^4.0.0",
     "rollup": "^1.21.2",
     "rollup-plugin-commonjs": "^10.1.0",
@@ -24,6 +25,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "hyperapp": "^1.2.0",
     "picostyle": "^2.2.0"
   }
