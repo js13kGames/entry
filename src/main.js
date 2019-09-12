@@ -863,12 +863,6 @@ const skeletons = [
   }
 ];
 
-
-
-const bodyColors = [
-	'bdacc5', '524a4a', 'a44a8b', '5ab4cd', 'de5239', 'eede10', 'f6deb4', '41b4ee', '7383d5', '62d5b4', 'ffeecd' 
-]
-
 const eyeColors = [
 	'da575d', '007976', '000000', '222222'
 ]
@@ -877,7 +871,15 @@ function randomColorf(colors) {
 	return '#' + rands.of(colors);
 }
 
+function randomPastel(){
+  return "hsla(" + ~~(rands.int(360)) + ",70%,70%,1)"
+}
+
 function darker(hex, percent){
+  if (hex.indexOf('hsla') == 0) {
+    var hue = hex.substring(hex.indexOf("(") + 1, hex.indexOf(","))
+    return "hsla(" + hue + ",70%,60%,1)"
+  }
     hex = hex.substr(1);
     var r = parseInt(hex.substr(0, 2), 16),
         g = parseInt(hex.substr(2, 2), 16),
@@ -931,7 +933,7 @@ function randomAnatomy() {
 			mouth: randi(shapes.mouth)
 		},
 		colors: {
-			default: randomColorf(bodyColors),
+			default: randomPastel(),
 			eye: randomColorf(eyeColors)
 		}
 
