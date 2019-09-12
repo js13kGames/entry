@@ -333,21 +333,23 @@ for (let i = 0; i < 100; i++) {
 
 // UI setup
 
-const buttonsContainer = document.getElementById('buttons');
-function addButton(label, cb) {
-	var button = document.createElement("button");
-	button.innerHTML = label;
-	buttonsContainer.appendChild(button);
-	button.addEventListener("click", cb);
-}
+function setupUI() {
+	const buttonsContainer = document.getElementById('buttons');
+	function addButton(label, cb) {
+		var button = document.createElement("button");
+		button.innerHTML = label;
+		buttonsContainer.appendChild(button);
+		button.addEventListener("click", cb);
+	}
 
-addButton('Backpack', () => backpack());
-addButton('North', () => move(0, -1));
-addButton('South', () => move(0, 1));
-addButton('West', () => move(-1, 0));
-addButton('East', () => move(1, 0));
-addButton('Catch', () => catchit());
-addButton('Buy', () => buy());
+	addButton('Backpack', () => backpack());
+	addButton('North', () => move(0, -1));
+	addButton('South', () => move(0, 1));
+	addButton('West', () => move(-1, 0));
+	addButton('East', () => move(1, 0));
+	addButton('Catch', () => catchit());
+	addButton('Buy', () => buy());
+}
 
 function move(dx, dy) {
 	if (model.p < 1) {
@@ -373,6 +375,9 @@ function move(dx, dy) {
 let currentMonster;
 
 function catchit() {
+	if (showingBackpack) {
+		backpack();
+	}
 	if (!currentMonster) {
 		message('Nothing to catch!');
 		return;
@@ -391,6 +396,7 @@ function catchit() {
 	currentMonster = false;
 	save();
 	update();
+	backpack();
 }
 
 
@@ -468,6 +474,7 @@ function backpack() {
 	showingBackpack = !showingBackpack;
 	if (showingBackpack) {
 		document.getElementById("container").innerHTML = '';
+		count = 0;
 		Object.keys(model.m).forEach(key => {
 			if (!defs[key]) return;
 			var div = document.createElement("div");
@@ -481,7 +488,11 @@ function backpack() {
 			label.innerHTML = defs[key].name;
 			div.appendChild(label);
 			document.getElementById("container").appendChild(div);
+			count++;
 		});
+		var label = document.createElement("p");
+		label.innerHTML = Math.round((count/151)*100)+"% of monsters captured.";
+		document.getElementById("container").appendChild(label);
 	} else {
 		update();
 	}
@@ -496,16 +507,18 @@ function disable(disable) {
 }
 
 // Restore Game
+let model;
+function restoreGame() {
+	model = localStorage.getItem("bpmSave");
+	if (model) {
+		try {
+			model = JSON.parse(model);
+		} catch (e) {}
+	}
 
-let model = localStorage.getItem("bpmSave");
-if (model) {
-	try {
-		model = JSON.parse(model);
-	} catch (e) {}
-}
-
-if (!model) {
-	model = { x: 5, y: 5, p: 40, m: {}, lastGrant: +new Date() };
+	if (!model) {
+		model = { x: 5, y: 5, p: 40, m: {}, lastGrant: +new Date() };
+	}
 }
 
 function save() {
@@ -518,11 +531,12 @@ function recoverMP() {
 	if (model.p >= 40) return;
 	const time = +new Date();
 	const timeDiff = time - model.lastGrant;
-	console.log(timeDiff);
 	const bonus = Math.floor(timeDiff / 20000);
 	if (bonus > 0) {
 		model.p += bonus;
-		model.p %= 40;
+		if (model.p > 40) {
+			model.p = 40;
+		}
 		model.lastGrant = time;
 		save();
 		update();
@@ -543,7 +557,17 @@ function getMonsterAtLocation() {
 	return rand.of(locs[model.x][model.y].m);
 }
 
-setInterval(() => recoverMP(), 1000);
+function init() {
+	restoreGame();
+	setupUI();
+}
 
-// Start game
-land();
+function start() {
+	setInterval(() => recoverMP(), 1000);
+	document.getElementById('intro').style.display = 'none';
+	document.getElementById('game').style.display = 'block';
+	land();
+}
+
+window.init = init;
+window.start = start;

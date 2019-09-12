@@ -4,13 +4,26 @@
 <style>
 	body {
 		font-family: sans-serif;
+		text-align: center;
+	}
+	#game { display: none; }
+	#container {
+		position: relative;
+		display: inline-block;
+		width: 200px;
 	}
 </style>
-<body>
-<div id = "buttons"></div>
-<div id = "location"></div>
-<div id = "message"></div>
-<div id = "container" style = "position: relative;"></div>
+<body onload="init()">
 <script src="b.js"></script>
+<div id = "intro">
+	<p>Welcome to the world of Backpack Monsters! Your goal is to collect the 151 different types of monsters. Moving around and trying to catch a monster will consume your action points. You will recover 1 AP every 20 seconds.</p>
+	<button onclick="start()">Start</button>
+</div>
+<div id = "game">
+	<div id = "buttons"></div>
+	<div id = "location"></div>
+	<div id = "message"></div>
+	<div id = "container"></div>
+</div>
 </body>
 </html>
