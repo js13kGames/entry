@@ -10,7 +10,7 @@ import {
 
 export type DisplayProps = {};
 
-import * as style from './Display.style';
+import * as style from "./Display.style";
 
 const Display: Component<DisplayProps, State, Action> = () => (
   state: State,
@@ -40,6 +40,7 @@ const Display: Component<DisplayProps, State, Action> = () => (
     }
   };
 
+  const level = (currScreen as MainGameScreen).level;
   // return (
   //   <div>
   //     <h1>Level: {isMainGameScreen && (currScreen as MainGameScreen).level}</h1>
@@ -56,7 +57,9 @@ const Display: Component<DisplayProps, State, Action> = () => (
     <div class={style.display}>
       <div class={style.displayWrapper}>
         <div class={style.displayHeader}>
-          <div class={style.displayLevel}>Level : {(currScreen as MainGameScreen).level}</div>
+          <div class={style.displayLevel}>
+            Level : {level}
+          </div>
           <div class={style.displaySolarPanel}>
             <div class={style.displaySolarPanelElement}></div>
             <div class={style.displaySolarPanelElement}></div>
@@ -65,19 +68,40 @@ const Display: Component<DisplayProps, State, Action> = () => (
         </div>
         <div class={style.displayBody}>
           <div class={style.displayBodyTitle}>
-            <div class={classNames(style.displayBodyTitleElement, style.displayBodyTitleElementEmoji)}>
+            <div
+              class={classNames(
+                style.displayBodyTitleElement,
+                style.displayBodyTitleElementEmoji
+              )}
+            >
               {getEmoji(gameState)}
             </div>
-            <div class={classNames(style.displayBodyTitleElement, style.displayBodyTitleElementCounter)}>
+            <div
+              class={classNames(
+                style.displayBodyTitleElement,
+                style.displayBodyTitleElementCounter
+              )}
+            >
               MOVES: 4
             </div>
-            <div class={classNames(style.displayBodyTitleElement, style.displayBodyTitleElementCounter)}>
+            <div
+              class={classNames(
+                style.displayBodyTitleElement,
+                style.displayBodyTitleElementCounter
+              )}
+            >
               GOALS: 200
             </div>
           </div>
           <div class={style.displayBodyContent}>
             <div class={style.displayBodyContentBackground}>888888</div>
-            <div class={classNames({[style.displayBodyContentMain]: true, [style.fontSizeNormal]: isMainGameScreen, [style.fontSizeMini]: !isMainGameScreen})}>
+            <div
+              class={classNames({
+                [style.displayBodyContentMain]: true,
+                [style.fontSizeNormal]: isMainGameScreen,
+                [style.fontSizeMini]: !isMainGameScreen
+              })}
+            >
               the quick brown fox jumps over the lazy dog. 01234567890
             </div>
           </div>
