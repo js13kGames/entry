@@ -13,11 +13,11 @@ export class Pickup extends Sprite.class {
         this.type = 'pickup';
         this.radius = 5;
         this.mass = 3000;
-        this.maxSpeed = 1;
+        //this.maxSpeed = 1;
         this.x = props.x;
         this.y = props.y;
-        this.dx = props.dx !== undefined ? props.dx : Math.random() - .5;
-        this.dy = props.dy !== undefined ? props.dy : Math.random() - .5;
+        this.dx = Math.random() - .5;
+        this.dy = Math.random() - .5;
         this.dr = Math.random() < .5 ? -1 : 1;
         this.hitbox = props.game.cSystem.createCircle(
             props.x,
@@ -30,7 +30,7 @@ export class Pickup extends Sprite.class {
 
     update(dt) {
         this.rotation += this.dr;
-        util.applyMaxSpeed(this.velocity, this.maxSpeed);
+        //util.applyMaxSpeed(this.velocity, this.maxSpeed);
         this.position = this.position.add(this.velocity);
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;

@@ -10,7 +10,7 @@ export function render(game) {
     var pad = game.width / 16; // Padding around set of 4 cards
     var margin = 7; // Padding in game units between each card
     var contWidth = game.width - pad * 2; // Card container width
-    var cardWidth = contWidth / 4 - margin * 2;
+    var cardWidth = contWidth / game.players.length - margin * 2;
     var cardHeight = game.height - (pad + margin) * 2
     var y = pad + margin;
 

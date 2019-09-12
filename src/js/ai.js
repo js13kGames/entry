@@ -178,7 +178,7 @@ export function update(ai) {
         // Otherwise...
         } else {
             // If target is nearby player, randomly-ish shoot and toggle engine
-            if (target === player && distToPlayer < 100) {
+            if (target === player && distToPlayer < 120) {
                 if (Math.random() < .1) { ai.ship.fire(); }
                 if (Math.random() < .02) { ai.ship.engineOff(); }
                 if (Math.random() < .01) { ai.ship.engineOn(); }
