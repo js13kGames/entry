@@ -48,6 +48,11 @@ AFRAME.registerComponent("logic", {
 
       mapOffset = { x: 0, y: 0 };
 
+      for (let i of ["main1", "main2", "main3", "out1", "out2", "out3", "navmain1", "navmain2", "navout1", "navout2", "finish"]) {
+        $(`#${i}`).setAttribute("visible", false);
+      }
+      $(`#${ship.location.system}`).setAttribute("visible", true);
+
       drawMap();
       drawLocation();
       drawTarget();
@@ -61,6 +66,7 @@ AFRAME.registerComponent("logic", {
     cursor.setAttribute("raycaster", {objects: "#startMenu .clickable"});
 
     playButton.addEventListener("click", e => {
+      sound.start.play();
       mask.emit("fadeOut");
       cursor.setAttribute("raycaster", {objects: "#game .clickable"});
       setTimeout(() => {
@@ -78,6 +84,7 @@ AFRAME.registerComponent("logic", {
     const retryButton = $("#retryButton");
 
     function gameOver() {
+      sound.gameOver.play();
       mask.emit("fadeOut");
       cursor.setAttribute("raycaster", {objects: "#gameOverMenu .clickable"});
       setTimeout(() => {
@@ -89,6 +96,7 @@ AFRAME.registerComponent("logic", {
     }
 
     retryButton.addEventListener("click", e => {
+      sound.start.play();
       mask.emit("fadeOut");
       cursor.setAttribute("raycaster", {objects: "#game .clickable"});
       setTimeout(() => {
@@ -103,19 +111,27 @@ AFRAME.registerComponent("logic", {
     */
     const winMenu = $("#winMenu");
     const playAgainButton = $("#playAgainButton");
+    const winText = $("#winText");
 
     function win() {
-      mask.emit("fadeOut");
-      cursor.setAttribute("raycaster", {objects: "#winMenu .clickable"});
+      sound.win.play();
+      winText.setAttribute("visible", true);
+
       setTimeout(() => {
-        resetGame();
-        game.setAttribute("visible", false);
-        winMenu.setAttribute("visible", true);
-        mask.emit("fadeIn");
-      }, 1500);
+        mask.emit("fadeOut");
+        cursor.setAttribute("raycaster", {objects: "#winMenu .clickable"});
+        setTimeout(() => {
+          resetGame();
+          game.setAttribute("visible", false);
+          winText.setAttribute("visible", false);
+          winMenu.setAttribute("visible", true);
+          mask.emit("fadeIn");
+        }, 1500);
+      }, 10000);
     }
 
     playAgainButton.addEventListener("click", e => {
+      sound.start.play();
       mask.emit("fadeOut");
       cursor.setAttribute("raycaster", {objects: "#game .clickable"});
       setTimeout(() => {
@@ -137,49 +153,49 @@ AFRAME.registerComponent("logic", {
     const findLink = (a, b) => world.links.find(l => l.nodes.includes(a.name) && l.nodes.includes(b.name));
     const filterLinks = a => world.links.filter(l => l.nodes.includes(a));
     
-    const newN = (name, x, y, size, color, fuel, reveals) => world.nodes.push({
-      name: name, x: x, y: y, size: size, color: color, scanned: false, fuel: fuel, reveals: reveals});
+    const newN = (name, x, y, size, color, fuel, reveals, system) => world.nodes.push({
+      name: name, x: x, y: y, size: size, color: color, scanned: false, fuel: fuel, reveals: reveals, system: system});
     const newL = (nodes, cost) => world.links.push({nodes: nodes, cost: cost});
 
     function createWorld() {
       world.nodes = [];
       world.links = [];
 
-      newN("start", 0, 0, 8, "yellow", true, []);
+      newN("start", 0, 0, 8, "yellow", true, [], "main1");
       world.nodes[0].scanned = true;
-      newN("nav-start", 2, 2, 4, "grey", false, [2, 3, 4, 5]);
+      newN("nav-start", 2, 2, 4, "grey", false, [2, 3, 4, 5], "navmain1");
       world.nodes[1].scanned = true;
-      newN("2", 3, -1, 4, "orange", false, []);
-      newN("3", 2, -3, 5, "yellow", true, []);
-      newN("4", 2.5, -6, 7, "yellow", true, []);
-      newN("nav-4", 3, -8, 4, "grey", false, [6, 7, 8, 21, 22, 23, 24, 25]);
-      newN("6", 0, -6.5, 3, "orange", false, []);
-      newN("7", 0, -10, 6, "yellow", true, []);
-      newN("nav-7", 1.5, -12, 4, "grey", false, [9, 10, 11, 12, 13]);
-      newN("9", -1.5, -14, 4, "orange", false, []);
-      newN("10", -5, -14, 8, "yellow", true, []);
-      newN("11", -3, -17, 6, "yellow", true, []);
-      newN("nav-11", -1, -19, 4, "grey", false, [14, 15]);
-      newN("13", 1, -16, 4, "orange", false, []);
-      newN("14", 6, -15, 9, "yellow", true, []);
-      newN("nav-14", 8, -14, 4, "grey", false, [16, 17, 18, 27, 28]);
-      newN("16", 10, -15.5, 3.5, "orange", false, []);
-      newN("17", 9, -18, 7, "yellow", true, []);
-      newN("nav-17", 11, -17.5, 4, "grey", false, [19, 20]);
-      newN("19", 13, -19, 4, "orange", false, []);
-      newN("finish", 16, -15, 3, "lightblue", false, []);
-      newN("21", 6.5, -3, 3, "orange", false, []);
-      newN("22", 7, -6, 5, "yellow", true, []);
-      newN("23", 9, -4.5, 4, "orange", false, []);
-      newN("24", 6, -9, 3.5, "orange", false, []);
-      newN("nav-24", 6, -10.5, 4, "grey", false, [7, 8, 26, 27, 28]);
-      newN("26", 10, -8, 7, "yellow", true, []);
-      newN("27", 8, -12, 5, "orange", false, []);
-      newN("nav-27", 9.5, -11.5, 4, "grey", false, [14, 15, 29, 30, 31]);
-      newN("29", 11, -12, 9, "yellow", true, []);
-      newN("30", 14, -10, 4, "orange", 2, []);
-      newN("nav-30", 14, -8, 4, "grey", false, [32, 20]);
-      newN("32", 17, -11, 7, "yellow", true, []);
+      newN("2", 3, -1, 4, "orange", false, [], "out1");
+      newN("3", 2, -3, 5, "yellow", true, [], "main2");
+      newN("4", 2.5, -6, 7, "yellow", true, [], "main1");
+      newN("nav-4", 3, -8, 4, "grey", false, [6, 7, 8, 21, 22, 23, 24, 25], "navmain2");
+      newN("6", 0, -6.5, 3, "orange", false, [], "out2");
+      newN("7", 0, -10, 6, "yellow", true, [], "main3");
+      newN("nav-7", 1.5, -12, 4, "grey", false, [9, 10, 11, 12, 13], "navmain2");
+      newN("9", -1.5, -14, 4, "orange", false, [], "out3");
+      newN("10", -5, -14, 8, "yellow", true, [], "main2");
+      newN("11", -3, -17, 6, "yellow", true, [], "main1");
+      newN("nav-11", -1, -19, 4, "grey", false, [14, 15], "navmain1");
+      newN("13", 1, -16, 4, "orange", false, [], "out2");
+      newN("14", 6, -15, 9, "yellow", true, [], "main1");
+      newN("nav-14", 8, -14, 4, "grey", false, [16, 17, 18, 27, 28], "navmain2");
+      newN("16", 10, -15.5, 3.5, "orange", false, [], "out1");
+      newN("17", 9, -18, 7, "yellow", true, [], "main3");
+      newN("nav-17", 11, -17.5, 4, "grey", false, [19, 20], "navmain2");
+      newN("19", 13, -19, 4, "orange", false, [], "out2");
+      newN("finish", 16, -15, 3, "lightblue", false, [], "finish");
+      newN("21", 6.5, -3, 3, "orange", false, [], "out1");
+      newN("22", 7, -6, 5, "yellow", true, [], "main1");
+      newN("23", 9, -4.5, 4, "orange", false, [], "out3");
+      newN("24", 6, -9, 3.5, "orange", false, [], "out2");
+      newN("nav-24", 6, -10.5, 4, "grey", false, [7, 8, 26, 27, 28], "navout1");
+      newN("26", 10, -8, 7, "yellow", true, [], "main1");
+      newN("27", 8, -12, 5, "orange", false, [], "out1");
+      newN("nav-27", 9.5, -11.5, 4, "grey", false, [14, 15, 29, 30, 31], "navout2");
+      newN("29", 11, -12, 9, "yellow", true, [], "main3");
+      newN("30", 14, -10, 4, "orange", 2, [], "out2");
+      newN("nav-30", 14, -8, 4, "grey", false, [32, 20], "navout1");
+      newN("32", 17, -11, 7, "yellow", true, [], "main2");
   
       newL(["start", "nav-start"], 0.1);
       newL(["start", "2"], 0.4);
@@ -258,6 +274,10 @@ AFRAME.registerComponent("logic", {
       changeTarget(null, 0);
       ship.fuel -= cost;
       mapOffset = { x: -node.x / 10, y: -node.y / 10 };
+      for (let i of ["main1", "main2", "main3", "out1", "out2", "out3", "navmain1", "navmain2", "navout1", "navout2", "finish"]) {
+        $(`#${i}`).setAttribute("visible", false);
+      }
+      $(`#${ship.location.system}`).setAttribute("visible", true);
       drawMap();
       drawLocation();
       drawTarget();
@@ -274,6 +294,11 @@ AFRAME.registerComponent("logic", {
 
     function toggleScoop() {
       ship.scoopDeployed = !ship.scoopDeployed;
+      if (ship.scoopDeployed) {
+        sound.fuel.play();
+      } else {
+        sound.fuel.pause();
+      }
       fuelGuage.setAttribute("color", ship.scoopDeployed ? (ship.location.fuel ? "yellow" : "red") : "green");
       checkLaunchReady();
     }
@@ -281,8 +306,12 @@ AFRAME.registerComponent("logic", {
     function launch() {
       if (ship.target) {
         const jumpCost = findLink(ship.target, ship.location).cost;
-        changeLocation(ship.target, jumpCost);
-        checkLaunchReady();
+        sound.jumpStart.play();
+        setTimeout(() => {
+          changeLocation(ship.target, jumpCost);
+          checkLaunchReady();
+          sound.jumpEnd.play();
+        }, 2000);
       }
     }
 
@@ -290,10 +319,13 @@ AFRAME.registerComponent("logic", {
       const name = ship.location.name;
       const reveals = findNode(name).reveals;
 
-      if (reveals) {
+      if (reveals.length > 0) {
+        sound.scan.play();
         for (let i of reveals) {
           world.nodes[i].scanned = true;
         }
+      } else {
+        sound.error.play();
       }
 
       drawMap();
@@ -373,7 +405,10 @@ AFRAME.registerComponent("logic", {
           nodeEl.addEventListener("click", e => {
             const jumpLink = world.links.find(l => l.nodes.includes(node.name) && l.nodes.includes(ship.location.name));
             if (ship.location != node && jumpLink) {
+              sound.select.play();
               changeTarget(node, jumpLink.cost);
+            } else {
+              sound.error.play();
             }
           });
           nodeEl.addEventListener("loaded", e => {

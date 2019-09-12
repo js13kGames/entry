@@ -6,9 +6,11 @@
   <script src="https://js13kgames.com/webxr-src/aframe.js"></script>
   
   <!-- build:js -->
-  <script src="components/button.js"></script>
-  <script src="components/logic.js"></script>
-  <script src="components/star.js"></script>
+  <script src="js/jsfxr.min.js"></script>
+  <script src="js/button.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/sounds.js"></script>
+  <script src="js/star.js"></script>
   <!-- endbuild -->
 </head>
 
@@ -16,12 +18,18 @@
   <a-scene background="color: #141414" logic>
 
     <a-assets>
-      <a-asset-item id="cockpit" src="models/cockpit_v2.obj"></a-asset-item>
+      <a-asset-item id="cockpit" src="models/cockpit_v3.obj"></a-asset-item>
     </a-assets>
 
     <a-entity id="startMenu" visible="false">
-      <a-text value="Return" position="0 1.4 -1" align="center" anchor="center"></a-text>
-      <a-plane id="playButton" class="clickable" position="0 1 -1" width="0.5" height="0.2">
+      <a-text value="Return" position="0 1.9 -1" align="center" anchor="center"></a-text>
+      <a-text position="0 1.2 -1" width="2" anchor="center" wrap-count="70" value="You were one of the select few chosen to trial a new hyperspace jump drive. You reach towards the red jump button in the front of your cockpit as directed; there is a whooshing noise as the jump drive spins up. Space and time warps around you, suddenly there is a bang and the ship drops out of hyperspace. “This isn’t the correct destination” you think to yourself, the jump drive must be faulty.\n
+        After assessing the damage to the ship it seems the jump drive will be capable of shorter jumps. Time to find your way back home!\n
+        The ship is equipped with a fuel scoop. This can be activated by pressing the yellow button. (However, make sure you are at a yellow fuel star, orange stars are old so no longer give any fuel). Your fuel gauge is the green bar on the front panel.\n
+        Choose a destination to jump to by selecting it from the map panel on your right. Once selected the jump cost is shown by the blue bar on the front panel. Press the red button to make the jump. (Stow away the fuel scoop first)\n
+        You will need to find and scan navigation beacons to reveal nearby stars to jump to. Nav beacons are the grey triangles on the map. Jump to them and press the blue scan button.">
+      </a-text>
+      <a-plane id="playButton" class="clickable" position="0 0.55 -1" width="0.5" height="0.2">
         <a-text value="Play!" align="center" anchor="center" width="3"></a-text>
       </a-plane>
     </a-entity>
@@ -33,6 +41,8 @@
       </a-plane>
     </a-entity>
 
+    <a-text id="winText" value="You win!" position="0 1.4 -1" align="center" anchor="center" visible="false"></a-text>
+
     <a-entity id="winMenu" visible="false">
       <a-text value="You win!" position="0 1.4 -1" align="center" anchor="center"></a-text>
       <a-plane id="playAgainButton" class="clickable" position="0 1 -1" width="0.7" height="0.2">
@@ -41,13 +51,136 @@
     </a-entity>
 
     <a-entity id="game">
-      <a-sphere 
-        position="5 2 -6"
-        radius=5
-        color="#fd8" 
-        material="emissive: #f8a300; emissiveIntensity: .7"
-        light="castShadow: true">
-      </a-sphere>
+
+      <a-entity id="main1" visible="false">
+        <a-sphere 
+          position="5 2 -6"
+          radius=5
+          color="#fd8" 
+          material="emissive: #f8a300; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+      <a-entity id="main2" visible="false">
+        <a-sphere 
+          position="-3 0 -15"
+          radius=3
+          color="#fd8" 
+          material="emissive: #f8a300; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+      <a-entity id="main3" visible="false">
+        <a-sphere 
+          position="-11 0 -3"
+          radius=4
+          color="#fd8" 
+          material="emissive: #f8a300; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+
+      <a-entity id="out1" visible="false">
+        <a-sphere 
+          position="-9 4 1"
+          radius=3
+          color="#ffc488" 
+          material="emissive: #f93200; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+      <a-entity id="out2" visible="false">
+        <a-sphere 
+          position="-6 6 -5"
+          radius=6
+          color="#ffc488" 
+          material="emissive: #f93200; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+      <a-entity id="out3" visible="false">
+        <a-sphere 
+          position="-1 1 -10"
+          radius=2
+          color="#ffc488" 
+          material="emissive: #f93200; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+      </a-entity>
+      
+      <a-entity id="navmain1" visible="false">
+        <a-sphere 
+          position="5 2 -6"
+          radius=0.5
+          color="#fd8" 
+          material="emissive: #f8a300; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+        <a-box 
+          position="-1 2 -4"
+          animation="property: rotation; to: 360 360 360; dur: 10000; loop: true; easing: linear">
+        </a-box>
+      </a-entity>
+      <a-entity id="navmain2" visible="false">
+        <a-sphere 
+          position="-2 3 -7"
+          radius=0.8
+          color="#fd8" 
+          material="emissive: #f8a300; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+        <a-box 
+          position="3 1 -3.5"
+          animation="property: rotation; to: 360 360 360; dur: 10000; loop: true; easing: linear">
+        </a-box>
+      </a-entity>
+      
+      <a-entity id="navout1" visible="false">
+        <a-sphere 
+          position="1 1.5 -5"
+          radius=1
+          color="#ffc488" 
+            material="emissive: #f93200; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+        <a-box 
+          position="-4 2 -4"
+          animation="property: rotation; to: 360 360 360; dur: 10000; loop: true; easing: linear">
+        </a-box>
+      </a-entity>
+      <a-entity id="navout2" visible="false">
+        <a-sphere 
+          position="-5 3 -3"
+          radius=0.8
+          color="#ffc488" 
+          material="emissive: #f93200; emissiveIntensity: .7"
+          light="castShadow: true">
+        </a-sphere>
+        <a-box 
+          position="1.2 1 -5"
+          animation="property: rotation; to: 360 360 360; dur: 10000; loop: true; easing: linear">
+        </a-box>
+      </a-entity>
+      
+      <a-entity id="finish" visible="false">
+          <a-sphere 
+            position="1 1.5 -6"
+            radius=0.6
+            color="#fd8" 
+            material="emissive: #f8a300; emissiveIntensity: .7"
+            light="castShadow: true">
+          </a-sphere>
+          <a-sphere 
+            position="-2 1.6 -2.5"
+            radius=0.8
+            color="#6adaff">
+          </a-sphere>
+          <a-sphere 
+            position="-3 1.5 -1"
+            radius=0.1
+            color="#c5b694">
+          </a-sphere>
+        </a-entity>
     
       <!-- Container for ship items -->
       <a-entity id="ship">
