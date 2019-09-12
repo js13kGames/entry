@@ -68,10 +68,10 @@ function showRankList(time) {
     time: time
   })
   rankList.sort((a, b) => {
-    return a.time < b.time ? 1 : -1
+    return a.time < b.time ? -1 : 1
   })
   if (rankList.length > 5) {
-    rankList.shift()
+    rankList.pop()
   }
   let inRank = false
   rankList.map(rank => {
@@ -86,8 +86,8 @@ function showRankList(time) {
     }
     rankList.map(rank => { rank.name = rank.name === '' ? name : rank.name })
     localStorage.setItem('dawn-breaker-rank', JSON.stringify(rankList))
-    const listStr = rankList.map(rank => `${rank.name}\t${rank.time}`).join('\n')
+    let listStr = rankList.map((rank, index) => `${index + 1}\t\t${rank.name}\t\t${rank.time / 1000}`).join('\n')
+    listStr = 'Rank List\nrank\t\tname\t\ttime(s)\n' + listStr
     alert(listStr)
-    // TODO: polish
   }
 }
