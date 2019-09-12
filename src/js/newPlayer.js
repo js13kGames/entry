@@ -25,7 +25,8 @@ function pickColor(players, controllerId) {
     if (!controllerId) {
         return unusedRandomColor(players)
     }
-    if (controllerId.indexOf('Joy-Con (L)') > -1) {
+    // Make left Joy-Cons blue, or if there's already a blue player, green
+    if (controllerId.indexOf('-Con (L)') > -1) {
         if (!players.some((p) => p.color === colors.blue)) {
             return colors.blue;
         }
@@ -33,12 +34,19 @@ function pickColor(players, controllerId) {
             return colors.green;
         }
     }
-    if (controllerId.indexOf('Joy-Con (R)') > -1) {
+    // Make right Joy-Cons red, or if there's already a red player, pink
+    if (controllerId.indexOf('-Con (R)') > -1) {
         if (!players.some((p) => p.color === colors.red)) {
             return colors.red;
         }
         if (!players.some((p) => p.color === colors.pink)) {
             return colors.pink;
+        }
+    }
+    // Make Xbox controllers green if there's not already a green
+    if (controllerId.indexOf('Xbox') > -1) {
+        if (!players.some((p) => p.color === colors.green)) {
+            return colors.green;
         }
     }
     return unusedRandomColor(players)
@@ -51,12 +59,10 @@ export function newPlayer(game, controls, controllerId) {
         return;
     }
 
-    var color = pickColor(game.players, controllerId);
-
     zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
 
     game.players.push(new Player({
-        color: color,
+        color: pickColor(game.players, controllerId),
         shipType: Math.floor(Math.random() * 4),
         controls: controls,
         gamepadId: controllerId,

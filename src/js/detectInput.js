@@ -19,7 +19,8 @@ function setupGamepad(e) {
         pressedButtons: {},
         axes: {}
     };
-    if (pad.id.indexOf('Joy-Con') > -1) {
+    // if (pad.id.indexOf('Joy-Con') > -1) {
+    if (pad.id.indexOf('-Con') > -1) {
         window.gamepads[pad.index].buttonMap = {
             'a': 1,
             'b': 0,
