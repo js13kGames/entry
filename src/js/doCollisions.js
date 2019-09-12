@@ -49,10 +49,12 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                         });
                     }
                     sprite1.ttl = 0
+                    zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
                 } else if (sprite1.mass > 1e4) {
                     // TODO: Sparks or shrapnel or something?
                 } else {
                     sprite1.explode(sprites);
+                    zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
                 }
             }
             return;
@@ -173,13 +175,13 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                             });
                         }
                         sprite2.ttl = 0;
-                        zzfx(1,.1,585,.7,.03,0,1.6,0,.55); // ZzFX 63814
+                        zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676s
                     } else if (sprite2.radius > 60) {
                         sprite1.x -= cResult.overlap * cResult.overlap_x;
                         sprite1.y -= cResult.overlap * cResult.overlap_y;
                     } else {
                         sprite2.explode(sprites);
-                        zzfx(1,.1,585,.7,.03,0,1.6,0,.55); // ZzFX 63814
+                        zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
                     }
                     return;
                 }
