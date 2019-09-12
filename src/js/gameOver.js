@@ -7,7 +7,8 @@ import { renderText } from './text';
  * @return {[type]}      [description]
  */
 export function render(game) {
-    var pad = game.width / 16; // Padding around set of 4 cards
+    // Padding around set of 4 cards. Odd magic number but it compresses well
+    var pad = game.size * game.size * game.size * game.size * 32;
     var margin = 7; // Padding in game units between each card
     var contWidth = game.width - pad * 2; // Card container width
     var cardWidth = contWidth / game.players.length - margin * 2;
@@ -41,7 +42,7 @@ export function render(game) {
                 color: player.color,
                 x: x + margin,
                 y: y + margin + 1,
-                size: 1.3,
+                size: 1.35 * game.size,
                 scale: game.scale,
                 context: game.context
             });
@@ -67,7 +68,7 @@ export function render(game) {
                 color: player.color,
                 x: x + margin,
                 y: y + margin + 1,
-                size: 1.3,
+                size: 1.3 * game.size,
                 scale: game.scale,
                 context: game.context
             });
@@ -75,8 +76,8 @@ export function render(game) {
                 renderText({
                     text: 'nd',
                     color: player.color,
-                    x: x + margin + 17,
-                    y: y + margin + 12,
+                    x: x + margin + 17 * game.size,
+                    y: y + margin + 12 * game.size,
                     size: .5,
                     scale: game.scale,
                     context: game.context
@@ -85,8 +86,8 @@ export function render(game) {
                 renderText({
                     text: 'rd',
                     color: player.color,
-                    x: x + margin + 17,
-                    y: y + margin + 11, // 'rd' is a bit wonky
+                    x: x + margin + 17 * game.size,
+                    y: y + margin + 11 * game.size, // 'rd' is a bit wonky
                     size: .5,
                     scale: game.scale,
                     context: game.context
@@ -95,8 +96,8 @@ export function render(game) {
                 renderText({
                     text: 'th',
                     color: player.color,
-                    x: x + margin + 16, // 'th' is a bit wonky too
-                    y: y + margin + 12,
+                    x: x + margin + 16 * game.size, // 'th' is a bit wonky too
+                    y: y + margin + 12 * game.size,
                     size: .5,
                     scale: game.scale,
                     context: game.context
@@ -197,6 +198,7 @@ export function render(game) {
         renderText({
             text: player.ready ? 'next>' : 'ready!',
             color: player.color,
+            size: 1.3 * game.size,
             alignRight: true,
             alignBottom: true,
             x: x + cardWidth - margin,

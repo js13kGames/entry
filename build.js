@@ -163,9 +163,11 @@ function minify() {
 
     // Replace some "terser reserved words" from source before minifying
     // These are VERY LIKELY to break things
-    code = code.replace(/\.acceleration/g, '.accel');
+    code = code.replace(/acceleration/g, 'accel');
+    code = code.replace(/detail/g, 'd');
     code = code.replace(/focus/g, 'hocus');
     code = code.replace(/history/g, 'hist');
+    code = code.replace(/update/g, 'updoot');
     // code = code.replace(/\.controls/g, '.cntrls'); // Breaks things
     code = code.replace(/\.position/g, '.pos');
     code = code.replace(/\.rotation/g, '.rot');

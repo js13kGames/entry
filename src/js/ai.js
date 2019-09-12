@@ -166,9 +166,9 @@ export function update(ai) {
     // is rainbowy, get the angle away from. RUN AWAY!
     angleToTarget = getAngle(ai, target, !target.rainbow);
 
-    if (angleToTarget < -.1) {
+    if (angleToTarget < -.05) {
         ai.ship.turnRight();
-    } else if (angleToTarget > .1) {
+    } else if (angleToTarget > .05) {
         ai.ship.turnLeft();
     } else {
         // If the target is rainbowy, just run away,

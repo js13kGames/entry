@@ -94,6 +94,9 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                         game: game
                     });
                 }
+                if (mainMenu.items[mainMenu.focus].text === 'credits') {
+                    alert("No space!");
+                }
                 player.debounce.accept = 15;
 
             } else {
@@ -172,7 +175,8 @@ export function startMainMenu(newGame, otherScenes) {
         y: 30,
         items: [
             { text: 'play' },
-            { text: 'scale 100%' }, // All the code calls this size uhhh
+            // All the code calls this size uhhh
+            { text: 'scale ' + game.size * 100 + '%' },
             { text: 'credits' }
         ]
     });
