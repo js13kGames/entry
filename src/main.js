@@ -44,7 +44,8 @@ var shapes = {
 			cx: 37,
 			cy: 31,
 			rx: 35,
-			ry: 30
+			ry: 30,
+			shpath: "M37,51 a 39.81,39.81 0 0 0 34.47,-19.46 c 0,15.84 -15.43,28.69 -34.47,28.69 -19.04,0 -34.48,-12.85 -34.48,-28.69 a 39.74,39.74 0 0 0 34.48,19.46 z"
 		},
 		{
 			h: 60,
@@ -52,12 +53,14 @@ var shapes = {
 			cx: 29,
 			cy: 30,
 			rx: 28,
-			ry: 29
+			ry: 29,
+			shpath: "m 28.215001,49.78733 c 19.18,0 27.16,-19.82 27.16,-19.82 0,15.66 -12.16,28.35 -27.16,28.35 -15,0 -27.1200004,-12.69 -27.1200004,-28.35 0,0 7.82,19.82 27.1200004,19.82 z"
 		},
 		{
 			h: 57,
 			w: 83,
-			path: "M81.26,26.49c4.36,13.72,2.56,29.92-39.91,29.92S-1.19,40.62,1.43,26.49C4.37,10.69,26,.5,41.35.5S76.05,10.12,81.26,26.49Z"
+			path: "M81.26,26.49c4.36,13.72,2.56,29.92-39.91,29.92S-1.19,40.62,1.43,26.49C4.37,10.69,26,.5,41.35.5S76.05,10.12,81.26,26.49Z",
+			shpath: "m 80.65,26.5 c 4.51,13.89 2.56,29.38 -39.32,29.38 -41.88,0 -42,-15.11 -39.3,-29.38 0,0 3,20 39.3,20 36.5,0 39.32,-20 39.32,-20 z"
 		},
 		{
 			h: 54,
@@ -65,7 +68,8 @@ var shapes = {
 			cx: 30,
 			cy: 27,
 			rx: 30,
-			ry: 26
+			ry: 26,
+			shpath: "m 30.4,44.88 a 32.68,32.68 0 0 0 29.38,-17.1 c 0,14 -13.15,25.32 -29.38,25.32 -16.23,0 -29.38,-11.34 -29.38,-25.32 a 32.75,32.75 0 0 0 29.38,17.1 z"
 		},
 	],
 	eye: [
@@ -73,8 +77,8 @@ var shapes = {
 			h: 22,
 			w: 20,
 			path: "M.69.5,18.92,16.07S14.69,24.9,5.79,20.62,1.32,4.11,4,3.3",
+			f: "white",
 			p2: "M8.35,7.54S6,11.43,7.47,13.71s6.26-2.07,6.26-2.07",
-			f2: "black",
 			anchor: [10, 10]
 		},
 		{
@@ -91,7 +95,8 @@ var shapes = {
 				rx: 2,
 				ry: 2,
 				f: 'white'
-			}
+			},
+			shpath: "M 5.5,14.8 C 8.8,14.6 9.2,9.5 9.2,9.5 9.6,14.7 8.3,18.5 5.8,18.6 3.4,18.8 1.6,15.3 1.3,10.2 c 0,0 0.9,5 4.3,4.7 z"
 		},
 		{
 			h: 22,
@@ -103,7 +108,8 @@ var shapes = {
 				rx: 2,
 				ry: 3,
 				f: 'white'
-			}
+			},
+			shpath: "m 2.6,18.3 c 2.5,1.3 7.3,0.8 9,-2.7 a 8.7,8.7 0 0 0 0.1,-4.9 c 0,0 0.1,4.2 -5.3,5.4 a 4.4,4.4 0 0 1 -5.5,-3.6 c 0,2.8 0.6,5.2 1.6,5.8 z"
 		},
 		{
 			h: 12,
@@ -129,19 +135,22 @@ var shapes = {
 			cy: 23,
 			rx: 26,
 			ry: 22,
-			anchor: [26, 30]
+			anchor: [26, 30],
+			shpath: "m 26.9,36 c 20,0 25.9,-13.1 25.9,-13.1 0,11.1 -11.6,21.3 -25.9,21.3 -14.3,0 -25.9,-10.2 -25.9,-21.3 0,0 5.9,13.1 25.9,13.1 z"
 		},
 		{
 			h: 47,
 			w: 52,
 			path: "M51.06,20.36c0,14.33-11.32,25.94-25.28,25.94S.5,34.69.5,20.36,11.82.5,25.78.5,51.06,6,51.06,20.36Z",
-			anchor: [26, 30]
+			anchor: [26, 30],
+			shpath: "m 50.54,20.5 c 0,14 -11.06,25.36 -24.76,25.36 -13.7,0 -24.76,-11.36 -24.76,-25.36 0,0 6.83,17.06 24.76,17.06 17.93,0 24.76,-17.06 24.76,-17.06 z"
 		},
 		{
 			h: 51,
 			w: 47,
 			path: "M46,23.73C48.43,36,47.42,50.47,23.5,50.47S-.45,36.36,1,23.73C2.68,9.61,14.85.5,23.5.5S43,9.1,46,23.73Z",
-			anchor: [24, 24]
+			anchor: [24, 24],
+			shpath: "m 45.48,23.5 c 2.52,12.26 1.35,26.2 -22,26.2 -23.35,0 -23.47,-13.62 -22,-26.2 0,0 1.25,17 22,17 20.75,0 22,-17 22,-17 z"
 		}
 	],
 	mouth: [
@@ -172,19 +181,22 @@ var shapes = {
 			h: 25,
 			w: 28,
 			path: "M22.81.5S-2.46,10.22.79,20.28s23.36-.88,26.42-5.87",
-			anchor: [21, 21]
+			anchor: [21, 21],
+			shpath: "m 26,10.5 c -11,14.5 -24.5,9.6 -24.5,9.6 3.4,10 23.3,-1.7 25.7,-6.5"
 		},
 		{
 			h: 19,
 			w: 22,
 			path: "M21.06.5C13,5.3.26,2.66.5,10s20.56,8.35,20.56,8.35",
-			anchor: [20, 15]
+			anchor: [20, 15],
+			shpath: "m 21,11 v 6.7 c 0,0 -19.8,-1.1 -20,-7.7 0,0 17.7,9.35 20,1 z"
 		},
 		{
 			h: 19,
 			w: 18,
 			path: "M13.38.5S-2.17,5.62.9,12.79s16.49,4.76,16.49,4.76",
-			anchor: [13, 16]
+			anchor: [13, 16],
+			shpath: "m 1.3,12.4 c 0,0 10.2,7 14.8,-0.16 l 1.15,4.82 c 0,0 -13.4,2.27 -16,-4.6 z"
 		}
 	],
 	ear: [
@@ -192,13 +204,15 @@ var shapes = {
 			h: 20,
 			w: 25,
 			path: "M3.62,19.15S-4.44,6.63,5.35,1.34c7.32-4,14.52,7.51,19,5.92",
-			anchor: [13, 6]
+			anchor: [13, 6],
+			shpath: "m 4.1,18.8 19.2,-11 a 8.59,8.59 0 0 1 -4.1,-1.61 l -16.6,9.7 a 20.49,20.49 0 0 0 1.54,2.91 z"
 		},
 		{
 			h: 37,
 			w: 37,
 			path: "M36.09,29.6C31.23,15.79,10.69-6,2.22,2.36c-8.64,8.55,17.67,32.09,25.26,33.78",
-			anchor: [28, 7]
+			anchor: [28, 7],
+e			shpath: "m 35.70637,29.950083 a 27.34,27.34 0 0 0 -2.19,-5 c -2.1,-3.91 -8.87,-8.66 -13,-5.39 -4.13,3.27 -2.8,10.42 1.42,13.2 4.89,3.22 6.11,3.11 6.11,3.11 z"
 		}
 	],
 	feet: [
@@ -206,7 +220,8 @@ var shapes = {
 			h: 34,
 			w: 34,
 			path: "M8.49,29.84c8.45,4.14,14.86,5,20.51.24s4.51-10,1-20.94C26.91-.35,13.8-2.15,5.62,4.38S-.46,25.45,8.49,29.84Z",
-			anchor: [16, 16]
+			anchor: [16, 16],
+			shpath: "m 8.589476,29.806167 c 7.73,3.81 14.46,5.29 20.06,0.49 3.75,-3.21 4.39,-6.3 3.42,-11.47 0,0 -0.8,8 -14.55,7.27 -12.74,-0.64 -16,-6.05 -16,-6.05 0.99,4.13 3.11,7.8 7.07,9.76 z"
 		},
 		/*{ Not matching very well
 			h: 25,
@@ -221,7 +236,8 @@ var shapes = {
 			cy: 13,
 			rx: 9,
 			ry: 12,
-			rotate: 20
+			rotate: 20,
+			shpath: "m 12,18 c 5.9,-1.3 8.2,-5.2 8.2,-5.2 0.4,3 -3.6,7 -5.7,8.7 -3.6,2.9 -9.4,1 -11.8,-4.7 3,1.6 6,2 9,1 z"
 		},
 	]
 };
@@ -241,11 +257,33 @@ const bodyColors = [
 ]
 
 const eyeColors = [
-	'da171d', '007976', '000000', '222222'
+	'da575d', '007976', '000000', '222222'
 ]
 
 function randomColorf(colors) {
 	return '#' + rands.of(colors);
+}
+
+function darker(hex, percent){
+    hex = hex.substr(1);
+    var r = parseInt(hex.substr(0, 2), 16),
+        g = parseInt(hex.substr(2, 2), 16),
+        b = parseInt(hex.substr(4, 2), 16);
+   	r = Math.floor(r - (256 - r) * percent / 100);
+   	g = Math.floor(g - (256 - g) * percent / 100);
+   	b = Math.floor(b - (256 - b) * percent / 100);
+   	if (r < 0) r = 0;
+   	if (g < 0) g = 0;
+   	if (b < 0) b = 0;
+    return '#' + hexa(r) + hexa(g) + hexa(b);
+}
+
+function hexa(n) {
+	return pad(n.toString(16));
+}
+
+function pad(h) {
+	return h < 10 ? '0' + h : h;
 }
 
 const vow = 'aeiou';
@@ -273,8 +311,8 @@ function randomAnatomy() {
 		bps: {
 			arm: randi(shapes.arm),
 			body: randi(shapes.body),
-			feet: randi(shapes.feet),
-			ear: randi(shapes.ear),
+			feet: randi(shapes.feet),,
+			ear: randi(shapes.ear),,
 			head: randi(shapes.head),
 			eye: randi(shapes.eye),
 			mouth: randi(shapes.mouth)
@@ -403,11 +441,15 @@ function catchit() {
 // Display
 
 function createPath(fillColor, pathCommands) {
-	return '<path fill="'+fillColor+'" stroke="#222222" stroke-width="2" d="'+pathCommands+'"/>';
+	return '<path fill="'+fillColor+'" stroke="#222222" stroke-width="1" d="'+pathCommands+'"/>';
+}
+
+function pPath(fillColor, pathCommands) {
+	return '<path fill="'+fillColor+'" d="'+pathCommands+'"/>';
 }
 
 function createCircle(fillColor, bp) {
-	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="2" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
+	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="1" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
 }
 
 function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
@@ -434,6 +476,8 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 		} else {
 			svgContent += createCircle(bodyPart.f || color, bodyPart);
 		}
+		if (bodyPart.shpath)
+			svgContent += pPath(darker(color, 20), bodyPart.shpath);
 		if (bodyPart.p2)
 			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
 		if (bodyPart.c2)
