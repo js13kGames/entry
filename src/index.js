@@ -18,7 +18,7 @@ window.game = {
     ctx: null,
     width: 800,
     height: 500,
-    gridSize: 20,
+    gridSize: 15,
     marginGrids: 0,
 
     roundFrames: 0,
@@ -48,10 +48,11 @@ function init() {
 
     document.addEventListener('keydown', onKeydown);
 
-    countDown();
-    setTimeout(function () {
-        newGame();
-    }, 3000);
+    tickBeforeStart();
+    // countDown();
+    // setTimeout(function () {
+    //     newGame();
+    // }, 3000);
 }
 
 function newGame() {
@@ -174,6 +175,15 @@ function renderHistorySnakes() {
         }
     }
     ctx.globalAlpha = 1;
+}
+
+function tickBeforeStart() {
+    game.ctx.clearRect(0, 0, game.width, game.height);
+    game.ctx.fillStyle = game.colorGrass;
+    game.ctx.fillRect(game.marginGrids * game.gridSize, game.marginGrids * game.gridSize,
+        game.insideWidth, game.insideHeight);
+
+    renderTitle();
 }
 
 function onKeydown(event) {

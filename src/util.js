@@ -54,6 +54,30 @@ function renderHeart(ctx, pos) {
     renderGraphic(ctx, list, pos, 1 / 12, 0, 1 / 12);
 }
 
+function renderTitle() {
+    var titleSize = [68, 10];
+    var dx = (game.insideGridWidth - titleSize[0]) / 2;
+    var dy = (game.insideGridHeight - titleSize[1]) / 2;
+
+    var list = [
+        [4, 1], [3, 0], [2, 0], [1, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5],
+        [1, 6], [2, 6], [3, 6], [4, 7], [4, 8], [3, 9], [2, 9], [1, 9], [0, 8]
+    ].map(function (pos) {
+        return [pos[0] + dx, pos[1] + dy];
+    });
+
+    var ctx = game.ctx;
+    renderList(ctx, list, function (x, y) {
+        ctx.fillStyle = game.colorSnake;
+        ctx.fillRect(x, y, game.gridSize, game.gridSize);
+        ctx.fillStyle = game.colorGrass;
+        var d = 2;
+        ctx.fillRect(x + d, y + d, game.gridSize - d * 2, game.gridSize - d * 2);
+        ctx.fillStyle = game.snakeColor;
+        ctx.fillRect(x + d * 2, y + d * 2, game.gridSize - d * 4, game.gridSize - d * 4);
+    });
+}
+
 function renderCircle(ctx, pos) {
     ctx.beginPath();
     var pos = idToCanvasPosition(pos);
