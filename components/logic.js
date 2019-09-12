@@ -30,19 +30,96 @@ AFRAME.registerComponent("logic", {
     // el.object3D.add(helpers);
 
     /*
-      Menu
+      Start menu
     */
     const mask = $("#mask");
-    const game = $("#gameContainer");
+    const game = $("#game");
     const startMenu = $("#startMenu");
     const playButton = $("#playButton");
+    const cursor = $("#cursor");
 
+    function resetGame() {
+      createWorld();
+
+      ship.location = world.nodes[0];
+      ship.target = null;
+      ship.fuel = 1;
+      ship.scoopDeployed = false;
+
+      mapOffset = { x: 0, y: 0 };
+
+      drawMap();
+      drawLocation();
+      drawTarget();
+      drawGuage(fuelGuage, ship.fuel);
+      drawGuage(jumpCostGuage, 0);
+    }
+
+    // Comment out to skip start menu
     game.setAttribute("visible", false);
+    startMenu.setAttribute("visible", true);
+    cursor.setAttribute("raycaster", {objects: "#startMenu .clickable"});
 
     playButton.addEventListener("click", e => {
       mask.emit("fadeOut");
+      cursor.setAttribute("raycaster", {objects: "#game .clickable"});
       setTimeout(() => {
+        resetGame();
         startMenu.setAttribute("visible", false);
+        game.setAttribute("visible", true);
+        mask.emit("fadeIn");
+      }, 2000);
+    });
+
+    /*
+      Game Over Menu
+    */
+    const gameOverMenu = $("#gameOverMenu");
+    const retryButton = $("#retryButton");
+
+    function gameOver() {
+      mask.emit("fadeOut");
+      cursor.setAttribute("raycaster", {objects: "#gameOverMenu .clickable"});
+      setTimeout(() => {
+        resetGame();
+        game.setAttribute("visible", false);
+        gameOverMenu.setAttribute("visible", true);
+        mask.emit("fadeIn");
+      }, 1500);
+    }
+
+    retryButton.addEventListener("click", e => {
+      mask.emit("fadeOut");
+      cursor.setAttribute("raycaster", {objects: "#game .clickable"});
+      setTimeout(() => {
+        gameOverMenu.setAttribute("visible", false);
+        game.setAttribute("visible", true);
+        mask.emit("fadeIn");
+      }, 2000);
+    });
+
+    /*
+      Win Menu
+    */
+    const winMenu = $("#winMenu");
+    const playAgainButton = $("#playAgainButton");
+
+    function win() {
+      mask.emit("fadeOut");
+      cursor.setAttribute("raycaster", {objects: "#winMenu .clickable"});
+      setTimeout(() => {
+        resetGame();
+        game.setAttribute("visible", false);
+        winMenu.setAttribute("visible", true);
+        mask.emit("fadeIn");
+      }, 1500);
+    }
+
+    playAgainButton.addEventListener("click", e => {
+      mask.emit("fadeOut");
+      cursor.setAttribute("raycaster", {objects: "#game .clickable"});
+      setTimeout(() => {
+        winMenu.setAttribute("visible", false);
         game.setAttribute("visible", true);
         mask.emit("fadeIn");
       }, 2000);
@@ -62,84 +139,88 @@ AFRAME.registerComponent("logic", {
     
     const newN = (name, x, y, size, color, fuel, reveals) => world.nodes.push({
       name: name, x: x, y: y, size: size, color: color, scanned: false, fuel: fuel, reveals: reveals});
-
-    newN("start", 0, 0, 8, "yellow", true, []);
-    world.nodes[0].scanned = true;
-    newN("nav-start", 2, 2, 4, "grey", false, [2, 3, 4, 5]);
-    world.nodes[1].scanned = true;
-    newN("2", 3, -1, 4, "orange", false, []);
-    newN("3", 2, -3, 5, "yellow", true, []);
-    newN("4", 2.5, -6, 7, "yellow", true, []);
-    newN("nav-4", 3, -8, 4, "grey", false, [6, 7, 8, 21, 22, 23, 24, 25]);
-    newN("6", 0, -6.5, 3, "orange", false, []);
-    newN("7", 0, -10, 6, "yellow", true, []);
-    newN("nav-7", 1.5, -12, 4, "grey", false, [9, 10, 11, 12, 13]);
-    newN("9", -1.5, -14, 4, "orange", false, []);
-    newN("10", -5, -14, 8, "yellow", true, []);
-    newN("11", -3, -17, 6, "yellow", true, []);
-    newN("nav-11", -1, -19, 4, "grey", false, [14, 15]);
-    newN("13", 1, -16, 4, "orange", false, []);
-    newN("14", 6, -15, 9, "yellow", true, []);
-    newN("nav-14", 8, -14, 4, "grey", false, [16, 17, 18, 27, 28]);
-    newN("16", 10, -15.5, 3.5, "orange", false, []);
-    newN("17", 9, -18, 7, "yellow", true, []);
-    newN("nav-17", 11, -17.5, 4, "grey", false, [19, 20]);
-    newN("19", 13, -19, 4, "orange", false, []);
-    newN("finish", 16, -15, 3, "lightblue", false, []);
-    newN("21", 6.5, -3, 3, "orange", false, []);
-    newN("22", 7, -6, 5, "yellow", true, []);
-    newN("23", 9, -4.5, 4, "orange", false, []);
-    newN("24", 6, -9, 3.5, "orange", false, []);
-    newN("nav-24", 6, -10.5, 4, "grey", false, [7, 8, 26, 27, 28]);
-    newN("26", 10, -8, 7, "yellow", true, []);
-    newN("27", 8, -12, 5, "orange", false, []);
-    newN("nav-27", 9.5, -11.5, 4, "grey", false, [14, 15, 29, 30, 31]);
-    newN("29", 11, -12, 9, "yellow", true, []);
-    newN("30", 14, -10, 4, "orange", 2, []);
-    newN("nav-30", 14, -8, 4, "grey", false, [32, 20]);
-    newN("32", 17, -11, 7, "yellow", true, []);
-
     const newL = (nodes, cost) => world.links.push({nodes: nodes, cost: cost});
 
-    newL(["start", "nav-start"], 0.1);
-    newL(["start", "2"], 0.4);
-    newL(["2", "3"], 0.3);
-    newL(["3", "4"], 0.4);
-    newL(["4", "nav-4"], 0.2);
-    newL(["4", "6"], 0.3);
-    newL(["6", "7"], 0.4);
-    newL(["7", "nav-7"], 0.15);
-    newL(["7", "9"], 0.5);
-    newL(["9", "10"], 0.2);
-    newL(["9", "11"], 0.4);
-    newL(["11", "13"], 0.3);
-    newL(["9", "13"], 0.3);
-    newL(["11", "nav-11"], 0.2);
-    newL(["13", "14"], 0.5);
-    newL(["14", "nav-14"], 0.05);
-    newL(["14", "16"], 0.3);
-    newL(["16", "17"], 0.3);
-    newL(["17", "nav-17"], 0.1);
-    newL(["17", "19"], 0.4);
-    newL(["19", "finish"], 0.4);
-    newL(["4", "22"], 0.4);
-    newL(["22", "21"], 0.3);
-    newL(["21", "23"], 0.3);
-    newL(["22", "23"], 0.3);
-    newL(["22", "24"], 0.35);
-    newL(["24", "nav-24"], 0.1);
-    newL(["24", "7"], 0.7);
-    newL(["24", "26"], 0.5);
-    newL(["24", "27"], 0.4);
-    newL(["26", "27"], 0.5);
-    newL(["27", "nav-27"], 0.1);
-    newL(["27", "14"], 0.4);
-    newL(["27", "29"], 0.3);
-    newL(["29", "30"], 0.3);
-    newL(["29", "16"], 0.5);
-    newL(["30", "nav-30"], 0.1);
-    newL(["30", "32"], 0.4);
-    newL(["32", "finish"], 0.6);
+    function createWorld() {
+      world.nodes = [];
+      world.links = [];
+
+      newN("start", 0, 0, 8, "yellow", true, []);
+      world.nodes[0].scanned = true;
+      newN("nav-start", 2, 2, 4, "grey", false, [2, 3, 4, 5]);
+      world.nodes[1].scanned = true;
+      newN("2", 3, -1, 4, "orange", false, []);
+      newN("3", 2, -3, 5, "yellow", true, []);
+      newN("4", 2.5, -6, 7, "yellow", true, []);
+      newN("nav-4", 3, -8, 4, "grey", false, [6, 7, 8, 21, 22, 23, 24, 25]);
+      newN("6", 0, -6.5, 3, "orange", false, []);
+      newN("7", 0, -10, 6, "yellow", true, []);
+      newN("nav-7", 1.5, -12, 4, "grey", false, [9, 10, 11, 12, 13]);
+      newN("9", -1.5, -14, 4, "orange", false, []);
+      newN("10", -5, -14, 8, "yellow", true, []);
+      newN("11", -3, -17, 6, "yellow", true, []);
+      newN("nav-11", -1, -19, 4, "grey", false, [14, 15]);
+      newN("13", 1, -16, 4, "orange", false, []);
+      newN("14", 6, -15, 9, "yellow", true, []);
+      newN("nav-14", 8, -14, 4, "grey", false, [16, 17, 18, 27, 28]);
+      newN("16", 10, -15.5, 3.5, "orange", false, []);
+      newN("17", 9, -18, 7, "yellow", true, []);
+      newN("nav-17", 11, -17.5, 4, "grey", false, [19, 20]);
+      newN("19", 13, -19, 4, "orange", false, []);
+      newN("finish", 16, -15, 3, "lightblue", false, []);
+      newN("21", 6.5, -3, 3, "orange", false, []);
+      newN("22", 7, -6, 5, "yellow", true, []);
+      newN("23", 9, -4.5, 4, "orange", false, []);
+      newN("24", 6, -9, 3.5, "orange", false, []);
+      newN("nav-24", 6, -10.5, 4, "grey", false, [7, 8, 26, 27, 28]);
+      newN("26", 10, -8, 7, "yellow", true, []);
+      newN("27", 8, -12, 5, "orange", false, []);
+      newN("nav-27", 9.5, -11.5, 4, "grey", false, [14, 15, 29, 30, 31]);
+      newN("29", 11, -12, 9, "yellow", true, []);
+      newN("30", 14, -10, 4, "orange", 2, []);
+      newN("nav-30", 14, -8, 4, "grey", false, [32, 20]);
+      newN("32", 17, -11, 7, "yellow", true, []);
+  
+      newL(["start", "nav-start"], 0.1);
+      newL(["start", "2"], 0.4);
+      newL(["2", "3"], 0.3);
+      newL(["3", "4"], 0.4);
+      newL(["4", "nav-4"], 0.2);
+      newL(["4", "6"], 0.3);
+      newL(["6", "7"], 0.4);
+      newL(["7", "nav-7"], 0.15);
+      newL(["7", "9"], 0.5);
+      newL(["9", "10"], 0.2);
+      newL(["9", "11"], 0.4);
+      newL(["11", "13"], 0.3);
+      newL(["9", "13"], 0.3);
+      newL(["11", "nav-11"], 0.2);
+      newL(["13", "14"], 0.5);
+      newL(["14", "nav-14"], 0.05);
+      newL(["14", "16"], 0.3);
+      newL(["16", "17"], 0.3);
+      newL(["17", "nav-17"], 0.1);
+      newL(["17", "19"], 0.4);
+      newL(["19", "finish"], 0.4);
+      newL(["4", "22"], 0.4);
+      newL(["22", "21"], 0.3);
+      newL(["21", "23"], 0.3);
+      newL(["22", "23"], 0.3);
+      newL(["22", "24"], 0.35);
+      newL(["24", "nav-24"], 0.1);
+      newL(["24", "7"], 0.7);
+      newL(["24", "26"], 0.5);
+      newL(["24", "27"], 0.4);
+      newL(["26", "27"], 0.5);
+      newL(["27", "nav-27"], 0.1);
+      newL(["27", "14"], 0.4);
+      newL(["27", "29"], 0.3);
+      newL(["29", "30"], 0.3);
+      newL(["29", "16"], 0.5);
+      newL(["30", "nav-30"], 0.1);
+      newL(["30", "32"], 0.4);
+      newL(["32", "finish"], 0.6);
+    }
 
     // world.nodes.push({name: "startStar", x: 0, y: 0, size: 10, color: "yellow", scanned: true, fuel: true});
     // world.nodes.push({name: "nav-startStar", x: 3, y: 1, size: 4, color: "grey", scanned: true, fuel: false, reveals: [2, 3, 4, 5]});
@@ -161,7 +242,7 @@ AFRAME.registerComponent("logic", {
     const ship = {
       location: world.nodes[0],
       target: null,
-      fuel: 0.8,
+      fuel: 1,
       scoopDeployed: false
     };
 
@@ -183,8 +264,11 @@ AFRAME.registerComponent("logic", {
       drawGuage(fuelGuage, ship.fuel);
       
       if (ship.fuel <= 0) {
-        // TODO: implement game over logic
-        console.log("GAME OVER");
+        gameOver();
+      }
+
+      if (ship.location.name === "finish") {
+        win();
       }
     }
 
@@ -376,6 +460,6 @@ AFRAME.registerComponent("logic", {
   }, 
 
   tick: function(time, timeDelta) {
-    this.updateFuel((0.05 * timeDelta) / 1000);
+    this.updateFuel((0.1 * timeDelta) / 1000);
   }
 });
