@@ -2,6 +2,7 @@ x=game.getContext`2d`;
 const M=Math;
 const V="visible";
 const H="hidden";
+const limit = M.tan(45 * 1.5 / 180 * M.PI);
 
 //Global variables
 const TAU = Zdog.TAU;
@@ -1026,7 +1027,6 @@ function HtmlLoaded() {
 
     id("game").focus();
 
-    const limit = M.tan(45 * 1.5 / 180 * M.PI);
     const gestureZone = id('game');
 
     gestureZone.addEventListener('touchstart', function(event) {
