@@ -1,0 +1,22 @@
+{
+  "name": "backstreetsback",
+  "version": "0.0.1",
+  "description": "js13k entry",
+  "main": "index.js",
+  "repository": "git@github.com:lislis/backstreetsback.git",
+  "author": "lislis <mail@lislis.de>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "html-minifier": "^4.0.0",
+    "tinymusic": "^1.0.0"
+  },
+  "devDependencies": {
+    "terser": "^4.3.1"
+  },
+  "scripts": {
+    "minijs": "mkdir -p dist/js && terser -c -o dist/js/script-head.js -- js/script-head.js && terser -c -o dist/js/script-footer.js -- js/script-footer.js",
+    "minihtml": "html-minifier index.html -o dist/index.html --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype",
+    "build": "rm -rf dist && yarn run minijs && yarn run minihtml && cp js/TinyMusic.min.js dist/js/TinyMusic.min.js && cp -r data dist/data"
+  }
+}
