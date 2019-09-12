@@ -40,7 +40,7 @@ export class Ship extends Sprite.class {
         this.ammo = shipData.ammo;
         this.mass = shipData.mass + 11;
         this.radius = 7; // shipData.radius; // All same to save 2 B
-        this.rof = 1 / this.rof;
+        this.rof = 1 / 5; // this.rof; // All the same to save 2 B
         this.thrust = shipData.thrust + 6;
         this.turnRate = (shipData.turnRate + 11) / 4; // 3 -> 5 degrees/s
         this.maxSpeed = (this.shipData.maxSpeed + 6) / 12;

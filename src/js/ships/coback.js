@@ -1,7 +1,7 @@
 
 export default () => {
     return {
-        rof: 4,
+        // rof: 4,
         // ror: 4,
         turnRate: 4,
         // radius: 8,
