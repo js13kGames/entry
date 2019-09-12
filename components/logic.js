@@ -30,6 +30,25 @@ AFRAME.registerComponent("logic", {
     // el.object3D.add(helpers);
 
     /*
+      Menu
+    */
+    const mask = $("#mask");
+    const game = $("#gameContainer");
+    const startMenu = $("#startMenu");
+    const playButton = $("#playButton");
+
+    game.setAttribute("visible", false);
+
+    playButton.addEventListener("click", e => {
+      mask.emit("fadeOut");
+      setTimeout(() => {
+        startMenu.setAttribute("visible", false);
+        game.setAttribute("visible", true);
+        mask.emit("fadeIn");
+      }, 2000);
+    });
+
+    /*
       World generation
     */
     let world = {
