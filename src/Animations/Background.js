@@ -15,6 +15,12 @@ export class Background {
     this.y = 0
     this.direction = this.targetDirection = Math.PI / 3
     this.speed = 1
+  }
+
+  initImage () {
+    if (this.image) {
+      return
+    }
 
     this.image = document.createElement('canvas')
     this.image.width = Canvas.width + 80
@@ -33,9 +39,9 @@ export class Background {
     ctx.fillRect(0, 0, this.image.width, this.image.height)
   }
 
-  step () {
-    const targetSpeed = 1.08 ** currentLevel
-    this.speed = approach(this.speed, targetSpeed, targetSpeed / 30)
+  step (isGameOver) {
+    const targetSpeed = isGameOver ? 0.5 : 1.08 ** currentLevel
+    this.speed = approach(this.speed, targetSpeed, 1 / 30)
     let dist = shortAngleDist(this.direction, this.targetDirection)
     this.direction += dist / 500
     if (Math.abs(dist) < 0.1) {
@@ -63,3 +69,5 @@ export class Background {
     Graphics.drawImage(this.image, this.x, this.y)
   }
 }
+
+export const TheBackground = new Background()

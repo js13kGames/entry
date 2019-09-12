@@ -19,7 +19,7 @@ import { Tetromino } from './Tetrominoes/Tetromino'
 import { ScaredTetrominoController } from './ScaredTetrominoController'
 import { FallingEyePair } from './Animations/FallingEyePair'
 import { PauseScreen } from './PauseScreen';
-import { Background } from './Animations/Background';
+import { TheBackground } from './Animations/Background';
 import { debugScenario } from './debugUtils'
 import { Block } from './Tetrominoes/Block'
 
@@ -52,7 +52,8 @@ export class Level {
 
     Graphics.lineWidth = 2
 
-    this.background = new Background()
+    this.background = TheBackground
+    this.background.initImage()
 
     this.tetrominoSource = new TetrominoSource()
     this.heldTetromino = null
@@ -126,7 +127,7 @@ export class Level {
       this.back2BackAnimation.step()
     }
 
-    this.background.step()
+    this.background.step(this.endAnimation)
 
     if (this.clearAnimation && !this.clearAnimation.done) {
       this.clearAnimation.step()
