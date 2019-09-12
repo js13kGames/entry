@@ -58,12 +58,10 @@ export function getFrequencyForTone (n) {
   return 440 * 2 ** (n / 12)
 }
 
-export function repeatNotes (x, length, repeat) {
+export function repeatNotes (note, length, repeat) {
   const result = []
   for (let i = 0; i < repeat; i++) {
-    x.forEach(([b, ...args]) => {
-      result.push([b + length * i, ...args])
-    })
+    result.push([length * i, note])
   }
   return result
 }
@@ -84,6 +82,14 @@ export function zipRhythmAndNotes (rhythm, notes) {
 
 export function offsetNotes (notes, amount) {
   notes.forEach(note => { note[0] += amount })
+  return notes
+}
+
+export function setNoteLengths(notes, totalBeatCount) {
+  for (let i = 0; i < notes.length - 1; i++) {
+    notes[i][2] = notes[i + 1][0] - notes[i][0]
+  }
+  notes[notes.length - 1][2] = totalBeatCount - notes[notes.length - 1][0]
   return notes
 }
 
@@ -112,7 +118,7 @@ export function applyRepeatingEnvelope (buffer, envelope, bpm) {
 }
 
 export class Song {
-  constructor (channelConfigs, loop = true) {
+  constructor (channelConfigs, loop = null) {
     this.channelConfigs = channelConfigs
 
     let master = TheAudioContext.createGain()
@@ -174,7 +180,11 @@ export class Song {
       }
 
       const sourceNode = TheAudioContext.createBufferSource()
-      sourceNode.loop = this.loop
+      if (this.loop) {
+        sourceNode.loop = true
+        sourceNode.loopStart = this.loop.start
+        sourceNode.loopEnd = channel.buffer.duration
+      }
       sourceNode.buffer = channel.buffer
       sourceNode.connect(channel.sourceTarget)
       sourceNode.start()

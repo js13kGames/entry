@@ -87,17 +87,49 @@ function getBandPassCoefficients (frequency, Q) {
   )
 }
 
-function filter (buffer, coeffFunction, frequencies, Qs) {
+function getHighShelfCoefficients (cutOffFrequency, Q, gainFactor) {
+  const A = Math.sqrt(gainFactor)
+  const aminus1 = A - 1
+  const aplus1 = A + 1
+  const omega = (Math.PI * 2 * cutOffFrequency) / contextSampleRate
+  const coso = Math.cos(omega)
+  const beta = Math.sin(omega) * Math.sqrt(A) / Q
+  const aminus1TimesCoso = aminus1 * coso
+
+  return coefficients (
+    A * (aplus1 + aminus1TimesCoso + beta),
+    A * -2.0 * (aminus1 + aplus1 * coso),
+    A * (aplus1 + aminus1TimesCoso - beta),
+    aplus1 - aminus1TimesCoso + beta,
+    2.0 * (aminus1 - aplus1 * coso),
+    aplus1 - aminus1TimesCoso - beta
+  )
+}
+
+function getPeakFilterCoefficients (frequency, Q, gainFactor) {
+  const A = Math.sqrt(gainFactor)
+  const omega = (Math.PI * 2 * frequency) / sampleRate
+  const alpha = 0.5 * Math.sin(omega) / Q
+  const c2 = -2.0 * Math.cos(omega)
+  const alphaTimesA = alpha * A
+  const alphaOverA = alpha / A
+
+  return coefficients(
+    1.0 + alphaTimesA,
+    c2,
+    1.0 - alphaTimesA,
+    1.0 + alphaOverA,
+    c2,
+    1.0 - alphaOverA
+  )
+}
+
+function filter (buffer, coeffFunction) {
   let lv1 = 0
   let lv2 = 0
 
-  const freqSampler = new EnvelopeSampler(frequencies, true)
-  const qSampler = new EnvelopeSampler(Qs)
-
   for (let i = 0; i < buffer.length; ++i) {
-    let freq = freqSampler.sample(i / (buffer.length - 1))
-    let Q = qSampler.sample(i / (buffer.length - 1))
-    let coeffs = coeffFunction(freq, Q)
+    let coeffs = coeffFunction(i / (buffer.length - 1))
 
     let inV = buffer[i]
     let outV = (inV * coeffs[0]) + lv1
@@ -111,15 +143,40 @@ function filter (buffer, coeffFunction, frequencies, Qs) {
 }
 
 export function lowPassFilter (buffer, frequencies, Q = Math.SQRT1_2) {
-  return filter(buffer, getLowPassCoefficients, ensureEnvelope(frequencies), ensureEnvelope(Q))
+  const freqSampler = new EnvelopeSampler(ensureEnvelope(frequencies), true)
+  const qSampler = new EnvelopeSampler(ensureEnvelope(Q))
+
+  return filter(buffer, x => getLowPassCoefficients(freqSampler.sample(x), qSampler.sample(x)))
 }
 
 export function highPassFilter (buffer, frequencies, Q = Math.SQRT1_2) {
-  return filter(buffer, getHighPassCoefficients, ensureEnvelope(frequencies), ensureEnvelope(Q))
+  const freqSampler = new EnvelopeSampler(ensureEnvelope(frequencies), true)
+  const qSampler = new EnvelopeSampler(ensureEnvelope(Q))
+
+  return filter(buffer, x => getHighPassCoefficients(freqSampler.sample(x), qSampler.sample(x)))
 }
 
 export function bandPassFilter (buffer, frequencies, Q = Math.SQRT1_2) {
-  return filter(buffer, getBandPassCoefficients, ensureEnvelope(frequencies), ensureEnvelope(Q))
+  const freqSampler = new EnvelopeSampler(ensureEnvelope(frequencies), true)
+  const qSampler = new EnvelopeSampler(ensureEnvelope(Q))
+
+  return filter(buffer, x => getBandPassCoefficients(freqSampler.sample(x), qSampler.sample(x)))
+}
+
+export function highShelf (buffer, cutOffFrequencies, Q, gainFactor) {
+  const freqSampler = new EnvelopeSampler(ensureEnvelope(cutOffFrequencies), true)
+  const qSampler = new EnvelopeSampler(ensureEnvelope(Q))
+  const gainSampler = new EnvelopeSampler(ensureEnvelope(gainFactor))
+
+  return filter(buffer, x => getHighShelfCoefficients(freqSampler.sample(x), qSampler.sample(x), gainSampler.sample(x)))
+}
+
+export function peakFilter (buffer, frequencies, Q, gainFactor) {
+  const freqSampler = new EnvelopeSampler(ensureEnvelope(frequencies), true)
+  const qSampler = new EnvelopeSampler(ensureEnvelope(Q))
+  const gainSampler = new EnvelopeSampler(ensureEnvelope(gainFactor))
+
+  return filter(buffer, x => getPeakFilterCoefficients(freqSampler.sample(x), qSampler.sample(x), gainSampler.sample(x)))
 }
 
 export function distort (buffer, amount) {

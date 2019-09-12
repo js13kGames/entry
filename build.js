@@ -81,6 +81,10 @@ const plugins = [
   closureCompilerPlugin
 ]
 
+if (!fs.existsSync('dist')){
+  fs.mkdirSync('dist');
+}
+
 const inputOptions = {
   input: 'src/entry.js',
   plugins
@@ -127,6 +131,8 @@ async function build() {
 
   if (finalFileSize > limit) {
     console.error(`That's ${finalFileSize - limit} too many bytes!`)
+  } else {
+    console.log(`${limit - finalFileSize} bytes left!`)
   }
 }
 
