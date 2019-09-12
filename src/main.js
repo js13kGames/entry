@@ -350,6 +350,11 @@ addButton('Catch', () => catchit());
 addButton('Buy', () => buy());
 
 function move(dx, dy) {
+	if (model.p < 1) {
+		message('Not enough energy points');
+		return;
+	}
+	showingBackpack = false;
 	disable(true);
 	message('Walking...');
 	document.getElementById("container").innerHTML = '';
@@ -358,6 +363,8 @@ function move(dx, dy) {
 		model.y += dy + 10;
 		model.x = Math.abs(model.x) % 10;
 		model.y = Math.abs(model.y) % 10;
+		model.p--;
+		save();
 		land();
 		disable(false);
 	}, 1000);
@@ -370,8 +377,8 @@ function catchit() {
 		message('Nothing to catch!');
 		return;
 	}
-	if (model.c <= 0) {
-		message('Not enough catchers!');
+	if (model.p < 5) {
+		message('Not enough energy!');
 		return;
 	}
 	if (model.m[currentMonster.id]) {
@@ -379,7 +386,7 @@ function catchit() {
 		return;
 	}
 	model.m[currentMonster.id] = true;
-	model.c--;
+	model.p -= 5;
 	message('You catch the ' + currentMonster.name);
 	currentMonster = false;
 	save();
@@ -442,12 +449,13 @@ function showMonster(anatomy, x, y, container, scale) {
 }
 
 function update () {
-	var status = locs[model.x][model.y].name + 
-	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
+	var status = locs[model.x][model.y].name + '<br>Energy: ' + model.p;
 	document.getElementById("location").innerHTML = status;
-	document.getElementById("container").innerHTML = '';
-	if (currentMonster) {
-		showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
+	if (!showingBackpack) {
+		document.getElementById("container").innerHTML = '';
+		if (currentMonster) {
+			showMonster(currentMonster, 100, 100, document.getElementById("container"), 1);
+		}
 	}
 }
 
@@ -497,7 +505,7 @@ if (model) {
 }
 
 if (!model) {
-	model = { x: 5, y: 5, p: 5, c: 5, m: {} };
+	model = { x: 5, y: 5, p: 40, m: {}, lastGrant: +new Date() };
 }
 
 function save() {
@@ -506,7 +514,20 @@ function save() {
 
 // In game functions
 
-
+function recoverMP() {
+	if (model.p >= 40) return;
+	const time = +new Date();
+	const timeDiff = time - model.lastGrant;
+	console.log(timeDiff);
+	const bonus = Math.floor(timeDiff / 20000);
+	if (bonus > 0) {
+		model.p += bonus;
+		model.p %= 40;
+		model.lastGrant = time;
+		save();
+		update();
+	}
+}
 
 function land() {
 	currentMonster = getMonsterAtLocation();
@@ -522,7 +543,7 @@ function getMonsterAtLocation() {
 	return rand.of(locs[model.x][model.y].m);
 }
 
+setInterval(() => recoverMP(), 1000);
 
 // Start game
-
 land();
