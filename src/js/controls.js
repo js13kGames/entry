@@ -32,11 +32,11 @@ export default (scheme, gamepadIndex) => {
                 return {
                     thrust: () => buttonPressed(gamepadIndex, 'a'),
                     fire:   () => buttonPressed(gamepadIndex, 'r'),
-                    left:   () => axisValue(gamepadIndex, 'x') < 0,
-                    right:  () => axisValue(gamepadIndex, 'x') > 0,
+                    left:   () => axisValue(gamepadIndex, 'x') < -.5,
+                    right:  () => axisValue(gamepadIndex, 'x') > .5,
                     rewind: () => buttonPressed(gamepadIndex, 'l'),
-                    up:     () => axisValue(gamepadIndex, 'y') < 0,
-                    down:   () => axisValue(gamepadIndex, 'y') > 0,
+                    up:     () => axisValue(gamepadIndex, 'y') < -.5,
+                    down:   () => axisValue(gamepadIndex, 'y') > .5,
                     accept: () => buttonPressed(gamepadIndex, 'a'),
                     back:   () => buttonPressed(gamepadIndex, 'b'),
                 }
