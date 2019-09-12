@@ -2,6 +2,8 @@
 
 A game made for [js13k](https://js13kgames.com/) 2019 with [aframe](https://aframe.io/) and [TinyMusic](https://github.com/kevincennis/TinyMusic).
 
+![screetshot](screenshot-big.png)
+
 
 ## Build and such
 
