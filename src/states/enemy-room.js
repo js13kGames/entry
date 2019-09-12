@@ -10,9 +10,18 @@ let EnemyRoom = function(g, loadNext) {
     this.player = g.player;
     this.sword = g.player.sword;
     this.exitPit = g.rectangle(50,50,'yellow');
+    this.exitPit.visible = false;
+    this.exitPitImg = g.text('🚪', '50px times');
+    this.exitPitImg.visible = false;
     this.loadNext = loadNext;
     this.spikes = [new Spikes(g, dirs.UP), new Spikes(g, dirs.D), new Spikes(g, dirs.L), new Spikes(g, dirs.R)];
-    this.scene = g.group(this.exitPit, this.spikes[0].sprite, this.spikes[1].sprite, this.spikes[2].sprite, this.spikes[3].sprite);
+    this.scene = g.group(this.exitPitImg);
+    this.spikes.forEach(s => {
+        s.imgs.forEach(img => {
+            this.scene.addChild(img);
+        });
+    });
+    this.player.hSprite.layer = 200;
     this.scene.visible = false;
     this.fromDir = '';
     this.enemies = [];
@@ -35,18 +44,18 @@ let EnemyRoom = function(g, loadNext) {
 
 EnemyRoom.prototype.load = function(fromDir, explored, numEnemies, hasTreasure, treasure) {
     this.g.stage.putCenter(this.player.sprite, 0, 0);
-    this.exitPit.visible = false;
+    this.exitPitImg.visible = false;
     this.g.stage.putCenter(this.exitPit, 0, -50);
+    this.g.stage.putCenter(this.exitPitImg, -20, -65);
     this.fromDir = fromDir;
     this.hasTreasure = hasTreasure;
     if (!explored) {
         if (hasTreasure) {
-            this.loadEnemies(Math.floor(numEnemies * 1.5), 2);
             this.treasure = treasure;
             this.scene.addChild(treasure.sprite);
-        } else {
-            this.loadEnemies(numEnemies, 1);
+            this.scene.addChild(treasure.img);
         }
+        this.loadEnemies(numEnemies, numEnemies);
         this.enemies.length > 0 && this.placeEnemies();
     }
 };
@@ -54,8 +63,9 @@ EnemyRoom.prototype.load = function(fromDir, explored, numEnemies, hasTreasure, 
 EnemyRoom.prototype.loadBoss = function() {
     this.g.stage.putCenter(this.player.sprite, 0, 0);
     this.enemies.push(new Boss(this.g, this.player.sprite));
-    this.exitPit.visible = false;
+    this.exitPitImg.visible = false;
     this.g.stage.putCenter(this.exitPit, 0, -50);
+    this.g.stage.putCenter(this.exitPitImg, -20, -65);
 };
 
 EnemyRoom.prototype.loadEnemies = function(num, lvl) {
@@ -97,11 +107,11 @@ EnemyRoom.prototype.loop = function() {
         this.canOpen = false;
     }
     this.g.contain(p, this.g.stage.localBounds);
-    if (this.exitPit.visible && this.g.hitTestRectangle(p, this.exitPit)) {
+    if (this.exitPitImg.visible && this.g.hitTestRectangle(p, this.exitPit)) {
         this.loadNext(dirs.BACK, this.fromDir);
     }
 
-    if (this.hasTreasure && this.treasure.sprite.visible && this.g.rectangleCollision(p, this.treasure.sprite)) {
+    if (this.hasTreasure && this.treasure.img.visible && this.g.rectangleCollision(p, this.treasure.sprite)) {
         this.canOpen = true;
     }
 
@@ -116,14 +126,16 @@ EnemyRoom.prototype.loop = function() {
         this.sword.swing();
     }
 
-    if (this.enemies.length === 0 && !this.exitPit.visible) {
+    if (this.enemies.length === 0 && !this.exitPitImg.visible) {
         if (this.g.hitTestRectangle(this.exitPit, p)) {
             this.exitPit.y = 50;
+            this.exitPitImg.y = 55;
         }
-        this.exitPit.visible = true;
+        this.exitPitImg.visible = true;
         if (this.hasTreasure) {
-            this.treasure.sprite.visible = true;
+            this.treasure.img.visible = true;
             this.g.stage.putCenter(this.treasure.sprite, 0, this.g.canvas.height / 4);
+            this.g.stage.putCenter(this.treasure.img, -13, this.g.canvas.height / 4 - 10);
         }
     } else {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
@@ -136,10 +148,11 @@ EnemyRoom.prototype.loop = function() {
             }
             
             if (!e.dead) {
-                if (e.sprite.visible) {
+                if (e.img.visible) {
                     this.g.followConstant(e.sprite, p, e.speed);
                     this.g.contain(e.sprite, this.g.stage.localBounds);
                     e.moveHealth();
+                    e.moveImage();
                     if (!this.player.invinc) {
                         let side = this.g.rectangleCollision(p, e.sprite, true);
                         if(side) {
@@ -149,6 +162,7 @@ EnemyRoom.prototype.loop = function() {
                 }
             } else {
                 this.g.remove(e.sprite);
+                this.g.remove(e.img);
                 this.g.remove(e.hSprite);
                 this.enemies.splice(i, 1);
             }

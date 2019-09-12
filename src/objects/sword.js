@@ -1,7 +1,7 @@
 let Sword = function(g) {
     this.degrees = 0;
     this.active = false;
-    this.sprite = g.rectangle(40,5,'gray');
+    this.sprite = g.rectangle(40,5,'white');
     this.sprite.visible = false;
     this.sprite.rotation = 0;
     this.deltaAngle = Math.PI / 16;

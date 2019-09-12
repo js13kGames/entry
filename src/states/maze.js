@@ -52,7 +52,7 @@ Maze.prototype.loadNext = function(dir, fromDir) {
     this.room.scene.visible = false;
     this.player.invinc = true;
     this.player.loseInvincibility();
-    let numEnemy = this.numWrongRooms / 2;
+    let numEnemy = this.numWrongRooms + 1;
     if (dir === directions.BACK) {
         this.statueRoom.placePlayer(fromDir);
         this.room = this.statueRoom;
@@ -125,9 +125,10 @@ Maze.prototype.endGame = function() {
 
 Maze.prototype.loop = function() {
     this.room.loop();
+    this.player.moveImage();
     let w = this.g.canvas.width / 2;
     this.g.stage.putTop(this.levelText, w - 50, 20);
-    this.g.stage.putTop(this.player.hSprite, -w + this.player.hSprite.halfWidth + 10, 40);
+    this.g.stage.putTop(this.player.hSprite, -w + this.player.hSprite.halfWidth + 10, 20);
 };
 
 export default Maze;

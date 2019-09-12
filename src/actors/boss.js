@@ -4,10 +4,14 @@ import {getRand, toRadians} from './../utils.js';
 let Boss = function(g, ps) {
     this.ps = ps;
     this.sprite = g.rectangle(64, 64, 'red');
+    this.sprite.alpha = 0.5;
     Actor.call(this, g, 20, 400, 10);
     this.sprite.visible = false;
+    this.img = g.text('🐉', '64px Times');
+    this.img.visible = false;
     this.hSprite.visible = false;
-    this.dmg = 1.3;
+    this.img.layer = 5;
+    this.dmg = 2;
     this.speed = 3;
     this.box = g.rectangle(128,128,'red');;
     this.box.visible = false;
@@ -23,18 +27,18 @@ Boss.prototype.takeDamage = function(amount, direction) {
     this.hp -= amount;
     if (this.hp <= 0) {
         this.dead = true;
-        this.hSprite.width = 0;
+        this.hSprite.visible = false;
         return;
     }
     this.invinc = true;
-    this.hSprite.width -= this.healthWidth * amount;
+    this.hSprite.content = Array(this.hp).fill('💗').join('');
     this.speed = 0;
-    this.sprite.alpha = 0.5;
+    this.img.alpha = 0.5;
     this.g.wait(this.invinceTime, () => this.delayWarp());
 };
 
 Boss.prototype.delayWarp = function() {
-    this.sprite.visible = false;
+    this.img.visible = false;
     this.hSprite.visible = false;
     this.g.wait(this.invinceTime, () => this.warp());
 };
@@ -55,7 +59,7 @@ Boss.prototype.warp = function() {
     this.sprite.y = point.y + 32;
     this.invinc = false;
     this.speed = 3;
-    this.sprite.alpha = 1;
+    this.img.alpha = 1;
     this.show();
 };
 

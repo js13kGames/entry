@@ -4,7 +4,7 @@ let Pit = function(g, dir) {
     let y = 0;
     let cw = g.canvas.width;
     let ch = g.canvas.height;
-    let size = 36;
+    let size = 50;
     if (dir === dirs.UP) {
         x = cw / 2 - size / 2;
         y = 0;
@@ -18,7 +18,10 @@ let Pit = function(g, dir) {
         x = cw - size;
         y = ch / 2 - size / 2;
     }
-    this.sprite = g.rectangle(size, size, 'black', 'black', 1, x, y);
+    this.sprite = g.rectangle(size - 10, size, 'black', 'black', 1, x, y);
+    this.sprite.visible = false;
+    this.img = g.text('🚪', `${size}px Times`, 'yellow', x - 1, y + 3);
+
     this.dir = dir;
 }
 

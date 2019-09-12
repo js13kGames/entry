@@ -8,7 +8,14 @@ let noteList = [];
 
 let Statue = function(g, mode) {
     Interactable.call(this, g);
-    this.sprite = g.rectangle(48, 64, 'gray');
+    this.sprite = g.rectangle(48, 60, 'gray');
+    this.sprite.visible = false;
+    if (mode === modes[2]) {
+        this.img = g.text('📻', '48px times');
+    } else {
+        this.img = g.text('📜', '48px times');
+    }
+    this.img.layer = 2;
     this.scene = g.group();
     this.sprites = [];
     this.modal = {};

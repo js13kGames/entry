@@ -1,23 +1,23 @@
-let Actor = function(g, hp, invinceTime, healthWidth) {
+let Actor = function(g, hp, invinceTime, height) {
     this.g = g;
     this.hp = hp;
     this.invinc = false;
     this.invinceTime = invinceTime || 1000;
     this.dead = false;
-    this.healthWidth = healthWidth;
-    this.hSprite = g.rectangle(this.healthWidth * this.hp, this.healthWidth, 'purple');
-    // this.hSprite.layer = 1000;
+    this.height = height;
+    this.hSprite = g.text(Array(hp).fill('💗').join(''), `${height}px times`);
     this.hSprite.visible = false;
-    this.hSprite.alpha = 0.5;
+    this.hSprite.alpha = 1;
+    // this.img = g.text('nothing');
 };
 
 Actor.prototype.show = function() {
-    this.sprite.visible = true;
+    this.img.visible = true;
     this.hSprite.visible = true;
 };
 
 Actor.prototype.hide = function() {
-    this.sprite.visible = false;
+    this.img.visible = false;
     this.hSprite.visible = false;
 };
 
@@ -28,7 +28,7 @@ Actor.prototype.stopMoving = function() {
 
 Actor.prototype.heal = function(amt) {
     this.hp += amt;
-    this.hSprite.width += this.healthWidth * amt;
+    this.hSprite.content = Array(this.hp).fill('💗').join('');
 };
 
 Actor.prototype.takeDamage = function(amount, dir) {
@@ -38,12 +38,12 @@ Actor.prototype.takeDamage = function(amount, dir) {
     this.hp -= amount;
     if (this.hp <= 0) {
         this.dead = true;
-        this.hSprite.width = 0;
+        this.hSprite.visibel = false;
         return;
     }
     this.invinc = true;
-    this.sprite.alpha = 0.5;
-    this.hSprite.width -= this.healthWidth * amount;
+    this.img.alpha = 0.5;
+    this.hSprite.content = Array(this.hp).fill('💗').join('');
     let bounce = 40;
     this.loseInvincibility(this.invinceTime);
     switch(dir) {
@@ -65,13 +65,18 @@ Actor.prototype.takeDamage = function(amount, dir) {
 Actor.prototype.loseInvincibility = function(invinceTime) {
     this.g.wait(invinceTime, () => {
         this.invinc = false;
-        this.sprite.alpha = 1;
+        this.img.alpha = 1;
     });
 };
 
 Actor.prototype.moveHealth = function() {
     this.hSprite.x = this.sprite.x;
-    this.hSprite.y = this.sprite.y - this.healthWidth;
+    this.hSprite.y = this.sprite.y - this.height - this.hSprite.height;
+};
+
+Actor.prototype.moveImage = function() {
+    this.img.x = this.sprite.x - 3;
+    this.img.y = this.sprite.y;
 };
 
 export default Actor;

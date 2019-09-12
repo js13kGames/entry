@@ -8,7 +8,10 @@ let Player = function(g) {
     this.cancelKey = g.keyboard(68);
     g.fourKeyController(this.sprite, 5, 38, 39, 40, 37);
     this.sword = new Sword(g);
-    Actor.call(this, g, 5, 1000, 30);
+    Actor.call(this, g, 5, 1000, 20);
+    this.img = g.text('🧝', '32px Times');
+    this.img.visible = false;
+    this.img.layer = 20;
 };
 
 Player.prototype = Object.create(Actor.prototype);

@@ -13,7 +13,7 @@ g.start();
 function setup() {
     let gc = g.canvas.style;
     gc.border = "1px black dashed";
-    g.backgroundColor = "white";
+    g.backgroundColor = "gray";
     gc.display = "block";
     gc.margin = "auto";
     let player = new Player(g);
