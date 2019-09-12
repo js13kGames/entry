@@ -1029,6 +1029,7 @@ function setupUI() {
 	addButton('West', () => move(-1, 0));
 	addButton('East', () => move(1, 0));
 	addButton('Catch', () => catchit());
+  addButton('Toggle Sound', () => toggleSound());
 }
 
 function move(dx, dy) {
@@ -1214,7 +1215,17 @@ function disable(disable) {
 	for (var i = 0; i < buttons.length; i++) {
 	    buttons[i].disabled = disable ? "disabled" : "";
 	}
+}
 
+let muted = false;
+function toggleSound() {
+  if (muted) {
+    themeAudio.play();
+    muted = false;
+  } else {
+    themeAudio.pause();
+    muted = true;
+  }
 }
 
 // Restore Game
