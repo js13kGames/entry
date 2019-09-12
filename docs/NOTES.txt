@@ -1,0 +1,228 @@
+THEME: Back
+Generate a single line of encounter nodes
+  - Generate a tree of encounter nodes if time and space allow
+
+3-4 enemies to encounter
+colour based modifiers?
+- snakes (easy)
+- badgers (medium)
+- bears (hard)
+- wolves (hard)
+
+1-2 bosses
+- wendigo
+- sasquatch
+
+camps (heal)
+
+loot (get items)
+
+food counter? heal small amount after each encounter as long as there is food?
+  each encounter uses 1 food
+  no food for x encounters starts to have consequences.
+  cannot backtrack without food
+items to modify encounters based on dice fed to them
+    weapon to do more dmg
+    shield to block incoming dmg
+    medkit to heal / remove injuries
+each encounter has intrinsic dice targets
+maybe have a hold mechanic? (reduces rng)
+    items that adds more hold slots
+injury mechanic (disables die)
+bonus dice mechanic(s)? (items? buffs? well rested? well fed?)
+post encounter events, left over dice from last turn can be used on these to get food or other stuff to happens?
+cleared encounters become a safe space?
+    safe spaces are also an encounter with a single dice roll, and events to plug into
+    can use items, forage for food, or get light rest once before moving on (uses 1 food?)
+
+Clickable
+Button
+Draggable
+Die
+Die targets
+  ranges
+  greater than
+  less than
+  countdown
+  exact
+  pairs?
+
+stats
+    food
+    hp
+    organisation (bag slots)
+    forthought (+1 dice hold)
+    "dice slots"
+    start with 6 standard dice
+    attributes / personalities to change dice?
+        i.e. risk/reward, 50:50 to get 1 or 6
+        i.e. even stevens, 2,4,6 only
+        i.e. at odds 1,3,5 only
+
+Classes
+=======
+Clickable
+Button : Clickable
+Draggable : Clickable
+Die : Draggable
+Action : Droppable
+ComparisonAction : Action (< <= == >= >)
+RangesAction : Action
+CountDownAction : Action
+
+
+ActionQueue?
+
+compress png
+covert to base64
+inline it
+
+move json do asset loader in code?
+
+generateMap();
+
+basic game setup
+    generate node decks
+        (short - 4 easy, 4 medium, 4 hard, 1 boss) + 4 diff (17 total + 5-6 camps + 5-6 loot)
+        (medium - easy, easy, medium, medium, hard, boss) + diff
+        (long - easy, easy, medium, medium, medium, hard, hard, boss) + diff
+        camps
+        snakes
+    shuffle decks
+    generate node line from decks
+    set food to x
+    set player hp to x
+    next encounter button
+    fight encounters
+        setup encounter
+            add attack action
+            add defend action
+            show hp
+            show enemy hp
+            roll dice
+            drag dice to actions
+            enemy attack phase ??
+    camp encounters
+        setup camp actions?
+        some default ones
+        item based ones later?
+    (loot encounters)
+        get random item
+
+generate root node
+ roll for 1 - 3 nodes in next row
+ connect to all
+ goto random node un mapped
+ roll for 1 - 3 nodes in next row
+ auto connect to row index +-1
+
+
+ Snake? zzfx(.1,.1,440,.7,.4,10,2,60,0); // ZzFX 46335
+
+
+ ====================================
+
+ create encounter factories
+  camp
+    rest
+    rest
+    search
+  enemy
+  boss
+  loot
+  empty
+    rest
+    search
+
+create actions
+  rest
+  search
+  attack
+  defend
+
+========================
+
+fight
+  loop thru items
+    add actions to encounter
+  roll dice
+  player turn
+  end turn
+    disabled all remaining actions
+    destroy all remaining dice
+  enemy turn
+    enemy action(s)
+  re-enabled player actions
+  goto: roll dice
+
+Empty
+  Rest x1
+  Search x1
+
+Camp
+  Camp x1
+
+Loot
+  Loot x3
+
+Boss => Loot => Empty
+All Others (except Empty) => Empty
+Empty => null
+
+
+Loot
+----
+Survival Handbook (camps/empty)
+  Use die to get 2 food
+Bandage (any)
+  Heal for 1 dice amount (max 3)
+First Aid Kit (Single use per encounter heal) (any)
+  Heal for 1 dice x 2 amount
+Knife (combat)
+  Attack for 1 dice (max 3) +1
+Sword (combat)
+  Attack for 2 dice
+Buckler (combat)
+  Defend for 1 dice (max 3) +1
+Iron Shield (combat)
+  Defend for 1/2 dice +3
+
+Risk/Reward (any)
+  Add 111666
+Middle of the Road (any)
+  Add 233445
+Standard Die (any)
+  Add 123456
+
+
+ADD LOOT
+  Add Tooltips for loot?
+  
+  quick attack (max 3, +1) - dagger (once per turn)
+  strong attack (2 dice) - sword (once per turn)
+
+  small block - buckler (once per turn)
+  large block - shield (once per turn)
+
+  small heal - bandage (once per turn)
+  large heal - first aid kit (once per encounter)
+
+  normal dice
+  risk reward dice
+  middle of the road dice
+
+  +5 hp
+
+ADD GAMEOVER SEQUENCE
+  think of score values for each enemy type
+
+camps
+  Eat - Use 2 food + dice to increase HP by dice value / 2, rounded up
+  Sleep - Heal for dice value + 10%
+  Harvest - Get dice value of food
+
+Loot
+  Loot - any 1 dice, Take the Loot
+  Train - any 2 dice, get a new normal Dice (123456)
+  Take a Risk - any 2 dice, get a risk reward dice (111666)
+  Meditate - any 2 dice, get a middle of the road (233445)

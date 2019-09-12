@@ -1,0 +1,2 @@
+// ZzFXmicro - Zuper Zmall Zound Zynth - MIT License - Copyright 2019 Frank Force
+declare function zzfx(volume: number, randomness: number, frequency: number, length: number, attack: number, slide: number, noise: number, modulation: number, phase: number): void;

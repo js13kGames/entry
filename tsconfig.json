@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "plugins": [
+      { 
+        "name": "typescript-tslint-plugin",
+        "configFile": "tslint.json",
+      }
+    ],
+    "moduleResolution": "node",
+    "module": "none",
+    "outFile": "game.js"
+  },
+  "files": ["./src/ts/game.ts"],
+  "exclude": ["node_modules/**/*"]
+}

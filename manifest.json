@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Super Backpacking Adventure",
+  "description": "Dust off those dice, and get ready to roll through a SUPER backpacking adventure!\n\nThis is a dice rolling, roguelite, backpacking rpg!\n\nThis game is heavily inspire by games like Elder Sign, Slay the Spire, and most recently Dicey Dungeons.\n\nFight your way through the dangerous woods, forage for food, collect items, and follow your compass to adventure!",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "docs/400px.png",
+    "image_thumbnail": "docs/160px.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "David Brad",
+    "website": "https://github.com/dbrad",
+    "twitter": "david_brad"
   }
 }

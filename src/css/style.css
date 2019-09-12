@@ -1,0 +1,45 @@
+body,
+html {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #1f2f33;
+}
+
+#stage {
+  padding: 0;
+  margin: 0;
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-select: none;
+  display: inline-block;
+  border: 1px solid white;
+}
+
+canvas {
+  background-color: rgb(13, 13, 13);
+  /*border: 1px solid #bbb;*/
+  border-radius: 1px;
+}
+
+canvas,
+img {
+  padding: 0;
+  margin: 0;
+  image-rendering: optimizeSpeed;
+  /* Older versions of FF          */
+  image-rendering: -moz-crisp-edges;
+  /* FF 6.0+                       */
+  image-rendering: -webkit-optimize-contrast;
+  /* Safari                        */
+  image-rendering: -o-crisp-edges;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  /* Awesome future-browsers       */
+  -ms-interpolation-mode: nearest-neighbor;
+  /* IE                            */
+}
