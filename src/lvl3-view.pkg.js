@@ -87,14 +87,14 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
 
   function showHealth(kong, trex) {
     // the first (actually only) child will be the span that shows progress
-    kongSpan.style.width = `${kong.initialHealth - (kong.initialHealth - kong.health)}%`;
+    kongSpan.style.width = kong.health + '%';
     if (kong.health < 60) {
       kongSpan.classList.add('below-60');
     }
     if (kong.health < 30) {
       kongSpan.classList.add('below-30');
     }
-    trexSpan.style.width = `${trex.initialHealth - (trex.initialHealth - trex.health)}%`;
+    trexSpan.style.width = trex.health + '%';
     if (trex.health < 60) {
       trexSpan.classList.add('below-60');
     }
