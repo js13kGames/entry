@@ -302,18 +302,32 @@ for (let i = 0; i < 151; i++) {
 	defs.push(randomAnatomy());
 }
 
-
 // Worlds model
 
-const locs = {};
+const locColors = ['Red', 'Blue', 'Yellow', 'Green', 'Cyan', 'Magenta', 'Saffron', 'Obsidian', 'Viridian'];
+const locTypes = ['Pond', 'Forest', 'Lake', 'Town', 'Cave', 'City', 'Shrine', 'Temple', 'Tower', 'Lagoon', 'Mountain'];
+let roadCount = 1;
+function locName() {
+	switch (rands.int(2)) {
+		case 0: return rands.of(locColors) + ' ' + rands.of(locTypes);
+		case 1: return rands.of(locTypes) + ' of ' + randomName();
+		case 2: return 'Road ' + roadCount++;
+	}
+	return rands.of(locTypes)
+}
+
+const locs = [];
+for (let x = 0; x < 10; x++) {
+	locs[x] = []
+	for (let y = 0; y < 10; y++) {
+		locs[x][y] = { name: locName(), m: [] };
+	}
+}
 
 function scatterDef(def) {
 	const x = rands.range(0, 9);
 	const y = rands.range(0, 9);
-	if (!locs[x+'.'+y]) {
-		locs[x+'.'+y] = [];
-	}
-	locs[x+'.'+y].push(def);
+	locs[x][y].m.push(def);
 }
 
 defs.forEach(def => scatterDef(def));
@@ -434,7 +448,7 @@ function showMonster(anatomy, x, y, container, scale) {
 }
 
 function update () {
-	var status = 'X ' + model.x + ' Y ' + model.y + 
+	var status = locs[model.x][model.y].name + 
 	 ' Movement Points ' + model.p + ' Catchers ' + model.c;
 	document.getElementById("location").innerHTML = status;
 	document.getElementById("container").innerHTML = '';
@@ -511,10 +525,7 @@ function land() {
 }
 
 function getMonsterAtLocation() {
-	const list = locs[model.x+'.'+ model.y];
-	if (!list)
-		return;
-	return rand.of(list);
+	return rand.of(locs[model.x][model.y].m);
 }
 
 
