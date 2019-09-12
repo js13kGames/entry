@@ -173,6 +173,8 @@ function minify() {
     code = code.replace(/\.rotation/g, '.rot');
     code = code.replace(/\.padding/g, '.pad');
     code = code.replace(/color/g, 'col');
+    code = code.replace(/angle/g, 'angel');
+    code = code.replace(/accept/g, 'accpt');
 
     const result = terser.minify(code, options);
 

@@ -17,7 +17,6 @@ const game = {
     // meteors: [],
     // pickups: [],
     players: [],
-    sprites: [],
     // sprites: [],
     // The following get added by setSizing()
     // scale: 1.0,

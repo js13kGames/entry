@@ -33,14 +33,14 @@ export function pollGamepads(game) {
             if (button.pressed) {
                 if (mappedKey) {
                     gamepad.pressedButtons[mappedKey] = true;
-                } else {
-                    gamepad.pressedButtons[i] = true;
+                // } else {
+                //     gamepad.pressedButtons[i] = true;
                 }
            } else {
                if (mappedKey) {
                    gamepad.pressedButtons[mappedKey] = false;
-               } else {
-                   gamepad.pressedButtons[i] = false;
+               // } else {
+               //     gamepad.pressedButtons[i] = false;
                }
            }
         });
@@ -48,8 +48,8 @@ export function pollGamepads(game) {
             let mappedAxis = getKeyByValue(gamepad.axesMap, i);
             if (mappedAxis) {
                 gamepad.axes[mappedAxis] = axis;
-            } else {
-                gamepad.axes[i] = axis;
+            // } else {
+            //     gamepad.axes[i] = axis;
             }
         });
     });

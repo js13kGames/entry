@@ -32,6 +32,19 @@ function setupGamepad(e) {
             'x': 4,
             'y': 5
         };
+    } else {
+        window.gamepads[pad.index].buttonMap = {
+            'a': 1,
+            'b': 0,
+            'x': 3,
+            'y': 2,
+            'l': 4,
+            'r': 5
+        };
+        window.gamepads[pad.index].axesMap = {
+            'x': 4,
+            'y': 5
+        };
     }
 
     // Code to handle new players being added with new gamepads.
