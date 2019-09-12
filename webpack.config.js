@@ -6,7 +6,7 @@ var ClosureCompilerPlugin = require('webpack-closure-compiler');
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 var path = require('path');
 
-var assetsPath = path.resolve(__dirname, 'assets');
+// var assetsPath = path.resolve(__dirname, 'assets');
 var npmPath = path.resolve(__dirname, 'node_modules');
 var appFolder = './src';
 var buildPath = path.resolve(__dirname, 'build');
@@ -71,14 +71,14 @@ if (environment === 'development') {
   }
 }
 
-config.plugins.push(
-  new CopyWebpackPlugin([
-      {
-          from: assetsPath,
-          to: buildPath + '/assets',
-      }
-  ])
-)
+// config.plugins.push(
+//   new CopyWebpackPlugin([
+//       {
+//           from: assetsPath,
+//           to: buildPath + '/assets',
+//       }
+//   ])
+// )
 
 module.exports = [
   {
