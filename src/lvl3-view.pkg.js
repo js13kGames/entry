@@ -108,8 +108,12 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     }
   }
 
-  function render (mapWidth, kong, trex) {
+  function render (mapWidth, kong, trex, winner) {
     return new Promise((resolve) => {
+      if (winner) {
+        renderWinner(winner);
+        return;
+      }
       const cellWidth = 100;
       canvas.height = body.clientHeight;
       canvas.width = cellWidth * mapWidth;
@@ -122,11 +126,32 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     })
   }
 
+  function renderWinner (winner) {
+    const winWindow = document.createElement('div');
+    const winHead = document.createElement('h2');
+    const winText = document.createElement('p');
+    const img = winner === 'kong' ? kongRight : trexRight;
+    winWindow.className = 'win';
+    winHead.innerHTML = winner === 'kong' ? 'Congratulations!' : 'Sorry...';
+    winner = winner[0].toUpperCase() + winner.slice(1);
+    winText.innerHTML = `${winner} wins`
+    winWindow.appendChild(winHead);
+    winWindow.appendChild(winText);
+    document.getElementById('root').appendChild(winWindow);
+    
+    ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
+    ctx.drawImage(img, body.clientWidth / 2.5, body.clientHeight / 2.5, 300, 300);
+  }
+
   return {
     cleanUp: () => {
       cleanupListeners.forEach(remove => remove());
       root.removeChild(canvas);
       root.removeChild(progressWrapper);
+      const wins = root.getElementsByClassName('win');
+      for (let i = 0; i < wins.length; i++) {
+        root.removeChild(wins[i]);
+      }
     },
     render
   }

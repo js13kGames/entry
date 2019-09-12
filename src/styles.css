@@ -78,3 +78,9 @@ canvas {
 .below-30 {
   background: red;
 }
+
+.win {
+  font-size: 32px;
+  left: 1rem;
+  position: absolute;
+}

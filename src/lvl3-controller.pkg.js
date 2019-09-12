@@ -5,6 +5,7 @@ const initLevel3 = async (punchSound, blockSound, nextLevel) => {
     trex: 'kong',
     kong: 'trex'
   };
+  let winner;
 
   const currentWait = {};
   const wait = (name, time, onComplete) => {
@@ -23,7 +24,8 @@ const initLevel3 = async (punchSound, blockSound, nextLevel) => {
     render(
       MAP_WIDTH,
       state.kong,
-      state.trex
+      state.trex,
+      winner
     ).then(() => isUpdated() && loop());
   };
 
@@ -278,10 +280,12 @@ const initLevel3 = async (punchSound, blockSound, nextLevel) => {
     trexAction();
   };
 
-  function endGame (winner) {
-    window.alert(`${winner} won!`);
-    cleanUp();
-    nextLevel();
+  function endGame (char) {
+    winner = char;
+    wait('', 5000, () => {
+      cleanUp();
+      nextLevel();
+    });
   }
 
   const images = await loadSVGs([
@@ -298,7 +302,7 @@ const initLevel3 = async (punchSound, blockSound, nextLevel) => {
   images.push(window.kongRight); // comes from level 1
   const {
     cleanUp,
-    render,
+    render
   } = initLevel3View(keydownHandler, keyupHandler, clickHandler, images);
   setState({
     kong: initialKongState,
