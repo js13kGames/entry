@@ -606,7 +606,7 @@ var rands = {
     return this.int(max - min) + min;
   },
   of(array) {
-  	return array[this.int(array.length - 1)];
+  	return array[this.int(array.length)];
   }
 };
 
@@ -615,7 +615,7 @@ var rand = {
     return Math.round(Math.random() * max);
   },
   of(array) {
-  	return array[this.int(array.length - 1)];
+  	return array[this.int(array.length)];
   }
 };
 
@@ -831,15 +831,27 @@ var shapes = {
 	]
 };
 
-const skeleton1 = {
-	arm: [20, 0],
-	body: [0, 0],
-	feet: [20, 20],
-	ear: [25, -60],
-	head: [0, -40],
-	eye: [15, -40],
-	mouth: [0, -20]
-}
+const skeletons = [  
+  {
+  	arm: [20, 0],
+  	body: [0, 0],
+  	feet: [20, 20],
+  	ear: [25, -60],
+  	head: [0, -40],
+  	eye: [15, -40],
+  	mouth: [0, -20]
+  },
+  {
+    arm: [20, 0],
+    feet: [20, 20],
+    ear: [15, -40],
+    head: [0, 0],
+    eye: [15, 0],
+    mouth: [0, 15]
+  }
+];
+
+
 
 const bodyColors = [
 	'bdacc5', '524a4a', 'a44a8b', '5ab4cd', 'de5239', 'eede10', 'f6deb4', '41b4ee', '7383d5', '62d5b4', 'ffeecd' 
@@ -896,7 +908,7 @@ function randomAnatomy() {
 	return {
 		id: anatomySeq++,
 		name: randomName(),
-		type: skeleton1,
+		type: rands.of(skeletons),
 		bps: {
 			arm: randi(shapes.arm),
 			body: randi(shapes.body),
@@ -1087,7 +1099,7 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 function showMonster(anatomy, x, y, container, scale) {
 	Object.keys(anatomy.type).forEach(bodyPart => {
 		const xvar = anatomy.type[bodyPart][0];
-		const yvar = anatomy.type[bodyPart][1];
+		const yvar = anatomy.type[bodyPart][1]; 
 		createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x - xvar, y + yvar, false, container);
 		if (xvar) {
 			createElement(bodyPart, shapes[bodyPart][anatomy.bps[bodyPart]], anatomy.colors, x + xvar, y + yvar, true, container);
