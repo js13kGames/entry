@@ -935,6 +935,7 @@ function randomAnatomy() {
 		id: anatomySeq++,
 		name: randomName(),
 		type: rands.of(skeletons),
+    rarity: rarity(),
 		bps: {
 			arm: randi(shapes.arm),
 			body: randi(shapes.body),
@@ -950,6 +951,18 @@ function randomAnatomy() {
 		}
 
 	}
+}
+
+function rarity() {
+  if (anatomySeq > 145) {
+    return 'unique';
+  } else if (anatomySeq > 100) {
+    return 'rare';
+  } else if (anatomySeq > 40) {
+    return 'common';
+  } else {
+    return 'vermin';
+  }
 }
 
 function randi(array) {
@@ -989,12 +1002,15 @@ function scatterDef(def) {
 	locs[x][y].m.push(def);
 }
 
-defs.forEach(def => scatterDef(def));
-
-for (let i = 0; i < 100; i++) {
-	scatterDef(defs[rands.range(0, defs.length - 1)]);
+function scatter(rarity, times) {
+  for (let i = 0; i < times; i++) {
+    defs.filter(def => def.rarity == rarity).forEach(def => scatterDef(def));
+  }
 }
-
+defs.forEach(def => scatterDef(def));
+scatter('rare', 2);
+scatter('common', 4);
+scatter('vermin', 10);
 
 // UI setup
 
