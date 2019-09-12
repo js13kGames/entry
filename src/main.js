@@ -29,12 +29,6 @@ var rand = {
   int: function(max) {
     return Math.round(Math.random() * max);
   },
-  range: function(min, max) {
-    if (min === max) {
-      return min;
-    }
-    return this.int(max - min) + min;
-  },
   of(array) {
   	return array[this.int(array.length - 1)];
   }
@@ -294,7 +288,7 @@ function randomAnatomy() {
 }
 
 function randi(array) {
-	return rands.int(array.length - 1);
+	return rands.int(array.length);
 }
 
 const defs = [];
@@ -308,7 +302,7 @@ const locColors = ['Red', 'Blue', 'Yellow', 'Green', 'Cyan', 'Magenta', 'Saffron
 const locTypes = ['Pond', 'Forest', 'Lake', 'Town', 'Cave', 'City', 'Shrine', 'Temple', 'Tower', 'Lagoon', 'Mountain'];
 let roadCount = 1;
 function locName() {
-	switch (rands.int(2)) {
+	switch (rands.int(3)) {
 		case 0: return rands.of(locColors) + ' ' + rands.of(locTypes);
 		case 1: return rands.of(locTypes) + ' of ' + randomName();
 		case 2: return 'Road ' + roadCount++;
