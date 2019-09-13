@@ -2,7 +2,7 @@
   "name": "Byte Rider",
   "description": "Byte Rider is a two player card game, you against an AI.",
   "images" : {
-    "image_large": "large.png",
+    "image_large": "screen.png",
     "image_thumbnail": "thumbnail.png"
   },
   "categories": ["Desktop", "Mobile"],
