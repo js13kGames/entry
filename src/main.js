@@ -1176,7 +1176,7 @@ function catchit() {
     update();
     return;
   }
-  disable(true);
+  document.getElementById("buttons").style.display = 'none';
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
 	message('You catch the ' + currentMonster.name + '!');
