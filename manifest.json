@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "SNAKE IT BACK",
+  "description": "The died snakes become new obstacles. Earn your immortality.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "img/image-big.jpg",
+    "image_thumbnail": "img/image-small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "WebXR"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Ovilia",
+    "website": "http://zhangwenli.com",
+    "twitter": "OviliaZhang"
   }
 }
