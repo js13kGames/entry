@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Ape Naps",
+  "description": "in this game you play as mama ape carrying her three baby apes back home on her back and to some Bach, so she can finally nap. Controls: left=a, right=d, space=jump, w=wiggle",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "apenaps_large.png",
+    "image_thumbnail": "apenaps_small.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Samuel Paré-Chouinard",
+    "website": "",
+    "twitter": ""
   }
 }
