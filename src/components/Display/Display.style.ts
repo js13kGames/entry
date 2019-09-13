@@ -83,6 +83,10 @@ export const displayBodyTitleElementEmoji= css({
   borderRadius: "20px",
 });
 
+export const displayBodyTitleElementHide = css({
+  opacity: "0",
+});
+
 export const displayBodyTitleElementCounter= css({
   backgroundColor: Token.displayBgDarkColor,
   color: Token.displayFgLightColor,
@@ -112,6 +116,7 @@ export const displayBodyContentMain = css({
 
 export const fontSizeNormal = css({
   fontSize: "125px",
+  flexDirection: "row-reverse"
 });
 
 export const fontSizeMini = css({

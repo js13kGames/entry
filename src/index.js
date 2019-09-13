@@ -411,6 +411,7 @@
       ChoiceType[ChoiceType["MULTIPLY"] = 3] = "MULTIPLY";
       ChoiceType[ChoiceType["DIVISION"] = 4] = "DIVISION";
       ChoiceType[ChoiceType["DELETE"] = 5] = "DELETE";
+      ChoiceType[ChoiceType["EMPTY"] = 6] = "EMPTY";
   })(ChoiceType || (ChoiceType = {}));
   var ScreenType;
   (function (ScreenType) {
@@ -424,9 +425,9 @@
       {
           screenType: ScreenType.GUIDE,
           messages: [
-              "Are you ready ?",
-              "It is just a simple math",
-              "You only need to think from the back to the start"
+              "are you ready ?",
+              "tt is just a simple math",
+              "you only need to think from the back to the start"
           ]
       },
       {
@@ -450,7 +451,7 @@
       },
       {
           screenType: ScreenType.GUIDE,
-          messages: ["Seems easy huh ?", "Let's move to another level !\n Can you ?"]
+          messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
       },
       {
           level: 2,
@@ -545,7 +546,7 @@
       },
       {
           screenType: ScreenType.GUIDE,
-          messages: ["You completed all the callenge !"]
+          messages: ["you've completed all the callenge !"]
       }
   ];
 
@@ -584,6 +585,25 @@
                   displayMsg: currScreen.messages[0]
               };
           }
+      }; },
+      loadScreen: function (screenNum) { return function (state) {
+          var nextScreenPointer = screenNum;
+          var nextScreen = state.screens[nextScreenPointer];
+          var nextScreenType = nextScreen.screenType;
+          if (nextScreenType === ScreenType.GUIDE) {
+              return {
+                  screenPointer: nextScreenPointer,
+                  guideMsgPointer: 0,
+                  displayMsg: nextScreen.messages[0],
+                  gameState: GameState.IDDLE
+              };
+          }
+          return {
+              screenPointer: nextScreenPointer,
+              gameState: GameState.PLAYING,
+              displayMsg: nextScreen.initialValue,
+              remainingMove: nextScreen.steps
+          };
       }; },
       confirmOperator: function () { return function (state, action) {
           var nextGuideMsgPointer = state.guideMsgPointer + 1;
@@ -954,6 +974,9 @@
       fontSize: "20px",
       borderRadius: "20px"
   });
+  var displayBodyTitleElementHide = css({
+      opacity: "0"
+  });
   var displayBodyTitleElementCounter = css({
       backgroundColor: displayBgDarkColor,
       color: displayFgLightColor
@@ -978,14 +1001,15 @@
       top: "0px"
   });
   var fontSizeNormal = css({
-      fontSize: "125px"
+      fontSize: "125px",
+      flexDirection: "row-reverse"
   });
   var fontSizeMini = css({
       fontSize: "40px"
   });
 
   var Display = function () { return function (state, action) {
-      var _a;
+      var _a, _b, _c;
       var screens = state.screens, screenPointer = state.screenPointer, remainingMove = state.remainingMove, displayMsg = state.displayMsg, gameState = state.gameState;
       var currScreen = screens[screenPointer];
       var isMainGameScreen$1 = isMainGameScreen(currScreen);
@@ -1002,6 +1026,10 @@
           }
       };
       var level = currScreen.level;
+      var move = isMainGameScreen$1 ? "MOVE " + remainingMove : "";
+      var goal = isMainGameScreen$1
+          ? "GOAL : " + currScreen.goal
+          : "";
       // return (
       //   <div>
       //     <h1>Level: {isMainGameScreen && (currScreen as MainGameScreen).level}</h1>
@@ -1026,16 +1054,50 @@
               h("div", { "class": displayBody },
                   h("div", { "class": displayBodyTitle },
                       h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementEmoji) }, getEmoji(gameState)),
-                      h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementCounter) }, "MOVES: 4"),
-                      h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementCounter) }, "GOALS: 200")),
+                      h("div", { "class": classnames((_a = {},
+                              _a[displayBodyTitleElement] = true,
+                              _a[displayBodyTitleElementCounter] = true,
+                              _a[displayBodyTitleElementHide] = !isMainGameScreen$1,
+                              _a)) }, move),
+                      h("div", { "class": classnames((_b = {},
+                              _b[displayBodyTitleElement] = true,
+                              _b[displayBodyTitleElementCounter] = true,
+                              _b[displayBodyTitleElementHide] = !isMainGameScreen$1,
+                              _b)) }, goal)),
                   h("div", { "class": displayBodyContent },
                       h("div", { "class": displayBodyContentBackground }, "888888"),
-                      h("div", { "class": classnames((_a = {},
-                              _a[displayBodyContentMain] = true,
-                              _a[fontSizeNormal] = isMainGameScreen$1,
-                              _a[fontSizeMini] = !isMainGameScreen$1,
-                              _a)) }, "the quick brown fox jumps over the lazy dog. 01234567890"))))));
+                      h("div", { "class": classnames((_c = {},
+                              _c[displayBodyContentMain] = true,
+                              _c[fontSizeNormal] = isMainGameScreen$1,
+                              _c[fontSizeMini] = !isMainGameScreen$1,
+                              _c)) }, displayMsg))))));
   }; };
+
+  /*! *****************************************************************************
+  Copyright (c) Microsoft Corporation. All rights reserved.
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of the
+  License at http://www.apache.org/licenses/LICENSE-2.0
+
+  THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+  WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+  MERCHANTABLITY OR NON-INFRINGEMENT.
+
+  See the Apache Version 2.0 License for specific language governing permissions
+  and limitations under the License.
+  ***************************************************************************** */
+
+  var __assign = function() {
+      __assign = Object.assign || function __assign(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+              s = arguments[i];
+              for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+          }
+          return t;
+      };
+      return __assign.apply(this, arguments);
+  };
 
   var _a;
   var keys = css({
@@ -1123,11 +1185,132 @@
       boxShadow: "0px 10px 0px 0px #368323"
   });
 
+  var getActionToInvoke = function (type) {
+      switch (type) {
+          case ChoiceType.ADDITION:
+              return "addOperator";
+          case ChoiceType.MULTIPLY:
+              return "multiplyOperator";
+          case ChoiceType.DIVISION:
+              return "divisionOperator";
+          case ChoiceType.DELETE:
+              return "deleteOperator";
+          default:
+              // cuma biar lolos typechecking
+              return "addOperator";
+      }
+  };
+
+  var button$1 = css({
+      position: "relative",
+      top: "0px",
+      marginTop: "0px",
+      marginBottom: "10px",
+      height: "100%",
+      border: "0px",
+      cursor: "pointer",
+      width: "100%",
+      color: "#fff",
+      fontFamily: "sans-serif",
+      fontSize: "40px",
+      borderRadius: "8px",
+      opacity: "0.9",
+      '&:active': {
+          boxShadow: "none",
+          top: "0px",
+          marginBottom: "0px"
+      },
+      '&:hover': {
+          opacity: 1
+      }
+  });
+  /**
+   * Button Variants
+   */
+  var buttonPlus$1 = css({
+      backgroundColor: "#45494c",
+      boxShadow: "0px 10px 0px 0px #1a1a1c"
+  });
+  var buttonClear$1 = css({
+      backgroundColor: "#c62e2d",
+      boxShadow: "0px 10px 0px 0px #962223"
+  });
+  var buttonAppend$1 = css({
+      backgroundColor: "#8a7bd8",
+      boxShadow: "0px 10px 0px 0px #463a86"
+  });
+  var buttonShift$1 = css({
+      backgroundColor: "#ec6c15",
+      boxShadow: "0px 10px 0px 0px #b54900"
+  });
+  var buttonConvert$1 = css({
+      fontSize: "24px",
+      backgroundColor: "#ec6c15",
+      boxShadow: "0px 10px 0px 0px #b54900"
+  });
+  var buttonHelp$1 = css({
+      backgroundColor: "#24a19d",
+      boxShadow: "0px 10px 0px 0px #1a7671"
+  });
+  var buttonOk$1 = css({
+      backgroundColor: "#48ad2f",
+      boxShadow: "0px 10px 0px 0px #368323"
+  });
+
+  var Button = function (_a) {
+      var type = _a.type, params = _a.params, label = _a.label;
+      return function (state, action) {
+          var _a;
+          var buttonStyle = classnames((_a = {},
+              _a[button$1] = true,
+              _a[buttonPlus$1] = [
+                  ChoiceType.ADDITION,
+                  ChoiceType.MULTIPLY,
+                  ChoiceType.DIVISION
+              ].includes(type),
+              _a[buttonClear$1] = type === ChoiceType.CLR,
+              _a[buttonOk$1] = type === ChoiceType.CONFIRM,
+              _a[buttonShift$1] = [ChoiceType.DELETE].includes(type),
+              _a));
+          var fnName = getActionToInvoke(type);
+          return (h("button", { "class": buttonStyle, onclick: function () {
+                  console.log("test clicked");
+                  action[fnName].apply(action, params);
+              } }, label));
+      };
+  };
+
   var Numpad = function () { return function (state, action) {
       var screens = state.screens, screenPointer = state.screenPointer, gameState = state.gameState;
       var currScreen = screens[screenPointer];
       var _isMainGameScreen = isMainGameScreen(currScreen);
       var isCompleted = screenPointer === screens.length - 1;
+      // fill remainig array buttons with empty state
+      var choices = currScreen.choices || [];
+      var buttons = choices.slice();
+      for (var i = choices.length; i < 8; i++) {
+          buttons.push({
+              type: ChoiceType.EMPTY,
+              params: [],
+              label: ""
+          });
+      }
+      buttons.push({
+          type: ChoiceType.CONFIRM,
+          params: [],
+          label: "Ok"
+      });
+      // convert button to 2d array
+      var NUM_OF_ROW = 3, NUM_OF_COL = 3;
+      var buttonGrid = [];
+      for (var i = 0; i < NUM_OF_ROW; i++) {
+          var row$1 = [];
+          for (var j = 0; j < NUM_OF_COL; j++) {
+              var button = buttons[NUM_OF_ROW * i + j];
+              row$1.push(button);
+          }
+          buttonGrid.push(row$1);
+      }
       // return (
       //   <div>
       //     {_isMainGameScreen &&
@@ -1158,32 +1341,14 @@
       //     )}
       //   </div>
       // );
-      return (h("div", { "class": keys },
-          h("div", { "class": row },
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonPlus), onClick: 'console.log("test")' }, "+1")),
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonClear) }, "Clr")),
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonAppend) }, "1"))),
-          h("div", { "class": row },
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonConvert) }, "23 => 45")),
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonShift) }, "< <")),
-              h("div", { "class": column })),
-          h("div", { "class": row },
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonHelp) }, "?")),
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button, buttonOk) }, "Ok")),
-              h("div", { "class": column },
-                  h("button", { "class": classnames(button) }, "+1")))));
+      // console.log("buttongrid");
+      // console.log(buttonGrid);
+      return (h("div", { "class": keys }, buttonGrid.map(function (row$1) { return (h("div", { "class": row }, row$1.map(function (button) { return (h("div", { "class": column }, button.type !== ChoiceType.EMPTY && h(Button, __assign({}, button)))); }))); })));
   }; };
 
   var container = css({
       backgroundColor: pageBackgroundColor,
-      height: "100vh",
+      height: "100%",
       display: "flex",
       justifyContent: "center",
       alignItems: "center"
@@ -1199,9 +1364,8 @@
 
   // import * as style from './Container.linaria.style';
   var Container = (function (state, actions) {
-      return (h("div", { "class": container, oncreate: actions.initScreen },
+      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(1); } },
           h("div", { "class": wrapper },
-              h("h1", null, "test "),
               h(Display, null),
               h(Numpad, null))));
   });

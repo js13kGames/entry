@@ -4,7 +4,8 @@ export enum ChoiceType {
   CONFIRM,
   MULTIPLY,
   DIVISION,
-  DELETE
+  DELETE,
+  EMPTY,
 }
 
 export interface Choice {
@@ -46,9 +47,9 @@ export const screens: Array<Screen> = [
   {
     screenType: ScreenType.GUIDE,
     messages: [
-      "Are you ready ?",
-      "It is just a simple math",
-      "You only need to think from the back to the start"
+      "are you ready ?",
+      "tt is just a simple math",
+      "you only need to think from the back to the start"
     ]
   },
   {
@@ -72,7 +73,7 @@ export const screens: Array<Screen> = [
   },
   {
     screenType: ScreenType.GUIDE,
-    messages: ["Seems easy huh ?", "Let's move to another level !\n Can you ?"]
+    messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
   },
   {
     level: 2,
@@ -167,6 +168,6 @@ export const screens: Array<Screen> = [
   },
   {
     screenType: ScreenType.GUIDE,
-    messages: ["You completed all the callenge !"]
+    messages: ["you've completed all the callenge !"]
   }
 ];

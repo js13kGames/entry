@@ -4,7 +4,6 @@ import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 
 const isProduction = process.env.NODE_ENV === "production";
-console.log(process.env.NODE_ENV)
 
 export default {
   input: "src/index.tsx",

@@ -8,14 +8,13 @@ import Display from "../Display/Display";
 import Numpad from "../Numpad/Numpad";
 
 // Styling
-import * as style from './Container.style';
+import * as style from "./Container.style";
 // import * as style from './Container.linaria.style';
 
 export default (state: State, actions: Action) => {
   return (
-    <div class={style.container} oncreate={actions.initScreen}>
+    <div class={style.container} oncreate={() => actions.loadScreen(1)}>
       <div class={style.wrapper}>
-        <h1>test </h1>
         <Display />
         <Numpad />
       </div>

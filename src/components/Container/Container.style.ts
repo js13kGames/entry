@@ -3,7 +3,7 @@ import * as Token from '../../utils/token';
 
 export const container = css({
   backgroundColor: Token.pageBackgroundColor,
-  height: "100vh",
+  height: "100%",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",

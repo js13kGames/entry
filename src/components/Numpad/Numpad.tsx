@@ -1,13 +1,19 @@
 import { h, Component } from "hyperapp";
-import classNames from 'classnames';
+import classNames from "classnames";
 import { State, GameState } from "../../states/state";
 import { Action } from "../../actions/actions";
-import { isMainGameScreen, MainGameScreen } from "../../states/screen";
+import {
+  isMainGameScreen,
+  MainGameScreen,
+  ChoiceType
+} from "../../states/screen";
 import { getActionToInvoke } from "../../utils/actionMapping";
 
 import * as style from "./Numpad.style";
 
 export type NumpadProps = {};
+
+import Button from "../Button/Button";
 
 const Numpad: Component<NumpadProps, State, Action> = () => (
   state: State,
@@ -17,6 +23,37 @@ const Numpad: Component<NumpadProps, State, Action> = () => (
   const currScreen = screens[screenPointer];
   const _isMainGameScreen = isMainGameScreen(currScreen);
   const isCompleted = screenPointer === screens.length - 1;
+
+  // fill remainig array buttons with empty state
+  const choices = (currScreen as MainGameScreen).choices || [];
+  const buttons = [...choices];
+  for (let i = choices.length; i < 8; i++) {
+    buttons.push({
+      type: ChoiceType.EMPTY,
+      params: [],
+      label: ""
+    });
+  }
+  buttons.push({
+    type: ChoiceType.CONFIRM,
+    params: [],
+    label: "Ok"
+  });
+
+  // convert button to 2d array
+  const NUM_OF_ROW = 3,
+    NUM_OF_COL = 3;
+  const buttonGrid = [];
+
+  for (let i = 0; i < NUM_OF_ROW; i++) {
+    const row = [];
+    for (let j = 0; j < NUM_OF_COL; j++) {
+      const button = buttons[NUM_OF_ROW * i + j];
+      row.push(button);
+    }
+    buttonGrid.push(row);
+  }
+
   // return (
   //   <div>
   //     {_isMainGameScreen &&
@@ -47,45 +84,19 @@ const Numpad: Component<NumpadProps, State, Action> = () => (
   //     )}
   //   </div>
   // );
-
+  // console.log("buttongrid");
+  // console.log(buttonGrid);
   return (
     <div class={style.keys}>
-      <div class={style.row}>
-        <div class={style.column}>
-          <button
-            class={classNames(style.button, style.buttonPlus)}
-            onClick='console.log("test")'
-          >
-            +1
-          </button>
+      {buttonGrid.map(row => (
+        <div class={style.row}>
+          {row.map(button => (
+            <div class={style.column}>
+              {button.type !== ChoiceType.EMPTY && <Button {...button} />}
+            </div>
+          ))}
         </div>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonClear)}>Clr</button>
-        </div>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonAppend)}>1</button>
-        </div>
-      </div>
-      <div class={style.row}>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonConvert)}>23 &#61;&gt; 45</button>
-        </div>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonShift)}>&lt; &lt;</button>
-        </div>
-        <div class={style.column}></div>
-      </div>
-      <div class={style.row}>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonHelp)}>?</button>
-        </div>
-        <div class={style.column}>
-          <button class={classNames(style.button, style.buttonOk)}>Ok</button>
-        </div>
-        <div class={style.column}>
-          <button class={classNames(style.button)}>+1</button>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

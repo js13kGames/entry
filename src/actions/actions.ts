@@ -13,6 +13,7 @@ export interface Action {
   addOperator: ActionType<any, State, Action>;
   loadNextScreen: ActionType<any, State, Action>;
   initScreen: ActionType<any, State, Action>;
+  loadScreen: GameAction;
   confirmOperator: GameAction;
   multiplyOperator: GameAction;
   divisionOperator: GameAction;
@@ -37,6 +38,27 @@ export const actions: ActionsType<State, Action> = {
         displayMsg: (currScreen as GuideScreen).messages[0]
       };
     }
+  },
+  loadScreen: (screenNum: number) => (state: State) => {
+    const nextScreenPointer = screenNum;
+    const nextScreen = state.screens[nextScreenPointer];
+    const nextScreenType = nextScreen.screenType;
+
+    if (nextScreenType === ScreenType.GUIDE) {
+      return {
+        screenPointer: nextScreenPointer,
+        guideMsgPointer: 0,
+        displayMsg: (nextScreen as GuideScreen).messages[0],
+        gameState: GameState.IDDLE
+      };
+    }
+
+    return {
+      screenPointer: nextScreenPointer,
+      gameState: GameState.PLAYING,
+      displayMsg: (nextScreen as MainGameScreen).initialValue,
+      remainingMove: (nextScreen as MainGameScreen).steps
+    };
   },
   confirmOperator: () => (state: State, action: Action) => {
     const nextGuideMsgPointer = state.guideMsgPointer + 1;

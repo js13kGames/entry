@@ -11,3 +11,7 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
   font-family: "digits";
   src: url("./digital-7-optimized.woff") format("woff");
 }
+
+html, body{
+  height:100%;
+}

@@ -41,6 +41,10 @@ const Display: Component<DisplayProps, State, Action> = () => (
   };
 
   const level = (currScreen as MainGameScreen).level;
+  const move = isMainGameScreen ? `MOVE ${remainingMove}` : "";
+  const goal = isMainGameScreen
+    ? `GOAL : ${(currScreen as MainGameScreen).goal}`
+    : "";
   // return (
   //   <div>
   //     <h1>Level: {isMainGameScreen && (currScreen as MainGameScreen).level}</h1>
@@ -57,9 +61,7 @@ const Display: Component<DisplayProps, State, Action> = () => (
     <div class={style.display}>
       <div class={style.displayWrapper}>
         <div class={style.displayHeader}>
-          <div class={style.displayLevel}>
-            Level : {level}
-          </div>
+          <div class={style.displayLevel}>Level : {level}</div>
           <div class={style.displaySolarPanel}>
             <div class={style.displaySolarPanelElement}></div>
             <div class={style.displaySolarPanelElement}></div>
@@ -77,20 +79,22 @@ const Display: Component<DisplayProps, State, Action> = () => (
               {getEmoji(gameState)}
             </div>
             <div
-              class={classNames(
-                style.displayBodyTitleElement,
-                style.displayBodyTitleElementCounter
-              )}
+              class={classNames({
+                [style.displayBodyTitleElement]: true,
+                [style.displayBodyTitleElementCounter]: true,
+                [style.displayBodyTitleElementHide]: !isMainGameScreen
+              })}
             >
-              MOVES: 4
+              {move}
             </div>
             <div
-              class={classNames(
-                style.displayBodyTitleElement,
-                style.displayBodyTitleElementCounter
-              )}
+              class={classNames({
+                [style.displayBodyTitleElement]: true,
+                [style.displayBodyTitleElementCounter]: true,
+                [style.displayBodyTitleElementHide]: !isMainGameScreen
+              })}
             >
-              GOALS: 200
+              {goal}
             </div>
           </div>
           <div class={style.displayBodyContent}>
@@ -102,7 +106,7 @@ const Display: Component<DisplayProps, State, Action> = () => (
                 [style.fontSizeMini]: !isMainGameScreen
               })}
             >
-              the quick brown fox jumps over the lazy dog. 01234567890
+              {displayMsg}
             </div>
           </div>
         </div>
