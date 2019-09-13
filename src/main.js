@@ -1162,13 +1162,22 @@ function catchit() {
 		return;
 	}
 	if (model.p < 5) {
-		message('Not enough energy!');
+		message('You need 5 AP to attempt capturing the monster.');
 		return;
 	}
 	if (model.m[currentMonster.id]) {
-		message('You already have it.');
+		message('You already have this monster.');
 		return;
 	}
+  if (rand.int(100) > getChance(currentMonster.rarity)) {
+    message('You failed!');
+    model.p -= 5;
+    save();
+    update();
+    return;
+  }
+  
+
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
   message('');
@@ -1180,7 +1189,14 @@ function catchit() {
 	backpack(cid);
 }
 
-
+function getChance(rarity) {
+  switch (rarity) {
+    case 'unique': return 10;
+    case 'rare': return 40;
+    case 'common': return 65;
+    default: return 85;
+  }
+}
 // Display
 
 function createPath(fillColor, pathCommands) {
