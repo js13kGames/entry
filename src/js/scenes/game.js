@@ -155,7 +155,7 @@ const gameLoop = GameLoop({  // create the main game loop
                     game: game
                 });
             }
-            if (.002 < rand && rand < .003) {
+            if (.002 < rand && rand < .0027) {
                 pickup = new StarPickup({
                     x: Math.random() * game.width,
                     y: Math.random() * game.height,
@@ -174,11 +174,11 @@ const gameLoop = GameLoop({  // create the main game loop
         // Render all the sprites
         game.sprites.map(sprite => sprite.render(game.scale));
 
-        // Render the player scores
-        game.players.map((player, i) => player.renderScore(i));
-
         if (game.over) {
             gameOver.render(game);
+        } else {
+            // Render the player scores
+            game.players.map((player, i) => player.renderScore(i));
         }
 
         // Render debug collision stuff

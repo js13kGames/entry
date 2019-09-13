@@ -49,12 +49,12 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                         });
                     }
                     sprite1.ttl = 0
-                    zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+                    zzfx(.2,.1,1100,.9,0,0,4,0,.4); // ZzFX 24676
                 } else if (sprite1.mass > 1e4) {
                     // TODO: Sparks or shrapnel or something?
                 } else {
                     sprite1.explode(sprites);
-                    zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+                    zzfx(.2,.1,1100,.9,0,0,4,0,.4); // ZzFX 24676
                 }
             }
             return;
@@ -139,7 +139,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                 }
 
                 sprite1.explode(sprites);
-                sprite2.owner.player.scoreInc();
+                sprite2.owner.player.score++;
                 zzfx(.3,0,1993,.3,.1,.1,0,0,.8); // ZzFX 38591
             }
             return;
@@ -175,13 +175,13 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                             });
                         }
                         sprite2.ttl = 0;
-                        zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676s
+                        zzfx(.2,.1,1100,.9,0,0,4,0,.4); // ZzFX 24676s
                     } else if (sprite2.radius > 60) {
                         sprite1.x -= cResult.overlap * cResult.overlap_x;
                         sprite1.y -= cResult.overlap * cResult.overlap_y;
                     } else {
                         sprite2.explode(sprites);
-                        zzfx(.2,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+                        zzfx(.2,.1,1100,.9,0,0,4,0,.4); // ZzFX 24676
                     }
                     return;
                 }
@@ -204,6 +204,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
         if (sprite2.type === 'pickup') {
             if (sprite1.hitbox.collides(sprite2.hitbox, cResult)) {
                 sprite2.applyTo(sprite1);
+                zzfx(.3,0,51,.1,.6,2,.3,19,1); // ZzFX 54138
                 sprite2.ttl = 0;
             }
             return;
@@ -227,7 +228,7 @@ function doCollision(sprite1, sprite2, cResult, sprites) {
                         return;
                     }
                     sprite2.explode();
-                    sprite1.player.scoreInc();
+                    sprite1.player.score++;
                     zzfx(.3,0,1993,.3,.1,.1,0,0,.8); // ZzFX 38591
                     return;
                 }

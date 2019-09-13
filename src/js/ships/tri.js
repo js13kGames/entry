@@ -3,7 +3,7 @@ export default () => {
     return {
         // rof: 5,
         // ror: 4,
-        turnRate: 8,
+        turnRate: 7,
         // radius: 7,
         mass: 3,
         thrust: 9,

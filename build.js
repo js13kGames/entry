@@ -128,7 +128,7 @@ function minify() {
             unsafe_arrows: true,
             unsafe_comps: true,
             unsafe_math: true,
-            unsafe_proto: true, // ~ 3 bytes
+            // unsafe_proto: true, // ~ 3 bytes
             booleans_as_integers: true // ~ 20 bytes if really needed
         },
         mangle: {
@@ -164,7 +164,7 @@ function minify() {
     // Replace some "terser reserved words" from source before minifying
     // These are VERY LIKELY to break things
     code = code.replace(/acceleration/g, 'accel');
-    code = code.replace(/detail/g, 'd');
+    code = code.replace(/detail/g, 'dtail');
     code = code.replace(/focus/g, 'hocus');
     code = code.replace(/history/g, 'hist');
     code = code.replace(/update/g, 'updoot');
@@ -187,7 +187,7 @@ function minify() {
     result.code = result.code.replace('document.getElementById(void 0)||', '');
 
     // Pull the last semi-colon
-    //result.code = result.code.replace(/;$/, '');
+    result.code = result.code.replace(/;$/, '');
 
     fs.writeFileSync('dist/main.min.js', result.code);
     if (result.map) {

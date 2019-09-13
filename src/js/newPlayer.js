@@ -59,7 +59,7 @@ export function newPlayer(game, controls, controllerId) {
         return;
     }
 
-    zzfx(.2,0,1020,.2,.03,.1,.1,0,.86); // ZzFX 42665
+    zzfx(.2,0,1000,.2,.03,.1,.1,0,.86); // ZzFX 42665
 
     game.players.push(new Player({
         color: pickColor(game.players, controllerId),

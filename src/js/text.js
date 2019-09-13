@@ -96,7 +96,7 @@ export function renderText(props) {
     var xAlign = yAlign = 0;
 
     if (props.alignCenter) {
-        yAlign = -8.5 * size;
+        yAlign = -7 * size;
         xAlign = -props.text.toString().length * 6.5 * size;
     }
 

@@ -29,7 +29,8 @@ function getAngle(ai, target, inverse) {
 }
 
 function maybeRewind(ai) {
-    var maybeRewind = 0; // A % chance the AI will use rewind this update
+    // A % (out of 60 actually) chance the AI will use rewind this update
+    var maybeRewind = 0;
 
     // Don't rewind if already rewinding
     if (ai.ship.rewiding) {
@@ -43,17 +44,17 @@ function maybeRewind(ai) {
 
     // Rewind to get ammo back (none to at least full if possible)
     if (ai.ship.ammoCurrent < 1 && ai.ship.history[0].ammo >= ai.ship.ammo) {
-        maybeRewind += 8;
+        maybeRewind += 4;
     }
 
     // Rewing is more likely the less time is left on rainbow-star powerup
     //  - that way the AI is more likely to "extend" it's duration with rewind
     // Only does it is at least half way through rainbow-ing
     if (ai.ship.rainbow && ai.ship.rainbow < 4) {
-        maybeRewind += 2;
+        maybeRewind++;
     }
 
-    if (Math.random() * 100 < maybeRewind) {
+    if (Math.random() * 60 < maybeRewind) {
         ai.ship.rewind();
         return true;
     }
@@ -98,14 +99,14 @@ export function update(ai) {
             avoidingMeteor = true;
 
             ai.ship.engineOn();
-            if (angleToMeteor < -2) {
+            if (angleToMeteor < -1.8) {
                 ai.ship.turnRight();
-            } else if (angleToMeteor > 2) {
+            } else if (angleToMeteor > 1.8) {
                 ai.ship.turnLeft();
             }
 
-        // If it's the don't turn quite as much as it's stationary
-        } else if (i === 0 && dist > 20) {
+        // If it's big center meteor don't turn quite as much as is stationary
+        } else if (i === 0 && dist > 25) {
             avoidingMeteor = true;
 
             ai.ship.engineOn();
@@ -115,7 +116,7 @@ export function update(ai) {
                 ai.ship.turnLeft();
             }
 
-        // Avoid all meteots when not rainbowy (or not rainbowy for > 1s)
+        // Avoid all meteors when not rainbowy (or not rainbowy for > 1s)
         } else if (ai.ship.rainbow < 1) {
             avoidingMeteor = true;
 
@@ -180,7 +181,7 @@ export function update(ai) {
         // Otherwise...
         } else {
             // If target is nearby player, randomly-ish shoot and toggle engine
-            if (target === player && distToPlayer < 140) {
+            if (target === player && distToPlayer < 180) {
                 if (Math.random() < .1) { ai.ship.fire(); }
                 if (Math.random() < .02) { ai.ship.engineOff(); }
                 if (Math.random() < .01) { ai.ship.engineOn(); }

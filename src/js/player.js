@@ -89,16 +89,17 @@ export class Player {
         }
     }
 
-    scoreInc() {
-        this.score++;
-    }
-
-    scoreDec() {
-        // Can't go lower than 0
-        if (this.score > 0) {
-            this.score--;
-        }
-    }
+    // Not used anymore to save a few bytes
+    // scoreInc() {
+    //     this.score++;
+    // }
+    //
+    // scoreDec() {
+    //     // Can't go lower than 0
+    //     if (this.score > 0) {
+    //         this.score--;
+    //     }
+    // }
 
     /**
      * Used to draw a "pretend" player ship for the menu
@@ -158,24 +159,29 @@ export class Player {
     renderScore(i) {
         var textProps = {
             color: this.color,
+            alignCenter: true,
             context: this.context,
             text: this.score,
             scale: this.game.scale
         };
 
+        if (this.score > 8) {
+            textProps.size = 1.4
+        }
+
         // Render the scores
         if (i === 0) {
-            textProps.x = this.game.width / 2 - 20;
-            textProps.y = this.game.height / 2 - 20;
+            textProps.x = this.game.width / 2 - 15;
+            textProps.y = this.game.height / 2 - 15;
         } else if (i === 1) {
-            textProps.x = this.game.width / 2 + 10;
-            textProps.y = this.game.height / 2 - 20;
+            textProps.x = this.game.width / 2 + 15;
+            textProps.y = this.game.height / 2 - 15;
         } else if (i === 2) {
-            textProps.x = this.game.width / 2 - 20;
-            textProps.y = this.game.height / 2 + 10;
+            textProps.x = this.game.width / 2 - 15;
+            textProps.y = this.game.height / 2 + 15;
         } else if (i === 3) {
-            textProps.x = this.game.width / 2 + 10;
-            textProps.y = this.game.height / 2 + 10;
+            textProps.x = this.game.width / 2 + 15;
+            textProps.y = this.game.height / 2 + 15;
         }
 
         renderText(textProps);

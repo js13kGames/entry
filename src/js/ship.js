@@ -90,7 +90,7 @@ export class Ship extends Sprite.class {
         this.hitbox = this.game.cSystem.createCircle(
             this.x,
             this.y,
-            this.radius + 4 * this.shield
+            this.radius + 4
         );
         this.hitbox.owner = this; // Re-add the hitbox owner
     }
@@ -166,7 +166,7 @@ export class Ship extends Sprite.class {
         const sin = Math.sin(util.degToRad(this.rotation));
 
         if (Math.random() < .05) {
-            zzfx(.1,.1,68,1,.07,0,3.6,0,.7); // ZzFX 78097
+            zzfx(.3,.1,68,1,.07,0,3.6,0,.7); // ZzFX 78097
         }
 
         // a = F / m (Newton's 2nd law of motion)
@@ -211,6 +211,7 @@ export class Ship extends Sprite.class {
         if (this.shieldDegrading) {
             this.shieldDegrading--;
             if (this.shieldDegrading === 0) {
+                zzfx(.5,0,134,.1,.2,.1,0,11.6,.13); // ZzFX 26117
                 this.removeShield();
             }
         }
@@ -230,7 +231,7 @@ export class Ship extends Sprite.class {
         if (this.rainbow > 0) {
             this.rainbow -= 1 / 60;
             if (Math.floor(this.rainbow * 12) % 2) { // every 15 frames
-                zzfx(.3,.8,900,.1,.1,1.4,0,0,.7); // ZzFX 1820
+                zzfx(.2,.8,900,.1,.1,1.4,0,0,.7); // ZzFX 1820
             }
             if (this.rainbow <= 0) {
                 this.maxSpeed = (this.shipData.maxSpeed + 6) / 12;
@@ -303,7 +304,7 @@ export class Ship extends Sprite.class {
             this.player.deaths++;
         }
 
-        zzfx(.5,.1,1126,.9,.01,0,4,0,.4); // ZzFX 24676
+        zzfx(.5,.1,1100,.9,0,0,4,0,.4); // ZzFX 24676
 
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
