@@ -7,6 +7,8 @@
 - [js13k](https://2019.js13kgames.com/), of course
 - [Mozilla's AFrame](https://aframe.io)
 - [Three.js](https://threejs.org) for your tutorials
+- Boris Smus for [WebAudioAPI.com](https://webaudioapi.com/samples/procedural/) which provided the gun sound effect in the game
+- The Villanova Commons TechZone for letting me borrow their Oculus Quest... a lot...
 - and my wife for getting me a DK1 all those years ago 💜.
 
 ## Plan

@@ -18,7 +18,7 @@
         <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left" raycaster="objects:.target">
           <a-text class="tutorial-grab" value="Grab" width="1" align="center" position="-.01 -.005 -.06" rotation="-125 0 0" color="#fff"></a-text>
           <a-text class="tutorial-drop" value="Drop" width="1" align="center" position="-.01 .02 -.02" rotation="-125 0 0" color="#fff" opacity=".5"></a-text>
-          <a-text class="tutorial-shoot" value="Shoot" width="1" align="center" position="-.01 -.1 -.07" rotation="0 -90 40" color="#fff" opacity=".5"></a-text>
+          <a-text class="tutorial-shoot" value="Shoot" width="1" align="center" position="-.01 -.12 -.07" rotation="0 -90 40 " color="#fff" opacity=".5"></a-text>
         </a-entity>
         <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right" raycaster="objects:.target">
           <a-text class="tutorial-grab" value="Grab" width="1" align="center" position="-.01 -.005 -.06" rotation="-125 0 0" color="#fff"></a-text>
@@ -34,12 +34,21 @@
         <a-plane position=" 0 1.5 -4  " rotation="0   0 0" width="10" height="3" color="#2D3748"></a-plane>
         <a-plane position=" 5 1.5  1  " rotation="0 -90 0" width="10" height="3" color="#2D3748"></a-plane>
         <a-plane position=" 0 1.5  6  " rotation="0 180 0" width="10" height="3" color="#2D3748"></a-plane>
-        <a-text  position=" 0 1.5  5.9" rotation="0 180 0" width="10" height="3" color="#718096" wrapCount="20" id="wall-hint" align="center" value="hello there\n\n\n\n\n"></a-text>
+        <a-text  position=" 0 1.5  5.9" rotation="0 180 0" width="10" height="3" color="#718096" wrapCount="20" id="wall-hint" align="center" value=""></a-text>
         <a-plane position="-5 1.5  1" rotation="0  90 0" width="10" height="3" color="#2D3748"></a-plane>
         <!-- Range walls -->
         <a-box position="0 .5 .5" scale="10 1 .1" color="#2D3748"></a-box>
         <a-box position=" 1.5 1.5 -1" scale=".1 3 3.1" color="#2D3748"></a-box>
+        <a-entity id="tutorial-btn" visible="false">
+          <a-box class="target spin-control" data-rotation="0" id="tutorial-box" position="1.5 1.5 -1" scale=".2 .5 1" color="#000"></a-box>
+          <a-text position="1.4 1.5 -1" rotation="0 -90 0" color="#777" align="center" value="Tutorial"></a-text>
+        </a-entity>
         <a-box position="-1.5 1.5 -1" scale=".1 3 3.1" color="#2D3748"></a-box>
+        <a-entity id="high-poster" visible="false">
+          <a-box position="-1.5 1.5 -1.5" scale=".12 1.5 1" color="#fff"></a-box>
+          <a-text position="-1.44 1.9 -1.5" rotation="0 90 0" color="#000" align="center" width="3" value="Action Hero\nof the Month:\nYOU"></a-text>
+          <a-text id="high-score" position="-1.44 1.4 -1.5" rotation="0 90 0" color="#000" align="center" width="10" value="0"></a-text>
+        </a-entity>
         <!-- Lights -->
         <a-entity light="type: point; intensity: 0.2; decay: 1" position="   0 1.60     0"></a-entity>
         <a-entity light="type: point; intensity: 0.2; decay: 1" position="   0 2.95 -1.25"></a-entity>
@@ -52,37 +61,25 @@
 
         <!-- Rotation Buttons -->
         <a-box position="0 1.5 -4" scale="1 1 .2" color="#000"></a-box>
-        <a-cylinder class="target spin-control" data-rotation="180" position="0 1.5 -4" scale=".4 .5 .4" rotation="90 0 0" color="#fff"></a-cylinder>
-        <a-text value="SPIN" position="0 1.5 -3.7" color="#000" align="center"></a-text>
+        <a-cylinder class="target spin-control" id="start-btn" data-rotation="180" position="0 1.5 -4" scale=".4 .5 .4" rotation="90 0 0" color="#fff"></a-cylinder>
+        <a-text value="ON" position="0 1.5 -3.7" color="#000" align="center"></a-text>
 
-        <a-box class="target spin-control" data-rotation="0" position="0 0 0" scale="1.8 .3 .8" color="#000"></a-box>
-        <a-text value="SPIN" position="0 .2 0" rotation="-90 180 0" color="#fff" align="center"></a-text>
+        <a-box class="target spin-control" id="reset-btn" data-rotation="0" position="0 0 0" scale="1.8 .3 .8" color="#000"></a-box>
+        <a-text value="OFF" position="0 .2 0" rotation="-90 180 0" color="#fff" align="center"></a-text>
 
-        <a-entity id="range" position="0 -.5 0">
-          <a-cylinder class="target" data-type="red" position="0 2 1.5" scale=".25 .05 .25" rotation="90 0 0" color="red"></a-cylinder>
+        <a-entity id="victory-mount" position="0 5 3">
+          <a-box scale="1 1 .2" color="#000"></a-box>
+          <a-cylinder class="target spin-control" id="victory-btn" data-rotation="0" scale=".4 .5 .4" rotation="90 0 0" color="#fff"></a-cylinder>
+          <a-text value="WIN" position="0 0 -.3" rotation="0 180 0" color="#000" align="center"></a-text>
         </a-entity>
+
+        <a-entity id="range"></a-entity>
 
         <!-- Table -->
-        <a-box scale="1.5 .05 1.5" position="0 .75 -1.25" rotation="0 0 0" color="#744210"></a-box>
-        <a-text id="table-text" value="something's\ngone\nwrong" color="#fff" align="center" position="0 .78 -1.25" rotation="-90 0 0" width="1.4" height="1.5"></a-text>
+        <a-box scale="1.5 .05 1.5" position="0 .95 -1.25" rotation="0 0 0" color="#744210"></a-box>
+        <a-text id="table-text" value="something's\ngone\nwrong" color="#fff" align="center" position="0 1 -1.25" rotation="-90 0 0" width="1.4" height="1.5"></a-text>
 
-        <!-- Guns -->
-        <a-entity position=".4 .8 -.6" rotation="0 0 90" id="red-gun" data-gun="red">
-          <a-box scale=".03 .2 .05" rotation="50 0 0" position="-.01 -.05 -.05" color="red"></a-box>
-          <a-box scale=".03 .12 .05" rotation="-50 0 0" position="-.01  -.05 .05" color="red"></a-box>
-        </a-entity>
-        <!--
-        <a-entity position="  0 1 -.6" id="green-gun" data-gun="green">
-          <a-box scale=".03 .2 .05" rotation="50 0 0" position="-.01 -.05 -.05" color="yellow"></a-box>
-          <a-box scale=".03 .12 .05" rotation="-50 0 0" position="-.01 -.05 .05" color="yellow"></a-box>
-        </a-entity>
-        <a-entity position=" .5 1 -.6" id="blue-gun" data-gun="blue">
-          <a-box scale=".03 .2 .05" rotation="50 0 0" position="-.01 -.05 -.05" color="blue"></a-box>
-          <a-box scale=".03 .12 .05" rotation="-50 0 0" position="-.01 -.05 .05" color="blue"></a-box>
-        </a-entity>
-        -->
-
-        <a-text id="log" value="Hello!" color="#fff" align="center" position="0 2.5 -3"></a-text>
+        <a-text id="log" value="Hello!" color="#fff" align="center" position="0 2.5 -3" visible="false"></a-text>
         <!--
         <a-box class="target" position="-1 0.5 -3" rotation="0 -45 0" color="#4CC3D9"></a-box>
         <a-cylinder class="target" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>

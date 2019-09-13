@@ -1,17 +1,41 @@
-// TODO: Levels
+// TODO: Reset tutorial
+// TODO: Coil 3 grenades, thanks
 // TODO: Posters
-// TODO: Level buttons
 // TODO: universal buttons: https://github.com/MicrosoftDocs/webvr/blob/master/webvr-docs/input.md
 const GameContainer = (function GameContainer() {
   const sceneEl = document.querySelector("a-scene");
-  const world = document.getElementById("world").object3D;
-  const blueGun = document.getElementById("blue-gun");
-  const test = document.querySelector("a-cylinder");
-  const gunEls = [].slice.apply(document.querySelectorAll("[data-gun]"));
-
+  const rangeEl = document.getElementById("range");
+  const wallEl = document.getElementById("wall-hint");
+  const worldEl = document.getElementById("world");
+  let gunEls = [];
   const sound = new ProceduralSample();
 
+  const logEl = document.getElementById("log");
+  function log(msg) {
+    logEl.setAttribute("value", msg);
+  }
+
+  function showTutorialBtn() {
+    document.getElementById("tutorial-btn").setAttribute("visible", true);
+  }
+  let HIGH_SCORE = 0;
+  function showPoster() {
+    HIGH_SCORE = localStorage.getItem("endless-highscore");
+    document.getElementById("high-score").setAttribute("value", HIGH_SCORE);
+    document.getElementById("high-poster").setAttribute("visible", true);
+  }
+
+  let LEVEL = 0;
+  const savedLevel = localStorage.getItem("endless-unlocked");
+  if (savedLevel) {
+    LEVEL = Infinity;
+    showTutorialBtn();
+    showPoster();
+  }
+  // TODO: LOAD
+
   function emit(name) {
+    log(name);
     var parameters = Array.from(arguments).slice(1); // capture additional arguments
     if (parameters.length === 0) {
       sceneEl.dispatchEvent(new Event(name));
@@ -44,19 +68,102 @@ const GameContainer = (function GameContainer() {
     }
   }
 
-  function loadLevel() {
+  listen("level-start", function startLevel() {
+    try {
+      victoryEl.object3D.position.y = victoryAway;
+      victoryY = victoryAway;
+      victoryTarget = victoryAway;
+      if (LEVEL === Infinity) { // ENDLESS_MODE.onstart
+        for (let i = 0; i < 5; i++) {
+          makeTarget({});
+        }
+        timerStart = now + 0;
+        lastTarget = now + 0;
+        ENDLESS_MODE.onstart();
+        log(timerStart);
+      } else {
+        LEVEL_DATA[LEVEL].onstart();
+      }
+    } catch(e) {
+      log(e);
+    }
+  })
+
+  function loadLevel(curr) {
+    const level = curr === Infinity
+      ? ENDLESS_MODE
+      : LEVEL_DATA[curr];
+    setText(level.text);
+    level.onload();
   }
 
-  const LEVELS = [];
-  function setLevels(levels) {
-    LEVELS.splice(0, LEVELS.length); // gut
-    LEVELS.push(...levels); // set
+  function clearRange() {
+    for (let target of targets) {
+      if (target && target.parentNode) {
+        target.parentNode.removeChild(target);
+      }
+    }
+    targets = [];
+  }
+
+  listen("level-reset", function levelReset() {
+    if (LEVEL < Infinity) {
+      document.getElementById("high-poster").setAttribute("visible", false);
+      document.getElementById("tutorial-btn").setAttribute("visible", false);
+    }
+    clearRange();
+    for (let gun of gunEls) {
+      worldEl.removeChild(gun);
+    }
+    gunEls = []
+    inHand = {};
+    if (LEVEL > 0) {
+      makeGun("red", -.5);
+    }
+    if (LEVEL > 1) {
+      makeGun("blue", .5);
+    }
+    if (LEVEL > 2) {
+      makeGun("yellow");
+    }
+    loadLevel(LEVEL);
+  });
+
+  listen("level-end", function nextLevel() {
+    LEVEL += 1;
+    if (LEVEL === Infinity) {
+      ENDLESS_MODE.onend(score);
+      if (score >= HIGH_SCORE) {
+        localStorage.setItem("endless-highscore", score);
+      }
+      score = 0;
+      showPoster();
+      maskT = 0;
+      setTimeout(_ => {
+        worldEl.object3D.rotation.y = 0;
+      }, 500);
+    } else if (LEVEL === LEVEL_DATA.length) {
+      LEVEL = Infinity;
+      localStorage.setItem("endless-unlocked", "booya");
+      showTutorialBtn();
+      loadLevel(LEVEL);
+    } else if (LEVEL < Infinity) {
+      loadLevel(LEVEL);
+    }
+  });
+
+  listen("target-destroyed", function victoryCheck() {
+    score += 1;
+    if (LEVEL < Infinity && rangeEl.querySelectorAll(".target").length === 0) {
+      victoryTarget = 1.6; // Drop victory button
+    }
+  });
+
+  const LEVEL_DATA = [];
+  function setLevels(data) {
+    LEVEL_DATA.splice(0, LEVEL_DATA.length); // gut
+    LEVEL_DATA.push(...data); // set
     emit("levels-set");
-  }
-
-  const logEl = document.getElementById("log");
-  function log(msg) {
-    logEl.setAttribute("value", msg);
   }
 
   function closest(target, els) {
@@ -78,7 +185,7 @@ const GameContainer = (function GameContainer() {
           closestDist = d;
         }
       }
-      if (closestDist > 1) {
+      if (closestDist > 1/4) {
         return null;
       }
       return closest;
@@ -130,7 +237,7 @@ const GameContainer = (function GameContainer() {
     hand.addEventListener("triggerdown", shootCycle, { passive: true });
   }
 
-  let inHand = { "right-hand": null, "left-hand": null };
+  let inHand = {};
   function setupHand(hand) {
     setupTutorial(hand);
     function pickup(hand) {
@@ -148,7 +255,7 @@ const GameContainer = (function GameContainer() {
         hand.object3D.add( newFriend.object3D );
         newFriend.dataset.held = true;
         inHand[hand.id] = newFriend;
-        hand.setAttribute("line", "opacity:1;color:" + newFriend.dataset.gun);
+        hand.setAttribute("line", "opacity:1;color:" + newFriend.getAttribute("color"));
       } catch (e) {
         log(e);
       }
@@ -158,13 +265,13 @@ const GameContainer = (function GameContainer() {
         const carryEL = inHand[hand.id];
         const carryObj = carryEL.object3D;
         carryObj.matrix.premultiply( hand.object3D.matrixWorld );
-        carryObj.matrix.premultiply( world.matrixWorld );
+        carryObj.matrix.premultiply( worldEl.object3D.matrixWorld );
         carryObj.matrix.decompose(
           carryObj.position,
           carryObj.quaternion,
           carryObj.scale
         );
-        world.add( carryObj );
+        worldEl.object3D.add( carryObj );
         inHand[hand.id] = null;
         carryEL.dataset.held = false;
         hand.setAttribute("line", "opacity:0;color:purple");
@@ -189,109 +296,202 @@ const GameContainer = (function GameContainer() {
     // Oculus controls
     hand.addEventListener("abuttondown", _ => handleButton(hand), { passive: true });
     hand.addEventListener("xbuttondown", _ => handleButton(hand), { passive: true });
+    hand.addEventListener("gripdown", _ => pickup(hand), { passive: true });
+    hand.addEventListener("gripup", _ => drop(hand), { passive: true });
     hand.addEventListener("triggerdown", _ => handleTrigger(hand), { passive: true });
   }
 
-  function colorMatch(gun, target) {
-    if (gun === target) {
-      return true;
-    }
-    switch(target) {
-      case "orange":
-        return gun === "red" || gun === "yellow";
-      case "green":
-        return gun === "blue" || gun === "yellow";
-      case "purple":
-        return gun === "red" || gun === "blue";
-    }
-    return false;
+  /**
+   * black  | 0b000
+   * red    | 0b100
+   * orange | 0b110
+   * yellow | 0b010
+   * green  | 0b011
+   * blue   | 0b001
+   * purple | 0b101
+   * white  | 0b111
+   */
+  const colorByBin = [
+    "black",
+    "blue",
+    "yellow",
+    "green",
+    "red",
+    "purple",
+    "orange",
+    "white",
+  ];
+  function toRYB(color) {
+    return colorByBin.indexOf(color);
+  }
+  function toName(hex) {
+    return colorByBin[hex];
+  }
+  function subColors(opName, subName) {
+    const opBin = toRYB(opName);
+    const subBin = toRYB(subName);
+    const res = (opBin | subBin) ^ subBin;
+    return toName(res);
   }
 
   function bindTarget(target) {
     // Trigger press
     // - Spin buttons
-    if (target.classList.contains("spin-control")) {
+    if (target.id === "tutorial-box") {
       target.addEventListener("mousedown", () => {
-        maskT = target.dataset.rotation/360 * 2 * Math.PI
-        setTimeout(_ => {
-          world.rotation.y = target.dataset.rotation/360 * 2 * Math.PI;
-        }, 500);
+        LEVEL = 0;
+        emit("level-reset");
+        log("tutorial");
+      }, { passive: true });
+    } else if (target.classList.contains("spin-control")) {
+      target.addEventListener("mousedown", () => {
+        if (target.id !== "start-btn" || inHand[event.detail.cursorEl.id]) {  // Can't shoot start with an empty hand
+          maskT = target.dataset.rotation/360 * 2 * Math.PI;
+          setTimeout(_ => {
+            worldEl.object3D.rotation.y = target.dataset.rotation/360 * 2 * Math.PI;
+          }, 500);
+        }
+        if (target.id === "start-btn" && inHand[event.detail.cursorEl.id]) {
+          emit("level-start");
+        } else if (target.id === "reset-btn") {
+          emit("level-reset");
+        } else if (target.id === "victory-btn") {
+          emit("level-end");
+        }
       }, { passive: true });
     // Targets
-    } else if (typeof target.dataset.type !== "undefined") {
+    } else {
+      if (typeof target.getAttribute("color") === "undefined") {
+        return;
+      }
       target.addEventListener("mousedown", event => {
+        const targetColor = target.getAttribute("color");
         const shotBy = inHand[event.detail.cursorEl.id];
-        if (
-          typeof shotBy.dataset.gun === "undefined" ||
-          !colorMatch(shotBy.dataset.gun, target.dataset.type)
-        ) {
-          return;
+        const shotColor = shotBy.getAttribute("color");
+        const newColor = subColors(targetColor, shotColor);
+        if (newColor === "black") {
+          target.parentNode.removeChild(target);
+          emit("target-destroyed");
+        } else {
+          target.setAttribute("color", newColor);
         }
-        target.parentNode.removeChild(target);
       }, { passive: true });
     }
 
+    /*
     target.addEventListener("raycaster-intersected", () => {
-      // target.setAttribute("color", "orange")
+      target.setAttribute("color", "orange")
     }, { passive: true });
+    */
   }
 
-  const rangeEl = document.getElementById("range");
   function makeTarget(op) {
     const el = document.createElement("a-cylinder");
     el.className = "target";
-    el.setAttribute("color", op.color || op.type || "white");
-    el.setAttribute("scale", ".25 .05 .25");
-    if (op.type) {
-      el.dataset.type = op.type;
+    if (typeof op.color === "undefined") {
+      const index = Math.floor(Math.random() * (colorByBin.length - 1)) + 1; // no black
+      op.color = colorByBin[index];
     }
+    el.setAttribute("color", op.color);
+    el.setAttribute("scale", ".25 .05 .25");
     if (typeof op.position === "undefined") {
       // Random position
-      const z = Math.random() * 4 + 1;
       const x = Math.random() * 6 - 3;
-      el.setAttribute("position", x + " 2 " + z);
+      const y = Math.random() + 1.5;
+      const z = Math.random() * 3 + 2;
+      el.setAttribute("position", x + " " + y + " " + z);
     } else {
       el.setAttribute("position", op.position);
     }
     el.setAttribute("rotation", "90 0 0");
     bindTarget(el);
+    targets.push(el);
     rangeEl.appendChild(el);
     return el;
   }
 
+  function moveMask() {
+    maskEl.object3D.position.y = Math.abs(Math.cos(maskA)) *  .5;
+    maskEl.object3D.position.z = Math.abs(Math.sin(maskA)) * -.5 + .2;
+    maskEl.object3D.rotation.x = Math.abs(Math.cos(maskA)) * Math.PI / 2;
+  }
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    seconds = (Math.floor((seconds % 60) * 1000) / 1000);
+    if (seconds < 10) {
+      return "0" + mins + ":0" + seconds;
+    }
+    return "0" + mins + ":".slice(0, seconds.length - 4) + seconds;
+  }
+
   let lastFrame = 0;
   let lastTarget = 0;
-  let targets = [makeTarget({type: "red"})];
   const start = Date.now();
+  let now = 0;
 
   let maskA = 0;
   let maskT = 0;
   const maskEl = document.getElementById("mask");
-  document.addEventListener("keyup", _ => maskT = maskT > 0 ? 0 : Math.PI, false);
 
+  const victoryEl = document.getElementById("victory-mount");
+  const victoryAway = 5;
+  let victoryY = victoryAway;
+  let victorySpeed = 0;
+  let victoryTarget = victoryAway;
+
+  let timerStart = 0;
+  let score = 0;
+  let targets = [];
   function loop() {
     requestAnimationFrame(loop);
-    const now = Date.now() - start;
+    now = Date.now() - start;
     const delta = (now - lastFrame) / 1000;
     // log(delta + " (" + Math.floor(1/delta) + "fps)");
 
-    const interval = 200;
-    if (now - lastTarget > interval) {
-      targets.push(makeTarget({type: "red"}));
-      lastTarget += interval;
+    try {
+    if (timerStart) {
+      const secondsLeft = 30 - Math.round(now - timerStart) / 1000;
+      if (secondsLeft <= 0) {
+        timerStart = false;
+        wallEl.setAttribute("value", "0:00.000");
+        clearRange();
+        emit("level-end");
+      } else {
+        log(formatTime(secondsLeft));
+        wallEl.setAttribute("value", formatTime(secondsLeft));
+        const interval = 2500;
+        if (now - lastTarget > interval) {
+          makeTarget({});
+          lastTarget += interval;
+        }
+      }
+    }
+    } catch(e) {
+      log(e);
+    }
+
+    if (victoryTarget < victoryAway) {
+      if (victoryY < victoryTarget) {
+        victorySpeed *= -.6;
+      } else {
+        victorySpeed -= delta / 10;
+        victorySpeed *= .99;
+      }
+      victoryY += victorySpeed;
+      victoryEl.object3D.position.y = victoryY;
     }
 
     if (maskA > maskT) {
-      console.log(maskA, maskT);
       maskA -= Math.min(delta * Math.PI, maskA - maskT);
+      moveMask();
     }
     if (maskA < maskT) {
-      console.log(maskA, maskT);
       maskA += Math.min(delta * Math.PI, maskT - maskA);
+      moveMask();
     }
-    maskEl.object3D.position.y = Math.abs(Math.cos(maskA)) *  .5;
-    maskEl.object3D.position.z = Math.abs(Math.sin(maskA)) * -.5 + .2;
-    maskEl.object3D.rotation.x = Math.abs(Math.cos(maskA)) * Math.PI / 2;
+
+
     /*
     for (let target of targets) {
       target.object3D.position.x += .5 * delta;
@@ -302,31 +502,52 @@ const GameContainer = (function GameContainer() {
 
   // Setup
   listen("levels-set", function setup() {
-    setText(LEVELS[0].text);
+    loadLevel(LEVEL);
+    if (LEVEL === Infinity) {
+      emit("level-reset"); // guns. lots of guns.
+    }
     document.querySelectorAll("[oculus-touch-controls]").forEach(setupHand);
     document.querySelectorAll(".target").forEach(bindTarget);
     requestAnimationFrame(loop);
   });
 
-  return { setLevels, setText }
+  function makeGun(color, x) {
+    const el = document.createElement("a-entity");
+    el.className = "gun";
+    el.id = color + "-gun";
+    el.setAttribute("position", (x || 0) + " 1 -.6");
+    el.setAttribute("rotation", "0 0 90");
+    el.setAttribute("color", color);
+    const barrel = document.createElement("a-box");
+    barrel.setAttribute("position", "-.01 -.05 -.05");
+    barrel.setAttribute("rotation", "50 0 0");
+    barrel.setAttribute("scale", ".03 .2 .05");
+    barrel.setAttribute("color", color);
+    const handle = document.createElement("a-box");
+    handle.setAttribute("position", "-.01  -.05 .05");
+    handle.setAttribute("rotation", "-50 0 0");
+    handle.setAttribute("scale", ".03 .12 .05");
+    handle.setAttribute("color", color);
+    el.appendChild(barrel);
+    el.appendChild(handle);
+
+    worldEl.appendChild(el);
+    gunEls.push(el);
+  }
+
+  return { listen, log, makeGun, makeTarget, setLevels, setText }
 })();
 
-// expand THREE.js Sphere to support collision tests vs Box3
-// we are creating a vector outside the method scope to
-// avoid spawning a new instance of Vector3 on every check
-
-THREE.Sphere.__closest = new THREE.Vector3();
-THREE.Sphere.prototype.intersectsBox = function(box) {
-  // get box closest point to sphere center by clamping
-  THREE.Sphere.__closest.set(this.center.x, this.center.y, this.center.z);
-  THREE.Sphere.__closest.clamp(box.min, box.max);
-
-  var distance = this.center.distanceToSquared(THREE.Sphere.__closest);
-  return distance < this.radius * this.radius;
-};
-
-/*
-  function getArrow(el) {
-    return el.object3D.up.clone().applyEuler(el.object3D.rotation);
+const ENDLESS_MODE = {
+  text: {},
+  onload: function() {
+    GameContainer.setText({
+      "table-text": "It's time for CHALLENGE MODE!\n\nCongratulations. Only the finest gun floaters and backwards shooters make it to this point.\n\nRemember!\n- Float the guns where you can find them -\n- White targets need all the colors -\n- Shoot the floor to exit quickly -\n\nYou'll have 30 seconds to shoot as many targets as you can. Get set up, take a deep breath, and LET'S DO THIS!"
+    });
+  },
+  onend: function(score) {
+    GameContainer.setText({
+      "table-text": "Awesome shooting!\n\nYou shot " + score + " targets!\n\nShoot the ON button when you're ready to go again and THANK YOU FOR PLAYING!"
+    });
   }
-  */
+};
