@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Deserter",
+  "description": "Game about the strugle of return and the sad ending of the journey back home. \n You play as an soilder, running from meaningles war. Dodge bombs and bullets using the recoil of your gun. Shoot bombs, if you dare. try not to get yourself killed. \nUse your mouse to aim and left mouse to shoot. On mobile, tap to shoot.\n \nCoil subscribers have acces to another game mode with cool techno vibes and can fly around with their automatic canon. Physic is for poor people.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "image-big.png",
+    "image_thumbnail": "image-small.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Mobile", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Urh Primožič",
+    "github": "https://github.com/urhprimozic/",
+    "instagram": "https://www.instagram.com/urhprimozic/"
   }
 }
