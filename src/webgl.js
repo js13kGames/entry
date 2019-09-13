@@ -30,9 +30,6 @@ var locations, locations1, locations2;
 var keys = {};
 
 
-// todo space cut
-//var pointer_lock = false;
-
 var can_play_music = false;
 var page_has_focus = true;
 var end_screen = false;
@@ -41,16 +38,10 @@ var end_screen = false;
  * When the game loads, hook the keybindings and start the game loop.
  */
 function main_run() {
-    //canvas = document.getElementById("c2"); // QQ
-    //ctx = canvas.getContext("2d"); // QQ
-    //console.log(ctx);
-
     setup_utils()
     setup_graphics()
     setup_game()
     setup_audio();
-
-    // TODO SPACE compress this better
 }
 
 function main_go() {
@@ -61,31 +52,9 @@ function main_go() {
     window.onkeyup = e => {
         delete keys[e.key];
     }
-    /*
-    window.onfocus = _=> {
-        page_has_focus = true;
-        frame = requestAnimationFrame(game_step);
-        doplay();
-    }
-    window.onblur = _=> {
-        page_has_focus = false;
-        cancelAnimationFrame(frame)
-        if (last_now<10) {
-            global_screen_color=[0,0,0,1]
-            game_step(1)
-            cancelAnimationFrame(frame)
-        }
-        music_timeouts.map(clearTimeout);
-        music_timeouts=[];
-    }
-    */
 
     gl.canvas.onclick = _ => {
         gl.canvas.requestPointerLock();
-        // TODO SPACE CUT
-        //document.addEventListener('pointerlockchange', ((x) => {
-        //    pointer_lock = document.pointerLockElement == gl.canvas;
-        //}), false);
     };
 
     document.onpointerlockchange = _ => {
@@ -121,7 +90,7 @@ function reset() {
     qQ.style.left="45vw";
     hE.innerHTML=""
     
-    camera = new Camera(NewVector(24, -16, 10), [gl.canvas.width, gl.canvas.height],
+    camera = new Camera(NewVector(24, -16, 10 + (map && map.levels.length == 3)*10), [gl.canvas.width, gl.canvas.height],
                         1.22, false, 28);
     global_screen_color = [0,0,0,1]
     player_dead = 0;
@@ -212,10 +181,6 @@ function game_step(now) {
     // Figure out how the player wants to move.
     var move_dir = [];
     for (var key in keys) {
-//        if (key =='q') cancelAnimationFrame(frame);
-//        if (key =='r') {             reset();
-//                                     map.load_level();
-//                       }
         var godir = "sawd".indexOf(key);
         if (godir != -1) {
             speed += (speed < 1)*.1;
@@ -345,15 +310,9 @@ function game_step(now) {
     camera.theta2 += (urandom())*amt;
     camera.theta3 += (urandom())*amt;
 
-    /*
-    HUD.position = camera.position.add(mat_vector_product(screen_forward_dir,
-                                                          NewVector(-3,3,-2)));
-    HUD.rotation = screen_forward_dir;
-    */
-    
     // Cast light shadows now
     lights.map(light =>
-               light.dynamic_shadow && light.compute_shadowmap() // GRAPHICS < 4 && 
+               light.dynamic_shadow && light.compute_shadowmap()
               )
 
     // And finally render the scene 
@@ -409,7 +368,6 @@ function game_step(now) {
         [fake_camera, ...lights].map((light,i)=>{
             if (i == 0 && camera.dimensions[0] > 400 ||
                 i > 0 && camera.dimensions[0] > 100) {
-                console.log("QQQ", camera.dimensions);
                 light.shadow_camera = new Camera(light.shadow_camera.position, light.shadow_camera.dimensions.map(x=>x/2),
                                                  light.shadow_camera.fov, light.shadow_camera.camera_is_light,
                                                  light.shadow_camera.texture_id,
@@ -424,10 +382,8 @@ function game_step(now) {
 
     objects = objects.filter(x=>!x.dead);
     
-    document.getElementById("fps").innerText = "ms/frame: " + fps.update(performance.now()-now) + "\nFPS: " + actual_fps.update(1000./(now-last_now)) + "\nverts: " + running_verts.update(verts_rendered) + "\nsprites: " + running_sprites.update(sprites_rendered) + "\nminor badness: " + Math.round(minor_badness*100)/100 + "\ntotal badness: "+(Math.round(total_badness*100)/100); // DEBUGONLY
+    document.getElementById("fps").innerText = "ms/frame: " + fps.update(performance.now()-now) + "\nFPS: " + actual_fps.update(1000./(now-last_now)) + "\nminor badness: " + Math.round(minor_badness*100)/100 + "\ntotal badness: "+(Math.round(total_badness*100)/100); // DEBUGONLY
     last_now = now;
-    sprites_rendered = 0;
-    verts_rendered = 0;
 }
 
 function set_resolution(j) {

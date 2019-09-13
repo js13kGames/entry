@@ -55,9 +55,6 @@ var normal_to_plane = (a,b,c) =>
 var NewVector = (a,b,c) => new Vector(a,b,c);
 var NewVectorFromList = (x) => NewVector(...x);
 
-//var vector_from_id = (id) =>
-//    NewVectorFromList(id.split(",").map(Number))
-
 var reduce_add = (lst) => lst.reduce((a,b)=>a.add(b));
 var reduce_mean = (lst) => reduce_add(lst).scalar_multiply(1/lst.length);
 
@@ -66,7 +63,6 @@ var angle_between = (a,b) => Math.atan2(a.subtract(b).x,
                                         a.subtract(b).y)
 
 
-// todo shorter to just make this a push function and call push(arr, item)
 var push = (x,y) => (x.push(y), x);
 
 var clamp = (x,low,high) => Math.min(Math.max(low, x), high)
@@ -89,10 +85,6 @@ var matrix_rotate_xy = (theta) =>
      Math.sin(theta), Math.cos(theta), 0, 0,
      0, 0, 1, 0,
      0, 0, 0, 1];
-
-
-// TODO USE THIS ONE
-// var rotate_vector_xy = (theta, vec) => mat_vector_product(matrix_rotate_xy(theta), vec)
 
 var matrix_translate = (position) =>
      [1, 0, 0, position[0],
@@ -222,13 +214,8 @@ function merge_sprites(sprites) {
     return new Sprite([pos.flat(2), norm.flat(2)], ZERO, IDENTITY, false, color.flat());
 }
 
-// todo space remove
-var verts_rendered = 0;
-var sprites_rendered = 0;
-
 class Sprite {
     constructor(pos_and_normal, position, rotation, transparent, colors, texture) {
-        //console.log('have',positions, normals, position, rotation, transparent, colors);
         this.a_positions = new Float32Array(pos_and_normal[0]);
         this.a_normals = new Float32Array(pos_and_normal[1]);
         this.aq_angle = new Float32Array(pos_and_normal[0].map(x=>Math.PI/2));
@@ -246,7 +233,6 @@ class Sprite {
         this.rebuffer();
     }
 
-    //TODO does this need to be separate?
     rebuffer() {
         [this.a_positions, this.a_normals, this.a_colors, this.aq_angle].map((which, i) => {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers[i]);
@@ -283,10 +269,6 @@ class Sprite {
         gl.uniform1i(locations.u_render_direct, this.transparent);
         
         gl.drawArrays(gl.TRIANGLES, 0, this.a_positions.length/3);
-
-        // TODO space can cut these
-        verts_rendered += this.a_positions.length/3;
-        sprites_rendered += 1;
     }
 }
 
@@ -300,7 +282,6 @@ var setup_utils = () => {
     var mat_vector_product_q = eval/*HACK*/(mat_product_symbolic(reshape(range(4),1))
                                        )
 
-    // TODO space I can move this into the eval() once I know how NewVector is compressed
     mat_vector_product = (m,x) => NewVectorFromList(mat_vector_product_q(m,x._xyzw()));
 };
 

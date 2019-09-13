@@ -25,17 +25,8 @@
  * implemented and documented below.
  */
 class Map {
-    // TODO SPACE can cut the constructor
     constructor() {
         this.levels = [
-            // keys
-            //"IWOsA4THimY3lAZ3rQcXoXfHBSeCg4eL",
-
-
-            // worse level 1
-            // "IcCsBWJjZ2tsZpqUA2rnZMG0C3cHd2tdervHs3RzxpGqA5FHbZGzA4FXbZEDgUd9A1hhpsGRA0qrhsGRA0Ntt2dsmSFalLMDqXpFjAt0qZZDN27soVVYesORB03Y5sNjB0pl05TBkgPnZic=",
-
-            
             // Level 1
             "rgt413aHp9UFRwdXm2S6cGajdGc0csIDhMeKwQUngnOne8qtCa19bVwnkHBQZ2LYdcSzFERiVTdZmLd7N3NWfFtGTMrYttSyYil4xasKMDBwscKcTWx9vGJ5cMQDUslqsQiEm3iHe2d4RwnLt8RGZ3YXeGfCjgNz13uQB3OHdqd+RnbPkq0DeDd2ZZ10246xA7d7Nw==",
 
@@ -50,8 +41,6 @@ class Map {
 
             // Mid level
             "IQQhZ5MCkqlmfXFlWnJm2HRnV3JkPHCLqwWZbFojhMKzC325p6aUclB3B3dsYo5wwawDhMeKwQUngoOHi8yasQNamIRlenRiVnhirHBiqHBjm3CMsAVqjOdgNmLbcGXtcQ64tMyOXhwbqdPhgHBABM2SrQOOh2CMsQTZfThlwQVLN5zTocK0CgcoNidxx6WnqchiSXjCqgNHdadjZnxiLXBjTXCNA0d1p40DR3WnjQNHdafPlQYbToy3YcNmHnLCBDeb5XO0CHvL6eWQRSQXaepw",
-
-            //"IWOsA4THimY3lAZ3rQcXoXfHBSeCg4eL",
         ]
         this.all_levels=[...this.levels]
     }
@@ -80,8 +69,6 @@ class Map {
                                   , objs_list // DEBUGONLY
                                                 );
         map.put_objects(this.remake)
-        //turtledisplay.regions = map.regions; // DEBUGONLY
-        //turtle.objects = objs_list; // DEBUGONLY
 
         var to_render = range(32).map(_=>[[],[]]);
 
@@ -161,21 +148,6 @@ class Map {
         music_timeouts.map(clearTimeout);
         music_timeouts=[];
         doplay();
-        /*
-        HUD = new Sprite(lathe([5, 0,
-                                0, .5,
-                                -1, 0,
-                                0, -.5,
-                                .5, 0,
-                               ],
-                               4, 0, false,
-                               (x) => mat_vector_product(multiply(
-                                   matrix_rotate_yz(Math.PI/2),
-                                   matrix_rotate_xy(Math.PI/4)),
-                                                         x).vector_multiply(NewVector(.3,.1,.1))),
-                         ZERO, 0, 1, [.1,.2,.5])
-        objects.push(HUD)
-        */
         
     }
 
@@ -206,7 +178,6 @@ class Map {
 
 /* A MapPolygon stores the data for each polygon, and does nothing else.
  */
-// TODO SPACE remove this and just use a list
 class MapPolygon {
     constructor(vertices, floor_height, ceil_height) {
         this.vertices = vertices;
@@ -273,27 +244,7 @@ function run_turtle(commands, objs_list) { // DEBUGONLY
         floor_height += 2*(low-15)*(high==4);
         ceil_height += 4*(low-15)*(high==5);
         turtle_location.splice(0,low*(high==6));
-        /*
-        if (cmd == 15*16) { // loop
-            loop_index.unshift(i);
-            loop_count.unshift(low);
-        }
-        if (cmd == 15*16+1) { // end
-            if (loop_count[0]-->0) {
-                i = loop_index[0];
-            } else {
-                loop_count.shift();
-                loop_index.shift();
-            }
-        }
-        */
     }
-    /*
-    return map_json.map(x=> {
-        return new MapPolygon(x.vertices.map(p=>NewVector(p.x, p.y, p.z)), x.floor_height-1, x.ceil_height-1, x.floor_light, x.ceil_light, 22, 23, 21)
-    })
-    //*/
-    //console.log("OUT", regions);
     return [regions, do_later];
 }
 
@@ -1326,16 +1277,6 @@ var turtledisplay;
 var chaingun=[];
 
 function setup_map() {
-    var b;
-    //b = "EX+PRQOAbZWAgJM5A4Btg4CAkzkDgG2DgICTEYBtOQOAk4OAgG0="
-    //we = "EYiLPj4+PjtNg3aHeCCX1gswMDAwMYt2x3h7eCd2Zxdz13I4g9d4FzhAQ4jXh8d9RxcngXNKiKeKjLl7JTRTc0SDc7d7IZetACGZQQAh1oq3IdV2rEyPc3Gnx9d9Zyd4fXh7J0dwcTtEiKfH19d4BwcHdDNKjBcXc8eHdHJx13t6fCFqngAhbS0AIWptAHJCh3PEt4XHXBshhyEAck5IhicXdOXJxiGDAwA1UFOGk3JiTRuscjlfWoM2QqYgZGoWIZoyACGaKgAhSjQAIU4qACFuEQAhdi0AcTVQU4isK4sJcnN1tHU5X1qDY6iscYPTNityNVBTg6FHNnE+PjpfWoSyujdpfDAwNkSFpnJHeXlBg2d1hyCBByFxNoN5Z3U2g3lndTaDeVeFNoNpV5U2g1lmlTaDWWaVIcgEADaDWUZ0NoZ6Nxc3lMdyOIO3eDc4g7d4NziDt3g3OIO3eTdOTk6It7fXChsZc3JyNVBThtXXfDkoRnE5X1qDxs0IgweAqHGIbiIydcLDfHt0PEBAQIN5aHN6Mk5OToTnMjQ5cYW6vHBhB4QX0+R+PjhAQEOHcJmbe3xMcBGKajNEg4qnhEiDJ3PHPjqDh3tncTA0RoZzRHbXfHp0iqpnJ2d7R3Ryx4h1PjpIg3OHe3gwNEiDdleIcYN2l3hxhVdWc9d7EWS4Pj45SYx2h7dxN2d2x4d8emd2MDA2SYOHfWdxOEODcbd9EXKGOUiEcnSHfnE+O4NndocRcGw+PjpOSYN2h3gReIAwMDVARoN2h3hxMDA0TkiDZ3OHg3bXeHE4QEOKF2dQd6Onq9d+J3aMnnh7eG0XJ3Nyc3G3ITGpACEx+QB6Pj45SoN2h3gRaokwMDVOjHJ0crebh5V7fFVnWyE2cgAhNiQAeYknN6yHh4eHh4c5g3pndHE1iYd8Nyeih4eHhzuDdId6cjmDemd0OYN6Z3Q5g3pndDmDemd0hXpMJHHD";
-    //b=  "EYCGRYtw5+d+fkJxN3tXRzpFg6d5RzRJhqfXrAcHcnRARoMXdZd1g1d1lw=="
-    //b = "EX+PRQOAbZWAgJM="
-    //b= "EYGHOUKDdrd4NUoJgYCAhYOAhYF7hXiBfXuCeYGAdY8mknNmR3tXN2d0t3On535zOIN7N3M="
-    //b = "EYGHOUKDdrd4IINUkwAAJG+UADVKCYGAgIWDgIWBe4V4gX17gnmBgHWPJpJzZkd7VzdndLdzp+d+cziDezdz"
-    
     map = new Map();
     map.load_level();
-    //objects.push(new Hourglass(NewVector(20,30,10)));
-    
 }

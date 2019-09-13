@@ -27,7 +27,6 @@ var play = (which, location) => {
     src.connect(panner);
     panner.pan.value = location ? Math.cos(angle_between(location, camera.position) + camera.theta + Math.PI/2) : 0;;
     panner.connect(context.destination)
-    //src.connect(context.destination)
     src.start(); // QQ
     return src;
 };
@@ -51,22 +50,6 @@ function doplay() {
 var toaudio = x => transpose(x).map(sum);
 
 function load() {
-    /*
-    i = 3;
-    var A = [0, 0, 12, 0, 0, 10, 0, 0, 8, 0, 0, 6, 0, 0, 7, 8]
-    var B = [0, 0, 12, 0, 0, 10, 0, 0, 8, 0, 0, 106];
-    var AB = [A,B].flat()
-
-    notes = [Array(2).fill(AB),
-             Array(2).fill(AB),// + 1 octave
-             
-             Array(1).fill(AB.map(x=>x+5)),
-             Array(1).fill(AB),
-             B.map(x=>x+9),
-             A].flat(3)
-    */
-
-    
     var melody =  [null, 19, 17, 19, 15, 19, 14, 19, 12, 19, 11, 19, 12, 19, 14, 19, 15, 19, 7, 19, 9, 19, 11, 19, 12, 19, 11, 19, 12, 19, 14, 19];
     var harmony_2 =  [15, 16, 17, 10, 8, 7, 8, 10, 12, 4, 5, 7, 8, 7, 8, 4];
     var melody_4 =  [20, 24, 20, 24, 25, 17, 25, 17, 22, 19, 22, 19, 24, 15, 24, 15, 20, 17, 20, 17, 23, 14, 23, 14, 19, 15, 19, 15, 17, 11, 17, 11, 15, 12, 15, 12, 14, 8, 14, 8];
@@ -92,8 +75,6 @@ function load() {
         [0, 1, 2, final_melody, final_harmony_up, final_harmony_down]
     ]
 
-    //var did = ""
-    
     musicnotes = range(300).map(_=>[])
 
     var addnote = (kind, note, where, length) => {
@@ -102,9 +83,9 @@ function load() {
         musicnotes[where+offset].push(toaudio([note/12, note/12-1].map(f=> {
             f=2**(f/2) * .25;
             return kind ? 
-                jsfxr([3,0.1,time,0.1,0.3,f,,,,,,,,0.5,,,-1,,0.2,,,,,0.2])
+                jsfxr([3,0.1,time,0.1,0.3,f,,,,,,,,0.5,,,-1,,0.2,,,,,0.1])
                 :
-                jsfxr([3,0.1,time+.07,.3,0.5,f,,,,,,,,,,,,,0.15,,,,,0.2])
+                jsfxr([3,0.1,time+.07,.3,0.5,f,,,,,,,,,,,,,0.15,,,,,0.1])
         })))
     }
 
@@ -129,34 +110,20 @@ function load() {
 var arr;
 function setup_audio() {
     load()
-    arr = [100, 7, 55, 25, 35, 20, , 15, , , 4, , , , 2, 33, -8, -23, 20, , 23, 4, -48, 50,
-           100, , 5, 100, 55, 20, , , -10, , , , , , , , -40, -5, 15, , , , , 50,
-           , , 5, 100, 55, 20, , , -10, , , , , , , , -40, -5, 15, , , , , 50,
-           300, 10, 25, 5, 20, 25, 10, , , 50, , , , 50, , , , , 10, , 50, 50, , 100,
-           300, 5, 15, 5, 20, 25, 10, , , 50, , , , 50, , , , , 10, , 50, 50, , 100,
-           300,45,55,,55,15,,-10,,,,,,,,,,,25,,,,,50,
-           0,5,5,,45,5,,-10,,,,,,,,,-25,,5,,,,,400]
-    // TODO SPACE move the /100 to jsfxr
+    arr = [100, 7, 55, 25, 35, 20, , 15, , , 4, , , , 2, 33, -8, -23, 20, , 23, 4, -48, 30,
+           100, , 5, 100, 55, 20, , , -10, , , , , , , , -40, -5, 15, , , , , 30,
+           , , 5, 100, 55, 20, , , -10, , , , , , , , -40, -5, 15, , , , , 30,
+           300, 10, 25, 5, 20, 25, 10, , , 50, , , , 50, , , , , 10, , 50, 50, , 60,
+           300, 5, 15, 5, 20, 25, 10, , , 50, , , , 50, , , , , 10, , 50, 50, , 60,
+           300,45,55,,55,15,,-10,,,,,,,,,,,25,,,,,30,
+           0,5,5,,45,5,,-10,,,,,,,,,-25,,5,,,,,300]
     arr = reshape(arr.map(x=>x/100),24)
-    // v=qqqarr.map(x=>x.slice(1)).flat().map(x=>x*100+127|0)
-    // btoa(v.map(x=>String.fromCharCode(x)).join(""))
-    // +urandom()*.02 to x[5]
 
 
-    var DBG  = 0; // R1
     sounds.boom = toaudio([jsfxr(arr[0])]);
     sounds.gun = toaudio([jsfxr(arr[1]),jsfxr(arr[2])]);
     sounds.collect  = toaudio([jsfxr(arr[3])])
     sounds.collect2 = toaudio([jsfxr(arr[4])])
     sounds.clock = toaudio([jsfxr(arr[5]), jsfxr(arr[5]).slice(2000)])
     sounds.hit = toaudio([jsfxr(arr[6]),jsfxr(arr[1])])
-
-
-    /*
-    sounds.wind = range(1+DBG*3).map(_=> {
-        var global_volume=0;//.001*(.01+Math.random()/40);
-        return audio([jsfxr([0,0.85,1+Math.random(),,0.7,0.5,0.5,0.1,,,0.15,,,0.15,,0.5,,0,0.25-4*global_volume,,1-Math.random()/5,0.5,,global_volume])]);
-    })
-    */
-    
 }

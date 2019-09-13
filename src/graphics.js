@@ -168,7 +168,6 @@ class Camera {
             // Don't push the shadow stuff for the real camera, which
             // we pass in u_light_xxx[4]
             if (i == 4) return;
-            //if (light == this) return;
 
             // don't cast shadows when rendering a light
             if (!this.camera_is_light) {
@@ -198,7 +197,6 @@ class Camera {
             lights[3].brightness = 30; // gun flash light
         }
         
-        //gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.enable(gl.DEPTH_TEST);
         if (this.cull) {
@@ -315,7 +313,6 @@ out_color = dot(get_tex(), vec4(21, 72, 7,0)) > 100. ? get_tex() : vec4(0,0,0,1)
         return range;
     }
 
-    // 642
     return source_texture => filters.reduce((prev,cur)=>
                                             cur.post_filter(prev,source_texture),
                                             source_texture)
@@ -351,8 +348,6 @@ function setup_framebuffer(texture_id,
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, H, W);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-
-    //gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     return [texture, framebuffer];
 }
@@ -391,48 +386,6 @@ class Light {
 
         this.filter.post_filter(this._texture);
     }
-}
-
-function createImageFromTexture(gl, texture, width, height, type) {
-    // Create a framebuffer backed by the texture
-    var framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-    // Read the contents of the framebuffer
-    var data;
-    data = new Float32Array(width * height * 4);
-    gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, data);
-
-    gl.deleteFramebuffer(framebuffer);
-
-    var min = 10000;
-    var max = 0;
-    for (var i = 0; i < data.length; i++) {
-        if (data[i] < min) min = data[i];
-        if (data[i] > max) max = data[i];
-    }
-
-    if (type == "depth") {
-        data = data.map((x,i)=> i%4 == 3 ? 255.0 : (x-min)/(max-min)*255.0)
-    } else {
-        data = data.map((x,i)=> i%4 == 3 ? 255.0 : (x-min)/(max-min)*255.0)
-    }
-
-    // Create a 2D canvas to store the result 
-    var canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    var context = canvas.getContext('2d'); // QQ
-
-    // Copy the pixels to a 2D canvas
-    var imageData = context.createImageData(width, height);
-    imageData.data.set(data);
-    context.putImageData(imageData, 0, 0);
-
-    var img = document.getElementById("debug_img") //QQ
-    var out = canvas.toDataURL() // QQ
-    img.src = out;
 }
 
 
@@ -553,17 +506,6 @@ void main() {
         }
     }).flat())
     
-    /*
-    make_texture(cartesian_product_map(range(256),range(256),(y,x) => {
-        if ((x%256) < 128 && 30 < y && y < 35) {
-            return [5,5,5,1];
-        } else {
-            r = .4-urandom()/10
-            return [r,r,r,1];
-        }
-    }).flat())
-    */
-
     var r = cartesian_product_map(range(16),range(8),(y,x) => 
                                   [32*y, 64*(x + (y%2)/2), 1 + y%2]
                                  )

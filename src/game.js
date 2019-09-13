@@ -274,11 +274,9 @@ class BaseEnemy {
             this.position.add(mat_vector_product(matrix_rotate_xy(this.theta),NewVector(1e5,0,0))), 0, 1)[0][0].subtract(
                 mat_vector_product(matrix_rotate_xy(this.theta),NewVector(5,0,0))),
                                       this.position];
-        //objects.push(new TMP(this.waypoint.noz().add(Z_DIR.scalar_multiply(this.position.z)), 10));
         var angle_to_me = -angle_between(this.position, camera.position);
         var r = Math.random() < 1/dt;
 
-        //console.log("Update", this.attacking, this.state);
         // Look to see if I'm visible
         if (r && !this.attacking &&
             (Math.abs(angle_to_me-this.theta-Math.PI/2) < Math.PI/3 ||
@@ -307,8 +305,6 @@ class BaseEnemy {
             if (detect_collision_positions(this.position, this.waypoint, false, true).length > 0
                 || is_close
                 || (Math.abs(next_height - this.position.z + this._height) > 5+this.grounded)) {
-                //objects.push(new TMP(this.position.add(Z_DIR.scalar_multiply(this.position.z+10)), 10, [0,0,1]));
-                //objects.push(new TMP(this.waypoint.noz().add(Z_DIR.scalar_multiply(this.position.z+10)), 10, [0,1,0]));
 
                 this.waypoint = this.position.add(urandom_vector().scalar_multiply(20).noz());
                 this.theta = Math.PI*urandom();
@@ -318,7 +314,6 @@ class BaseEnemy {
             }
 
             var delta_pos = this.waypoint.subtract(this.position).noz();
-            //console.log(delta_pos, delta_pos.vector_length(), 30/this.spin_rate/this.speedinv);
             var goal_angle = Math.atan2(delta_pos.y, delta_pos.x);
 
             // They sometimes spin in place.
@@ -494,15 +489,6 @@ class Flash {
                                  0, 1,
                                  [10,10,10]);
 
-        /*
-        this.sprite2 = new Sprite(bullet,
-                                  pos
-                                  .add(forward.scalar_multiply(Math.random()*dist)),
-                                 0, 1,
-                                 [10,10,0]);
-        this.sprite2.rotation = chaingun.rotation;
-        */
-        
         this.dead = undefined;
         this.c = 0;
     }
@@ -545,7 +531,6 @@ class Hit extends PhysicsObject {
                        0, 1,
                        [10*Math.cos(x),10*Math.sin(x),0])
         super(sprite,
-              // TODO SPACE make a urandom function
               position, new Vector(urandom()/2, urandom()/2, (1.5+urandom())),
               true);
         this.dz = .01;
@@ -564,7 +549,6 @@ class Shell extends BodyPart {
                          multiply(chaingun.rotation,
                                   matrix_rotate_xz(Math.PI/2)), 0,
                          [.4, .4, .4]),
-              // TODO SPACE make a urandom function
               position, NewVector(urandom(), urandom(), 3.5+urandom()/2).subtract(right).scalar_multiply(.2));
     }
 }
@@ -724,7 +708,6 @@ class Goal extends Collectable {
         super.update(dt);
         this.sprite.rotation = multiply(matrix_rotate_xy(dt/400),this.sprite.rotation);
         this.sprite.position.z = this.position.z + Math.sin(this.time += dt/300)*4 + 4;
-        //this.sprite.position.z = this.position.z + 9;
     }
     
     collect() {
@@ -739,7 +722,6 @@ class Goal extends Collectable {
             objects.push(new RealDoor(exitdoors[0].position.subtract(NewVector(0,40,-10))));
             map.put_objects(map.remake.filter(obj=>BaseEnemy.isPrototypeOf(obj[1]) || obj[1] == ManyEnemies), objects)
             objects.map(x=>x.attacking = 1)
-            //var r = new SpeechSynthesisUtterance("power failure imminent. get back"); r.voice = speechSynthesis.getVoices()[50]; speechSynthesis.speak(r)
             going_back = true;
             music_timeouts.map(clearTimeout);
             music_timeouts=[];
@@ -761,10 +743,6 @@ class RealDoor extends Collectable {
         lights[2].position = position.add(NewVector(0,-20,0));
         lights[2].shadow_camera.theta = 0;
         lights[2].shadow = true;
-        //range(30).map(x=>
-        //              setTimeout(
-        //                  _=>hE.innerHTML="Get Back.<br>T-"+(30-x),
-        //                  x*1000));
         this.count = 0;
     }
     update(dt) {
@@ -797,7 +775,7 @@ class RealDoor extends Collectable {
                 cancelAnimationFrame(frame);
                 hE.innerHTML=`You got back in ${last_now/60000|0}m ${last_now/1000%60|0}s.<br><br>`
                 if (DIFFICULTY) {
-                    setTimeout(_=>hE.innerHTML+="Congratulations.<br><br>Developer Par: 6m 30s<br><br>Reload to play again.",2000);
+                    setTimeout(_=>hE.innerHTML+="Congratulations.<br><br>Developer Par: 9m 00s<br><br>Reload to play again.",2000);
                     DIFFICULTY=1;
                 } else {
                     setTimeout(_=>hE.innerHTML+="Get ready for hard difficulty.",2000);
@@ -867,7 +845,6 @@ var makecube_fn = fn => lathe([.71, 0,
                                   0, 1], 4, 0, true,
                                  x => fn(mat_vector_product(matrix_rotate_xy(-Math.PI/4),x)));
 
-// TODO SPACE add the NewVector to dims here
 var makecube = dims => makecube_fn(x=> x.vector_multiply(dims));
 
 var all_objects = [
