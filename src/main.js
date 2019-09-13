@@ -1271,8 +1271,8 @@ function showMonster(anatomy, x, y, container, scale) {
 }
 
 function update () {
-	var status = locs[model.x][model.y].name + '<br>Energy: ' + model.p;
-	document.getElementById("location").innerHTML = status;
+  document.getElementById("energyL").innerHTML = 'Energy: ' + model.p;
+	document.getElementById("location").innerHTML = locs[model.x][model.y].name;
 	if (!showingBackpack) {
 		document.getElementById("container").innerHTML = '';
 		if (currentMonster) {
@@ -1357,11 +1357,16 @@ function save() {
 
 // In game functions
 
+let millisToRecover = 20000;
+
 function recoverMP() {
 	if (model.p >= 40) return;
 	const time = +new Date();
 	const timeDiff = time - model.lastGrant;
-	const bonus = Math.floor(timeDiff / 20000);
+  let timeToBonus = millisToRecover - timeDiff;
+  if (timeToBonus < 0) timeToBonus = 0;
+  document.getElementById("am").style.width = Math.round((1 - (timeToBonus / millisToRecover)) * 100) + '%'; 
+	const bonus = Math.floor(timeDiff / millisToRecover);
 	if (bonus > 0) {
 		model.p += bonus;
 		if (model.p > 40) {
