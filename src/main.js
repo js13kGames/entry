@@ -1319,6 +1319,8 @@ function backpack(highlightId) {
 	if (showingBackpack) {
     document.getElementById("backo").style.display = 'block';
     document.getElementById("bpo").style.display = 'none';
+    document.getElementById("buttons").style.display = 'none';
+    document.getElementById("message").style.display = 'none';
 		document.getElementById("container").innerHTML = '';
 		count = 0;
     var label = document.createElement("p");
@@ -1355,6 +1357,8 @@ function backpack(highlightId) {
 	} else {
     document.getElementById("backo").style.display = 'none';
     document.getElementById("bpo").style.display = 'block';
+    document.getElementById("message").style.display = 'block';
+    document.getElementById("buttons").style.display = 'block';
 		update();
 	}
 }
