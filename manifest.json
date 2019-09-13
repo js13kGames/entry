@@ -4,5 +4,8 @@
   "images": {
     "image_large": "img/splash.png",
     "image_thumbnail": "img/icon.png"
-  }
+  },
+  "categories": [
+    "Desktop"
+  ]
 }
