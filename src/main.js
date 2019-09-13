@@ -750,6 +750,78 @@ var shapes = {
 			shpath: "m 45.48,23.5 c 2.52,12.26 1.35,26.2 -22,26.2 -23.35,0 -23.47,-13.62 -22,-26.2 0,0 1.25,17 22,17 20.75,0 22,-17 22,-17 z"
 		}
 	],
+  horn: [
+    { none: true }, { none: true },
+    {
+      h: 20,
+      w: 14,
+      path: "M 7.3705357,14.462797 2.8348215,3.3124997 11.717262,10.116071 c 0,0 1.889881,4.91369 -4.3467263,4.346726 z",
+      f: "white",
+      anchor: [10, 16]
+    },
+    {
+      h: 23,
+      w: 15,
+      path: "m 10.4,17.5 c 0,0 -11,-8.5 -9.5,-10 C 2.5,5.5 10.8,1 10.8,1 c 0,0 -5.5,4.3 -4,7.5 1.5,3.2 7,5 7,5 0,0 0.7,5 -3.5,3.5 z",
+      f: "white",
+      anchor: [12, 20]
+    },
+    {
+      h: 26,
+      w: 15,
+      path: "m 10,20 c 0,0 -10,-8 -9,-10 1,-1 2,-9 2,-9 0,0 1,7 3,10 1,3 7,5 7,5 0,0 0,5 -3,3 z",
+      f: "white",
+      anchor: [12, 22]
+    },
+    {
+      h: 26,
+      w: 5,
+      path: "m 2,21 c 0,0 -2,-4 -1,-9 C 1,7 3,0 3,0 c 0,0 -2,13 -0,15 1,2 2,3 2,3 0,0 0,2 -2,2 z",
+      f: "white",
+      anchor: [4, 24]
+    },
+    {
+      h: 24,
+      w: 30,
+      path: "m 5,0 c 0,1 -7,9 -3,13 3,4 10,4 10,4 l 13,0 c 0,0 4,-4 0,-4 -6,0 -14,0 -14,0 0,0 -6,0 -7,-3 C 3,7 5,0 5,0 Z",
+      f: "white",
+      anchor: [25, 20]
+    },
+    {
+      h: 36,
+      w: 11,
+      path: "m 6,30 c 0,0 -5,-5 -3,-12 1,-6 5,-16 5,-16 0,0 -3,20 -0,23 2,3 1,3 1,3 0,0 1,3 -3,2 z",
+      f: "white",
+      anchor: [8, 32]
+    },
+    { 
+      h: 12,
+      w: 9,
+      path: "m 2,7 c 0,0 -4,-9 1,-6 6,2 4,1 4,1 0,0 0,6 -5,4 z",
+      f: "white",
+      anchor: [5, 9]
+    }
+    { // Antenna
+      h: 32,
+      w: 18,
+      path: "m 17,16 c 0,0 -4,-23 -13,-13 -7,9 0,9 0,9 0,0 3,0 2,-2 C 5,7 4,9 4,9 c 0,0 3,2 -1,1 -3,0 3,-11 6,-9 1,1 5,9 5,12 0,2 0,3 0,3 1,0 2,0 2,0 z",
+      anchor: [16, 20]
+    },
+    { 
+      h: 16,
+      w: 14,
+      path: "M 13,10 C 12,10 12,-4 3,2 -3,7 4,7 3,7 10,2 3,3 3,6 0,6 5,0 8,2 c 1,1 2,2 2,5 0,2 0,3 0,3 1,0 2,0 2,0 z",
+      anchor: [12, 14]
+    },
+    { // Bump
+      h: 12,
+      w: 9,
+      path: "m 2,7 c 0,0 -4,-9 1,-6 6,2 4,1 4,1 0,0 0,6 -5,4 z",
+      anchor: [5, 9]
+    }
+
+    
+  ],
 	mouth: [
     {
       none: true
@@ -866,6 +938,7 @@ const skeletons = [
   	feet: [20, 20],
   	ear: [25, -60],
   	head: [0, -40],
+    horn: [15, -55],
   	eye: [15, -40],
   	mouth: [0, -20]
   },
@@ -874,6 +947,7 @@ const skeletons = [
     feet: [20, 20],
     ear: [15, -40],
     head: [0, 0],
+    horn: [15, -15],
     eye: [15, 0],
     mouth: [0, 15]
   }
@@ -947,7 +1021,8 @@ function randomAnatomy() {
 			ear: randi(shapes.ear),
 			head: randi(shapes.head),
 			eye: randi(shapes.eye),
-			mouth: randi(shapes.mouth)
+			mouth: randi(shapes.mouth),
+      horn: randi(shapes.horn)
 		},
 		colors: {
 			default: randomPastel(),
@@ -1299,6 +1374,14 @@ function start() {
 	document.getElementById('game').style.display = 'block';
   themeAudio.play();
 	land();
+  // Coil thing
+  if(document.monetization) {
+    document.monetization.addEventListener('monetizationstart', function() {
+      if (document.monetization.state === 'started') {
+        alert('As a Coil Subscriber, your Action Points will recover much quicker!');
+      }
+    });
+  }
 }
 
 window.init = init;
