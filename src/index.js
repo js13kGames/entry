@@ -1472,7 +1472,7 @@
 
   // import * as style from './Container.linaria.style';
   var Container = (function (state, actions) {
-      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(13); } },
+      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(0); } },
           h("div", { "class": wrapper },
               h(Display, null),
               h(Numpad, null))));

@@ -1,6 +1,6 @@
 {
   "name": "Back to School",
-  "description": "This is  a image",
+  "description": "This is a simple math game that requires you to have backward thinking",
   "images": {
     "image_large": "image_large.jpg",
     "image_thumbnail": "image_small.jpg"
