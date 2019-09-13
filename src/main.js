@@ -1171,6 +1171,7 @@ function catchit() {
 	}
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
+  message('');
 	message2('You catch the ' + currentMonster.name + '!');
   const cid = currentMonster.id;
 	currentMonster = false;
