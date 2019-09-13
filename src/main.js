@@ -1122,7 +1122,6 @@ function setupUI() {
 		button.addEventListener("click", cb);
 	}
 
-	addButton('Backpack', () => backpack());
 	addButton('North', () => move(0, -1));
 	addButton('South', () => move(0, 1));
 	addButton('West', () => move(-1, 0));
@@ -1133,7 +1132,7 @@ function setupUI() {
 
 function move(dx, dy) {
 	if (model.p < 1) {
-		message('Not enough energy points');
+		message('Not enough action points');
 		return;
 	}
 	showingBackpack = false;
@@ -1173,10 +1172,11 @@ function catchit() {
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
 	message2('You catch the ' + currentMonster.name + '!');
+  const cid = currentMonster.id;
 	currentMonster = false;
 	save();
 	update();
-	backpack();
+	backpack(cid);
 }
 
 
@@ -1271,7 +1271,7 @@ function showMonster(anatomy, x, y, container, scale) {
 }
 
 function update () {
-  document.getElementById("energyL").innerHTML = 'Energy: ' + model.p;
+  document.getElementById("energyL").innerHTML = 'AP ' + model.p;
 	document.getElementById("location").innerHTML = locs[model.x][model.y].name;
 	if (!showingBackpack) {
 		document.getElementById("container").innerHTML = '';
@@ -1283,23 +1283,29 @@ function update () {
 
 function message(m) {
 	document.getElementById("message").innerHTML = m;
-  document.getElementById("cmessage").innerHTML = '';
 }
 
 function message2(m) {
   document.getElementById("cmessage").innerHTML = m;
-  document.getElementById("message").innerHTML = '';
+  document.getElementById("cmessage").style.display = 'block';
+  setTimeout(() => { 
+    document.getElementById("cmessage").style.display = 'none';
+  }, 5000);
 }
 
 let showingBackpack = false;
-function backpack() {
+function backpack(highlightId) {
 	showingBackpack = !showingBackpack;
 	if (showingBackpack) {
 		document.getElementById("container").innerHTML = '';
 		count = 0;
+    var label = document.createElement("p");
+    document.getElementById("container").appendChild(label);
+
 		Object.keys(model.m).forEach(key => {
 			if (!defs[key]) return;
 			var div = document.createElement("div");
+      div.id = 'mi'+defs[key].id;
 			div.style.position = 'relative';
 			div.style.display = 'inline-block';
 			div.style.width = '120px';
@@ -1309,6 +1315,9 @@ function backpack() {
       div.style.margin = '5px';
       div.style.verticalAlign = 'top';
 			showMonster(defs[key], 60, 140, div, 1);
+      var a = document.createElement("a");
+      a.name = 'm'+defs[key].id;
+      div.appendChild(a);
 			var label = document.createElement("p");
 			label.style.textAlign = 'center';
 			label.innerHTML = '#'+defs[key].id+' - '+defs[key].name;
@@ -1316,9 +1325,11 @@ function backpack() {
 			document.getElementById("container").appendChild(div);
 			count++;
 		});
-		var label = document.createElement("p");
-		label.innerHTML = Math.round((count/151)*100)+"% of monsters captured.";
-		document.getElementById("container").appendChild(label);
+    label.innerHTML = Math.round((count/151)*100)+"% of monsters captured.";
+    if (highlightId) {
+      document.getElementById('mi'+highlightId).style.backgroundColor = '#ccc';
+      location.hash = '#m'+highlightId;
+    }
 	} else {
 		update();
 	}
@@ -1421,3 +1432,6 @@ function start() {
 
 window.init = init;
 window.start = start;
+window.bpm = {
+  backpack
+}
