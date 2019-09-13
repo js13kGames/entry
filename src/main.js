@@ -750,6 +750,23 @@ var shapes = {
 			shpath: "m 45.48,23.5 c 2.52,12.26 1.35,26.2 -22,26.2 -23.35,0 -23.47,-13.62 -22,-26.2 0,0 1.25,17 22,17 20.75,0 22,-17 22,-17 z"
 		}
 	],
+  tail: [
+    { none: true }, { none: true },
+    {
+      h: 50,
+      w: 38,
+      path: "m 2.4568452,35.251488 5.102677,7.559525 c 0,0 20.9776798,0.94494 26.8363108,-8.126489 5.858629,-9.071429 -0.755954,-34.01785746 -0.755954,-34.01785746 0,0 1.13393,31.75000046 -8.693451,33.26190446 C 15.119046,35.440476 3.0238102,30.715774 3.0238102,30.715774 l -0.755955,5.291666",
+      anchor: [8, 40]
+    },
+    {
+      h: 80,
+      w: 55,
+      path: "m 1.3116855,57.596694 7.7121056,12.50019 c 0,0 27.4208319,4.375065 36.2754749,-10.625161 8.85464,-15.000227 3.141967,-59.06339016 3.141967,-59.06339016 0,0 -15.995482,41.87563216 -30.848431,44.37566816 C 2.7398514,47.284039 2.1685875,50.096582 2.1685875,50.096582 l -1.1425385,8.75013",
+      anchor: [11, 70]
+    }
+    
+  ],
+
   horn: [
     { none: true }, { none: true },
     {
@@ -800,7 +817,7 @@ var shapes = {
       path: "m 2,7 c 0,0 -4,-9 1,-6 6,2 4,1 4,1 0,0 0,6 -5,4 z",
       f: "white",
       anchor: [5, 9]
-    }
+    },
     { // Antenna
       h: 32,
       w: 18,
@@ -933,6 +950,7 @@ var shapes = {
 
 const skeletons = [  
   {
+    tail: [0, 0],
   	arm: [20, 0],
   	body: [0, 0],
   	feet: [20, 20],
@@ -943,6 +961,7 @@ const skeletons = [
   	mouth: [0, -20]
   },
   {
+    // tail: [0, 0], doesnt look good in headbops
     arm: [20, 0],
     feet: [20, 20],
     ear: [15, -40],
@@ -1015,6 +1034,7 @@ function randomAnatomy() {
 		type: rands.of(skeletons),
     rarity: rarity(),
 		bps: {
+      tail: randi(shapes.tail),
 			arm: randi(shapes.arm),
 			body: randi(shapes.body),
 			feet: randi(shapes.feet),
@@ -1174,8 +1194,12 @@ function sPath(pathCommands) {
 	return '<path fill="none" stroke="#222222" stroke-width="1" d="'+pathCommands+'"/>';
 }
 
-function createCircle(fillColor, bp) {
-	return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="1" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
+function createCircle(fillColor, bp, skipStroke) {
+  if (skipStroke) {
+    return '<ellipse fill="'+fillColor+'" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
+  } else {
+    return '<ellipse fill="'+fillColor+'" stroke="#222222" stroke-width="1" cx="'+bp.cx+'" cy="'+bp.cy+'" rx="'+bp.rx+'" ry="'+bp.ry+'"/>';
+  }
 }
 
 function createPoly(points) {
@@ -1218,7 +1242,7 @@ function createElement(bodyPartKey, bodyParts, colors, x, y, flip, container) {
 		if (bodyPart.p2)
 			svgContent += createPath(bodyPart.f2 || color, bodyPart.p2);
 		if (bodyPart.c2)
-			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2);
+			svgContent += createCircle(bodyPart.c2.f || color, bodyPart.c2, true);
     if (bodyPart.polys) bodyPart.polys.forEach(poly => svgContent += createPoly(poly));
 	});
 	svgContent += '</svg>';
