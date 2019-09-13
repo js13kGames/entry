@@ -1,0 +1,33 @@
+{
+  "name": "back-to-school-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "rollup -c rollup.config.js -w & serve src",
+    "build": "NODE_ENV=production ./scripts/build.sh",
+    "lint": "tslint -c tslint.json src/**/*.ts src/**/*.tsx",
+    "clean": "./scripts/clean.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "fawwaz.muhammad@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "html-minifier": "^4.0.0",
+    "rollup": "^1.21.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-typescript2": "^0.24.1",
+    "serve": "^11.1.0",
+    "tslint": "^5.20.0",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "hyperapp": "^1.2.0",
+    "picostyle": "^2.2.0"
+  }
+}
