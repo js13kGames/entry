@@ -2,7 +2,7 @@ import { css } from '../../utils/picostyle';
 import * as Token from '../../utils/token';
 
 export const display = css({
-  flex: 1,
+  flex: "1",
   padding: "48px",
 })
 

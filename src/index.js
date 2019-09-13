@@ -885,7 +885,7 @@
   var displayFgLightColor = "#a6b8a2";
 
   var display = css({
-      flex: 1,
+      flex: "1",
       padding: "48px"
   });
   var displayWrapper = css({
@@ -1001,6 +1001,7 @@
                   return "\uFF08\u2312\u25BD\u2312\uFF09";
           }
       };
+      var level = currScreen.level;
       // return (
       //   <div>
       //     <h1>Level: {isMainGameScreen && (currScreen as MainGameScreen).level}</h1>
@@ -1017,7 +1018,7 @@
               h("div", { "class": displayHeader },
                   h("div", { "class": displayLevel },
                       "Level : ",
-                      currScreen.level),
+                      level),
                   h("div", { "class": displaySolarPanel },
                       h("div", { "class": displaySolarPanelElement }),
                       h("div", { "class": displaySolarPanelElement }),
@@ -1029,43 +1030,155 @@
                       h("div", { "class": classnames(displayBodyTitleElement, displayBodyTitleElementCounter) }, "GOALS: 200")),
                   h("div", { "class": displayBodyContent },
                       h("div", { "class": displayBodyContentBackground }, "888888"),
-                      h("div", { "class": classnames((_a = {}, _a[displayBodyContentMain] = true, _a[fontSizeNormal] = isMainGameScreen$1, _a[fontSizeMini] = !isMainGameScreen$1, _a)) }, "the quick brown fox jumps over the lazy dog. 01234567890"))))));
+                      h("div", { "class": classnames((_a = {},
+                              _a[displayBodyContentMain] = true,
+                              _a[fontSizeNormal] = isMainGameScreen$1,
+                              _a[fontSizeMini] = !isMainGameScreen$1,
+                              _a)) }, "the quick brown fox jumps over the lazy dog. 01234567890"))))));
   }; };
 
-  var getActionToInvoke = function (type) {
-      switch (type) {
-          case ChoiceType.ADDITION:
-              return "addOperator";
-          case ChoiceType.MULTIPLY:
-              return "multiplyOperator";
-          case ChoiceType.DIVISION:
-              return "divisionOperator";
-          case ChoiceType.DELETE:
-              return "deleteOperator";
-          default:
-              // cuma biar lolos typechecking
-              return "addOperator";
+  var _a;
+  var keys = css({
+      flex: "1",
+      paddingTop: "32px",
+      paddingLeft: "48px",
+      paddingRight: "48px",
+      paddingBottom: "32px",
+      display: "flex",
+      flexDirection: "column"
+  });
+  var row = css({
+      flex: "1",
+      display: "flex"
+  });
+  var button = css({
+      position: "relative",
+      top: "0px",
+      marginTop: "0px",
+      marginBottom: "10px",
+      height: "100%",
+      border: "0px",
+      cursor: "pointer",
+      width: "100%",
+      color: "#fff",
+      fontFamily: "sans-serif",
+      fontSize: "40px",
+      borderRadius: "8px",
+      opacity: "0.9",
+      '&:active': {
+          boxShadow: "none",
+          top: "0px",
+          marginBottom: "0px"
+      },
+      '&:hover': {
+          opacity: 1
       }
-  };
+  });
+  var column = css((_a = {
+          flex: "1",
+          margin: "8px",
+          display: "flex",
+          backgroundColor: "#b6b0a4",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: "8px",
+          boxShadow: "inset 0px 8px 0px 0px #cdc5ba"
+      },
+      _a["&:active " + button] = {
+          boxShadow: "none",
+          top: "0px",
+          marginBottom: "0px"
+      },
+      _a));
+  /**
+   * Button Variants
+   */
+  var buttonPlus = css({
+      backgroundColor: "#45494c",
+      boxShadow: "0px 10px 0px 0px #1a1a1c"
+  });
+  var buttonClear = css({
+      backgroundColor: "#c62e2d",
+      boxShadow: "0px 10px 0px 0px #962223"
+  });
+  var buttonAppend = css({
+      backgroundColor: "#8a7bd8",
+      boxShadow: "0px 10px 0px 0px #463a86"
+  });
+  var buttonShift = css({
+      backgroundColor: "#ec6c15",
+      boxShadow: "0px 10px 0px 0px #b54900"
+  });
+  var buttonConvert = css({
+      fontSize: "24px",
+      backgroundColor: "#ec6c15",
+      boxShadow: "0px 10px 0px 0px #b54900"
+  });
+  var buttonHelp = css({
+      backgroundColor: "#24a19d",
+      boxShadow: "0px 10px 0px 0px #1a7671"
+  });
+  var buttonOk = css({
+      backgroundColor: "#48ad2f",
+      boxShadow: "0px 10px 0px 0px #368323"
+  });
 
   var Numpad = function () { return function (state, action) {
       var screens = state.screens, screenPointer = state.screenPointer, gameState = state.gameState;
       var currScreen = screens[screenPointer];
       var _isMainGameScreen = isMainGameScreen(currScreen);
       var isCompleted = screenPointer === screens.length - 1;
-      return (h("div", null,
-          _isMainGameScreen &&
-              currScreen.choices.map(function (choice) {
-                  var fnName = getActionToInvoke(choice.type);
-                  return (h("button", { onclick: function () { return action[fnName].apply(action, choice.params); } }, choice.label));
-              }),
-          !isCompleted &&
-              _isMainGameScreen &&
-              (gameState === GameState.PLAYING || gameState === GameState.LOSE) && (h("button", { onclick: function () { return action.restartOperator(); } }, "CLR")),
-          !isCompleted && _isMainGameScreen && gameState === GameState.WIN && (h("button", { onclick: function () { return action.loadNextScreen(); } }, "OK")),
-          !isCompleted && !_isMainGameScreen && (h("button", { onclick: function () {
-                  action.confirmOperator();
-              } }, "OK"))));
+      // return (
+      //   <div>
+      //     {_isMainGameScreen &&
+      //       (currScreen as MainGameScreen).choices.map(choice => {
+      //         const fnName = getActionToInvoke(choice.type);
+      //         return (
+      //           <button onclick={() => action[fnName](...choice.params)}>
+      //             {choice.label}
+      //           </button>
+      //         );
+      //       })}
+      //     {!isCompleted &&
+      //       _isMainGameScreen &&
+      //       (gameState === GameState.PLAYING || gameState === GameState.LOSE) && (
+      //         <button onclick={() => action.restartOperator()}>CLR</button>
+      //       )}
+      //     {!isCompleted && _isMainGameScreen && gameState === GameState.WIN && (
+      //       <button onclick={() => action.loadNextScreen()}>OK</button>
+      //     )}
+      //     {!isCompleted && !_isMainGameScreen && (
+      //       <button
+      //         onclick={() => {
+      //           action.confirmOperator();
+      //         }}
+      //       >
+      //         OK
+      //       </button>
+      //     )}
+      //   </div>
+      // );
+      return (h("div", { "class": keys },
+          h("div", { "class": row },
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonPlus), onClick: 'console.log("test")' }, "+1")),
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonClear) }, "Clr")),
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonAppend) }, "1"))),
+          h("div", { "class": row },
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonConvert) }, "23 => 45")),
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonShift) }, "< <")),
+              h("div", { "class": column })),
+          h("div", { "class": row },
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonHelp) }, "?")),
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button, buttonOk) }, "Ok")),
+              h("div", { "class": column },
+                  h("button", { "class": classnames(button) }, "+1")))));
   }; };
 
   var container = css({
@@ -1084,6 +1197,7 @@
       borderRadius: "20px"
   });
 
+  // import * as style from './Container.linaria.style';
   var Container = (function (state, actions) {
       return (h("div", { "class": container, oncreate: actions.initScreen },
           h("div", { "class": wrapper },

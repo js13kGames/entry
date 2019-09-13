@@ -9,6 +9,7 @@ import Numpad from "../Numpad/Numpad";
 
 // Styling
 import * as style from './Container.style';
+// import * as style from './Container.linaria.style';
 
 export default (state: State, actions: Action) => {
   return (
