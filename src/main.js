@@ -1172,7 +1172,7 @@ function catchit() {
 	}
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
-	message('You catch the ' + currentMonster.name);
+	message2('You catch the ' + currentMonster.name + '!');
 	currentMonster = false;
 	save();
 	update();
@@ -1283,6 +1283,12 @@ function update () {
 
 function message(m) {
 	document.getElementById("message").innerHTML = m;
+  document.getElementById("cmessage").innerHTML = '';
+}
+
+function message2(m) {
+  document.getElementById("cmessage").innerHTML = m;
+  document.getElementById("message").innerHTML = '';
 }
 
 let showingBackpack = false;
