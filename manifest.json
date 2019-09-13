@@ -2,8 +2,8 @@
   "name": "bakpak",
   "description": "Find your way through the spoopy forest while defeating bosses and finding new extensions for your bakpak.\nControls: WASD- move, Mouse- use bakpak item, 1/2- switch bakpak item",
   "images" : {
-    "image_large": "pak/image_large.png",
-    "image_thumbnail": "pak/image_thumbnail.png"
+    "image_large": "image_large.png",
+    "image_thumbnail": "image_thumbnail.png"
   },
   "categories": ["Desktop"],
   "user" : {
