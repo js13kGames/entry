@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
-  },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
-  }
+	"name": "rec-recoil",
+	"description": "This game is BACK... from a year ago ^^; But I wanted to submit something for web monetization. A microphone is required for recording, but the game will run without it. Due to lack of support for the MediaRecorder API, recording will not work on iOS/Safari/Edge. It works on Android/Chrome/Firefox.",
+	"images": {
+		"image_large": "image-big.png",
+		"image_thumbnail": "image-small.png"
+	},
+	"categories": ["Web Monetization"],
+	"user": {
+		"name": "shu",
+		"website": "https://shu1.dev",
+		"twitter": "switchstyle"
+	}
 }
