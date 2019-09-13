@@ -3,7 +3,7 @@
   "description": "The died snakes become new obstacles. Earn your immortality.",
   "images" : {
     "image_large": "img/image-big.jpg",
-    "image_thumbnail": "img/image-small.jpg"
+    "image_thumbnail": "img/image-thumbnail.jpg"
   },
   "categories": ["Desktop", "WebXR"],
   "user" : {
