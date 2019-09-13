@@ -139,7 +139,6 @@ const initLevel3View = (onKeydown, onKeyup, onClick, images) => {
     winWindow.appendChild(winText);
     document.getElementById('root').appendChild(winWindow);
     
-    ctx.drawImage(background, 0, 0, body.clientWidth, body.clientHeight);
     ctx.drawImage(img, body.clientWidth / 2.5, body.clientHeight / 2.5, 300, 300);
   }
 
