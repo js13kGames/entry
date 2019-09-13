@@ -3,6 +3,6 @@
     "description": "Play as a porcupine in this survival simulator.\nCollect the berries from the bush, and bring the back to your burrow.\nWatch out for the bears! They will get faster the more berries they see you have!",
     "images" : {
       "image_large": "image_large.png",
-      "image_thumbnail": "image_thumbnail.png",
+      "image_thumbnail": "image_thumbnail.png"
     }
   }
