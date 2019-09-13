@@ -4,7 +4,7 @@ var initialState = {
     historySnakes: [],
     roundScore: 0,
     gameScore: 0,
-    heartScore: 3,
+    heartScore: 5,
     maxHeartScore: 9,
 }
 
@@ -21,8 +21,8 @@ window.game = Object.assign({
     status: 0,
 
     ctx: null,
-    width: 810,
-    height: 570,
+    width: 600,
+    height: 420,
     gridSize: 15,
     marginGrids: 0,
 
@@ -85,8 +85,8 @@ function newRound() {
 
     updateScore();
 
-    var pos = getRandomPos(4);
-    var speed = game.demo ? 0.4 : 0.05;
+    var pos = getRandomPos(5);
+    var speed = game.demo ? 0.3 : 0.1;
     game.snake = new Snake(pos[0], pos[1], 3, speed, game);
     setFood(true);
 
@@ -97,17 +97,15 @@ function newRound() {
 
 function newDemoHistorySnake() {
     var pos = getRandomPos(4);
-    var snake = new Snake(pos[0], pos[1], 3, 0.05, game);
+    var snake = new Snake(pos[0], pos[1], 3, 0.1, game);
     snake.food = getRandomPos();
     return snake;
 }
 
 function gameOver() {
-    console.log('game over');
     setTimeout(function () {
         game.scoreEl.style.visibility = 'hidden';
         game.startEl.style.display = 'block';
-        game.mainEl.style.opacity = 0.5;
         game.demo = true;
         var historySnakes = game.historySnakes;
         newGame();
@@ -132,7 +130,6 @@ function tick() {
 
     if (game.snake.checkCollision()) {
         game.status = 2;
-        console.log('collision');
         game.gameScore += game.roundScore;
         game.roundScore = 0;
         --game.heartScore;
@@ -175,7 +172,6 @@ function tick() {
 
     if (game.snake.checkScore(game.snake.food)) {
         game.roundScore = game.roundScore > 0 ? game.roundScore * 2 : 1;
-        console.log('eat!', game.gameScore);
         updateScore();
 
         game.snake.speedUp();
@@ -210,6 +206,10 @@ function render() {
 
     renderHistorySnakes();
     game.snake.render(ctx);
+
+    if (game.demo) {
+        renderTitle();
+    }
 }
 
 function renderHistorySnakes() {
@@ -230,16 +230,6 @@ function renderHistorySnakes() {
             renderSnake(game.ctx, lastFrame, true);
         }
     }
-    ctx.globalAlpha = 1;
-}
-
-function tickBeforeStart() {
-    game.ctx.clearRect(0, 0, game.width, game.height);
-    game.ctx.fillStyle = game.colorGrass;
-    game.ctx.fillRect(game.marginGrids * game.gridSize, game.marginGrids * game.gridSize,
-        game.insideWidth, game.insideHeight);
-
-    renderTitle();
 }
 
 function onKeydown(event) {
@@ -273,7 +263,6 @@ function onKeydown(event) {
 
 function start() {
     game.demo = false;
-    game.mainEl.style.opacity = 1;
     game.scoreEl.style.visibility = 'visible';
     game.startEl.style.display = 'none';
     newGame();
@@ -282,7 +271,7 @@ function start() {
 function setFood(clearHeart) {
     game.snake.food = getRandomPos();
 
-    if (game.roundScore > 16 && Math.random() > 0.9
+    if (game.roundScore >= 8 && Math.random() > 0.8
         && (clearHeart || !game.snake.heart)
     ) {
         game.snake.heart = getRandomPos();

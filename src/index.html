@@ -7,16 +7,16 @@
             }
 
             canvas {
-                width: 810px;
-                height: 570px;
+                width: 600px;
+                height: 420px;
                 position: relative;
-                /* background: #528258; */
                 margin: 20px 0;
             }
 
             #score-panel {
                 visibility: hidden;
-                font-size: 24px;
+                font-size: 18px;
+                margin-top: 10px;
                 color: #d1c4af;
             }
 
@@ -24,7 +24,7 @@
                 position: absolute;
                 left: 0;
                 right: 0;
-                top: 220px;
+                top: 180px;
                 height: 80px;
                 font-size: 120px;
                 z-index: 100;
@@ -34,19 +34,25 @@
 
             #main {
                 background: #d1c4af;
-                /* opacity: 0.5; */
             }
 
             #start {
                 display: none;
                 position: absolute;
-                top: 310px;
+                top: 400px;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                color: #585356;
+                background: #585356;
+                color: #d1c4af;
                 font-weight: 700;
-                font-size: 60px;
+                font-size: 22px;
                 cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 8px;
+            }
+
+            #about, #about a {
+                color: #d1c4af;
             }
         </style>
     </head>
@@ -55,12 +61,14 @@
         <div id="info">
             <div id="score-panel">
                 Score: <span id="score">0</span>,
-                Heart: <span id="heart">3</span>
+                HP: <span id="heart">3</span>
             </div>
         </div>
         <div id="count-down"></div>
         <canvas id="main"></canvas>
         <div id="start">START</div>
+
+        <div id="about">SNAKE IT BACK: The died snakes become new obstacles. Earn your immortality. <a href="https://github.com/Ovilia/snake-it-back" target="_blank">GitHub</a></div>
 
         <script src="util.js"></script>
         <script src="snake.js"></script>

@@ -94,7 +94,7 @@ Snake.prototype.render = function (ctx) {
 
     // render food
     ctx.fillStyle = game.colorFood;
-    var size = 3;
+    var size = 2;
     var pos = [
         (this.food[0] + 0.5 + game.marginGrids) * game.gridSize,
         (this.food[1] + 0.5 + game.marginGrids) * game.gridSize
@@ -124,7 +124,6 @@ Snake.prototype.checkScore = function (pos) {
     var head = this.body[0];
     var isEat = head[0] === pos[0] && head[1] == pos[1];
     if (isEat) {
-        console.log(head, pos)
         this._growNextTick = true;
         return true;
     }
@@ -162,7 +161,7 @@ Snake.prototype.checkCollision = function () {
 };
 
 Snake.prototype.speedUp = function (speed) {
-    this._skipFramePeriod *= 0.9;
+    this._skipFramePeriod *= 0.7;
 };
 
 Snake.prototype._recordHistory = function () {
