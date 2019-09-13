@@ -1,0 +1,2 @@
+The page must be served over HTTPS for A-Frame to work correctly on mobile.
+Generate an SSL certificate by running `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem`
