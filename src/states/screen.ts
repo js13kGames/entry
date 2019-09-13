@@ -6,7 +6,8 @@ export enum ChoiceType {
   DIVISION,
   DELETE,
   EMPTY,
-  NEXT
+  NEXT,
+  APPEND
 }
 
 export interface Choice {
@@ -48,9 +49,10 @@ export const screens: Array<Screen> = [
   {
     screenType: ScreenType.GUIDE,
     messages: [
-      "are you ready ?",
-      "tt is just a simple math",
-      "you only need to think from the back to the start"
+      "hi !\nmy name is numbie",
+      "this is just a simple math.",
+      "you must achieve the goal before running out of steps",
+      "pro tips : do backward thinking !"
     ]
   },
   {
@@ -64,17 +66,8 @@ export const screens: Array<Screen> = [
         type: ChoiceType.ADDITION,
         params: [1],
         label: "+1"
-      },
-      {
-        type: ChoiceType.ADDITION,
-        params: [-1],
-        label: "-1(debug)"
       }
     ]
-  },
-  {
-    screenType: ScreenType.GUIDE,
-    messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
   },
   {
     level: 2,
@@ -94,6 +87,10 @@ export const screens: Array<Screen> = [
         label: "+2"
       }
     ]
+  },
+  {
+    screenType: ScreenType.GUIDE,
+    messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
   },
   {
     level: 3,
@@ -122,29 +119,68 @@ export const screens: Array<Screen> = [
   {
     level: 4,
     screenType: ScreenType.PLAY,
-    goal: "4",
-    steps: 3,
-    initialValue: "3",
+    goal: "77",
+    steps: 2,
+    initialValue: "0",
     choices: [
       {
         type: ChoiceType.ADDITION,
-        params: [4],
-        label: "+4"
+        params: [7],
+        label: "+7"
       },
       {
         type: ChoiceType.MULTIPLY,
-        params: [4],
-        label: "x4"
-      },
-      {
-        type: ChoiceType.DIVISION,
-        params: [4],
-        label: "/4"
+        params: [11],
+        label: "x11"
       }
     ]
   },
   {
     level: 5,
+    screenType: ScreenType.PLAY,
+    goal: "75",
+    steps: 3,
+    initialValue: "10",
+    choices: [
+      {
+        type: ChoiceType.MULTIPLY,
+        params: [3],
+        label: "x3"
+      },
+      {
+        type: ChoiceType.ADDITION,
+        params: [-5],
+        label: "-5"
+      }
+    ]
+  },
+  {
+    screenType: ScreenType.GUIDE,
+    messages: [
+      "now i want to introduce you to new button.",
+      "this button remove last number"
+    ]
+  },
+  {
+    level: 7,
+    screenType: ScreenType.PLAY,
+    goal: "12",
+    steps: 3,
+    initialValue: "12345",
+    choices: [
+      {
+        type: ChoiceType.DELETE,
+        params: [],
+        label: "<<"
+      }
+    ]
+  },
+  {
+    screenType: ScreenType.GUIDE,
+    messages: ["still easy right? ."]
+  },
+  {
+    level: 8,
     screenType: ScreenType.PLAY,
     goal: "4",
     steps: 3,
@@ -164,6 +200,51 @@ export const screens: Array<Screen> = [
         type: ChoiceType.DELETE,
         params: [],
         label: "<<"
+      }
+    ]
+  },
+  {
+    level: 7,
+    screenType: ScreenType.PLAY,
+    goal: "4",
+    steps: 3,
+    initialValue: "0",
+    choices: [
+      {
+        type: ChoiceType.ADDITION,
+        params: [8],
+        label: "+8"
+      },
+      {
+        type: ChoiceType.MULTIPLY,
+        params: [5],
+        label: "x5"
+      },
+      {
+        type: ChoiceType.DELETE,
+        params: [],
+        label: "<<"
+      }
+    ]
+  },
+  {
+    screenType: ScreenType.GUIDE,
+    messages: [
+      "what if i add more button ?",
+      "this button append a number in the end of your number"
+    ]
+  },
+  {
+    level: 7,
+    screenType: ScreenType.PLAY,
+    goal: "45",
+    steps: 1,
+    initialValue: "4",
+    choices: [
+      {
+        type: ChoiceType.APPEND,
+        params: [5],
+        label: "5"
       }
     ]
   },

@@ -413,6 +413,7 @@
       ChoiceType[ChoiceType["DELETE"] = 5] = "DELETE";
       ChoiceType[ChoiceType["EMPTY"] = 6] = "EMPTY";
       ChoiceType[ChoiceType["NEXT"] = 7] = "NEXT";
+      ChoiceType[ChoiceType["APPEND"] = 8] = "APPEND";
   })(ChoiceType || (ChoiceType = {}));
   var ScreenType;
   (function (ScreenType) {
@@ -426,9 +427,10 @@
       {
           screenType: ScreenType.GUIDE,
           messages: [
-              "are you ready ?",
-              "tt is just a simple math",
-              "you only need to think from the back to the start"
+              "hi !\nmy name is numbie",
+              "this is just a simple math.",
+              "you must achieve the goal before running out of steps",
+              "pro tips : do backward thinking !"
           ]
       },
       {
@@ -442,17 +444,8 @@
                   type: ChoiceType.ADDITION,
                   params: [1],
                   label: "+1"
-              },
-              {
-                  type: ChoiceType.ADDITION,
-                  params: [-1],
-                  label: "-1(debug)"
               }
           ]
-      },
-      {
-          screenType: ScreenType.GUIDE,
-          messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
       },
       {
           level: 2,
@@ -472,6 +465,10 @@
                   label: "+2"
               }
           ]
+      },
+      {
+          screenType: ScreenType.GUIDE,
+          messages: ["seems easy huh ?", "let's move to another level !\n can you ?"]
       },
       {
           level: 3,
@@ -500,29 +497,68 @@
       {
           level: 4,
           screenType: ScreenType.PLAY,
-          goal: "4",
-          steps: 3,
-          initialValue: "3",
+          goal: "77",
+          steps: 2,
+          initialValue: "0",
           choices: [
               {
                   type: ChoiceType.ADDITION,
-                  params: [4],
-                  label: "+4"
+                  params: [7],
+                  label: "+7"
               },
               {
                   type: ChoiceType.MULTIPLY,
-                  params: [4],
-                  label: "x4"
-              },
-              {
-                  type: ChoiceType.DIVISION,
-                  params: [4],
-                  label: "/4"
+                  params: [11],
+                  label: "x11"
               }
           ]
       },
       {
           level: 5,
+          screenType: ScreenType.PLAY,
+          goal: "75",
+          steps: 3,
+          initialValue: "10",
+          choices: [
+              {
+                  type: ChoiceType.MULTIPLY,
+                  params: [3],
+                  label: "x3"
+              },
+              {
+                  type: ChoiceType.ADDITION,
+                  params: [-5],
+                  label: "-5"
+              }
+          ]
+      },
+      {
+          screenType: ScreenType.GUIDE,
+          messages: [
+              "now i want to introduce you to new button.",
+              "this button remove last number"
+          ]
+      },
+      {
+          level: 7,
+          screenType: ScreenType.PLAY,
+          goal: "12",
+          steps: 3,
+          initialValue: "12345",
+          choices: [
+              {
+                  type: ChoiceType.DELETE,
+                  params: [],
+                  label: "<<"
+              }
+          ]
+      },
+      {
+          screenType: ScreenType.GUIDE,
+          messages: ["still easy right? ."]
+      },
+      {
+          level: 8,
           screenType: ScreenType.PLAY,
           goal: "4",
           steps: 3,
@@ -542,6 +578,51 @@
                   type: ChoiceType.DELETE,
                   params: [],
                   label: "<<"
+              }
+          ]
+      },
+      {
+          level: 7,
+          screenType: ScreenType.PLAY,
+          goal: "4",
+          steps: 3,
+          initialValue: "0",
+          choices: [
+              {
+                  type: ChoiceType.ADDITION,
+                  params: [8],
+                  label: "+8"
+              },
+              {
+                  type: ChoiceType.MULTIPLY,
+                  params: [5],
+                  label: "x5"
+              },
+              {
+                  type: ChoiceType.DELETE,
+                  params: [],
+                  label: "<<"
+              }
+          ]
+      },
+      {
+          screenType: ScreenType.GUIDE,
+          messages: [
+              "what if i add more button ?",
+              "this button append a number in the end of your number"
+          ]
+      },
+      {
+          level: 7,
+          screenType: ScreenType.PLAY,
+          goal: "45",
+          steps: 1,
+          initialValue: "4",
+          choices: [
+              {
+                  type: ChoiceType.APPEND,
+                  params: [5],
+                  label: "5"
               }
           ]
       },
@@ -736,6 +817,35 @@
               var currDisplayMsg = state.displayMsg;
               var _nextValue = currDisplayMsg.substring(0, currDisplayMsg.length - 1);
               var nextValue = _nextValue === "" ? "0" : _nextValue;
+              var currScreen = state.screens[state.screenPointer];
+              // decrement steps
+              var nextRemainingMove = state.remainingMove - 1;
+              // const nextAcceptInput = nextRemainingMove > 0;
+              // Evaluate if meet win condition
+              if (nextValue === currScreen.goal) {
+                  return {
+                      displayMsg: nextValue,
+                      remainingMove: nextRemainingMove,
+                      gameState: GameState.WIN
+                  };
+              }
+              if (!nextRemainingMove) {
+                  return {
+                      displayMsg: nextValue,
+                      remainingMove: nextRemainingMove,
+                      gameState: GameState.LOSE
+                  };
+              }
+              return {
+                  displayMsg: nextValue,
+                  remainingMove: nextRemainingMove
+              };
+          }
+      }; },
+      appendOperator: function (num) { return function (state) {
+          if (state.gameState === GameState.PLAYING) {
+              var currDisplayMsg = state.displayMsg;
+              var nextValue = "" + currDisplayMsg + num;
               var currScreen = state.screens[state.screenPointer];
               // decrement steps
               var nextRemainingMove = state.remainingMove - 1;
@@ -1202,6 +1312,8 @@
               return "restartOperator";
           case ChoiceType.NEXT:
               return "loadNextScreen";
+          case ChoiceType.APPEND:
+              return "appendOperator";
           default:
               // cuma biar lolos typechecking
               return "addOperator";
@@ -1278,6 +1390,7 @@
               _a[buttonClear$1] = type === ChoiceType.CLR,
               _a[buttonOk$1] = [ChoiceType.CONFIRM, ChoiceType.NEXT].includes(type),
               _a[buttonShift$1] = [ChoiceType.DELETE].includes(type),
+              _a[buttonAppend$1] = [ChoiceType.APPEND].includes(type),
               _a));
           var fnName = getActionToInvoke(type);
           return (h("button", { "class": buttonStyle, onclick: function () {
@@ -1356,7 +1469,7 @@
 
   // import * as style from './Container.linaria.style';
   var Container = (function (state, actions) {
-      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(0); } },
+      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(13); } },
           h("div", { "class": wrapper },
               h(Display, null),
               h(Numpad, null))));

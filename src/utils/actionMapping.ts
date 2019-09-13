@@ -17,6 +17,8 @@ export const getActionToInvoke = (type: ChoiceType): keyof Action => {
       return "restartOperator";
     case ChoiceType.NEXT:
       return "loadNextScreen";
+    case ChoiceType.APPEND:
+      return "appendOperator";
     default:
       // cuma biar lolos typechecking
       return "addOperator";

@@ -31,7 +31,8 @@ const Button: Component<ButtonProps, State, Action> = ({
     ].includes(type),
     [style.buttonClear]: type === ChoiceType.CLR,
     [style.buttonOk]: [ChoiceType.CONFIRM, ChoiceType.NEXT].includes(type),
-    [style.buttonShift]: [ChoiceType.DELETE].includes(type)
+    [style.buttonShift]: [ChoiceType.DELETE].includes(type),
+    [style.buttonAppend]: [ChoiceType.APPEND].includes(type)
   });
 
   const fnName = getActionToInvoke(type);

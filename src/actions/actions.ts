@@ -18,6 +18,7 @@ export interface Action {
   multiplyOperator: GameAction;
   divisionOperator: GameAction;
   deleteOperator: GameAction;
+  appendOperator: GameAction;
 }
 
 export const actions: ActionsType<State, Action> = {
@@ -205,6 +206,39 @@ export const actions: ActionsType<State, Action> = {
       const currDisplayMsg = state.displayMsg;
       let _nextValue = currDisplayMsg.substring(0, currDisplayMsg.length - 1);
       const nextValue = _nextValue === "" ? "0" : _nextValue;
+      const currScreen = state.screens[state.screenPointer];
+
+      // decrement steps
+      const nextRemainingMove = state.remainingMove - 1;
+      // const nextAcceptInput = nextRemainingMove > 0;
+
+      // Evaluate if meet win condition
+      if (nextValue === (currScreen as MainGameScreen).goal) {
+        return {
+          displayMsg: nextValue,
+          remainingMove: nextRemainingMove,
+          gameState: GameState.WIN
+        };
+      }
+
+      if (!nextRemainingMove) {
+        return {
+          displayMsg: nextValue,
+          remainingMove: nextRemainingMove,
+          gameState: GameState.LOSE
+        };
+      }
+
+      return {
+        displayMsg: nextValue,
+        remainingMove: nextRemainingMove
+      };
+    }
+  },
+  appendOperator: (num: number) => (state: State) => {
+    if (state.gameState === GameState.PLAYING) {
+      const currDisplayMsg = state.displayMsg;
+      let nextValue = `${currDisplayMsg}${num}`;
       const currScreen = state.screens[state.screenPointer];
 
       // decrement steps
