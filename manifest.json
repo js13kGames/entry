@@ -2,12 +2,12 @@
   "name": "Ape Naps",
   "description": "in this game you play as mama ape carrying her three baby apes back home on her back and to some Bach, so she can finally nap. Controls: left=a, right=d, space=jump, w=wiggle",
   "images" : {
-    "image_large": "apenaps_large.png",
-    "image_thumbnail": "apenaps_small.png"
+    "image_large": "apenaps_large.jpg",
+    "image_thumbnail": "apenaps_small.jpg"
   },
   "categories": ["Desktop"],
   "user" : {
-    "name": "Samuel Paré-Chouinard",
+    "name": "Samuel Pare-Chouinard",
     "website": "",
     "twitter": ""
   }
