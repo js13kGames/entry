@@ -159,13 +159,13 @@ class UI {
     let d     = this._dialog.cloneNode(true);
 
     if(d) {
-      d.id                        = d.id + '-' + num;
-      if(d.childNodes[5]) {
-        d.childNodes[5].id          = 'main-' + num;
-        d.childNodes[5].textContent = main; 
+      d.id                          = d.id + '-' + num;
+      if(d.querySelector('#ui1')) {
+        d.querySelector('#ui1').textContent = main; 
+        d.querySelector('#ui1').id  = 'main-' + num;
       }
-      if(d.childNodes[7]) {
-        d.childNodes[7].textContent = sub; 
+      if(d.querySelector('#ui2')) {
+        d.querySelector('#ui2').textContent = sub; 
       }
       d.classList.add(...classes, 'active')
       setTimeout(_ => {

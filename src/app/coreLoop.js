@@ -33,8 +33,8 @@ export default class {
 
       // Initialize Game State;
       this._introSeq      = false; 
-      this._state         = 'START_LEVEL'; 
-      this._level         = 7; 
+      this._state         = 'INTRODUCTION'; 
+      this._level         = 0; 
       this._levels        = levels;
       w._level            = this._level;
       w._levels           = levels; 
