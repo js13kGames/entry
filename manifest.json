@@ -1,14 +1,13 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
-  },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
-  }
+    "name": "Yet Another Doom Clone",
+    "description": "It's yet another doom clone.\n\nKill the enemies and get through all the levels. But be careful, don't forget the way back.\n\nControls:\nMove: WASD\nAim/Shoot: Mouse/Click",
+    "images" : {
+        "image_large": "image_large.png",
+        "image_thumbnail": "image_small.png",
+    },
+    "user": {
+        "name": "Nicholas Carlini",
+        "website": "https://nicholas.carlini.com"
+    },
+    "categories": ["Desktop"]
 }
