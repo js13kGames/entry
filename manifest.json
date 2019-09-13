@@ -1,14 +1,8 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
-  },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Bring Back the Berries",
+    "description": "Play as a porcupine in this survival simulator.\nCollect the berries from the bush, and bring the back to your burrow.\nWatch out for the bears! They will get faster the more berries they see you have!",
+    "images" : {
+      "image_large": "image_large.png",
+      "image_thumbnail": "image_thumbnail.png",
+    }
   }
-}
