@@ -6,6 +6,7 @@ export enum ChoiceType {
   DIVISION,
   DELETE,
   EMPTY,
+  NEXT
 }
 
 export interface Choice {

@@ -412,6 +412,7 @@
       ChoiceType[ChoiceType["DIVISION"] = 4] = "DIVISION";
       ChoiceType[ChoiceType["DELETE"] = 5] = "DELETE";
       ChoiceType[ChoiceType["EMPTY"] = 6] = "EMPTY";
+      ChoiceType[ChoiceType["NEXT"] = 7] = "NEXT";
   })(ChoiceType || (ChoiceType = {}));
   var ScreenType;
   (function (ScreenType) {
@@ -1195,6 +1196,12 @@
               return "divisionOperator";
           case ChoiceType.DELETE:
               return "deleteOperator";
+          case ChoiceType.CONFIRM:
+              return "confirmOperator";
+          case ChoiceType.CLR:
+              return "restartOperator";
+          case ChoiceType.NEXT:
+              return "loadNextScreen";
           default:
               // cuma biar lolos typechecking
               return "addOperator";
@@ -1269,7 +1276,7 @@
                   ChoiceType.DIVISION
               ].includes(type),
               _a[buttonClear$1] = type === ChoiceType.CLR,
-              _a[buttonOk$1] = type === ChoiceType.CONFIRM,
+              _a[buttonOk$1] = [ChoiceType.CONFIRM, ChoiceType.NEXT].includes(type),
               _a[buttonShift$1] = [ChoiceType.DELETE].includes(type),
               _a));
           var fnName = getActionToInvoke(type);
@@ -1283,7 +1290,7 @@
   var Numpad = function () { return function (state, action) {
       var screens = state.screens, screenPointer = state.screenPointer, gameState = state.gameState;
       var currScreen = screens[screenPointer];
-      var _isMainGameScreen = isMainGameScreen(currScreen);
+      var isMainGameScreen$1 = isMainGameScreen(currScreen);
       var isCompleted = screenPointer === screens.length - 1;
       // fill remainig array buttons with empty state
       var choices = currScreen.choices || [];
@@ -1295,11 +1302,28 @@
               label: ""
           });
       }
-      buttons.push({
-          type: ChoiceType.CONFIRM,
-          params: [],
-          label: "Ok"
-      });
+      var getExtraButton = function (gameState) {
+          if (!isMainGameScreen$1) {
+              return {
+                  type: ChoiceType.CONFIRM,
+                  params: [],
+                  label: "Ok"
+              };
+          }
+          if (gameState === GameState.WIN) {
+              return {
+                  type: ChoiceType.NEXT,
+                  params: [],
+                  label: "Ok"
+              };
+          }
+          return {
+              type: ChoiceType.CLR,
+              params: [],
+              label: "CLR"
+          };
+      };
+      buttons.push(getExtraButton(gameState));
       // convert button to 2d array
       var NUM_OF_ROW = 3, NUM_OF_COL = 3;
       var buttonGrid = [];
@@ -1311,38 +1335,6 @@
           }
           buttonGrid.push(row$1);
       }
-      // return (
-      //   <div>
-      //     {_isMainGameScreen &&
-      //       (currScreen as MainGameScreen).choices.map(choice => {
-      //         const fnName = getActionToInvoke(choice.type);
-      //         return (
-      //           <button onclick={() => action[fnName](...choice.params)}>
-      //             {choice.label}
-      //           </button>
-      //         );
-      //       })}
-      //     {!isCompleted &&
-      //       _isMainGameScreen &&
-      //       (gameState === GameState.PLAYING || gameState === GameState.LOSE) && (
-      //         <button onclick={() => action.restartOperator()}>CLR</button>
-      //       )}
-      //     {!isCompleted && _isMainGameScreen && gameState === GameState.WIN && (
-      //       <button onclick={() => action.loadNextScreen()}>OK</button>
-      //     )}
-      //     {!isCompleted && !_isMainGameScreen && (
-      //       <button
-      //         onclick={() => {
-      //           action.confirmOperator();
-      //         }}
-      //       >
-      //         OK
-      //       </button>
-      //     )}
-      //   </div>
-      // );
-      // console.log("buttongrid");
-      // console.log(buttonGrid);
       return (h("div", { "class": keys }, buttonGrid.map(function (row$1) { return (h("div", { "class": row }, row$1.map(function (button) { return (h("div", { "class": column }, button.type !== ChoiceType.EMPTY && h(Button, __assign({}, button)))); }))); })));
   }; };
 
@@ -1364,7 +1356,7 @@
 
   // import * as style from './Container.linaria.style';
   var Container = (function (state, actions) {
-      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(1); } },
+      return (h("div", { "class": container, oncreate: function () { return actions.loadScreen(0); } },
           h("div", { "class": wrapper },
               h(Display, null),
               h(Numpad, null))));

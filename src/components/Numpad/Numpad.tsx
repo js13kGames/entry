@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { State, GameState } from "../../states/state";
 import { Action } from "../../actions/actions";
 import {
-  isMainGameScreen,
+  isMainGameScreen as _isMainGameScreen,
   MainGameScreen,
   ChoiceType
 } from "../../states/screen";
@@ -21,7 +21,7 @@ const Numpad: Component<NumpadProps, State, Action> = () => (
 ) => {
   const { screens, screenPointer, gameState } = state;
   const currScreen = screens[screenPointer];
-  const _isMainGameScreen = isMainGameScreen(currScreen);
+  const isMainGameScreen = _isMainGameScreen(currScreen);
   const isCompleted = screenPointer === screens.length - 1;
 
   // fill remainig array buttons with empty state
@@ -34,11 +34,32 @@ const Numpad: Component<NumpadProps, State, Action> = () => (
       label: ""
     });
   }
-  buttons.push({
-    type: ChoiceType.CONFIRM,
-    params: [],
-    label: "Ok"
-  });
+
+  const getExtraButton = (gameState: GameState) => {
+    if (!isMainGameScreen) {
+      return {
+        type: ChoiceType.CONFIRM,
+        params: [],
+        label: "Ok"
+      };
+    }
+
+    if (gameState === GameState.WIN) {
+      return {
+        type: ChoiceType.NEXT,
+        params: [],
+        label: "Ok"
+      };
+    }
+
+    return {
+      type: ChoiceType.CLR,
+      params: [],
+      label: "CLR"
+    };
+  };
+
+  buttons.push(getExtraButton(gameState));
 
   // convert button to 2d array
   const NUM_OF_ROW = 3,
@@ -54,38 +75,6 @@ const Numpad: Component<NumpadProps, State, Action> = () => (
     buttonGrid.push(row);
   }
 
-  // return (
-  //   <div>
-  //     {_isMainGameScreen &&
-  //       (currScreen as MainGameScreen).choices.map(choice => {
-  //         const fnName = getActionToInvoke(choice.type);
-  //         return (
-  //           <button onclick={() => action[fnName](...choice.params)}>
-  //             {choice.label}
-  //           </button>
-  //         );
-  //       })}
-  //     {!isCompleted &&
-  //       _isMainGameScreen &&
-  //       (gameState === GameState.PLAYING || gameState === GameState.LOSE) && (
-  //         <button onclick={() => action.restartOperator()}>CLR</button>
-  //       )}
-  //     {!isCompleted && _isMainGameScreen && gameState === GameState.WIN && (
-  //       <button onclick={() => action.loadNextScreen()}>OK</button>
-  //     )}
-  //     {!isCompleted && !_isMainGameScreen && (
-  //       <button
-  //         onclick={() => {
-  //           action.confirmOperator();
-  //         }}
-  //       >
-  //         OK
-  //       </button>
-  //     )}
-  //   </div>
-  // );
-  // console.log("buttongrid");
-  // console.log(buttonGrid);
   return (
     <div class={style.keys}>
       {buttonGrid.map(row => (

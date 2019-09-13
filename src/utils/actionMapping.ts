@@ -11,6 +11,12 @@ export const getActionToInvoke = (type: ChoiceType): keyof Action => {
       return "divisionOperator";
     case ChoiceType.DELETE:
       return "deleteOperator";
+    case ChoiceType.CONFIRM:
+      return "confirmOperator";
+    case ChoiceType.CLR:
+      return "restartOperator";
+    case ChoiceType.NEXT:
+      return "loadNextScreen";
     default:
       // cuma biar lolos typechecking
       return "addOperator";
