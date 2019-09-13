@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
-  "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+  "name": "Back to School",
+  "description": "This is  a image",
+  "images": {
+    "image_large": "image_large.jpg",
+    "image_thumbnail": "image_small.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+  "categories": ["Desktop"],
+  "user": {
+    "name": "Fawwaz Muhammad",
+    "website": "https://fawwazmuhammad.com",
+    "twitter": "@fawwaz_muhammad"
   }
 }
