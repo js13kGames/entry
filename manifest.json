@@ -6,7 +6,7 @@
     "image_thumbnail": "image_thumbnail.png"
   },
   "categories": ["Desktop"],
-  "user": {
+  "user": { 
     "name": "nes + egghead"
   }
 }
