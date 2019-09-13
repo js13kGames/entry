@@ -1,26 +1,27 @@
 1 map
   cropped view
   2-3 sceneries
-    ground
+    (x) ground
     mid distance
     far distance
 
 characters
-  1 user
-  1 computer (with auto movements)
+  (x) 1 user
+  (x) 1 computer
+      (with auto movements)
 characterState
-  currentMove
-  location
-  direction facing
-  health
+  (x) currentAction
+  (x) location
+  (x) direction facing
+  (x) health
 
-Moves
-  ready
+Actions
+  (x) ready
   move
-  block
-  attacking
+  (x) block
+  (x) attacking
   damaging
-  disabled
+  (x) disabled
   jumping?
 
 Attack
@@ -35,7 +36,7 @@ Goal
 
 ---
 To Start
-  initialize both Character states
+  (x) initialize both Character states
 
 event sequence
   get current state
@@ -44,46 +45,46 @@ event sequence
   set effect to state
 
 On LEFT/RIGHT direction key press
-  check current state to see if you can act (are you disabled, in the middle of an attack?)
-    if can't disregard
-    else continue
-  check location to move, to see if it is a valid location (off map? is TRex there?)
-    if can't disregard
-    else continue
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) check location to move, to see if it is a valid location (off map? is TRex there?)
+    (x) if can't disregard
+    (x) else continue
   check if location is under attack
     if so calculate effects of attack
-  set new location
+  (x) set new location
 
 On key press DOWN
-  check current state to see if you can act (are you disabled, in the middle of an attack?)
-    if can't disregard
-    else continue
-  set state to blocking
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) set state to blocking
 
 on key up DOWN
   // not really necessary, but might be helpful for consistency
   check current state to see if you can act (are you disabled, in the middle of an attack?)
     if can't disregard
     else continue
-  set temp state to READY
+  (x) set temp state to READY
   check if attacked
   set calculated state and attack effects
 
 On click
-  check current state to see if you can act (are you disabled, in the middle of an attack?)
-    if can't disregard
-    else continue
-  calculate attack location
-    one spot in the same direction the character is facing (characterState)
-  check if opponent is in the under attack location
-    if so calculate effects of attack
-  start attacking sequence
-  set effects state
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) calculate attack location
+    (x) one spot in the same direction the character is facing (characterState)
+  (x) check if opponent is in the under attack location
+    (x) if so calculate effects of attack
+  (x) start attacking sequence
+  (x) set effects state
 
-startAttackSequence
-  set current state to attacking
-  wait XXX amount of time
-  start disabled sequence (resetting position of attack)
+(x) startAttackSequence
+  (x) set current state to attacking
+  (x) wait XXX amount of time
+  (x) start disabled sequence (resetting position of attack)
 
 check if attacked
   see if subject next to opponent
@@ -103,10 +104,10 @@ check if attacked
     if so send out of health event
   set calculated effects
 
-startDisabledSequence
-  set as disabled
-  wait xxx amount of time
-  set current state to ready
+(x) startDisabledSequence
+  (x) set as disabled
+  (x) wait xxx amount of time
+  (x) set current state to ready
 
 
 ---
@@ -125,6 +126,8 @@ preattack sequence
   start attack sequence
 
 attack sequence
+  set wind up
+  wait for xxx sec
   set attacking
   wait for xxx sec
   start retreat sequence
@@ -134,3 +137,19 @@ retreat sequence
   step away from opponent
   wait xxx sec
   start move sequence
+
+wait
+  takes amount of time to wait
+  if hit during wait, the follow up should be cancelled
+  should go into
+
+function wait (name, time, onComplete) {
+  currentWait[name] = setTimeout(() => {
+    currentWait[name] = null;
+    onComplete();
+  }, time)
+}
+
+function breakWait (name) {
+  clearTimeout(currentWait[name]);
+}

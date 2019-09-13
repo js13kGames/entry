@@ -1,0 +1,36 @@
+{
+  "name": "back-to-skull-island",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "export NODE_ENV=production && gulp",
+    "dev": "export NODE_ENV=development && gulp dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amyyf/back-to-skull-island.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amyyf/back-to-skull-island/issues"
+  },
+  "homepage": "https://github.com/amyyf/back-to-skull-island#readme",
+  "devDependencies": {
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-advzip": "^1.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^3.0.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-inject-string": "^1.1.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-svgmin": "^2.2.0",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-zip": "^5.0.0"
+  },
+  "dependencies": {}
+}
