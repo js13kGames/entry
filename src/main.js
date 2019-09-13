@@ -1422,12 +1422,22 @@ function start() {
 	land();
   // Coil thing
   if(document.monetization) {
-    document.monetization.addEventListener('monetizationstart', function() {
+    function checkMon() {
       if (document.monetization.state === 'started') {
-        alert('As a Coil Subscriber, your Action Points will recover much quicker!');
+        activateCoilPowerup();
+        return true;
       }
-    });
+      return false;
+    }
+    if (!checkMon()) {
+      document.monetization.addEventListener('monetizationstart', checkMon);
+    }
   }
+}
+
+function activateCoilPowerup() {
+  alert('As a Coil Subscriber, your Action Points will recover much quicker!');
+  millisToRecover = 15000;
 }
 
 window.init = init;
