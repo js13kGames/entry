@@ -1,7 +1,3 @@
-// TODO: Reset tutorial
-// TODO: Coil 3 grenades, thanks
-// TODO: Posters
-// TODO: universal buttons: https://github.com/MicrosoftDocs/webvr/blob/master/webvr-docs/input.md
 const GameContainer = (function GameContainer() {
   const sceneEl = document.querySelector("a-scene");
   const rangeEl = document.getElementById("range");
