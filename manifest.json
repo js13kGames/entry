@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Action Hero Academy Range",
+  "description": "So you want to be an action hero, huh? You think you have it takes? You think it's easy to take an Oculus Rift and press A/X to pick up guns and pull the triggers to shoot them? Oh. You can. Every done it backwards??",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "image_large.jpg",
+    "image_thumbnail": "image_thumb.jpg"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["WebXR"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "Chris Hallberg",
+    "website": "https://crhallberg.com",
+    "twitter": "crhallberg"
   }
 }
