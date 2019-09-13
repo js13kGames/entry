@@ -1176,17 +1176,20 @@ function catchit() {
     update();
     return;
   }
-  
-
+  disable(true);
 	model.m[currentMonster.id] = true;
 	model.p -= 5;
-  message('');
-	message2('You catch the ' + currentMonster.name + '!');
+	message('You catch the ' + currentMonster.name + '!');
   const cid = currentMonster.id;
 	currentMonster = false;
+
 	save();
 	update();
-	backpack(cid);
+  setTimeout(() => {
+    message('');
+    backpack(cid);
+    disable(false);
+  }, 2000);
 }
 
 function getChance(rarity) {
