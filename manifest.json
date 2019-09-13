@@ -1,9 +1,9 @@
 {
     "name": "Yet Another Doom Clone",
     "description": "It's yet another doom clone.\n\nKill the enemies and get through all the levels. But be careful, don't forget the way back.\n\nControls:\nMove: WASD\nAim/Shoot: Mouse/Click",
-    "images" : {
+    "images": {
         "image_large": "image_large.png",
-        "image_thumbnail": "image_small.png",
+        "image_thumbnail": "image_small.png"
     },
     "user": {
         "name": "Nicholas Carlini",
