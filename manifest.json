@@ -1,14 +1,12 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "bakpak",
+  "description": "Find your way through the spoopy forest while defeating bosses and finding new extensions for your bakpak.\nControls: WASD- move, Mouse- use bakpak item, 1/2- switch bakpak item",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "pak/image_large.png",
+    "image_thumbnail": "pak/image_thumbnail.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "nes + egghead",
   }
 }
