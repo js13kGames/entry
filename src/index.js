@@ -5,7 +5,7 @@ var initialState = {
     roundScore: 0,
     gameScore: 0,
     heartScore: 5,
-    maxHeartScore: 9,
+    maxHeartScore: 20,
 }
 
 window.game = Object.assign({
@@ -35,7 +35,12 @@ window.game = Object.assign({
 
     mainEl: document.getElementById('main'),
     startEl: document.getElementById('start'),
-    scoreEl: document.getElementById('score-panel')
+    scoreEl: document.getElementById('score-panel'),
+
+    audio: null,
+    isMuted: false,
+    chords: ['c', 'f', 'g', 'c', 'c', 'g', 'f', 'c'],
+    chordId: 0
 }, initialState);
 
 game.gridWidth = game.width / game.gridSize;
@@ -46,6 +51,17 @@ game.insideGridWidth = game.insideWidth / game.gridSize;
 game.insideGridHeight = game.insideHeight / game.gridSize;
 
 init();
+
+window.m = function () {
+    game.isMuted = !game.isMuted;
+
+    if (!game.isMuted) {
+        nextSound();
+    }
+
+    var el = document.getElementById('m');
+    el.innerHTML = game.isMuted ? 'Unmute' : 'Mute';
+};
 
 function init() {
     var canvas = document.getElementById('main');
@@ -58,6 +74,11 @@ function init() {
 
     document.addEventListener('keydown', onKeydown);
     game.startEl.addEventListener('click', start);
+
+    if (!game.audio) {
+        game.audio = new Audio();
+        nextSound();
+    }
 
     // tickBeforeStart();
     // countDown();
@@ -171,6 +192,11 @@ function tick() {
     }
 
     if (game.snake.checkScore(game.snake.food)) {
+        if (!game.isMuted && game.audio && !game.demo) {
+            game.audio.playNote('x', 0, 0.1);
+            game.audio.playNote('y', 0.1, 0.2);
+        }
+
         game.roundScore = game.roundScore > 0 ? game.roundScore * 2 : 1;
         updateScore();
 
@@ -178,6 +204,13 @@ function tick() {
         setFood(false);
     }
     else if (game.snake.checkScore(game.snake.heart)) {
+        if (!game.isMuted && game.audio && !game.demo) {
+            game.audio.playNote('x', 0, 0.1);
+            game.audio.playNote('y', 0.1, 0.1);
+            game.audio.playNote('x', 0.2, 0.1);
+            game.audio.playNote('y', 0.3, 0.2);
+        }
+
         game.heartScore = Math.min(game.heartScore + 1, game.maxHeartScore);
         game.snake.heart = null;
         updateScore();
@@ -268,10 +301,26 @@ function start() {
     newGame();
 }
 
+function nextSound() {
+    var chordSustain = 2;
+    var id = game.chordId;
+
+    ++game.chordId;
+    if (game.chordId === game.chords.length) {
+        game.chordId = 0;
+    }
+
+    game.audio.playChord(game.chords[id], 0, chordSustain, function () {
+        if (!game.isMuted) {
+            nextSound();
+        }
+    });
+}
+
 function setFood(clearHeart) {
     game.snake.food = getRandomPos();
 
-    if (game.roundScore >= 8 && Math.random() > 0.8
+    if (game.roundScore >= 8 && Math.random() > 0.6
         && (clearHeart || !game.snake.heart)
     ) {
         game.snake.heart = getRandomPos();

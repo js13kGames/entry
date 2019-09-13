@@ -161,7 +161,7 @@ Snake.prototype.checkCollision = function () {
 };
 
 Snake.prototype.speedUp = function (speed) {
-    this._skipFramePeriod *= 0.7;
+    this._skipFramePeriod *= 0.75;
 };
 
 Snake.prototype._recordHistory = function () {

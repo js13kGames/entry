@@ -1,20 +1,10 @@
-window.onload = function () {
-    window.audio = new Audio();
-
-    var chordSustain = 2;
-    var chords = ['c', 'f', 'g', 'c', 'c', 'g', 'f', 'c'];
-    for (var i = 0, len = chords.length; i < len; ++i) {
-        window.audio.playChord(chords[i], chordSustain * i, chordSustain);
-    }
-};
-
 function Audio() {
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     this.notePlayHandlers = [];
 }
 
-Audio.prototype.playNote = function (noteName, noteOnTime, sustain) {
+Audio.prototype.playNote = function (noteName, noteOnTime, sustain, callback) {
     var oscillator = this.audioCtx.createOscillator();
 
     oscillator.type = 'square';
@@ -27,6 +17,10 @@ Audio.prototype.playNote = function (noteName, noteOnTime, sustain) {
 
         setTimeout(function () {
             oscillator.stop();
+
+            if (typeof callback === 'function') {
+                callback();
+            }
         }, sustain * 1000);
     }, noteOnTime * 1000);
     this.notePlayHandlers.push(handler);
@@ -35,13 +29,13 @@ Audio.prototype.playNote = function (noteName, noteOnTime, sustain) {
 /**
  * broken chord
  */
-Audio.prototype.playChord = function (chordName, noteOnTime, sustain) {
+Audio.prototype.playChord = function (chordName, noteOnTime, sustain, callback) {
     var noteSustain = sustain / 4;
     var notes = getNotesFromChord(chordName);
     this.playNote(notes[0], noteOnTime, noteSustain);
     this.playNote(notes[2], noteOnTime + noteSustain, noteSustain);
     this.playNote(notes[1], noteOnTime + noteSustain * 2, noteSustain);
-    this.playNote(notes[2], noteOnTime + noteSustain * 3, noteSustain);
+    this.playNote(notes[2], noteOnTime + noteSustain * 3, noteSustain, callback);
 };
 
 function getHerzFromNoteName(noteName) {
@@ -53,7 +47,9 @@ function getHerzFromNoteName(noteName) {
         e4: 329.63,
         f4: 349.23,
         g4: 392.00,
-        a4: 440.00
+        a4: 440.00,
+        x: 1000,
+        y: 800
     }[noteName];
 }
 
