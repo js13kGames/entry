@@ -1162,7 +1162,7 @@ function catchit() {
 		return;
 	}
 	if (model.p < 5) {
-		message('You need 5 AP to attempt capturing the monster.');
+		message('You need 5 AP to attempt capturing the monster. Wait for them to recover!');
 		return;
 	}
 	if (model.m[currentMonster.id]) {
