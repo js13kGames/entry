@@ -1,5 +1,5 @@
 import { Input } from './Input'
-import { PAUSE } from './constants'
+import { PAUSE, GOAL } from './constants'
 import { setScene } from './globals'
 import { Overlay } from './Overlay';
 import { GLYPH_WIDTH, drawBoldTextCentered, drawText } from './fontUtils';
@@ -34,7 +34,7 @@ export class PauseScreen extends Overlay {
     let descriptionMaxCharCount = 50
     drawText(
       'YOUR GOAL IS PLAIN AND SIMPLE.\n\n' +
-      'MAKE 250 LINES WITH THE TETROMINOES THAT FALL DOWN\n' +
+      'MAKE ' + GOAL + ' LINES WITH THE TETROMINOES THAT FALL DOWN\n' +
       'EITHER AS FAST AS POSSIBLE OR WITH AN END SCORE AS\n' +
       'HIGH AS POSSIBLE.\n' +
       'THERE IS ONE CATCH THOUGH: THESE TETROMINOES WILL\n' +
