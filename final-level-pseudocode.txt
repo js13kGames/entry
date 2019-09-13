@@ -1,0 +1,155 @@
+1 map
+  cropped view
+  2-3 sceneries
+    (x) ground
+    mid distance
+    far distance
+
+characters
+  (x) 1 user
+  (x) 1 computer
+      (with auto movements)
+characterState
+  (x) currentAction
+  (x) location
+  (x) direction facing
+  (x) health
+
+Actions
+  (x) ready
+  move
+  (x) block
+  (x) attacking
+  damaging
+  (x) disabled
+  jumping?
+
+Attack
+  onWhichLocation
+  attackPhaseLength
+  disabledPhaseLength
+  damageAmount
+
+Goal
+  maintain your health
+
+
+---
+To Start
+  (x) initialize both Character states
+
+event sequence
+  get current state
+  validation of event
+  calculate effects of action
+  set effect to state
+
+On LEFT/RIGHT direction key press
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) check location to move, to see if it is a valid location (off map? is TRex there?)
+    (x) if can't disregard
+    (x) else continue
+  check if location is under attack
+    if so calculate effects of attack
+  (x) set new location
+
+On key press DOWN
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) set state to blocking
+
+on key up DOWN
+  // not really necessary, but might be helpful for consistency
+  check current state to see if you can act (are you disabled, in the middle of an attack?)
+    if can't disregard
+    else continue
+  (x) set temp state to READY
+  check if attacked
+  set calculated state and attack effects
+
+On click
+  (x) check current state to see if you can act (are you disabled, in the middle of an attack?)
+    (x) if can't disregard
+    (x) else continue
+  (x) calculate attack location
+    (x) one spot in the same direction the character is facing (characterState)
+  (x) check if opponent is in the under attack location
+    (x) if so calculate effects of attack
+  (x) start attacking sequence
+  (x) set effects state
+
+(x) startAttackSequence
+  (x) set current state to attacking
+  (x) wait XXX amount of time
+  (x) start disabled sequence (resetting position of attack)
+
+check if attacked
+  see if subject next to opponent
+    if not break out
+  see if opponent is facing subject
+    if not break out
+  see if opponent is attacking
+    if not break out
+  see if subject is blocking
+    if so break out
+  calculate new health dependent on damage of opponent's attack strength
+  calculate new position dependent on opponent's attack force.
+    check location to move, to see if it is a valid location (off map? is TRex there?)
+      if can't disregard
+  start disabled sequence (recovering from attack)
+  check if out of health
+    if so send out of health event
+  set calculated effects
+
+(x) startDisabledSequence
+  (x) set as disabled
+  (x) wait xxx amount of time
+  (x) set current state to ready
+
+
+---
+computer intelligence
+
+step
+  same as onkeyPress LEFT/RIGHT from above
+
+move sequence (Always moves towards opponent)
+  takes at most XXX steps toward
+    if didn't move, start pre attack sequence
+  waits for XXX time before restarting sequence
+
+preattack sequence
+  wait for xxx sec
+  start attack sequence
+
+attack sequence
+  set wind up
+  wait for xxx sec
+  set attacking
+  wait for xxx sec
+  start retreat sequence
+
+retreat sequence
+  set as disabled
+  step away from opponent
+  wait xxx sec
+  start move sequence
+
+wait
+  takes amount of time to wait
+  if hit during wait, the follow up should be cancelled
+  should go into
+
+function wait (name, time, onComplete) {
+  currentWait[name] = setTimeout(() => {
+    currentWait[name] = null;
+    onComplete();
+  }, time)
+}
+
+function breakWait (name) {
+  clearTimeout(currentWait[name]);
+}

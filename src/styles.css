@@ -1,0 +1,86 @@
+body {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2em;
+  height: 100vh;
+  margin: 0;
+}
+button {
+  background: #3c6;
+  color: #111327;
+  cursor: pointer;
+  border: 2px solid #fff;
+  border-radius: 50px;
+  font-size: 1rem;
+  padding: .5em 2em;
+  font-weight: bold;
+}
+.page {
+  background: #111327;
+  box-sizing: border-box;
+  color: #3c6;
+  height: 100%;
+  padding: 5em;
+  width: 100%;
+}
+canvas {
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+}
+
+.progress-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-box {
+  background: black;
+  border: 2px solid orange;
+  padding: 0.5em;
+  position: relative;
+  width: 200px;
+  z-index: 1;
+}
+
+.progress-box p {
+  color: white;
+  display: inline-block;
+  margin: 0 auto;
+  padding-top: 0.25em;
+}
+
+.progress {
+  background: lightgray;
+  border-radius: 10px;
+  height: 15px;
+  overflow: hidden;
+  position: relative;
+  width: 200px;
+}
+
+.bar {
+  background: green;
+  display: inline-block;
+  height: 100%;
+}
+
+.below-60 {
+  background: yellow;
+}
+
+.below-30 {
+  background: red;
+}
+
+.win {
+  font-size: 32px;
+  left: 1rem;
+  position: absolute;
+}
