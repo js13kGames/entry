@@ -2,9 +2,9 @@
 
 Named after the [damocloid](https://en.wikipedia.org/wiki/20461_Dioretsa), 20461 Dioretsa is a local multiplayer Asteroids-like, desktop entry for [Js13kGames 2019](https://2019.js13kgames.com/entries).
 
-AI will attack PLayer 1, so the game can be played singleplayer versus 1-3 AI. Supports one player with [WASD/QZSD, E, X], one with [ARROW KEYS, SPACE, ESC], and 1-4 with gamepads. Nintendo Joy-Cons have mapped keys (and even attempt to match colours when connected), but other controllers aren't guaranteed to work.
+AI will attack PLayer 1, so the game can be played singleplayer versus 1-3 AI. Supports one player with [WASD/QZSD, E, X], one with [ARROW KEYS, SPACE, ESC], and 1-4 with gamepads. Joy-Cons and Xbox controllers have mapped keys (and even attempt to match colours when connected), but other controllers aren't guaranteed to work.
 
-Includes advanced collision detection via a [Collisions library](https://sinova.github.io/Collisions), realistic circle-based elastic collision physics with calculations based on [pi2.js](https://github.com/fahadhaidari/pi2.js/blob/master/pi2.js), and the main GameLoop and a few other bits from the mini game library [Kontra.js](https://straker.github.io/kontra/).
+Includes advanced collision detection via a [Collisions library](https://sinova.github.io/Collisions), realistic circle-based elastic collision physics with calculations based on [pi2.js](https://github.com/fahadhaidari/pi2.js/blob/master/pi2.js), the main GameLoop and a few other bits from [Kontra.js](https://straker.github.io/kontra/), and sounds made with [Zzfx](https://zzfx.3d2k.com/).
 
 Each of the 4 spaceships have different hitboxes, physics properties and stats, which can be seen in [`src/js/ships`](src/js/ships) although some had to be merged to save space!
 
