@@ -13,7 +13,7 @@ import * as style from "./Container.style";
 
 export default (state: State, actions: Action) => {
   return (
-    <div class={style.container} oncreate={() => actions.loadScreen(13)}>
+    <div class={style.container} oncreate={() => actions.loadScreen(0)}>
       <div class={style.wrapper}>
         <Display />
         <Numpad />

@@ -628,7 +628,10 @@
       },
       {
           screenType: ScreenType.GUIDE,
-          messages: ["you've completed all the callenge !"]
+          messages: ["you've completed all the callenge !",
+              "im running out of time, i havent write problem set for following levels :(",
+              "but i hope it explains the whole mechanic"
+          ]
       }
   ];
 
