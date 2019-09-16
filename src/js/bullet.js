@@ -34,21 +34,21 @@ export function createBullet(parent) {
         },
 
         render(scale) {
-            this.context.save();
-            this.context.scale(scale, scale);
-            this.context.translate(this.x, this.y);
+            this.ctx.save();
+            this.ctx.scale(scale, scale);
+            this.ctx.translate(this.x, this.y);
 
-            this.context.fillStyle = this.color;
-            this.context.beginPath();
-            this.context.arc(
+            this.ctx.fillStyle = this.color;
+            this.ctx.beginPath();
+            this.ctx.arc(
                 0,
                 0,
                 1,
                 0,
                 2 * Math.PI
             );
-            this.context.fill();
-            this.context.restore();
+            this.ctx.fill();
+            this.ctx.restore();
         }
     });
 

@@ -27,7 +27,7 @@ import { getContext, Vector } from 'kontra';
  * @param {Number} [properties.rotation=0] - Sprites rotation around the origin in radians.
  * @param {Number} [properties.anchor={x:0,y:0}] - The x and y origin of the sprite. {x:0, y:0} is the top left corner of the sprite, {x:1, y:1} is the bottom right corner.
  *
- * @param {Canvas​Rendering​Context2D} [properties.context] - The context the sprite should draw to. Defaults to [core.getContext()](api/core#getContext).
+ * @param {Canvas​Rendering​Context2D} [properties.ctx] - The ctx the sprite should draw to. Defaults to [core.getContext()](api/core#getContext).
  *
  * @param {Image|HTMLCanvasElement} [properties.image] - Use an image to draw the sprite.
  * @param {Object} [properties.animations] - An object of [Animations](api/animation) from a kontra.Spritesheet to animate the sprite.
@@ -112,16 +112,16 @@ class Sprite {
      *   width: 50,
      *   height: 50,
      *   // exclude-code:start
-     *   context: context,
+     *   ctx: ctx,
      *   // exclude-code:end
      *   render: function() {
      *     this.draw();
      *
      *     // draw origin
-     *     this.context.fillStyle = 'yellow';
-     *     this.context.beginPath();
-     *     this.context.arc(this.x, this.y, 3, 0, 2*Math.PI);
-     *     this.context.fill();
+     *     this.ctx.fillStyle = 'yellow';
+     *     this.ctx.beginPath();
+     *     this.ctx.arc(this.x, this.y, 3, 0, 2*Math.PI);
+     *     this.ctx.fill();
      *   }
      * });
      * sprite.render();
@@ -136,11 +136,11 @@ class Sprite {
      */
 
     /**
-     * The context the sprite will draw to.
+     * The ctx the sprite will draw to.
      * @memberof Sprite
-     * @property {Canvas​Rendering​Context2D} context
+     * @property {Canvas​Rendering​Context2D} ctx
      */
-    this.context = getContext();
+    this.ctx = getContext();
 
     this.color = properties.color || '#fff';
 

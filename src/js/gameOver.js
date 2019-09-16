@@ -19,22 +19,22 @@ export function render(game) {
         var x = pad + (cardWidth + margin * 2) * i + margin;
         var player
 
-        game.context.save();
-        game.context.scale(game.scale, game.scale);
-        game.context.clearRect(
+        game.ctx.save();
+        game.ctx.scale(game.scale, game.scale);
+        game.ctx.clearRect(
             x,
             y,
             cardWidth,
             cardHeight,
         );
-        game.context.strokeStyle = player.color;
-        game.context.strokeRect(
+        game.ctx.strokeStyle = player.color;
+        game.ctx.strokeRect(
             x,
             y,
             cardWidth,
             cardHeight
         )
-        game.context.restore();
+        game.ctx.restore();
 
         if (player.place === 0) {
             renderText({
@@ -44,24 +44,24 @@ export function render(game) {
                 y: y + margin + 1,
                 size: 1.35 * game.size,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
-            game.context.save();
-            game.context.scale(game.scale, game.scale);
-            game.context.strokeStyle = player.color;
-            game.context.strokeRect(
+            game.ctx.save();
+            game.ctx.scale(game.scale, game.scale);
+            game.ctx.strokeStyle = player.color;
+            game.ctx.strokeRect(
                 x - 6,
                 y - 6,
                 cardWidth + 12,
                 cardHeight + 12
             )
-            game.context.strokeRect(
+            game.ctx.strokeRect(
                 x - 3,
                 y - 3,
                 cardWidth + 6,
                 cardHeight + 6
             )
-            game.context.restore();
+            game.ctx.restore();
         } else {
             renderText({
                 text: player.place + 1,
@@ -70,7 +70,7 @@ export function render(game) {
                 y: y + margin + 1,
                 size: 1.3 * game.size,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
             if (player.place === 1) {
                 renderText({
@@ -80,7 +80,7 @@ export function render(game) {
                     y: y + margin + 12 * game.size,
                     size: .5,
                     scale: game.scale,
-                    context: game.context
+                    ctx: game.ctx
                 });
             } else if (player.place === 2) {
                 renderText({
@@ -90,7 +90,7 @@ export function render(game) {
                     y: y + margin + 11 * game.size, // 'rd' is a bit wonky
                     size: .5,
                     scale: game.scale,
-                    context: game.context
+                    ctx: game.ctx
                 });
             } else {
                 renderText({
@@ -100,7 +100,7 @@ export function render(game) {
                     y: y + margin + 12 * game.size,
                     size: .5,
                     scale: game.scale,
-                    context: game.context
+                    ctx: game.ctx
                 });
             }
         }
@@ -112,7 +112,7 @@ export function render(game) {
             x: x + margin,
             y: y + 50,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -122,7 +122,7 @@ export function render(game) {
             x: x + margin,
             y: y + 85,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -132,7 +132,7 @@ export function render(game) {
             x: x + cardWidth - margin,
             y: y + 80,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -142,7 +142,7 @@ export function render(game) {
             x: x + margin,
             y: y + 115,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -152,7 +152,7 @@ export function render(game) {
             x: x + cardWidth - margin,
             y: y + 110,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -162,7 +162,7 @@ export function render(game) {
             x: x + margin,
             y: y + 145,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -172,7 +172,7 @@ export function render(game) {
             x: x + cardWidth - margin,
             y: y + 140,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -182,7 +182,7 @@ export function render(game) {
             x: x + margin,
             y: y + 175,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -192,7 +192,7 @@ export function render(game) {
             x: x + cardWidth - margin,
             y: y + 170,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
         renderText({
@@ -204,7 +204,7 @@ export function render(game) {
             x: x + cardWidth - margin,
             y: y + cardHeight - margin,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
 
     });

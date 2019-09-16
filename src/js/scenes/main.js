@@ -119,7 +119,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                     x: 30,
                     y: game.height - 30 - ((game.players.length - 1) * 20) + i * 20,
                     scale: game.scale,
-                    context: game.context
+                    ctx: game.ctx
                 });
             });
         } else {
@@ -131,7 +131,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 x: game.width - 30,
                 y: game.height - 50,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
             renderText({
                 alignRight: true,
@@ -141,7 +141,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
                 x: game.width - 30,
                 y: game.height - 30,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
         }
 
@@ -152,7 +152,7 @@ let mainMenuLoop = GameLoop({  // create the main game loop
             x: game.width - 30,
             y: 30,
             scale: game.scale,
-            context: game.context
+            ctx: game.ctx
         });
     }
 });
@@ -169,7 +169,7 @@ export function startMainMenu(newGame, otherScenes) {
     game.sprites = [];
 
     mainMenu = new Menu({
-        context: game.context,
+        ctx: game.ctx,
         x: 30,
         y: 30,
         items: [

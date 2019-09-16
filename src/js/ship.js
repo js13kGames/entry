@@ -313,56 +313,56 @@ export class Ship extends Sprite.class {
     }
 
     pseudoRender(scale, x, y) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(x, y);
-        this.context.rotate(util.degToRad(this.rotation));
-        this.context.strokeStyle = this.color;
-        this.context.scale(3, 3);
-        this.context.beginPath();
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(x, y);
+        this.ctx.rotate(util.degToRad(this.rotation));
+        this.ctx.strokeStyle = this.color;
+        this.ctx.scale(3, 3);
+        this.ctx.beginPath();
 
-        this.context.lineWidth = .8;
+        this.ctx.lineWidth = .8;
 
-        this.context.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
+        this.ctx.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
         for (var i = 0; i < this.lines.body.length - 1; i++) {
-            this.context.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
+            this.ctx.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
         }
-        this.context.closePath();
+        this.ctx.closePath();
 
         this.lines.detail.forEach(line => {
-            this.context.moveTo(line[0], line[1]);
-            this.context.lineTo(line[2], line[3]);
+            this.ctx.moveTo(line[0], line[1]);
+            this.ctx.lineTo(line[2], line[3]);
         });
 
-        this.context.stroke();
+        this.ctx.stroke();
 
-        this.context.restore();
+        this.ctx.restore();
     }
 
     renderUI(scale) {
-        this.context.strokeStyle = '#0ef';
+        this.ctx.strokeStyle = '#0ef';
 
         // Draw ammo
         var ammoAngle = .2 * Math.PI * 1 / this.ammo;
         var gap = .05; // Gap between segments in radians
         for (let i = 0; i < Math.floor(this.ammoCurrent); i++) {
-            this.context.beginPath();
-            this.context.arc(
+            this.ctx.beginPath();
+            this.ctx.arc(
                 0,
                 0,
                 this.radius + 6,
                 Math.PI - (.2 * Math.PI * 1) + ammoAngle * i * 2,
                 Math.PI + (ammoAngle * 2 - gap) - (.2 * Math.PI) + ammoAngle * i * 2
             );
-            this.context.stroke();
+            this.ctx.stroke();
         }
 
         // Draw rewind recharge
         if (this.rewindDt <= this.ror) {
-            this.context.strokeStyle = '#0ef9';
+            this.ctx.strokeStyle = '#0ef9';
         }
-        this.context.beginPath();
-        this.context.arc(
+        this.ctx.beginPath();
+        this.ctx.arc(
             0,
             0,
             this.radius + 6,
@@ -370,26 +370,26 @@ export class Ship extends Sprite.class {
             +.2 * Math.PI * 1 / this.ror * this.rewindDt
         );
 
-        this.context.stroke();
+        this.ctx.stroke();
     }
 
     render(scale) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(this.x, this.y);
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(this.x, this.y);
 
         // Draw rewinding cooldown bar and ammo without rotation
         this.renderUI(scale);
 
-        this.context.rotate(util.degToRad(this.rotation));
+        this.ctx.rotate(util.degToRad(this.rotation));
 
         // Draw
-        this.context.strokeStyle = this.color;
+        this.ctx.strokeStyle = this.color;
 
         if (this.invuln) {
             // invuln is 1 / 60, and want to flash every 15 frames...
             if (Math.floor(this.invuln * 4 + .1) % 2) {
-                this.context.lineWidth = .5;
+                this.ctx.lineWidth = .5;
             }
         }
 
@@ -399,15 +399,15 @@ export class Ship extends Sprite.class {
             if (Math.floor(this.rainbow * 12) % 2) {
                 this.tmpColor = 'hsl(' + Math.random() * 360 + ',100%,60%)';
             }
-            this.context.strokeStyle = this.tmpColor;
+            this.ctx.strokeStyle = this.tmpColor;
         }
 
-        this.context.beginPath();
+        this.ctx.beginPath();
 
         // Draw circle around ship for debugging
-        // this.context.beginPath();  // start drawing a shape
-        // this.context.arc(0, 0, this.radius * this.scale + 3, 0, Math.PI * 2);
-        // this.context.stroke();
+        // this.ctx.beginPath();  // start drawing a shape
+        // this.ctx.arc(0, 0, this.radius * this.scale + 3, 0, Math.PI * 2);
+        // this.ctx.stroke();
 
         if (this.rewinding) {
             this.rewindFrame = this.rewindFrame || 1;
@@ -425,23 +425,23 @@ export class Ship extends Sprite.class {
             this.rewindFrame = this.rewindFrame < 4 ? this.rewindFrame + 1 : 1;
 
             this.lines.random.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+                this.ctx.moveTo(line[0], line[1]);
+                this.ctx.lineTo(line[2], line[3]);
             });
 
-            this.context.stroke();
+            this.ctx.stroke();
 
         } else {
 
-            this.context.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
+            this.ctx.moveTo(this.lines.body[0][0], this.lines.body[0][1]);
             for (var i = 0; i < this.lines.body.length - 1; i++) {
-                this.context.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
+                this.ctx.lineTo(this.lines.body[i][2], this.lines.body[i][3]);
             }
-            this.context.closePath();
+            this.ctx.closePath();
 
             this.lines.detail.forEach(line => {
-                this.context.moveTo(line[0], line[1]);
-                this.context.lineTo(line[2], line[3]);
+                this.ctx.moveTo(line[0], line[1]);
+                this.ctx.lineTo(line[2], line[3]);
             });
 
             if (this.ddx || this.ddy) {
@@ -451,20 +451,20 @@ export class Ship extends Sprite.class {
                         this.lines.thrust[i - 1][2] === line[0] &&
                         this.lines.thrust[i - 1][3] === line[1]) {
                         // Draw line connected to previous
-                        this.context.lineTo(line[2], line[3]);
+                        this.ctx.lineTo(line[2], line[3]);
                     } else {
                         // Draw line NOT connect to previous
-                        this.context.moveTo(line[0], line[1]);
-                        this.context.lineTo(line[2], line[3]);
+                        this.ctx.moveTo(line[0], line[1]);
+                        this.ctx.lineTo(line[2], line[3]);
                     }
                 });
             }
 
-            this.context.stroke();
+            this.ctx.stroke();
 
             if (this.shield === 1) {
-                this.context.beginPath();
-                this.context.arc(
+                this.ctx.beginPath();
+                this.ctx.arc(
                     0,
                     0,
                     this.radius + 4,
@@ -474,15 +474,15 @@ export class Ship extends Sprite.class {
 
                 if (this.shieldDegrading) {
                     if (Math.floor(this.shieldDegrading / 15) % 2) {
-                        this.context.lineWidth = .5;
+                        this.ctx.lineWidth = .5;
                     }
                 }
 
-                this.context.strokeStyle = '#fff';
-                this.context.stroke();
+                this.ctx.strokeStyle = '#fff';
+                this.ctx.stroke();
             }
         }
 
-        this.context.restore();
+        this.ctx.restore();
     }
 }

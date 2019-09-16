@@ -66,7 +66,7 @@ export function newPlayer(game, controls, controllerId) {
         shipType: Math.floor(Math.random() * 4),
         controls: controls,
         gamepadId: controllerId,
-        context: game.context,
+        ctx: game.ctx,
         game: game
     }));
 }

@@ -54,20 +54,20 @@ export function createShrapnel(line, parent, sprites) {
         },
 
         render(scale) {
-            this.context.save();
-            this.context.scale(scale, scale);
-            this.context.translate(this.x, this.y);
-            this.context.rotate(util.degToRad(this.rotation));
+            this.ctx.save();
+            this.ctx.scale(scale, scale);
+            this.ctx.translate(this.x, this.y);
+            this.ctx.rotate(util.degToRad(this.rotation));
 
-            this.context.beginPath();
+            this.ctx.beginPath();
 
             // Draw
-            this.context.strokeStyle = this.color;
-            this.context.moveTo(this.p1.x, this.p1.y);
-            this.context.lineTo(this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = this.color;
+            this.ctx.moveTo(this.p1.x, this.p1.y);
+            this.ctx.lineTo(this.p2.x, this.p2.y);
 
-            this.context.stroke();
-            this.context.restore();
+            this.ctx.stroke();
+            this.ctx.restore();
         }
     });
 

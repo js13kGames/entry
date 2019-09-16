@@ -16,55 +16,55 @@ export class AmmoPickup extends Pickup {
     }
 
     render(scale) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(this.x, this.y);
-        this.context.rotate(util.degToRad(this.rotation));
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(util.degToRad(this.rotation));
 
-        this.context.beginPath();
-        this.context.strokeStyle = '#fff';
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = '#fff';
 
-        this.context.rect(
+        this.ctx.rect(
             Math.sqrt(Math.pow(this.radius, 2) * .4),
             Math.sqrt(Math.pow(this.radius, 2) * .4),
             Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
             Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
         );
-        this.context.stroke();
+        this.ctx.stroke();
 
-        this.context.beginPath();
-        this.context.strokeStyle = '#0ef';
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = '#0ef';
 
-        this.context.rect(
+        this.ctx.rect(
             -1.35,
             -1.35,
             .45,
             .45
         );
 
-        this.context.rect(
+        this.ctx.rect(
             .9,
             -1.35,
             .45,
             .45
         );
 
-        this.context.rect(
+        this.ctx.rect(
             -1.35,
             .9,
             .45,
             .45
         );
 
-        this.context.rect(
+        this.ctx.rect(
             .9,
             .9,
             .45,
             .45
         );
 
-        this.context.stroke();
-        this.context.restore();
+        this.ctx.stroke();
+        this.ctx.restore();
 
         // Render the circle around the edge
         super.render(scale);

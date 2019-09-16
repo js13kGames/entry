@@ -19,46 +19,46 @@ export class StarPickup extends Pickup {
     }
 
     render(scale) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(this.x, this.y);
-        this.context.rotate(util.degToRad(this.rotation));
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(util.degToRad(this.rotation));
 
-        this.context.beginPath();
-        this.context.strokeStyle = '#fff';
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = '#fff';
 
-        // this.context.rect(
+        // this.ctx.rect(
         //     Math.sqrt(Math.pow(this.radius * scale, 2) * .5),
         //     Math.sqrt(Math.pow(this.radius * scale, 2) * .5),
         //     Math.sqrt(Math.pow(this.radius * scale, 2) * .5) * -2,
         //     Math.sqrt(Math.pow(this.radius * scale, 2) * .5) * -2,
         // );
-        // this.context.stroke();
+        // this.ctx.stroke();
 
-        //this.context.beginPath();
+        //this.ctx.beginPath();
 
         var rot = Math.PI / 2 * 3;
         var step = Math.PI / 5;
 
-        this.context.moveTo(0, 0 - this.radius * .75);
+        this.ctx.moveTo(0, 0 - this.radius * .75);
         for (let i = 0; i < 5; i++) {
-            this.context.lineTo(
+            this.ctx.lineTo(
                 Math.cos(rot) * this.radius * .75,
                 Math.sin(rot) * this.radius * .75
             );
             rot += step;
 
-            this.context.lineTo(
+            this.ctx.lineTo(
                 Math.cos(rot) * this.radius * .35,
                 Math.sin(rot) * this.radius * .35
             );
             rot += step;
         }
-        this.context.lineTo(0, 0 - this.radius * .75);
+        this.ctx.lineTo(0, 0 - this.radius * .75);
 
-        this.context.closePath();
-        this.context.stroke();
-        this.context.restore();
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.restore();
 
         // Render the circle around the edge
         super.render(scale);

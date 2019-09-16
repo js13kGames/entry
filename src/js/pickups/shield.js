@@ -16,25 +16,25 @@ export class ShieldPickup extends Pickup {
     }
 
     render(scale) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(this.x, this.y);
-        this.context.rotate(util.degToRad(this.rotation));
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(util.degToRad(this.rotation));
 
-        this.context.beginPath();
-        this.context.strokeStyle = '#fff';
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = '#fff';
 
-        this.context.rect(
+        this.ctx.rect(
             Math.sqrt(Math.pow(this.radius, 2) * .4),
             Math.sqrt(Math.pow(this.radius, 2) * .4),
             Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
             Math.sqrt(Math.pow(this.radius, 2) * .4) * -2,
         );
-        this.context.stroke();
+        this.ctx.stroke();
 
-        this.context.beginPath();
+        this.ctx.beginPath();
 
-        this.context.arc(
+        this.ctx.arc(
             0,
             0,
             this.radius / 2 - 1,
@@ -42,8 +42,8 @@ export class ShieldPickup extends Pickup {
             2 * Math.PI
         );
 
-        this.context.stroke();
-        this.context.restore();
+        this.ctx.stroke();
+        this.ctx.restore();
 
         // Render the circle around the edge
         super.render(scale);

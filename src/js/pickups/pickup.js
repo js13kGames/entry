@@ -42,23 +42,23 @@ export class Pickup extends Sprite.class {
     }
 
     render(scale) {
-        this.context.save();
-        this.context.scale(scale, scale);
-        this.context.translate(this.x, this.y);
-        this.context.rotate(util.degToRad(this.rotation));
-        this.context.beginPath();
-        this.context.strokeStyle = this.color;
+        this.ctx.save();
+        this.ctx.scale(scale, scale);
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(util.degToRad(this.rotation));
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = this.color;
 
-        this.context.arc(
+        this.ctx.arc(
             0,
             0,
             this.radius,
             0,
             2 * Math.PI
         );
-        this.context.stroke();
+        this.ctx.stroke();
 
-        this.context.restore();
+        this.ctx.restore();
     }
 
 }

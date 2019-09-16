@@ -12,7 +12,7 @@ export class Player {
         this.color = props.color;
         this.controls = props.controls;
         this.game = props.game;
-        this.context = props.context;
+        this.ctx = props.ctx;
         this.shipType = props.shipType;
         this.reset();
 
@@ -160,7 +160,7 @@ export class Player {
         var textProps = {
             color: this.color,
             alignCenter: true,
-            context: this.context,
+            ctx: this.ctx,
             text: this.score,
             scale: this.game.scale
         };

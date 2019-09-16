@@ -13,7 +13,7 @@ let { canvas, context } = init();
 
 const game = {
     canvas: canvas,
-    context: context,
+    ctx: context,
     // meteors: [],
     // pickups: [],
     players: [],

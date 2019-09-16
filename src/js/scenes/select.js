@@ -141,22 +141,22 @@ const menuLoop = GameLoop({  // create the main game loop
                 y = 8;
             }
 
-            game.context.save();
-            game.context.scale(game.scale, game.scale);
-            game.context.clearRect(
+            game.ctx.save();
+            game.ctx.scale(game.scale, game.scale);
+            game.ctx.clearRect(
                 x,
                 y,
                 game.width / 2 - 12,
                 game.height / 2 - 12,
             );
-            game.context.strokeStyle = player.color;
-            game.context.strokeRect(
+            game.ctx.strokeStyle = player.color;
+            game.ctx.strokeRect(
                 x,
                 y,
                 game.width / 2 - 12,
                 game.height / 2 - 12,
             )
-            game.context.restore();
+            game.ctx.restore();
 
             renderText({
                 text: 'player ' + (i + 1),
@@ -165,7 +165,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 x: x + 12,
                 y: y + 12,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
 
             renderText({
@@ -176,7 +176,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 x: x + 12,
                 y: y + game.height / 2 - 20,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
 
             if (player.controls === 'ai') {
@@ -188,7 +188,7 @@ const menuLoop = GameLoop({  // create the main game loop
                     x: x + 30,
                     y: y + game.height / 2 - 20,
                     scale: game.scale,
-                    context: game.context
+                    ctx: game.ctx
                 });
             }
 
@@ -201,7 +201,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 x: x + game.width / 2 - 22,
                 y: y + game.height / 2 - 20,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
 
             if (player.ship) {
@@ -235,7 +235,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 x: x + game.width / 4,
                 y: y + game.height / 4 - 8,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
 
             renderText({
@@ -245,7 +245,7 @@ const menuLoop = GameLoop({  // create the main game loop
                 x: x + game.width / 4,
                 y: y + game.height / 4 + 8,
                 scale: game.scale,
-                context: game.context
+                ctx: game.ctx
             });
         }
     }

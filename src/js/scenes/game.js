@@ -182,13 +182,13 @@ const gameLoop = GameLoop({  // create the main game loop
         }
 
         // Render debug collision stuff
-        // game.context.save();
-        // game.context.scale(game.scale, game.scale);
-        // game.context.strokeStyle = '#0F0';
-        // game.context.beginPath();
-        // game.cSystem.draw(game.context);
-        // game.context.stroke();
-        // game.context.restore();
+        // game.ctx.save();
+        // game.ctx.scale(game.scale, game.scale);
+        // game.ctx.strokeStyle = '#0F0';
+        // game.ctx.beginPath();
+        // game.cSystem.draw(game.ctx);
+        // game.ctx.stroke();
+        // game.ctx.restore();
     }
 });
 
