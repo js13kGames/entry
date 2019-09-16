@@ -1,6 +1,6 @@
 ![](https://auroriax.com/wp-content/uploads/2019/09/backflipped-2-1024x921.png)
 
-I wanted to participate in [js13k](https://js13kgames.com/) for a while now, so I finally took the dive, similarly to [7drl](https://auroriax.itch.io/7drl-2019) this year. The resulting game is called BackFlipped, and you can play it on either [the competition site](https://js13kgames.com/entries/backflipped) or [itch!](https://auroriax.itch.io/backflipped) Also, you can [check out the source code on Github](https://github.com/Auroriax/BackFlipped).
+I wanted to participate in [js13k](https://js13kgames.com/) for a while now, so I finally took the dive, similarly to [7drl](https://auroriax.itch.io/7drl-2019) this year. The resulting game is called BackFlipped, and you can play it on either [the competition site](https://js13kgames.com/entries/backflipped) or [itch!](https://auroriax.itch.io/backflipped) Also, you can [check out the original postmortem post on my site.](https://auroriax.com/js13kgames-back-to-the-basics/).
 
 I had some goals:
 
