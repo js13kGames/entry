@@ -26,7 +26,7 @@ function pickColor(players, controllerId) {
         return unusedRandomColor(players)
     }
     // Make left Joy-Cons blue, or if there's already a blue player, green
-    if (controllerId.indexOf('-Con (L)') > -1) {
+    if (controllerId.includes('(L)')) {
         if (!players.some((p) => p.color === colors.blue)) {
             return colors.blue;
         }
@@ -35,7 +35,7 @@ function pickColor(players, controllerId) {
         }
     }
     // Make right Joy-Cons red, or if there's already a red player, pink
-    if (controllerId.indexOf('-Con (R)') > -1) {
+    if (controllerId.includes('(R)')) {
         if (!players.some((p) => p.color === colors.red)) {
             return colors.red;
         }
@@ -44,7 +44,7 @@ function pickColor(players, controllerId) {
         }
     }
     // Make Xbox controllers green if there's not already a green
-    if (controllerId.indexOf('Xbox') > -1) {
+    if (controllerId.includes('Xbox')) {
         if (!players.some((p) => p.color === colors.green)) {
             return colors.green;
         }
