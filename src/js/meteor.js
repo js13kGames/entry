@@ -87,7 +87,7 @@ export function createMeteor(props) {
 
             // Create new line sprites where the ship lines were
             this.lines.forEach(line => {
-                createShrapnel(line, this, this.game.sprites);
+                createShrapnel(line, this);
             });
         }
     });

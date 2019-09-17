@@ -1,7 +1,7 @@
 import { Sprite } from './sprite';
 import * as util from './utility';
 
-export function createShrapnel(line, parent, sprites) {
+export function createShrapnel(line, parent) {
 
     const cos = Math.cos(util.degToRad(parent.rotation));
     const sin = Math.sin(util.degToRad(parent.rotation));
@@ -73,5 +73,5 @@ export function createShrapnel(line, parent, sprites) {
 
     lineSprite.hitbox.owner = lineSprite;
 
-    sprites.push(lineSprite);
+    parent.game.sprites.push(lineSprite);
 }

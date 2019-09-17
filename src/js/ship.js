@@ -308,7 +308,7 @@ export class Ship extends Sprite.class {
 
         // Create new line sprites where the ship lines were
         this.lines.ship.forEach(line => {
-            createShrapnel(line, this, this.game.sprites);
+            createShrapnel(line, this);
         });
     }
 
